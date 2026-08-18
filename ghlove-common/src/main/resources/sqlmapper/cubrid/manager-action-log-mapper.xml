@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.log.ActionLogMapper">
+
+    <resultMap id="ActionLogResult" type="saleson.shop.log.domain.ActionLog">
+        <result column="ACTION_LOG_ID" property="actionLogId"/>
+        <result column="LOGIN_ID" property="loginId"/>
+        <result column="LOGIN_TYPE" property="loginType"/>
+        <result column="REQUEST_URI" property="requestUri"/>
+        <result column="REQUEST_METHOD" property="requestMethod"/>
+        <result column="REMOTE_ADDR" property="remoteAddr"/>
+        <result column="CREATED_DATE" property="createdDate"/>
+    </resultMap>
+    
+   	<select id="getUserActionLogId" resultType="long" >
+		<![CDATA[
+		SELECT ifnull(to_number(max(action_log_id)) + 1,'0')
+          FROM OP_USER_ACTION_LOG 
+		]]>
+	</select>
+
+    <insert id="insertManagerActionLog" parameterType="saleson.shop.log.domain.ActionLog">
+        INSERT INTO OP_MANAGER_ACTION_LOG (
+            LOGIN_ID,
+            LOGIN_TYPE,
+            REQUEST_URI,
+            REQUEST_METHOD,
+            REMOTE_ADDR,
+            CREATED_DATE
+        ) VALUES (
+            crypto_enc('normal', #{loginId}, ''),
+            #{loginType},
+            #{requestUri},
+            #{requestMethod},
+            crypto_enc('normal', #{remoteAddr}, ''),
+            #{createdDate}
+        )
+    </insert>
+	
+	<sql id="baseActionLogWhere">
+		<where>
+			<if test="loginLogId != null and loginLogId != ''">
+				AND AL.LOGIN_ID = (SELECT LOGIN_ID FROM OP_LOGIN_LOG WHERE LOGIN_LOG_ID = #{loginLogId})
+			</if>
+			<if test="srchStartCreated != null and srchStartCreated != ''">
+				AND AL.CREATED_DATE <![CDATA[>=]]> #{srchStartCreated}
+			</if>
+			<if test="srchEndCreated != null and srchEndCreated != ''">
+				AND AL.CREATED_DATE <![CDATA[<=]]> #{srchEndCreated}
+			</if>
+		</where>
+	</sql>
+
+	<select id="getManagerActionLogListCountByParam" parameterType="saleson.shop.log.support.ActionLogParam" resultType="Integer">
+		/** manager-action-log-mapper.getManagerActionLogListCountByParam (관리자 메뉴 사용 이력 관리 갯수 조회) */
+		SELECT
+				COUNT(*)
+		FROM OP_MANAGER_ACTION_LOG AL
+		<include refid="baseActionLogWhere" />
+	</select>
+	
+	<select id="getManagerActionLogListByParam" parameterType="saleson.shop.log.support.ActionLogParam" resultType="saleson.shop.log.domain.ActionLog">
+		/** manager-action-log-mapper.getManagerActionLogListByParam (관리자 메뉴 사용 이력 관리 조회) */
+		SELECT
+			A.action_log_id,
+			DATE_FORMAT(A.created_date, '%Y-%m-%d %H:%i:%s') AS created_date,
+			crypto_dec('normal', A.remote_addr, '', 0) AS remote_addr,
+			A.request_uri,
+			A.request_method,
+			A.login_type,
+			crypto_dec('normal', A.login_id, '', 0) AS login_id
+		FROM (
+			<include refid="CommonMapper.paginationHeader" />
+				SELECT
+					AL.action_log_id,
+					AL.created_date,
+					AL.remote_addr,
+					AL.request_uri,
+					AL.request_method,
+					AL.login_type,
+					AL.login_id
+				FROM op_manager_action_log AL
+			<include refid="baseActionLogWhere" />
+			ORDER BY AL.created_date DESC
+			<include refid="CommonMapper.paginationFooter" />
+		) A
+	</select>
+	
+	<insert id="insertUserActionLog" parameterType="saleson.shop.log.domain.ActionLog">
+		/** manager-action-log-mapper.insertUserActionLog (사용자 메뉴 사용 이력 등록) */
+		INSERT INTO OP_USER_ACTION_LOG (
+			LOGIN_ID,
+			LOGIN_TYPE,
+			REQUEST_URI,
+			REQUEST_METHOD, 
+			REMOTE_ADDR,
+			CREATED_DATE    
+		) VALUES (
+			crypto_enc('normal', #{loginId}, ''),
+			#{loginType},
+			#{requestUri},
+			#{requestMethod},
+			crypto_enc('normal', #{remoteAddr}, ''),
+			#{createdDate}
+		)
+	</insert>
+	
+	<sql id="baseUserActionLogWhere">
+		<where>
+			<if test="loginLogId != null and loginLogId != ''">
+				AND AL.LOGIN_ID = (SELECT LOGIN_ID FROM OP_USER_LOGIN_LOG WHERE LOGIN_LOG_ID = #{loginLogId})
+			</if>
+			<if test="srchStartCreated != null and srchStartCreated != ''">
+				AND AL.CREATED_DATE <![CDATA[>=]]> #{srchStartCreated}
+			</if>
+			<if test="srchEndCreated != null and srchEndCreated != ''">
+				AND AL.CREATED_DATE <![CDATA[<=]]> #{srchEndCreated}
+			</if>
+		</where>
+	</sql>
+	
+	<select id="getUserActionLogListCountByParam" parameterType="saleson.shop.log.support.ActionLogParam" resultType="Integer">
+		/** manager-action-log-mapper.getUserActionLogListCountByParam (사용자 메뉴 사용 이력 관리 갯수 조회) */
+		SELECT
+				COUNT(*)
+		FROM OP_USER_ACTION_LOG AL
+		<include refid="baseUserActionLogWhere" />
+	</select>
+	
+	<select id="getUserActionLogListByParam" parameterType="saleson.shop.log.support.ActionLogParam" resultType="saleson.shop.log.domain.ActionLog">
+		/** manager-action-log-mapper.getUserActionLogListByParam (사용자 메뉴 사용 이력 관리 조회) */
+		SELECT
+			A.action_log_id,
+			DATE_FORMAT(A.created_date, '%Y-%m-%d %H:%i:%s') AS created_date,
+			crypto_dec('normal', A.remote_addr, '', 0) AS remote_addr,
+			A.request_uri,
+			A.request_method,
+			A.login_type,
+			crypto_dec('normal', A.login_id, '', 0) AS login_id
+		FROM (
+			<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				AL.action_log_id,
+				AL.created_date,
+				AL.remote_addr,
+				AL.request_uri,
+				AL.request_method,
+				AL.login_type,
+				AL.login_id
+			FROM op_user_action_log AL
+			<include refid="baseUserActionLogWhere" />
+			ORDER BY AL.created_date DESC
+			<include refid="CommonMapper.paginationFooter" />
+		) A
+	</select>
+</mapper>

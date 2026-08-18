@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="Expires" content="-1" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Cache-Control" content="No-Cache" />
+        <link rel="icon" href="/static/favicon.ico" />
+        <title>주문 대행 > 기부포인트 현황 | 고향사랑e음</title>
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="/static/css/swiper.min.css" />
+        <link rel="stylesheet" href="/static/css/common.css" />
+        <link rel="stylesheet" href="/static/css/layout.css" />
+        <link rel="stylesheet" href="/static/css/popup.css" />
+        <link rel="stylesheet" href="/static/css/main.css" />
+
+        <link rel="stylesheet" href="/static/css/event.css" />
+
+        <!-- ali custom Style -->
+        <link rel="stylesheet" href="/static/css/default_ali.css" />
+        <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+        <link rel="stylesheet" href="/static/css/mypage-status.css" />
+        <link rel="stylesheet" href="/static/css/research-box.css" />
+
+        <!-- UI/UX 신규추가 -->
+    	<link rel="stylesheet" href="/static/css/new.css" />
+    	<script src="/static/js/swiper-bundle.min.js"></script>
+    	<!-- <script defer src="/static/js/ui-script.js"></script> -->
+    </head>
+
+    <body>
+        <div id="saleson" v-cloak>
+            <div id="wrap">
+                <section class="center">
+                    <div class="page-title-box">
+                        <h2 class="page-title-txt">기부포인트 현황</h2>
+                        <p>포인트는 기부지역의 답례품만 구매 가능합니다.</p>
+                        <div class="user-grade point">
+                            <span class="grade-bg">
+                                <img class="icon-img" src="/static/images/icon/cli-icon_my-user-name.png" alt="" />
+                                <span class="blue-txt">{{userName}}</span> 회원님
+                            </span>
+                        </div>
+                    </div>
+                </section>
+                <section class="s-con">
+                    <div class="center">
+                        <div class="s-contents table-wrapper myDonation" style="margin-bottom: 0px;">
+                            <div class="table-container">
+                                <div class="table-result-body">
+                                    <table>
+                                        <tr class="result-title">
+                                            <th rowspan="2">No.</th>
+                                            <th colspan="2">기부지자체</th>
+                                            <th rowspan="2">적립 포인트</th>
+                                            <th rowspan="2">사용 포인트</th>
+                                            <th rowspan="2">잔여 포인트</th>
+                                            <th rowspan="2">답례품</th>
+                                        </tr>
+                                        <tr class="result-title">
+                                            <th>시 · 도</th>
+                                            <th>시 · 군 · 구</th>
+                                        </tr>
+
+                                        <tr class="result-row" v-for="(data,i) in cntrList" :key="i">
+                                            <td class="idx">{{totalItems - ((currentPage - 1 ) * itemsPerPage) - i}}</td>
+                                            <td class="">{{data.upperLocgovNm}}</td>
+                                            <td class="">{{data.locgovNm}}</td>
+                                            <td class="amount">{{formatNumber(data.cntrPoint)}}</td>
+                                            <td class="amount">
+                                                {{formatNumber(data.cntrUsePoint)}}
+                                                <!--<a :href="'/mypage/cntrPointDetail.html?locgovCode='+data.locgovCode" class="short_icon">
+                                                    <img class="icon-img" src="/static/images/icon/btn-shorcut_viewmore.png" alt="상세내역보기" />
+                                                </a>-->
+                                            </td>
+                                            <td class="amount">{{formatNumber(data.cntrBlcePoint)}}</td>
+                                            <td class="loc_mall">
+                                                <button type="button" class="deepBlue moreView" @click="goToLocgovMall(data.locgovCode)">
+                                                    답례품 몰 가기
+                                                    <img src="/static/images/icon/simple-arrow-right.png" alt="이동" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="table-overlap">
+                                    <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br />
+                                    <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                                </div>
+                                <pagination :current-page="currentPage" :total-pages="totalPages" @change="getAgencyPointList"> </pagination>
+                            </div>
+                        </div>
+
+							<!-- 버튼그룹 -->
+					        <div class="btn-box order print_none mobile_hidden" style="margin: 30px 0;">
+					          <button type="button" class="blueBtn u-confirm" @click="goToLoginPage" style="min-width: 120px;">
+					            로그아웃<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+					          </button>
+					        </div>
+                    </div>
+                </section>
+                <!-- footer component -->
+                <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted" :export-mode="exportMode"></layout-footer-ali>
+            </div>
+            <!--//#wrap-->
+        </div>
+        <!--//#saleson-->
+        <!-- JavaScript -->
+        <script src="/static/js/jquery-3.4.1.min.js"></script>
+        <script src="/static/js/swiper.min.js"></script>
+        <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+        <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.popupoverlay.js"></script>
+        <script src="/static/js/jquery.waypoints.min.js"></script>
+        <script src="/static/js/jquery.counterup.min.js"></script>
+        <script src="/static/js/common.js"></script>
+        <script src="/static/js/header.js"></script>
+        <script src="/static/js/footer.js"></script>
+        <script src="/static/js/main.js"></script>
+
+        <script src="/static/js/jquery.cookie.js"></script>
+
+        <script src="/modules/babel.min.js"></script>
+        <script src="/modules/es6-promise.min.js"></script>
+        <script src="/modules/es6-promise.auto.min.js"></script>
+        <script src="/modules/axios.js"></script>
+        <script src="/modules/vue.js"></script>
+        <script src="/modules/httpVueLoader.js"></script>
+        <script src="/modules/op.config.js"></script>
+        <script src="/modules/op.saleson.js"></script>
+        <script src="/modules/op.common.js"></script>
+        <script type="text/babel" src="/modules/op.vue.js"></script>
+        <script src="/modules/op.wcslog.js"></script>
+
+
+        <script type="text/babel">
+            // Vue.use(NetFunnel);
+            var vm = new Vue({
+                el: "#saleson",
+                components: {
+                      "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue")
+                      , "pagination": httpVueLoader("/components/ui/pagination.vue"), //pagination
+                },
+                data: {
+                    userName : "",
+                    itemsPerPage : 10,
+                    currentPage : 1,
+                    totalPages : 0,
+                    totalItems : 0,
+                    cntrList : [],
+                    exportMode: true,
+                },
+                methods: {
+					goToLoginPage: function () {
+						location.href = "/admin/order-agency/login.html";
+					},
+                    loadingMounted: function () {
+                        this.getAgencyPointList(1);
+                    },
+                    getAgencyPointList: function (page) {
+                        let params = {
+                            "itemsPerPage" : this.itemsPerPage
+                            , "page" : page
+                        };
+                        $s.api.getAgencyPointList(params, function (response) {
+                            if (response.result.rstCd == 'SUCCESS') {
+                                vm.cntrList = response.list;
+                                vm.totalPages = response.totalPages;
+                                vm.currentPage = response.page;
+                                vm.totalItems = response.totalItems;
+                                vm.userName = response.userName;
+                            } else {
+                                if (response.result.rstMsg) {
+                                    $s.alert(response.result.rstMsg, function () {
+                                        $s.closeAlert();
+                                        $s.redirect('/admin/order-agency/login.html');
+                                    });
+                                    // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                                    $("#saleson").on("click", "#op-alert", function () {
+                                        $s.redirect('/admin/order-agency/login.html');
+                                    });
+                                } else {
+                                    $s.alert("잠시 후 다시 시도해주세요.");
+                                }
+                            }
+                        }, function (error) {
+							if (error.response.data) {
+								if (error.response.data.code == 'NO_LOGIN') {
+									$s.alert(error.response.data.description, function () {
+                                        $s.closeAlert();
+                                        $s.redirect('/admin/order-agency/login.html');
+									});
+                                	// modal alert 바깥영역 클릭해도 이전페이지로 이동
+                                	$("#saleson").on("click", "#op-alert", function () {
+	                                    $s.closeAlert();
+                                        $s.redirect('/admin/order-agency/login.html');
+                                	});
+								} else {
+									$s.alert(error.response.data.description);
+								}
+							} else {
+								$s.alert("잠시 후 다시 시도해주세요.");
+							}
+						});
+                    },
+                    goToLocgovMall: function (locgovCode) {
+                        if (locgovCode) {
+                            $s.redirect('/admin/order-agency/goods-list.html?locgovCode=' + locgovCode);
+                        } else {
+                            $s.alert("지자체 정보가 없습니다.");
+                        }
+                    },
+					closeTableOverlap: function () {
+						$(".table-overlap").css("display", "none");
+					},
+                },
+                computed: {
+
+                },
+                mounted: function () {
+                    this.$nextTick(function () {
+                        Saleson.init({isAgency: true});
+
+						window.onpageshow = function (event) {			// 뒤로가기로 화면 진입시 버전 다시 세팅
+							if (event.persisted || (window.performance && window.performance.navigation.type == 2)) {
+								vm.loadingMounted();
+							}
+						};
+                    });
+                },
+            });
+            window.app = vm;
+        </script>
+
+    </body>
+</html>

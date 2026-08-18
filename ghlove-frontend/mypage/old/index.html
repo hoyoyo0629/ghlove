@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ko">
+<head id="saleson-head">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="../../../../favicon.ico">
+	<title>지역정보개발원-고향사랑e음</title>
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+	<!-- Custom styles for this template -->
+	<link rel="stylesheet" href="/static/css/swiper.min.css">
+	<link rel="stylesheet" href="/static/css/common.css">
+	<link rel="stylesheet" href="/static/css/layout.css">
+	<link rel="stylesheet" href="/static/css/item.css">
+	<link rel="stylesheet" href="/static/css/order.css">
+	<link rel="stylesheet" href="/static/css/mypage.css">
+	<link rel="stylesheet" href="/static/css/member.css">
+	<link rel="stylesheet" href="/static/css/customer.css">
+	<link rel="stylesheet" href="/static/css/etc.css">
+
+</head>
+	<body>
+	<div id="saleson" v-cloak>
+		<layout-header></layout-header>
+
+		<section class="contents mypage_contents">
+			<h2 class="screen_out">마이페이지</h2>
+			<div class="container">
+				<div class="mypage_header">
+					<div class="name_area">
+						<p class="name"><span>{{result.userName}}</span>님</p>
+						<p class="email">{{result.loginId}}</p>
+					</div>
+					<div class="row no-gutters conts_area">
+						<div class="col-12 col-lg-4 grade_area">
+							<dl>
+								<dt>나의 회원등급</dt>
+								<dd>{{result.userLevel}}</dd>
+							</dl>
+							<a href="/mypage/grade.html" class="link_grade">등급혜택보기</a>
+						</div>
+						<div class="col-6 col-lg-4 coupon_area">
+							<dl>
+								<dt>사용가능 쿠폰</dt>
+								<dd>
+									<a href="/mypage/coupon-list.html">
+										{{result.userCouponCount}}
+									</a>
+								</dd>
+							</dl>
+						</div>
+						<div class="col-6 col-lg-4 point_area">
+							<dl>
+								<dt>보유 포인트</dt>
+								<dd>
+									<a href="/mypage/point-list.html">
+										{{formatNumber(result.userPoint)}}
+									</a>
+								</dd>
+							</dl>
+						</div>
+					</div>
+				</div>
+				<div class="mypage_container">
+					<div class="row no-gutters">
+						<div class="col-12 col-lg-2">
+							<div class="mypage_lnb">
+								<div class="row">
+									<dl class="col-12 col-md-6 col-lg-12">
+										<dt>쇼핑정보</dt>
+										<dd><a href="/mypage/order.html">주문/배송 조회</a></dd>
+										<dd><a href="/mypage/order-cancel.html">취소/반품/교환 신청</a></dd>
+										<dd><a href="/mypage/delivery.html">배송 주소록 관리</a></dd>
+										<dd><a href="/mypage/wishlist.html">관심상품</a></dd>
+										<dd><a href="/mypage/recent-view.html">최근 본 상품</a></dd>
+									</dl>
+									<dl class="col-12 col-md-6 col-lg-12">
+										<dt>쇼핑혜택</dt>
+										<dd><a href="/mypage/coupon-list.html">쿠폰</a></dd>
+										<dd><a href="/mypage/point-list.html">포인트</a></dd>
+									</dl>
+									<dl class="col-12 col-md-6 col-lg-12">
+										<dt>마이세일즈온</dt>
+										<dd><a href="/mypage/grade.html">나의 등급/혜택</a></dd>
+										<dd><a href="/users/modify.html">내 정보 관리</a></dd>
+									</dl>
+									<dl class="col-12 col-md-6 col-lg-12">
+										<dt>고객센터</dt>
+										<dd><a href="/mypage/inquiry-item.html">상품 Q&amp;A 내역</a></dd>
+										<dd><a href="/mypage/review.html">이용후기</a></dd>
+										<dd><a href="/notice/list.html">공지사항</a></dd>
+										<dd><a href="/faq/list.html">FAQ</a></dd>
+										<dd><a href="/mypage/inquiry.html">1:1 문의</a></dd>
+										<dd><a href="/store/apply.html">입점문의</a></dd>
+									</dl>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-9 offset-lg-1 pc">
+							<ul class="mypage_conts">
+								<li v-if="result.orderList.length > 0">
+									<h3 class="sub_tit">최근 주문내역</h3>
+									<div class="conts_area">
+										<div class="item_list basic">
+											<div class="list_area">
+												<div class="img_area">
+													<a :href="'/items/details.html?code=' + result.orderList[0].items[0].itemUserCode">
+														<img :src="itemImage(result.orderList[0].items[0].imageSrc)" alt="썸네일">
+													</a>
+												</div>
+												<div class="txt_area">
+													<p class="brand"></p>
+													<p class="title">{{result.orderList[0].items[0].itemName}}</p>
+													<div class="price_area">
+														<!--<p class="before"><span>299,000</span>원</p>-->
+														<div class="sale_area">
+															<p class="price total"><span>{{formatNumber(result.orderList[0].items[0].itemAmount)}}</span>원</p>
+														</div>
+													</div>
+													<p class="date">{{dateFormat(result.orderList[0].createdDate, 'date')}}</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+								<li v-else>
+									<h3 class="sub_tit">최근 주문내역</h3>
+									<div class="conts_area">
+										<div class="common_none">
+											<p>최근 주문 상품이 없습니다. 세일즈온에서 맘에 드는 상품을 구입해보세요.</p>
+										</div>
+									</div>
+								</li>
+								<li v-if="result.wishlist.length > 0">
+									<h3 class="sub_tit">관심상품</h3>
+									<div class="conts_area">
+										<ul class="interest_area">
+											<li v-for="data in result.wishlist">
+												<a :href="'/items/details.html?code=' + data.item.itemUserCode">
+													<img class="img_full" :src="itemImage(data.item.itemImage)" alt="관심상품">
+												</a>
+											</li>
+										</ul>
+									</div>
+								</li>
+								<li v-else>
+									<h3 class="sub_tit">관심상품</h3>
+									<div class="conts_area">
+										<div class="common_none">
+											<p>관심상품 내역이 없습니다.</p>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<layout-footer></layout-footer>
+	</div>
+
+	<!-- JavaScript -->
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+	<script src="/static/js/swiper.min.js"></script>
+	<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+	<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+	<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+	<script src="/static/js/jquery.popupoverlay.js"></script>
+	<script src="/static/js/jquery.waypoints.min.js"></script>
+	<script src="/static/js/jquery.counterup.min.js"></script>
+	<script src="/static/js/common.js"></script>
+	<script src="/static/js/header.js"></script>
+	<script src="/static/js/footer.js"></script>
+
+	<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+	<script src="/modules/es6-promise.min.js"></script>
+	<script src="/modules/es6-promise.auto.min.js"></script>
+	<script src="/modules/axios.js"></script>
+	<script src="/modules/vue.js"></script>
+	<script src="/modules/httpVueLoader.js"></script>
+	<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+	<script type="text/babel" src="/modules/op.vue.js"></script>
+	<script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+                'layout-header': httpVueLoader('/components/layouts/header.vue')
+            },
+            data: {
+                param: {},
+                result: {
+                    couponList : [],
+					orderList : [],
+					wishlist : [],
+					orderShippingCount : [],
+					loginId : "",
+					userCouponCount : 0,
+					userLevel : "",
+					userName : "",
+					userPoint : 0,
+					userShippingCount : 0
+                },
+                categories: {},
+            },
+            methods: {
+                submit: function () {
+                    $s.api.getMypage(
+                        function (response) {
+                            vm.result = response.data;
+                        }
+                    );
+                },
+
+                callbackCart: function (message) {
+                    //alert('전달받은 메시지 : ' + message);
+                },
+
+                paging: function (page) {
+                    // vm.param.page = page;
+                    // vm.submit();
+                },
+
+                sorting: function (event) {
+                    // var value = event.target.value.split("__");
+                    // vm.param.orderBy = value[0];
+                    // vm.param.sort = value[1];
+                    // vm.submit();
+                },
+
+                itemListType: function (type) {
+                    // vm.param.listType = type;
+                    // vm.submit();
+                }
+            },
+            mounted: function() {
+
+	            this.$nextTick(function () {
+		            Saleson.init({loginPage:true});
+
+		            $s.api.getMypage(
+			            function (response) {
+				            vm.result = response.data;
+			            }
+		            );
+	            });
+            }
+        });
+
+	</script>
+	</body>
+</html>
+
+
+

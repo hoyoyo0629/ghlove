@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.email.EmailMapper">
+
+	<resultMap id="emailMap" type="saleson.shop.email.domain.Email">
+	    <id property="emailId" column="email_id"></id>
+	    <result property="subject" column="subject"></result>
+	    <result property="content" column="content"></result>
+	    <result property="sendDate" column="send_date"></result>
+	    <result property="status" column="status"></result>
+	    <result property="authTarget" column="auth_target"></result>
+	    <collection property="authList" column="emailId = email_id" javaType="java.util.List" ofType="saleson.shop.email.domain.EmailDetail" select="getEmailAuthList"></collection>
+	    <collection property="fileList" column="emailId = email_id" javaType="java.util.List" ofType="saleson.shop.email.domain.EmailFile" select="getEmailFileList"></collection>
+	</resultMap>
+
+
+	<sql id="sqlEmailWhere">
+		<where>
+			<if test="searchType != null and searchType != ''">
+			   	<choose>
+			   		<when test="searchType == 'S'.toString()">
+			   			AND SUBJECT LIKE CONCAT('%',#{searchContent}, '%')
+			   		</when>
+			   		<when test="searchType == 'C'.toString()">
+			   			AND SUBJECT LIKE CONCAT('%',#{searchContent}, '%')
+			   		</when>
+			   	</choose>
+		   </if>
+		   <if test="searchStartDate != null and searchStartDate != ''">
+		   		AND SEND_DATE <![CDATA[>=]]> #{searchStartDate}
+		   </if>
+		   <if test="searchEndDate != null and searchEndDate != ''">
+		   		AND SEND_DATE <![CDATA[<=]]> #{searchEndDate}
+		   </if>
+		</where>
+	</sql>
+
+	<select id="getEmailListCount" parameterType="saleson.shop.email.support.EmailParam" resultType="int">
+		/* emailMapper.getEmailListCount */
+		SELECT COUNT(EMAIL_ID) AS CNT
+		  FROM OP_EMAIL OE
+		 <include refid="sqlEmailWhere" />
+	</select>
+
+	<select id="getEmailList" parameterType="saleson.shop.email.support.EmailParam" resultType="saleson.shop.email.domain.Email">
+		<include refid="CommonMapper.paginationHeader" />
+		/* emailMapper.getEmailList */
+		SELECT
+			A.EMAIL_ID
+		   ,A.SUBJECT
+		   ,A.CONTENT
+		   ,A.SEND_DATE
+		   ,A.STATUS
+		   ,A.STATUS_NAME
+		   ,A.FRST_REGISTER_ID
+		   ,A.FRST_REGIST_PNTTM
+		   ,crypto_dec('normal', USER_NAME,'',0) AS USER_NAME
+		FROM
+		(
+			SELECT EMAIL_ID
+				   ,SUBJECT
+				   ,CONTENT
+				   ,SEND_DATE
+				   ,STATUS
+				   ,OCC.LABEL AS STATUS_NAME
+				   ,FRST_REGISTER_ID
+				   ,DATE_FORMAT(OE.FRST_REGIST_PNTTM,'%Y%m%d') AS FRST_REGIST_PNTTM
+				   ,OM.USER_NAME
+			  FROM OP_EMAIL OE
+			 INNER JOIN OP_COMMON_CODE OCC ON OE.STATUS = OCC.ID  AND OCC.CODE_TYPE = 'EMAIL_STATUS'
+			  LEFT OUTER JOIN OP_MANAGER OM ON OE.FRST_REGISTER_ID = OM.USER_ID
+			 <include refid="sqlEmailWhere" />
+			 ORDER BY EMAIL_ID DESC
+		 )A
+		 <include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<insert id="insertEmail" parameterType="saleson.shop.email.domain.Email" keyProperty="emailId" useGeneratedKeys="true">
+		/* emailMapper.insertEmail */
+		INSERT INTO OP_EMAIL (
+			SUBJECT
+			,CONTENT
+			,SEND_DATE
+			,STATUS
+			,AUTH_TARGET
+			,FRST_REGISTER_ID
+			,FRST_REGIST_PNTTM
+			,LAST_UPDUSR_ID
+			,LAST_UPDT_PNTTM
+		) VALUES (
+			#{subject}
+			,#{content}
+			<if test="sendType == 'D'.toString()">
+			,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+			</if>
+			<if test="sendType == 'R'.toString()">
+			,#{sendDate}
+			</if>
+			,'R'
+			,#{authTarget}
+			,#{frstRegisterId}
+			,now()
+			,#{frstRegisterId}
+			,now()
+		)
+	</insert>
+
+	<insert id="insertEmailFile" parameterType="saleson.shop.email.domain.EmailFile">
+		INSERT INTO OP_EMAIL_FILE (
+			EMAIL_ID
+			,FILE_NAME
+			,FILE_TY
+			,"ORDERING"
+			,CREATED_DATE
+			,ORG_FILE_NAME
+		) VALUES (
+			#{emailId}
+			,#{fileName}
+			,#{fileTy}
+			,(SELECT NVL(MAX("ORDERING"),1) FROM OP_EMAIL_FILE WHERE EMAIL_ID = #{emailId})
+			,DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+			,#{orgFileName}
+		)
+	</insert>
+
+	<select id="sendUserList" parameterType="saleson.shop.email.domain.Email" resultType="saleson.shop.email.domain.EmailSend">
+		/* emailMapper.sendUserList */
+	SELECT
+		A.EMAIL_ID
+		,crypto_dec('normal',USER_NAME,'',0) AS USER_NAME
+		,crypto_dec('normal',EMAIL,'',0) AS EMAIL
+
+	FROM
+		(
+			SELECT #{emailId} AS EMAIL_ID
+				   ,OU.USER_NAME
+			       ,OU.EMAIL
+			  FROM OP_USER_ROLE OUR
+			 INNER JOIN OP_MANAGER OU
+			    ON OUR.USER_ID = OU.USER_ID
+			 WHERE 1=1
+			   AND OU.EMAIL IS NOT NULL
+			   AND OU.STATUS_CODE = '9'
+			   AND OUR.AUTHORITY IN ( SELECT AUTHORITY
+			   							FROM OP_EMAIL_DETAIL
+			   						   WHERE EMAIL_ID = #{emailId} )
+		 )A
+	</select>
+
+	<update id="updateEmailStatus" parameterType="saleson.shop.email.domain.Email">
+		/* emailMapper.updateEmailStatus */
+		UPDATE OP_EMAIL
+		   SET STATUS = #{status}
+		 WHERE EMAIL_ID = #{emailId}
+	</update>
+
+	<insert id="insertEmailDetail" parameterType="saleson.shop.email.domain.EmailDetail">
+		/* emailMapper.insertEmailDetail */
+		INSERT INTO OP_EMAIL_DETAIL (
+			EMAIL_ID
+			,AUTHORITY
+		) VALUES (
+			#{emailId}
+			,#{authority}
+		)
+	</insert>
+
+
+	<select id="getEmailDetail" parameterType="long" resultMap="emailMap">
+		SELECT OE.EMAIL_ID
+		       ,OE.SUBJECT
+		       ,OE.CONTENT
+		       ,OE.SEND_DATE
+		       ,OE.AUTH_TARGET
+		       ,OE.STATUS
+		       ,OCC.LABEL AS STATUS_NAME
+		  FROM OP_EMAIL OE
+		 INNER JOIN OP_COMMON_CODE OCC
+		    ON OE.STATUS = OCC.ID
+		   AND OCC.CODE_TYPE = 'EMAIL_STATUS'
+		 WHERE EMAIL_ID = #{emailId}
+	</select>
+
+	<select id="getEmailAuthList"  resultType="saleson.shop.email.domain.EmailDetail">
+		SELECT OED.EMAIL_ID
+		       ,OED.AUTHORITY
+		       ,O.ROLE_NAME
+		  FROM OP_EMAIL_DETAIL OED
+		 INNER JOIN OP_ROLE O
+		    ON OED.AUTHORITY = O.AUTHORITY
+		 WHERE EMAIL_ID = #{emailId}
+	</select>
+
+	<select id="getEmailFileList"  resultType="saleson.shop.email.domain.EmailFile">
+		SELECT EMAIL_FILE_ID
+		       ,EMAIL_ID
+		       ,FILE_NAME
+		       ,ORG_FILE_NAME
+		       ,FILE_TY
+		  FROM OP_EMAIL_FILE
+		 WHERE EMAIL_ID = #{emailId}
+	</select>
+
+	<select id="getUserList" parameterType="string" resultType="saleson.shop.email.domain.EmailSend">
+		SELECT
+			A.USER_ID
+			,crypto_dec('normal',user_name,'',0) AS USER_NAME
+			,crypto_dec('normal',email,'',0) AS EMAIL
+		FROM
+			(
+				SELECT USER_ID
+				       ,user_name
+				       ,email
+				  FROM OP_USER
+				 WHERE STATUS_CODE = 9
+				   AND EMAIL IS NOT NULL
+				   AND EMAIL != ''
+		           AND USER_NAME  IS NOT NULL
+		           AND USER_NAME != ''
+				   AND USER_NAME = #{userName}
+			 ) A
+	</select>
+
+	<select id="sendSellerUserList" resultType="saleson.shop.email.domain.EmailSend">
+		SELECT
+				A.EMAIL_ID
+			   ,crypto_dec('normal',USER_NAME ,'',0) AS USER_NAME
+		       ,crypto_dec('normal',EMAIL,'',0) AS EMAIL
+		FROM
+		(
+		SELECT #{emailId} AS EMAIL_ID
+			   ,USER_NAME
+		       ,EMAIL
+          FROM OP_SELLER
+         WHERE STATUS_CODE = 2
+           AND ITEM_APPROVAL_TYPE = 1
+           AND EMAIL IS NOT NULL
+           AND EMAIL != ''
+           AND USER_NAME  IS NOT NULL
+           AND USER_NAME != ''
+        ) A
+	</select>
+</mapper>

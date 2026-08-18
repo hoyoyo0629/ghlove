@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.email.ems.EmsMapper">
+
+	<select id="getEmsData" parameterType="string" resultType="java.util.HashMap">
+		select * from ems_report where msg_id = #{msgId}
+	</select>
+	
+	<select id="getEmsReport" parameterType="java.util.List" resultType="saleson.shop.email.domain.EmsTotalCnt">
+		SELECT MEMO AS EMAIL_ID
+		       ,SUM(TOT_CNT) AS TOT_CNT
+		       ,SUM(SUCC_CNT) AS SUCC_CNT
+		       ,SUM(FAIL_CNT) AS FAIL_CNT
+		  FROM EMS_REPORT ER
+		 WHERE 1 = 1
+		   AND ER.MEMO IN
+			<foreach collection="list" item="item" open="(" close=")" separator=",">
+				CONCAT(#{item.emailId},'')
+			</foreach>
+	     GROUP BY MEMO
+	</select>
+	
+	<select id="getEmsTotalCnt" parameterType="long" resultType="saleson.shop.email.domain.EmsTotalCnt">
+		SELECT SUM(TOT_CNT) AS TOT_CNT
+			   ,SUM(SUCC_CNT) AS SUCC_CNT
+			   ,SUM(FAIL_CNT) AS FAIL_CNT 
+		  FROM EMS_REPORT 
+		 WHERE MEMO = CONCAT(#{emailId},'')
+	</select>
+	
+	<select id="getEmsUserCnt" parameterType="saleson.shop.email.support.EmailDetailParam" resultType="int">
+		SELECT COUNT(1)
+		  FROM EMS_REPORT_DETAIL 
+		 WHERE MSG_ID IN ( SELECT MSG_ID  FROM EMS_REPORT WHERE MEMO = CONCAT(#{emailId},'') )
+	</select>
+	
+	<select id="getEmsUserList" parameterType="saleson.shop.email.support.EmailDetailParam" resultType="saleson.shop.email.domain.EmailSend">
+		SELECT RCV_NM AS USER_NAME
+		       ,RCV_MAIL AS EMAIL
+		       ,RESULT_CD AS RESULT_CODE 
+		       ,PROCESSED_DATE
+		  FROM EMS_REPORT_DETAIL 
+		 WHERE MSG_ID IN ( SELECT MSG_ID  FROM EMS_REPORT WHERE MEMO = CONCAT(#{emailId},'') )
+		 ORDER BY SUB_ID DESC
+		 LIMIT (#{pagination.currentPage} -1) * #{pagination.itemsPerPage}, #{pagination.itemsPerPage}
+	</select>
+</mapper>

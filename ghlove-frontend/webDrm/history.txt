@@ -1,0 +1,15 @@
+2017.10.16	Win10 RS3 대응 스크립트 추가
+		en_system_reboot.html
+		en_win10_RS3_defender_helpdesk.html
+		system_reboot.html
+		win10_RS3_defender_helpdesk.html
+
+2019.07.09	개발자도구 대응 스크립트 추가
+		not_allowed_devtool.html
+		en_not_allowed_devtool.html
+
+2020.10.07	Helpdesk Guide 옵션 추가 (0 = 미지원, 1 = 지원)
+		미지원 시, 헬프데스크 관련 정보(주소, 번호 등) 노출하지 않음
+		브라우저 식별 수정 및 edge, whale 추가
+
+2020.05.10	errorcode 에 맞는 가이드페이지로 이동하도록 수정. 지원 브라우저 관련 내용 수정

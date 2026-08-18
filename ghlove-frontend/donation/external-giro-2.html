@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Cache-Control" content="max-age=0, no-cache, no-store, must-revalidate, private">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="고향사랑e음" />
+        <meta property="og:description"
+              content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+        <meta property="og:site_name" content="고향사랑e음" />
+        <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+        <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+        <meta itemprop="name" content=" 고향사랑e음">
+        <meta itemprop="description"
+              content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+        <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+        <meta http-equiv="Expires" content="-1">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Cache-Control" content="No-Cache">
+        <link rel="icon" href="/static/favicon.ico">
+        <title>기부하기-고향사랑e음</title>
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="/static/css/swiper.min.css">
+        <link rel="stylesheet" href="/static/css/common.css">
+        <link rel="stylesheet" href="/static/css/layout.css">
+        <link rel="stylesheet" href="/static/css/popup.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+
+        <link rel="stylesheet" href="/static/css/event.css">
+
+        <!-- ali custom Style -->
+        <link rel="stylesheet" href="/static/css/default_ali.css">
+        <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+        <!-- ali Section Style :) -->
+        <link rel="stylesheet" href="/static/css/joind-ag.css">
+        <link rel="stylesheet" href="/static/css/donation_doak.css">
+        <link rel="stylesheet" href="/static/css/joind-agf.css"><!-- 모달-->
+        <link rel="stylesheet" href="/static/css/notice-box.css">
+
+        <link rel="stylesheet" href="/static/css/external.css">
+
+        <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+    </head>
+
+    <body>
+        <div id="saleson" v-cloak>
+            <div id="wrap" class="dona">
+            	<img alt="참고사항 : 기부결제 진행중입니다. 팝업창(인터넷 지로창)에서 결제 후 확인버튼을 눌러주세요." src="/static/images/popup/external_notice.png">
+            </div>
+            <div class="footer_wrap">
+                <alert></alert>
+                <toast></toast>
+    			<layout-loading ref="layoutLoading" @loading-mounted="loadingMounted"></layout-loading>
+            </div>
+        </div>
+
+        <!-- JavaScript -->
+        <script src="/static/js/jquery-3.4.1.min.js"></script>
+        <script src="/static/js/swiper.min.js"></script>
+        <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+        <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+        <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.popupoverlay.js"></script>
+        <script src="/static/js/jquery.waypoints.min.js"></script>
+        <script src="/static/js/jquery.counterup.min.js"></script>
+        <script src="/static/js/common.js"></script>
+        <script src="/static/js/header.js"></script>
+        <script src="/static/js/footer.js"></script>
+        <script src="/static/js/main.js"></script>
+
+        <script src="/static/js/jquery.cookie.js"></script>
+
+        <script src="/modules/babel.min.js"></script>
+        <script src="/modules/es6-promise.min.js"></script>
+        <script src="/modules/es6-promise.auto.min.js"></script>
+        <script src="/modules/axios.js"></script>
+        <script src="/modules/vue.js"></script>
+        <script src="/modules/httpVueLoader.js"></script>
+        <script src="/modules/op.config.js"></script>
+        <script src="/modules/op.saleson.js?v=202311291"></script>
+        <script src="/modules/op.common.js"></script>
+        <script type="text/babel" src="/modules/op.vue.js"></script>
+        <script src="/modules/op.wcslog.js"></script>
+
+		<script src="/modules/payment.js?v=202412020000"></script>
+        <script src="/modules/op.donation.external.js?v=20250122001"></script>
+
+        <!-- 암호화 모듈 -->
+        <script src="/modules/jsencrypt.min.js"></script>
+
+        <!-- 접속자대기 -->
+        <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+        <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+        <script type="text/babel">
+            Vue.use(VueAwesomeSwiper);
+
+            let eTaxPopup;
+            let etaxPopTimer;
+
+            let vm = new Vue({
+                el: '#saleson',
+                components: {
+                    alert: httpVueLoader("/components/layouts/alert.vue"),
+                    toast: httpVueLoader("/components/layouts/toast.vue"),
+                    layoutLoading: httpVueLoader("/components/layouts/loading.vue"),
+                },
+                data: {
+                    param: {
+                        epayno: "",
+                        returnUrl: "",
+                        returnMethod: ""
+                    },
+                    userCntrInfo : {
+                        cntrSn: "",
+                        cntrDe: "",
+                        userId: "",
+                        psitnLocgovCode: "",
+                        cntrLocgovCode: "",
+                        cntrAmt: "",
+                        cntrBlcePoint: "",
+                        elctrnPayNo: "",
+                        seoulTrgetAt: "",
+                        cntrSttusCode: "",
+                        sttemntPayDe: "",
+                        mngNo : "",
+                        foreignStatusCode : "",
+                        cntrPoint : "",
+                        userName : "",
+                        birthday : "",
+                        rtnpsntReqstCode : ""
+                    },
+					deeplink: "N",
+                },
+                mounted : function () {
+                    this.$nextTick(function () {
+                        // 페이지 로딩 후 실행
+                        Saleson.init({});
+                    });
+                },
+                methods: {
+                    giroOpenPopup: function () {
+                        donation.contry.giroPayExternal()
+                        .then(function(response){
+                            // 지로 결과 확인
+                            vm.giroSunapProcess(response.params, response.form);
+                        })
+                        .catch(function(msg){
+                            if (msg == "PREVENT_POPUP") {
+                                vm.giroOpenPopup();
+                            } else {
+                                resData = "";
+                                result = msg;
+
+                                // 결과 전송
+                                vm.sendResult(result, resData);
+                            }
+                        });
+                    },
+                    giroSunapProcess: function (params, form) {
+                        let resData = "";
+                        let result = "";
+                        donation.contry.giroSunapConfirmStartExternal(params, form)
+                        .then(function(response){
+							vm.showLoading(true);
+                            return donation.sunapSuccessExternal2(response);
+                        })
+                        .then(function(response){
+							vm.showLoading(false);
+                            if (response.result.sunap == 'SUCCESS') {
+								vm.sendResult("성공", "");
+							} else {
+								if (response.result.msg) {
+									vm.sendResult(response.result.msg, "");
+								} else {
+									vm.sendResult("결제완료가 확인되지 않습니다.", "");
+								}
+							}
+                        })
+                        .catch(function(msg){
+							vm.showLoading(false);
+                            if (msg == "PREVENT_POPUP") {
+                                // 결과 전송
+                                vm.sendResult("팝업이 차단되어 있습니다.", "");
+                                vm.selfClose();
+                                return false;
+                            } else if (msg == "RE_TRY") {
+                                vm.giroOpenPopup();
+                            } else {
+                                resData = "";
+                                result = msg;
+
+                                // 결과 전송
+                                vm.sendResult(result, resData);
+                            }
+                        });
+
+                    },
+                    sendResult: function (result, resData) {
+                        setTimeout(function(){
+                            let url = vm.param.returnUrl;
+                            let method = vm.param.returnMethod;
+
+                            // 리턴 url이 있을 경우에만 결과 리턴
+                            if(url !== undefined && url !== null && $.trim(url).length > 0) {
+                                // http or https로 시작하는지 확인
+                                const regExp = /^(http|https):\/\//;
+
+                                // 결제 성공
+                                if(result == "성공"){
+                                    if(regExp.test(url)) {
+                                        // 결과 전송
+                                        vm.sendResultData('0000', resData);
+                                    }
+                                    $s.alert('결제에 성공했습니다.', function () {
+                                        $s.closeAlert();
+                                        vm.selfClose();
+                                    });
+                                }
+                                else{
+                                    if(regExp.test(url)) {
+                                        // 결과 전송
+                                        vm.sendResultData('0223', resData);
+                                    }
+                                    $s.alert(result, function () {
+                                        $s.closeAlert();
+                                        vm.selfClose();
+                                    });
+                                }
+                            }
+                            else{
+                                // 결제 성공
+                                if(result == "성공"){
+                                    $s.alert('결제에 성공했습니다.', function () {
+                                        $s.closeAlert();
+                                        vm.selfClose();
+                                    });
+                                }
+                                else{
+                                    $s.alert(result, function () {
+                                        $s.closeAlert();
+                                        vm.selfClose();
+                                    });
+                                }
+                            }
+                        }, 500);
+                    },
+                    // post type send
+                    sendResultData(rsltCd, resData){
+						if (this.deeplink == 'Y') {
+							let param = '?rsltCd=' + rsltCd + "&epayno=" + vm.param.epayno + "&responseData=" + resData;
+							location.href = vm.param.returnUrl + param;
+							return;
+						}
+
+                        let data = {
+                            "rsltCd" : rsltCd
+                            , "epayno" : vm.param.epayno
+                            , "responseData" : resData
+                        };
+                        $.ajax({
+                            url: vm.param.returnUrl
+                            , type: vm.param.returnMethod
+                            , data: JSON.stringify(data)
+                            , contentType:"application/json"
+                            , crossDomain: true
+                            , success : function (response) {
+
+                            }
+                            , error : function (error) {
+
+                            }
+                        });
+                    },
+
+                    showLoading: function (isLoading) {
+                        this.$refs.layoutLoading.showLoading(isLoading);
+                    },
+
+                    selfClose: function () {
+                        setTimeout(
+                            function () {
+                                window.close();
+                            }
+                            , 500
+                        );
+                    },
+
+                    loadingMounted: function () {
+                        // 로딩바 컴포넌트가 화면에 그려진 이후 호출되는 함수. 부모컴포넌트에서 바로 로딩바 호출시 그려지기 전에 호출하여 오류 발생하는 경우 있음
+
+                        vm.param.epayno = $s.core.getParameter("epayno") ? $s.core.getParameter("epayno") : "";
+                        vm.param.returnUrl = $s.core.getParameter("returnUrl") ? $s.core.getParameter("returnUrl") : "";
+                        vm.param.returnMethod = $s.core.getParameter("returnMethod") ? $s.core.getParameter("returnMethod") : "get";
+
+						this.deeplink = $s.core.getParameter("deeplink") ? $s.core.getParameter("deeplink") : "N";
+
+                        let result = "";
+                        let resData = "";
+
+                        let parameter = {
+                            "epayno" : vm.param.epayno
+                        };
+
+						this.showLoading(true);
+
+                        // 관리번호, 납부 금액조회
+                        $s.api.postSubmit('/api/external/userCntrInfo', parameter, function (response) {
+							vm.showLoading(false);
+                            if (response.result !== undefined && response.result !== null) {
+                                // 조회 결과 set
+                                vm.userCntrInfo.cntrSn = response.result.cntrSn;
+                                vm.userCntrInfo.cntrDe = response.result.cntr_de;
+                                vm.userCntrInfo.userId = response.result.user_id;
+                                vm.userCntrInfo.psitnLocgovCode = response.result.psitn_locgov_code;
+                                vm.userCntrInfo.cntrLocgovCode = response.result.cntr_locgov_code;
+                                vm.userCntrInfo.cntrAmt = response.result.cntr_amt;
+                                vm.userCntrInfo.cntrBlcePoint = response.result.cntr_blce_point;
+                                vm.userCntrInfo.elctrnPayNo = response.result.elctrn_pay_no;
+                                vm.userCntrInfo.seoulTrgetAt = response.result.seoul_trget_at;
+                                vm.userCntrInfo.cntrSttusCode = response.result.cntr_sttus_code;
+                                vm.userCntrInfo.sttemntPayDe = response.result.sttemnt_pay_de;
+                                vm.userCntrInfo.foreignStatusCode = response.result.foreign_status_code;
+                                vm.userCntrInfo.cntrPoint = response.result.cntr_point;
+                                vm.userCntrInfo.userName = response.result.user_name;
+                                vm.userCntrInfo.birthday = response.result.birthday;
+                                vm.userCntrInfo.rtnpsntReqstCode = response.result.rtnpsnt_reqst_code;
+
+                                vm.userCntrInfo.mngNo = response.mngNo;
+
+                                // userCntrInfo 에서 정보 입력
+                                let params = {
+                                    selectedRegionCd : vm.userCntrInfo.cntrLocgovCode
+                                    , jumin 			: ""
+                                    , userName 		: vm.userCntrInfo.userName
+                                    , cntrAmt 		: vm.userCntrInfo.cntrAmt
+                                    , userRegionCd 	: vm.userCntrInfo.psitnLocgovCode
+                                    , presentType	: vm.userCntrInfo.rtnpsntReqstCode
+                                    , taxAmt			: String(vm.userCntrInfo.cntrAmt).replace(/[^\d]+/g, '')
+                                    , foreignStatusCode : vm.userCntrInfo.foreignStatusCode
+                                    , epayNo : vm.userCntrInfo.elctrnPayNo
+                                    , userPoint : vm.userCntrInfo.cntrBlcePoint
+                                    , userId : vm.userCntrInfo.userId
+                                };
+
+                                // 기부 가능 정보 확인
+                                if(vm.userCntrInfo.cntrSn !== undefined && vm.userCntrInfo.cntrSn !== "" ) {
+                                    //
+                                    polling.param.contryBugaProcess = true;
+                                    polling.param.contryBugaCompleted = true;
+                                    polling.param.bugaData = params;
+
+                                    // 원본 로직과 분리하기 위해 파라메터 정보 추가
+                                    polling.param.bugaData.exGubun = "EXTERNAL";
+
+                                    vm.giroOpenPopup();
+
+                                }
+                                else{
+                                    result = "기부가능 정보가 없습니다.";
+                                    resData = "";
+
+                                    // 결과 전송
+                                    vm.sendResult(result, resData);
+                                }
+                            }
+                            else {
+                                result = "납부번호 조회에 실패 했습니다.";
+                                resData = "";
+
+                                // 결과 전송
+                                vm.sendResult(result, resData);
+                            }
+                        },
+                        function (error) {
+							vm.showLoading(false);
+                            result = "기부자 정보 조회 API연결에 실패하였습니다.";
+                            resData = "";
+                            // 결과 전송
+                            vm.sendResult(result, resData);
+                        });
+                    },
+                },
+            });
+
+            // 캐시 초기화
+            window.addEventListener('unload', function(){});
+            window.addEventListener('beforeunload', function(){
+                donation.closeGiroPop();
+            });
+        </script>
+    </body>
+</html>

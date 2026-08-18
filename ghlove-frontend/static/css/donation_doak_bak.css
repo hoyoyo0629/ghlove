@@ -1,0 +1,369 @@
+.user_input{
+    border: 2px solid #FB502E !important;
+    cursor: pointer;
+}
+
+.donation-bg.inner {
+    max-width: 900px;
+    height: 295px;
+    margin: 0 auto;
+    background-image: url('/static/images/cli_donation-bg2.png');
+    background-repeat: no-repeat;
+    /* background-size: contain; */
+    background-position: center bottom;
+}
+
+.donation-info-area {
+    background-color: #fff;
+    border: 1px solid var(--gray5);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    padding: 60px calc(var(--margin-padding-8)*10);
+    margin-bottom: calc(var(--margin-padding-8)*5);
+    font-weight: 500;
+    position: relative;
+    max-width: 900px;
+}
+
+.donation-info-area>.line {
+    margin: calc(var(--margin-padding-8)*5) 0;
+}
+
+.donation-bg .help-btn {
+    margin-bottom:30px;
+} 
+
+form.donation .add-info-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+form.donation .donation-info-area .add-info-group.steps {
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.info-field-items.selected-info {
+    display: flex;
+    align-items: flex-start;
+    padding: calc(var(--margin-padding-8)*2) calc(var(--margin-padding-4)*5);
+    border: 1px solid var(--gray4);
+}
+
+.info-field-items.selected-info .selected-info-txt {
+    color: var(--gray3);
+    font-size: 14px;
+    line-height: 24px;
+    transform: translateY(-4px);
+    padding: 0 calc(var(--margin-padding-8));
+    font-weight: 400;
+}
+
+.info-field-items.selected-info .selected-info-txt p {
+    margin-bottom: 8px;
+}
+
+.info-field-items.selected-info .selected-info-txt p.wait {
+    padding-top: 16px;
+}
+
+.info-field-items.selected-info .selected-info-txt p .pointRed.pointSize {
+    display: inline-block;
+    transform: translate(8px, 25%);
+}
+
+.info-field-items.selected-info .selected-info-txt button.formBtn {
+    margin: 0;
+}
+
+.donation-info-area h3 {
+    font-size: 22px;
+    line-height: 28px;
+    letter-spacing: -1px;
+    color: var(--main-color2);
+    margin-bottom: calc(var(--margin-padding-8)*2);
+    width: 80%;
+}
+
+.donation-info-area .essential {
+    color: var(--main-color2);
+}
+
+.donation-info-area .info-field {
+    width: 81.081%;
+}
+
+.donation-info-area .info-field .line {
+    margin: calc(var(--margin-padding-8)*4) 0;
+}
+
+.donation-info-area .info-field .info-field-items {
+    display: flex;
+    margin-bottom: calc(var(--margin-padding-8)*2);
+}
+
+.donation-info-area .info-field-items .flied-title {
+    display: inline-block;
+    font-size: 16px;
+    color: var(--gray2);
+    font-weight: normal;
+    width: 30%;
+    line-height: 34px;
+}
+
+.donation-info-area .info-field-items button.formBtn {
+    width: 30%;
+    background-color: var(--main-color2);
+    color: #fff;
+    border: none;
+}
+.donation-info-area .info-field-items button.formBtn:hover {
+    border: none;
+    box-shadow: none;
+    background-color:var(--main-color1);
+    /* color: var(--sub-color1); */
+}
+
+.donation-info-area .info-field .info-field-items .form-field,
+.donation-info-area .info-field .info-field-items .form-field input:not([type='radio']) {
+    width: 100%;
+}
+
+.donation-info-area .info-field .info-field-items .form-field input:not([type='radio']),
+.donation-info-area .info-field .info-field-items .form-field select {
+    max-width: 300px;
+}
+
+.donation-info-area .s-txt {
+    font-size: 14px;
+    line-height: 24px;
+    padding-top: 4px;
+    display: inline-block;
+    font-weight: 400;
+}
+
+.donation-info-area .info-field .info-field-items .form-field .m-field {
+    display: flex;
+    align-items: flex-end;
+}
+
+/* 비밀번호 pw-validation-area */
+.pwShowHide {
+    margin-left: calc(var(--margin-padding-8)*2);
+}
+
+.donation-info-area .info-field .info-field-items .pw-validation-area {
+    padding-top: calc(var(--margin-padding-8));
+}
+
+.donation-info-area .info-field .info-field-items .pw-validation-area li {
+    display: flex;
+    font-size: 14px;
+    line-height: 32px;
+}
+
+.donation-info-area .info-field .info-field-items .pw-validation-area span.pw-validation {
+    display: inline-block;
+}
+
+.donation-info-area .info-field .info-field-items .pw-validation-area span.pw-validation::before {
+    display: inline-block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background-color: var(--main-color2);
+    border-radius: 10px;
+    margin-right: calc(var(--margin-padding-8)*1);
+    /* position: relative;
+      top:50%; left: 50%;*/
+    transform: translate(0, 2px);
+    background: url('/static/images/icon/cli-icon_not-comfirm.png') #FB502E;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.donation-info-area .info-field .info-field-items .pw-validation-area span.pw-validation.vali-confirm::before {
+    background: url('/static/images/icon/cli-icon_comfirm.png') #09C2C7;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.accept-check {
+    color: var(--gray1);
+    font-size: 14px;
+    line-height: 24px;
+    width: 100%;
+    display: flex;
+}
+
+.accept-check span.mark {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    /*글자와 높이 맞춰 주려고 포지션 사용*/
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border: 2px solid var(--gray4);
+    box-sizing: border-box;
+    border-radius: 2px;
+}
+
+.accept-check span.mark::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    display: none;
+}
+
+.accept-check input[type='checkbox']:checked~label span.mark {
+    background-color: blue;
+    border: 0;
+}
+
+.accept-check input[type='checkbox']:checked~label span.mark:after {
+    display: block;
+}
+
+.accept-check + .wait {
+    padding-top: 16px;
+    text-align: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.accept-check + .wait span{
+padding-left: 10px;
+}
+
+/*  필드 미입력 메세지 */
+.s-txt.input-message {
+    color: #FB502E;
+    line-height: 24px;
+    display: none;
+}
+
+.s-txt.input-message.on {
+    display: block;
+}
+
+.m-field.radio_b {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.m-field.radio_b>div {
+    margin-right: 16px;
+}
+
+.m-field.radio_b>div>label {
+    color: var(--gray3);
+    font-weight: 400;
+    padding-left: 6px;
+}
+
+@media screen and (max-width:1030px) {
+    .donation-bg .help-btn {
+        margin-bottom: 0;
+    }
+}
+@media screen and (max-width:950px) {
+
+    .donation-info-area.joind {
+        padding: 50px 10px;
+        box-shadow: none;
+        border: none;
+        border-top:1px solid var(--gray5);
+    }
+
+    form.donation .add-info-group.steps {
+        justify-content: center;
+    }
+
+    form.donation .add-info-group.steps img {
+        margin: 10px 1%;
+    }
+
+    .donation-bg.inner {
+        height: 280px;
+    }
+
+    form.donation .add-info-group:not([class='add-info-group steps']) {
+        flex-direction: column;
+    }
+
+    form.donation .add-info-group .info-field {
+        width: 100%;
+    }
+    .donation-info-area .info-field-items .flied-title {
+         width: 100%;
+    }
+    .donation-info-area .info-field .info-field-items .m-field.radio_b,
+    .donation-info-area .info-field .info-field-items:not([class='info-field-items selected-info']) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .donation-info-area h3 {
+        width: 100%;
+    }
+
+    .donation-info-area .info-field-items button.formBtn {
+        margin: 8px 0 0 0;
+        width: 100%;
+    }
+
+    .donation-info-area .info-field .info-field-items .m-field.radio_b>div {
+        padding: 8px 0px 0;
+    }
+
+    .donation-info-area .info-field .info-field-items .form-field input:not([type='radio']),
+    .donation-info-area .info-field .info-field-items .form-field select {
+        max-width: unset;
+    }
+
+    .donation-info-area .info-field .info-field-items .form-field input,
+    .donation-info-area .info-field .info-field-items .form-field select {
+        max-width: unset;
+    }
+
+    .donation-info-area .info-field .info-field-items .form-field .m-field {
+        display: flex;
+        /* justify-content: space-between; */
+        /* align-items: center; */
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+}
+
+@media screen and (max-width:620px) {
+    .donation-bg.inner {
+        height: 250px;
+    }
+
+    form.donation .add-info-group.steps {
+        justify-content: flex-start;
+    }
+
+    form.donation .add-info-group.steps img {
+        width: 48%;
+        margin: 10px 0%;
+    }
+
+    form.donation .add-info-group.steps img:last-child {
+        transform: scale(0.8);
+    }
+
+    .donation-info-area>.line {
+        margin: 10px 0 30px;
+    }
+}

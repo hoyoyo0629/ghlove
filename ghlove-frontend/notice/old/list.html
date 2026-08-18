@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	    <meta name="apple-mobile-web-app-capable" content="yes"/>
+	    <meta name="description" content="">
+	    <meta name="author" content="">
+	    <link rel="icon" href="../../../../favicon.ico">
+	    <title>고향사랑e음</title>
+	    <!-- Bootstrap core CSS -->
+	    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+	    <!-- Custom styles for this template -->
+	    <link rel="stylesheet" href="/static/css/swiper.min.css">
+	    <link rel="stylesheet" href="/static/css/common.css">
+	    <link rel="stylesheet" href="/static/css/layout.css">
+	    <link rel="stylesheet" href="/static/css/popup.css">
+	    <link rel="stylesheet" href="/static/css/customer.css">
+    </head>
+<body>
+<div id="saleson" v-cloak>
+
+    <layout-header></layout-header>
+
+	<section class="contents notice_contents">
+		<h2 class="screen_out">공지사항</h2>
+		<div class="tit_wrap">
+			<h3 class="tit">고객센터</h3>
+		</div>
+		<div class="customer_wrap">
+			<div class="container">
+				<navigation list-type="notice"></navigation>
+				<div class="notice_list">
+					<ul>
+						<li class="list_area" v-for="(data, index) in result.content" :key="data.noticeId">
+							<div class="list_in">
+								<div class="tit_area" :data-target="'#notice'+index">
+									<p class="title">
+										<span class="badge badge_notice" v-show="data.noticeFlag == 'Y'">공지</span>
+										{{ data.subject }}
+									</p>
+									<p class="date">{{ data.createdDate }}</p>
+								</div>
+								<div :id="'notice'+index" class="hide_area" v-html="appendCdnDomain(unescapeHtml(data.content))">
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<pagination :current-page="result.currentPage" :total-pages="result.totalPages" @change="paging"></pagination>
+			</div>
+		</div>
+	</section>
+
+    <layout-footer></layout-footer>
+</div>
+
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+<script src="/static/js/customer.js"></script>
+
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="/modules/es6-promise.min.js"></script>
+<script src="/modules/es6-promise.auto.min.js"></script>
+<script src="/modules/axios.js"></script>
+<script src="/modules/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+<script type="text/babel">
+    Vue.use(VueAwesomeSwiper);
+    var vm = new Vue({
+        el: '#saleson',
+        components: {
+            'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+            'layout-header': httpVueLoader('/components/layouts/header.vue'),
+			'navigation': httpVueLoader('/components/ui/mypage/service-navigation.vue'),
+	        'pagination': httpVueLoader('/components/ui/pagination.vue')
+        },
+        data: {
+        	param: {
+		        page: 1,
+		        itemsPerPage: 10
+	        },
+	        result: {},
+	        test : ''
+        },
+        methods: {
+	        submit: function () {
+
+		        $s.api.getNotice(vm.param,
+			        function (response) {
+				        vm.result = response;
+			        }
+		        );
+	        },
+	        paging: function (page) {
+	        	vm.param.page = page;
+		        vm.submit();
+	        }
+        },
+	    mounted: function() {
+            this.$nextTick(function () {
+
+	            Saleson.init();
+
+	            vm.paging(1);
+
+				initializeCustomerEvent();
+            });
+        }
+    });
+</script>
+
+
+</body>
+</html>

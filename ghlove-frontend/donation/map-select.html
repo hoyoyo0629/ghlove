@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>지자체선택(지도)-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/donation_selmt.css">
+    <link rel="stylesheet" href="/static/css/research-box.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css">
+
+    <link rel="stylesheet" href="/static/css/goods_card.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+
+            <!-- 세부공지사항 모달
+            <div class="black-bg">
+                <div class="overlayer">
+                    <div class="overlayer-header">기금사업 소개 및 공지사항</div>
+                    <div class="overlayer-body">
+                        <div class="city-Info">
+                            <table>
+                                <tr>
+                                    <th>등록일</th>
+                                    <td>{{ detailResult.createdDate }}</td>
+                                </tr>
+                                <tr>
+                                    <th>등록자</th>
+                                    <td>{{ detailResult.userName }}</td>
+                                </tr>
+                                <tr>
+                                    <th>제목</th>
+                                    <td v-html="unescapeHtml(detailResult.subject)"></td>
+                                </tr>
+                                <tr>
+                                    <th>내용</th>
+                                    <td v-html="unescapeHtml(detailResult.content)"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="btn-box">
+                            <button type="button" class="blueBtn u-confirm" @click="closeNoticeLayer()">
+                                닫기
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            //세부공지사항 모달 -->
+
+            <!-- header component -->
+            <layout-header-ali ref="layoutHeader"></layout-header-ali>
+            <layout-donation-lnb-ali :menu-url="page.menuUrl"></layout-donation-lnb-ali>
+
+
+            <section class="center donation_steps">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        기부하기
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        기부 지자체 선택
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        지도에서 보기
+                    </span>
+                    <h2 class="page-title-txt">기부 지자체 선택</h2>
+                </div>
+                <div class="steps-box">
+                    <div class="loc_select on">
+                        <div class="steps-txt">지자체<br>선택</div>
+                        <div class="icon-bg"></div>
+                    </div>
+                    <div class="donation">
+                        <div class="steps-txt">기부<br>하기</div>
+                        <div class="icon-bg"></div>
+                    </div>
+                    <div class="donation_complete">
+                        <div class="steps-txt">기부<br>완료</div>
+                        <div class="icon-bg"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contents">
+                <div class="contents-wrap">
+                    <div class="center">
+                        <div class="s-contents map-wrapper">
+                            <div class="m-use-info">
+                                모바일에서는 기부 지자체-지도로 선택하기를 지원하지 않습니다.<br><br>
+                                모바일에서 지자체를 선택하시려면 <br><strong><a href="/donation/list-select.html"
+                                        class="moreView pointblue"> 기부 지자체
+                                        선택(목록)</a></strong>을 이용해 주세요.
+                            </div>
+                            <div class="map-selected-txt">
+                                <span class="country-name">시·도 선택 </span>
+                                <span class="txt-not-arrow">&nbsp;<img src="/static/images/icon/cli-icon_city-arrow.png"
+                                        alt=">"></span>
+                                <strong class="pointblue"><span class="region-name">시·군·구 선택</span></strong>
+                            </div>
+                            <div class="map-select-area">
+                                <div class="map-box map-country">
+                                    <div tabindex="0" id="mark_2800" title="인천광역시" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region28000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_1100" title="서울특별시" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region11000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_4200" title="강원도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region42000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_4100" title="경기도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region41000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_4300" title="충청북도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region43000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_4400" title="충청남도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region44000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_3600" title="세종특별자치도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region36000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_3000" title="대전광역시" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region30000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_4700" title="경상북도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region47000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_4500" title="전라북도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region45000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_2700" title="대구광역시" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region27000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_4800" title="경상남도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region48000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_3100" title="울산광역시" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region31000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_2600" title="부산광역시" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region26000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_2900" title="광주광역시" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region29000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_4600" title="전라남도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region46000</span>
+                                    </div>
+                                    <div tabindex="0" id="mark_5000" title="제주특별자치도" class="point-mark"
+                                        @keydown="pinKeydown1($event)" @click="pinClick1($event)">
+                                        <span class="target-name">region50000</span>
+                                    </div>
+                                </div>
+
+                                <div class="map-box" id="detailMap">
+                                    <div class="map-region none">
+                                        <!-- <img src="/static/images/cli-pc_map-procedure.png" alt="" class="map-procedure">
+                                    <div class="map-info-introtxt">
+                                        <p>자신의 주소지 지자체에는 기부하실 수 없습니다.</p>
+                                    </div> -->
+                                    </div>
+                                    <!-- 서울 -->
+                                    <div class="map-region region11000">
+                                        <div tabindex="0" id="mark_11000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_11110" title="종로구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11140" title="중구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11170" title="용산구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11200" title="성동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11215" title="광진구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11230" title="동대문구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11260" title="중랑구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11290" title="성북구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11305" title="강북구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11320" title="도봉구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11350" title="노원구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11380" title="은평구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11410" title="서대문구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11440" title="마포구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11470" title="양천구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11500" title="강서구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11530" title="구로구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11545" title="금천구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11560" title="영등포구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11590" title="동작구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11620" title="관악구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11650" title="서초구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11680" title="강남구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11710" title="송파구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_11740" title="강동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 부산 -->
+                                    <div class="map-region region26000">
+                                        <div tabindex="0" id="mark_26000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+                                        <div tabindex="0" id="mark_26110" title="증구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26140" title="서구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26170" title="동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26200" title="영도구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26230" title="부산진구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26260" title="동래구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26290" title="남구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26320" title="북구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26350" title="해운대구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26380" title="사하구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26410" title="금정구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26440" title="강서구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26470" title="연제구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26500" title="수영구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26530" title="사상구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_26710" title="기장군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 대전광역시 -->
+                                    <div class="map-region region27000">
+                                        <div tabindex="0" id="mark_27000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+                                        <div tabindex="0" id="mark_27110" title="중구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_27140" title="동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_27170" title="서구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_27200" title="남구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_27230" title="북구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_27260" title="수성구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_27290" title="달서구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_27710" title="달성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+                                    <!-- 인천-->
+                                    <div class="map-region region28000">
+                                        <div tabindex="0" id="mark_28000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_28110" title="중구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28140" title="동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28177" title="미추홀구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28185" title="연수구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28200" title="남동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28237" title="부평구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28245" title="계양구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28260" title="서구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28710" title="강화군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_28720" title="웅진군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 광주광역시-->
+                                    <div class="map-region region29000">
+                                        <div tabindex="0" id="mark_29000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_29110" title="동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_29140" title="서구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_29155" title="남구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_29170" title="북구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_29200" title="광산구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 대전광역시-->
+                                    <div class="map-region region30000">
+                                        <div tabindex="0" id="mark_30000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_30110" title="동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_30140" title="중구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_30170" title="서구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_30200" title="유성구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_30230" title="대덕구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 울산광역시-->
+                                    <div class="map-region region31000">
+                                        <div tabindex="0" id="mark_31000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_31110" title="중구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_31140" title="남구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_31170" title="동구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_31200" title="북구" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_31710" title="울주군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 경기 -->
+                                    <div class="map-region region41000">
+                                        <div tabindex="0" id="mark_41000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_41110" title="수원시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41130" title="성남시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41150" title="의정부시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41170" title="안양시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41190" title="부천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41210" title="광명시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41220" title="평택시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41250" title="동두천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41270" title="안산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41280" title="고양시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41290" title="과천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41310" title="구리시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41360" title="남양주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41370" title="오산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41390" title="시흥시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41410" title="군포시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41430" title="의왕시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41450" title="하남시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41460" title="용인시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41480" title="파주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41500" title="이천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41550" title="안성시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41570" title="김포시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41590" title="화성시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41610" title="광주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41630" title="양주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41650" title="포천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41670" title="여주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41800" title="연천군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41820" title="가평군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_41830" title="양평군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 강릉 -->
+                                    <div class="map-region region42000">
+                                        <div tabindex="0" id="mark_42000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_42110" title="춘천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42130" title="원주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42150" title="강릉시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42170" title="동해시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42190" title="태백시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42210" title="속초시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42230" title="삼척시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42720" title="홍천군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42730" title="횡성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42750" title="영월군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42760" title="평창군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42770" title="정선군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42780" title="철원군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42790" title="화천군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42800" title="양구군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42810" title="인제군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42820" title="고성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_42830" title="양양군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 충청북도 -->
+                                    <div class="map-region region43000">
+                                        <div tabindex="0" id="mark_43000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_43110" title="청주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43130" title="충주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43150" title="제천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43720" title="보은군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43730" title="옥천군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43740" title="영동군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43745" title="증평군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43750" title="진천군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43760" title="괴산군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43770" title="음성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_43800" title="단양군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 충청남도 -->
+                                    <div class="map-region region44000">
+                                        <div tabindex="0" id="mark_44000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_44130" title="천안시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44150" title="공주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44180" title="보령시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44200" title="아산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44210" title="서산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44230" title="논산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44250" title="계룡시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44710" title="금산군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44760" title="부여군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44770" title="서천군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44790" title="청양군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44800" title="홍성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44810" title="예산군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44825" title="태안군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_44270" title="당진시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 전라북도 -->
+                                    <div class="map-region region45000">
+                                        <div tabindex="0" id="mark_45000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_45110" title="전주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45130" title="군산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45140" title="익산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45180" title="정읍시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45190" title="남원시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45210" title="김제시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45710" title="완주군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45720" title="진안군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45730" title="무주군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45740" title="장수군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45750" title="임실군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45770" title="순창군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45790" title="고창군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_45800" title="부안군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+                                    <!-- 전라남도 -->
+                                    <div class="map-region region46000">
+                                        <div tabindex="0" id="mark_46000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_46110" title="목포시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46130" title="여수시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46150" title="순천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46170" title="나주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46230" title="광양시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46710" title="담양군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46720" title="곡성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46730" title="구례군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46770" title="고흥군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46780" title="보성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46790" title="화순군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46800" title="장흥군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46810" title="강진군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46820" title="해남군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46830" title="영암군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46840" title="무안군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46860" title="함평군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46870" title="영광군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46880" title="장성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46890" title="완도군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46900" title="진도군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_46910" title="신안군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 경상북도 -->
+                                    <div class="map-region region47000">
+                                        <div tabindex="0" id="mark_47000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_47110" title="포항시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47130" title="경주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47150" title="김천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47170" title="안동시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47190" title="구미시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47210" title="영주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47230" title="영천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47250" title="상주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47280" title="문경시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47290" title="경산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47720" title="군위군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47730" title="의성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47750" title="청송군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47760" title="영양군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47770" title="영덕군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47820" title="청도군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47830" title="고령군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47840" title="성주군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47850" title="칠곡군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47900" title="예천군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47920" title="봉화군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47930" title="울진군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_47940" title="울릉군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 경상남도 -->
+                                    <div class="map-region region48000">
+                                        <div tabindex="0" id="mark_48000" title="본청" class="point-mark r_head"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                            <span>본청</span>
+                                        </div>
+
+                                        <div tabindex="0" id="mark_48120" title="창원시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48170" title="진주시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48220" title="통영시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48240" title="사천시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48250" title="김해시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48270" title="밀양시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48310" title="거제시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48330" title="양산시" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48720" title="의령군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48730" title="함안군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48740" title="창녕군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48820" title="고성군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48840" title="남해군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48850" title="하동군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48860" title="산청군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48870" title="함양군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48880" title="거창군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                        <div tabindex="0" id="mark_48890" title="합천군" class="point-mark"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)">
+                                        </div>
+                                    </div>
+
+                                    <!-- 제주특별자치도-->
+                                    <div class="map-region region50000">
+                                        <div tabindex="0" id="mark_50000" title="제주특별자치도" class="point-mark currentPin"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)"></div>
+                                    </div>
+                                    <!-- 세종특별자치시-->
+                                    <div class="map-region region36000">
+                                        <div tabindex="0" id="mark_36000" title="세종특별자치시" class="point-mark currentPin"
+                                            @keydown="pinKeydown($event)" @click="pinClick($event)"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 기부하기 버튼 -->
+                            <div class="btn-box" id="donaBtn"v-if="isBtn">
+
+                                    <button id="donaLabel" class="formBtn donation" ref="giveBtn"
+                                        :class="{'disabled':result && result.lmttBgnDe != null && result.lmttBgnDe != ''}"
+                                        @click="goToDonation('map')">
+                                        <img src="/static/images/icon/cli-icon_btn-donation3.png" alt="">
+                                        <span>기부하기</span>
+                                    </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="contents-wrap list-con">
+                <div class="center">
+                    <div class="s-contents map-info" id="listContent">
+                        <div class="tab-container" id="tabCon">
+                            <div class="tab_tit">
+                                <ul class="tab-menu">
+                                    <li>
+                                        <a href="#method1" :class="tabType === 'tab1' ? 'active' : ''" data-toggle="tab"
+                                            @click="tabTypeSelect('tab1')">지자체정보</a>
+                                    </li>
+                                    <li>
+                                        <a href="#locMall" :class="tabType === 'tab3' ? 'active' : ''" data-toggle="tab"
+                                            @click="tabTypeSelect('tab3')">답례품</a>
+                                    </li>
+                                    <li>
+                                        <a href="#method2" :class="tabType === 'tab2' ? 'active' : ''" data-toggle="tab"
+                                            @click="tabTypeSelect('tab2')">기금사업 소개 및 공지사항</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <!-- 관심지자체등록 버튼 -->
+                            <div class="btn-box tab-btn" v-if="isBtn">
+                                <button type="button" class="formBtn intrst" @click="goToIntrstLocgov()">
+                                    <span class="icon_area"
+                                        v-bind:class="{active : result && result.intrstCnt > 0}"></span>
+                                    <span class="btn_txt"> 관심 지자체 등록</span>
+                                </button>
+                            </div>
+                            <div class="tab-content">
+                                <div id="method1"
+                                    :class="tabType === 'tab1' ? 'tab-pane fade show active' : 'tab-pane fade'">
+                                    <!-- <template v-if="!showTabCon"> -->
+                                    <div class="info-wrap">
+                                        <div class="city-Info">
+                                            <h3 class="seletedLoc">{{result.upperLocgovNm}} {{result.locgovNm}}</h3>
+                                            <table>
+                                                <tr>
+                                                    <th>예산</th>
+                                                    <td>{{result.locgovBudgetAmt | emptyReplace | comma}} (단위:백만원)
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>인구수</th>
+                                                    <td>{{result.locgovPopltnCo | emptyReplace | comma}} 명</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>기부 담당자</th>
+                                                    <td>{{result.chargerPsitnDept}}-{{result.chargerNm}} (
+                                                        {{result.chargerCttpc}} )</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>홈페이지</th>
+                                                    <td>{{result.locgovHmpg}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>포인트지급률</th>
+                                                    <td>{{result.pointRate}}%</td>
+                                                </tr>
+                                            </table>
+                                            <div class="city-Info-title honor">
+                                                <img src="/static/images/icon/cli-icon_bullet-c.png" alt="">
+                                                <span>명예회원 선정기준</span>
+                                            </div>
+                                            <div class="city_honor">
+                                                <div class="honor_grade"
+                                                    v-for="(item, index) in honorList.slice().reverse()">
+                                                    <div class="grade_wrap">
+                                                        <img v-bind:src="'/static/images/icon/honor_grade' + (index + 1) + '.png'"
+                                                            alt="" v-bind:class="'grade' + (index + 1)">
+                                                        <span>{{item.label}}</span>
+                                                    </div>
+                                                    <div class="grade_standard"
+                                                        v-html="amtModify(result['stdr' + (honorList.length - index) + 'levelAmt'])">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="city-Info">
+                                            <div class="city-Info-title">
+                                                <img src="/static/images/icon/cli-icon_bullet-c.png" alt="">
+                                                <span>지자체 소개 내용</span>
+                                            </div>
+                                            <div class="city-Info-txt">
+                                                <!-- <p>{{result.locgovIntrcnCn}}</p> -->
+                                                <p v-html="result.locgovIntrcnCn"></p>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <!-- </template> -->
+                                </div>
+
+                                <div id="locMall"
+                                    :class="tabType === 'tab3' ? 'tab-pane fade show active' : 'tab-pane fade'">
+                                    <section class="loc_header">
+                                        <div class="center">
+                                            <div class="loc_name_area">
+                                                <img src="/static/images/goods/loc_mall-header.png" alt="">
+                                                <h3>
+                                                    {{result.upperLocgovNm}} {{result.locgovNm}}
+                                                </h3>
+                                                <p>답례품 몰</p>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <!-- 답례품 카드 -->
+                                    <div class="section all_goods">
+                                        <ul class="goods-list-group">
+                                            <li class="goods-list-items" v-for="(val,i) in goodsCard" tabindex="0">
+                                                <div @click.prevent="jumpToDetails(val)" class="list_inner" :role="val.itemName + '상세페이지 이동'">
+                                                    <span class="img_frame">
+                                                        <img class="item_img" v-bind:src="itemImage(val.itemImage)" :alt="val.itemName" @error="this.$goodsItem.errorImage($event)">
+                                                        <img src="/static/images/goods/goods_sold-out.png" alt="품절" v-show="!(val.adultItemYn === 'Y' && adultYn === 'N') && val.itemSoldOutFlag === 'Y'">
+                                                        <img src="/static/images/goods/goods_19.png" alt="19세구매가능" v-show="val.adultItemYn === 'Y' && adultYn === 'N'">
+                                                        <button type="button" class="icon-md-img"
+                                                                    :class="val.wishlistFlag ? 'on' : ''"
+                                                                    @keydown="keydownDetails($event)"
+                                                                    @click.prevent="this.$goodsItem.addToWishList($event)"
+                                                                    v-bind:id="val.itemId"
+                                                                    :title="val.wishlistFlag ? '관심 답례품 등록 상태, 해제하기' : '관심 답례품 해제 상태, 등록하기'"></button>
+                                                        <span class="cart" @click.stop="this.$goodsItem.addToCart(val.itemId, val.adultItemYn, adultYn)" title="장바구니에 추가"
+                                                            style="cursor:pointer;" v-if="this.$goodsItem.isShowCartIcon(val)"></span>
+                                                    </span>
+                                                    <button type="button" class="do_btn" @click.stop="this.$goodsItem.getLocGovInfo(val.locgovCode)">
+                                                        <span class="btn_icon"></span>
+                                                        <span class="btn_txt">{{ val.locgovNm }} 기부</span>
+                                                        <span class="btn_arrow"></span>
+                                                    </button>
+                                                    <span class="card_title" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }">{{val.itemName}}</span>
+                                                    <span class="deepBlue" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }"><span class="pointSize">{{ formatNumber(val.salePrice) }}</span> P</span>
+                                                    <span class="tag_box" v-if="val.itemNewFlag == 'Y'">신규</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="btn-box moreBtn">
+                                            <button class="formBtn more" type="button" @click.prevent="this.$goods.goSearchGoods({type:'L', locgov: result.locgovCode})">답례품몰로 이동하기</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="method2"
+                                    :class="tabType === 'tab2' ? 'tab-pane fade show active' : 'tab-pane fade'">
+                                    <!-- <template v-if="hideTabCon"> -->
+                                    <div class="city-notice" tabindex="1" v-show="!isDetail">
+                                        <table>
+                                            <tr>
+                                                <th class="tb_tit">기금사업 및 공지사항</th>
+                                                <th class="tb_dat">등록일</th>
+                                            </tr>
+
+                                            <!-- <tr v-if="!isNoData" v-for="(data, index) in noticeResult.noticeList" :key="index" @click="noticeModalLayer(index)">
+                                                    <td>{{ unescapeHtml(data.subject) }}</td>
+                                                    <td>{{ data.createdDate }}</td>
+                                                </tr> -->
+                                            <tr class="cursor" tabindex="0" v-if="!isNoData"
+                                                v-for="(data, index) in noticeResult.noticeList" :key="index"
+                                                @click="goToDetails(index)" @keydown="tabToDetails($event, index)">
+                                                <td class="tb_tit">{{ unescapeHtml(data.subject) }}</td>
+                                                <td class="tb_dat">{{ data.createdDate }}</td>
+                                            </tr>
+                                            <tr class="list-none" v-if="isNoData">
+                                                <td colspan="3">공지사항이 존재하지 않습니다.</td>
+                                            </tr>
+                                        </table>
+                                        <!-- <pagination :current-page="noticeResult.currentPage" :total-pages="noticeResult.totalPages" @change="paging" v-if="!isNoData"> </pagination> -->
+                                        <pagination :current-page="noticeResult.currentPage"
+                                            :total-pages="noticeResult.totalPages" @change="paging" v-if="!isNoData">
+                                        </pagination>
+                                    </div>
+
+                                    <div class="city-notice_details" v-show="isDetail">
+                                        <table class="notice_details">
+                                            <tr>
+                                                <th v-html="unescapeHtml(detailResult.subject)"></th>
+                                            </tr>
+                                            <tr>
+                                                <td>등록일 {{ detailResult.createdDate }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td v-html="unescapeHtml(detailResult.content)"></td>
+                                            </tr>
+                                        </table>
+                                        <div class="btn-box">
+                                            <button type="button" class="blueBtn u-confirm"
+                                                @click="noticeDetailReset()">
+                                                목록
+                                                <span>
+                                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png"
+                                                        alt="">
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- </template> -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="s-contents map-info" id="emptyContent">
+                        <img class="d-img map-procedure" src="/static/images/pc_map-procedure.png"
+                            alt="1.지도에서 지역 선택하기 - 2.지역정보 확인하기 - 3.지역 답례품몰에서 답례품 선택하기 - 4.기부하기">
+
+                        <img class="m-img map-procedure" src="/static/images/m_map-procedure.png"
+                            alt="1.지도에서 지역 선택하기 - 2.지역정보 확인하기 - 3.지역 답례품몰에서 답례품 선택하기 - 4.기부하기">
+                    </div>
+
+                    <!-- 콘텐츠 만족도 -->
+                    <layout-content-stsfdg></layout-content-stsfdg>
+                </div>
+            </section>
+
+
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+    <script src="/modules/goods.item.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-subsearch-ali': httpVueLoader('/components/layouts/subsearch_ali.vue'),
+                //'layout-donation-lnb-ali': httpVueLoader('/components/layouts/donation-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+                'layout-content-stsfdg': httpVueLoader('/components/layouts/content-stsfdg/stsfdg.vue')
+            },
+            data: {
+                // ali data
+                tabType: '',
+                selectedSurvey: "01",
+                result: {},
+                honorList: [],
+                isBtn: false,
+                param: {
+                    page: 1,
+                    itemsPerPage: 10,
+                    sidoCode: "",
+                    locgovCode: '',
+                    where: 'SUBJECT',
+                    query: '',
+                    orderBy: '',
+                    sort: ''
+                },
+                isNoData: true,
+                isDetail: false,
+                noticeResult: {
+                    totalPages: 0,
+                    currentPage: 0,
+                    noticeList: [],
+                    noticeCount: 0
+                },
+                detailResult: {
+                    createdDate: '',
+                    userName: '',
+                    subject: '',
+                    content: ''
+                },
+                page: {
+                    menuUrl: "/donation/map-select.html"
+                },
+                adultYn: 'N',
+                goodsCard: [],
+            },
+            filters: {
+                comma(val) {
+                    return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
+                emptyReplace(val) {
+                    return String(val).replace(null, "0");
+                }
+            },
+            methods: {
+                // init: function () { // page init
+
+                //     $(".lnb-bar_2dep li").eq(2).addClass("currentT").siblings("li").removeClass("currentT");
+                //     $(".lnb-bar_3dep").eq(1).show();
+                //     $(".lnb-bar_3dep:eq(1) li:eq(0) a").addClass("currentP");
+
+                //     $(".black-bg").removeClass("show");
+
+                // },
+                radioChange: function (e) { // radio button checked value
+                    vm.selectedSurvey = e.target.value;
+                },
+                goToSurvey: function () { // 현재 페이지 만족도
+                    var message = "";
+                    if (vm.selectedSurvey != null && vm.selectedSurvey != "") {
+                        message = "만족도 평가를 등록하였습니다. 감사합니다.";
+                    } else {
+                        message = "만족도 평가 항목을 선택해 주세요";
+                    }
+
+                    $s.alert(message, function () {
+                        location.reload();
+                    });
+                },
+                // 관심지자체 등록
+                goToIntrstLocgov: function () {
+                    Saleson.init({ loginPage: true });
+
+                    var params = {
+                        'cityCode': $s.donation.getData($s.donation.const.LOCGOV_CODE)
+                    }
+
+
+                    $s.api.postSubmit('/api/ngdonation/getIntrstLocgov', params,
+                        function (response) {
+                            var cnt = response.result.intrstLocgovCnt;
+                            if (cnt > 0) {
+                                $s.alert("이미 관심 지자체에 등록된 지자체입니다.");
+                            } else {
+                                $s.api.postSubmit('/api/ngdonation/setIntrstLocgov', params,
+                                    function (response) {
+                                        if (response.status === "OK") {
+                                            $s.alert("관심 지자체 등록 되었습니다.");
+                                            vm.result.intrstCnt = 1;
+                                        }
+                                    }, function (error) {
+                                        $s.alert(error.response.data.message);
+                                    });
+                            }
+                        }, function (error) {
+                            $s.alert(error.response.data.message);
+                        });
+                },
+                goToDonation: function (flag) { // 기부하기 page
+                    if (vm.result.lmttBgnDe != null && vm.result.lmttBgnDe != '') {
+                        $s.alert("선택하신 지자체는\n" + vm.result.violtResnCn + "으로\n" + vm.result.lmttBgnDe + "부터 " + vm.result.lmttEndDe + "일까지 \n기부가 불가능합니다.");
+                    } else {
+                        //location.href = "/donation/donation.html?locgovCode=" + vm.result.locgovCode;
+						$s.donation.goDonationPage("?locgovCode=" + vm.result.locgovCode);
+                    }
+
+                    return false;
+
+
+                    /*var params = {
+                        'cityCode': $s.donation.getData($s.donation.const.LOCGOV_CODE)
+                    }
+                    $s.api.postSubmit('/api/ngdonation/getLocGovLmtt', params, function (response) {
+
+                        if (response.data) {
+                            $s.alert("선택하신 지자체는\n" + response.data.violtResnCn + "으로\n" + response.data.lmttBgnDe + "부터 " + response.data.lmttEndDe + "일까지 \n기부가 불가능합니다.");
+                        } else {
+                            //location.href = "/donation/donation.html?flag=" + flag;
+							$s.donation.goDonationPage("?flag=" + flag);
+                        }
+
+                    });
+                    return false;*/
+
+                },
+                pinClick1(e) { // 시도 선택
+                    $('#emptyContent').show();
+                    $('#listContent').hide();
+
+                    vm.isBtn = false;
+
+                    // this.tabTypeSelect('tab1');
+
+                    $(e.target).addClass('currentPin').siblings(".point-mark").removeClass('currentPin');
+                    var tName = $(e.target).children('.target-name').text();
+                    var cName = $(e.target).attr("title");
+                    $(".map-region." + tName).css("display", "block").siblings().css("display", "none");
+
+                    $(".map-region." + tName + " div").siblings(".point-mark").removeClass('currentPin');
+
+                    $(".country-name").text(cName);
+                    $(".region-name").text("시·군·구 선택");
+
+                    // this.getLocGovInfo(e.target.id.substring(5));
+                    // this.getLocGovNotice(e.target.id.substring(5)); // 지자체 공지사항
+                },
+                pinKeydown1(e) { // 시도 선택
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        $('#emptyContent').show();
+                        $('#listContent').hide();
+
+                        vm.isBtn = false;
+
+                        // this.tabTypeSelect('tab1');
+
+                        $(e.target).addClass('currentPin').siblings(".point-mark").removeClass('currentPin');
+                        var tName = $(e.target).children('.target-name').text();
+                        var cName = $(e.target).attr("title");
+                        $(".map-region." + tName).css("display", "block").siblings().css("display", "none");
+
+                        $(".map-region." + tName + " div").siblings(".point-mark").removeClass('currentPin');
+
+                        $(".country-name").text(cName);
+                        $(".region-name").text("시·군·구 선택");
+
+                        $("." + tName + " .r_head").focus();
+
+
+
+                    }
+                    // this.getLocGovInfo(e.target.id.substring(5));
+                    // this.getLocGovNotice(e.target.id.substring(5)); // 지자체 공지사항
+                },
+                pinClick(e) { // 상세지도 선택
+                    if (!e.target.id) return false;
+
+                    $('#emptyContent').hide();
+                    $('#listContent').show();
+                    this.tabTypeSelect('tab1');
+
+                    $(e.target).addClass('currentPin').siblings(".point-mark").removeClass('currentPin');
+                    var rName = $(e.target).attr("title");
+                    $(".region-name").text(rName);
+
+                    vm.isBtn = true;
+
+                    this.getLocGovInfo(e.target.id.substring(5));
+                    this.getLocGovNotice(e.target.id.substring(5)); // 지자체 공지사항
+                },
+                pinKeydown(e) { // 상세지도 선택
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        if (!e.target.id) return false;
+                        $('#emptyContent').hide();
+                        $('#listContent').show();
+                        this.tabTypeSelect('tab1');
+
+                        $(e.target).addClass('currentPin').siblings(".point-mark").removeClass('currentPin');
+                        var rName = $(e.target).attr("title");
+                        $(".region-name").text(rName);
+
+                        vm.isBtn = true;
+
+                        this.getLocGovInfo(e.target.id.substring(5));
+                        this.getLocGovNotice(e.target.id.substring(5)); // 지자체 공지사항
+
+                        this.$nextTick(function () {
+
+                            this.$refs.giveBtn.focus();
+                            e.preventDefault();
+                        });
+                    }
+                },
+                tabTypeSelect: function (tabType) {
+                    this.tabType = tabType;
+                    if (tabType === 'tab3') {
+                        this.getItemList(this.result.locgovCode);
+                    }
+                },
+                // 답례품몰 이동
+                goToPresent: function () {
+                    $s.redirect('/goods/searchGoods.html?type=L&locgov=' + $s.donation.getData($s.donation.const.LOCGOV_CODE));
+                },
+                // 지자체 정보
+                getLocGovInfo: function (cityCode) {
+                    var params = {
+                        'cityCode': cityCode
+                    }
+
+                    $s.api.postSubmit('/api/ngdonation/locGovInfo', params, function (response) {
+                        vm.result = response.result.locGovInfo;
+                        vm.honorList = response.honorList;
+                        if (vm.result != null && vm.result != "") {
+                            $s.donation.setData($s.donation.const.LOCGOV_CODE, vm.result.locgovCode);
+                            $s.donation.setData($s.donation.const.LOCGOV_NM, vm.result.locgovNm);
+                            $s.donation.setData($s.donation.const.UPPER_LOCGOV_CODE, vm.result.upperLocgovCode);
+                            $s.donation.setData($s.donation.const.UPPER_LOCGOV_NM, vm.result.upperLocgovNm);
+                            $s.donation.setData($s.donation.const.POINT_RATE, vm.result.pointRate);
+                        }
+                    });
+                },
+                paging: function (page) {
+                    vm.param.page = page;
+                    vm.submit();
+                },
+                // 지자체 공지사항
+                getLocGovNotice: function (cityCode) {
+                    this.noticeDetailReset();
+                    vm.param.locgovCode = cityCode;
+                    vm.noticeResult.noticeList = [];
+                    $s.api.getNotice(vm.param,
+                        function (response) {
+                            vm.noticeResult.totalPages = response.totalPages;
+                            vm.noticeResult.currentPage = response.currentPage;
+                            vm.noticeResult.noticeCount = response.totalCount;
+                            vm.noticeResult.noticeList = response.content;
+                            vm.isNoData = !response.totalCount;
+                        }
+                    );
+                },
+                // 지자체 공지사항 상세 팝업
+                noticeModalLayer: function (idx) {
+                    $(".black-bg").addClass("show");
+                    vm.detailResult.createdDate = vm.noticeResult.noticeList[idx].createdDate;
+                    vm.detailResult.userName = vm.noticeResult.noticeList[idx].userName;
+                    vm.detailResult.subject = vm.noticeResult.noticeList[idx].subject;
+                    vm.detailResult.content = vm.noticeResult.noticeList[idx].content;
+                    // e.preventDefault();
+                },
+                // 지자체 공지사항 상세 팝업 닫기
+                closeNoticeLayer: function name() {
+                    $(".black-bg").removeClass("show");
+                },
+                tabToDetails(e, index) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        this.goToDetails(index);
+                    }
+                },
+                goToDetails(index) {
+                    vm.detailResult.createdDate = vm.noticeResult.noticeList[index].createdDate;
+                    vm.detailResult.userName = vm.noticeResult.noticeList[index].userName;
+                    vm.detailResult.subject = vm.noticeResult.noticeList[index].subject;
+                    vm.detailResult.content = vm.noticeResult.noticeList[index].content;
+                    vm.isDetail = true;
+                },
+                noticeDetailReset() {
+                    vm.detailResult = {
+                        createdDate: '',
+                        userName: '',
+                        subject: '',
+                        content: ''
+                    };
+                    vm.isDetail = false;
+                },
+                amtModify(amt) {
+
+                    if (amt > 10000) {
+                        return Math.floor(amt / 10000) + "만원 이상";
+                    } else {
+                        return amt + "원 이상";
+                    }
+
+                },
+                getItemList: function (locgov) {
+                    let param = {
+                        'page': 1
+                        , 'categoryCode': 'ALL'
+                        , 'itemsPerPage': $goods.const.ITEMS_PER_GOODS
+                        , 'searchGbn': 'L'
+                        , 'locgov': locgov
+                    };
+                    vm.goodsCard = [];
+                    $s.api.getItems(param, function (response) {
+                        let content = response.content;
+                        if (content) {
+                            try {
+                                let size = content.length;
+                                if (size == 0) {
+                                    vm.adultYn = 'N';
+                                    //$s.alert('검색결과가 없습니다.');
+                                    return;
+                                }
+                                // vm.adultYn = response.adultYn;       // 19세 상품 모두 보여주는 걸로 변경되어 수정
+                                vm.adultYn = 'Y';
+                                for (let i = 0; i < size; i++) {
+                                    let itemInfo = content[i];
+                                    vm.goodsCard.push(itemInfo);
+                                }
+                            } catch (e) {
+                                $s.alert('잠시 후 시도해 주세요.');
+                            }
+                        } else {
+                            $s.alert('검색결과가 없습니다.');
+                        }
+                    },
+                    function (error) {
+                        $s.api.handleApiExeption(error);
+                    });
+                },
+                jumpToDetails:function(v){
+                    if (v.adultItemYn === 'Y' && this.adultYn === 'N') {
+                        if ($s.isLogin()) {
+                            $s.alert('19세 미만의 청소년은 이용할 수 없습니다.');
+                        } else {
+                            $s.redirect($s.pages.LOGIN + "?target=" + encodeURIComponent($s.requestContext.requestFullUri));
+                        }
+                        return ;
+                    }
+
+					$s.redirect("/items/details.html?code="+ v.itemUserCode);
+                },
+            },
+
+            computed: {
+
+            },
+
+            created: function () {
+
+            },
+
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    $('#emptyContent').show();
+                    $('#listContent').hide();
+
+                    Saleson.init();
+
+                    //setTimeout(() => this.init(), 100);
+
+                    var uri = window.location.search.substring(1);
+                    var params = new URLSearchParams(uri);
+                    if (params.get("locgovCode") && params.get("locgovCode") != "") {
+
+                    	//QR로 진입시 기부페이지로 이동
+                        if(params.get("locgovCode") == '42000'){
+                            location.href = '/donation/donation-main.html?locgovCode=51000';
+                        }else{
+                        	location.href = '/donation/donation-main.html';
+                        }
+
+                        if (params.get("locgovCode").substring(2, 5) == '000') {
+                            $('#emptyContent').hide();
+                            $('#listContent').show();
+
+                            this.tabTypeSelect('tab1');
+
+                            $("#mark_" + params.get("locgovCode").substring(0, 4)).addClass('currentPin').siblings(".point-mark").removeClass('currentPin');
+                            var tName = $("#mark_" + params.get("locgovCode").substring(0, 4)).children('.target-name').text();
+                            var cName = $("#mark_" + params.get("locgovCode").substring(0, 4)).attr("title");
+                            $(".map-region." + tName).css("display", "block").siblings().css("display", "none");
+
+                            $(".map-region." + tName + " div").siblings(".point-mark").removeClass('currentPin');
+
+                            $(".country-name").text(cName);
+                            $(".region-name").text("시·군·구 선택");
+
+                            $("#mark_" + params.get("locgovCode")).addClass('currentPin').siblings(".point-mark").removeClass('currentPin');
+                            var rName = $("#mark_" + params.get("locgovCode")).attr("title");
+                            $(".region-name").text(rName);
+
+                            this.getLocGovInfo(params.get("locgovCode"));
+
+                        } else {
+                            $('#emptyContent').hide();
+                            $('#listContent').show();
+
+                            this.tabTypeSelect('tab1');
+
+                            $("#mark_" + params.get("locgovCode").substring(0, 2) + "00").addClass('currentPin').siblings(".point-mark").removeClass('currentPin');
+                            var tName = $("#mark_" + params.get("locgovCode").substring(0, 2) + "00").children('.target-name').text();
+                            var cName = $("#mark_" + params.get("locgovCode").substring(0, 2) + "00").attr("title");
+                            $(".map-region." + tName).css("display", "block").siblings().css("display", "none");
+
+                            $(".map-region." + tName + " div").siblings(".point-mark").removeClass('currentPin');
+
+                            $(".country-name").text(cName);
+                            $(".region-name").text("시·군·구 선택");
+
+                            $("#mark_" + params.get("locgovCode")).addClass('currentPin').siblings(".point-mark").removeClass('currentPin');
+                            var rName = $("#mark_" + params.get("locgovCode")).attr("title");
+                            $(".region-name").text(rName);
+
+                            this.getLocGovInfo(params.get("locgovCode"));
+                        }
+                    }else{
+                        location.href = '/donation/donation-main.html';
+                    }
+
+                    // vm.submit();
+                    // initializeListEvent();
+
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

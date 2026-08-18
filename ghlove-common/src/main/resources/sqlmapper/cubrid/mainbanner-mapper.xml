@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.banner.MainBannerMapper">
+	<select id="getMainBannerList" parameterType="saleson.shop.banner.support.MainBannerManagerSearchParam" resultType="saleson.shop.banner.domain.MainBannerManager">
+		/** mainbanner-mapper.getMainBannerList (메인 배너 목록) */
+		SELECT
+				MB.BANNER_ID,
+				MB.TITLE,
+				MB.LINK_URL,
+				MB.CONTENTS,
+				MB.DISPLAY_ORDER,
+				MB.CREATED_DATE,
+				MB.PC_FILE_NAME,
+				MB.M_FILE_NAME,
+				MB.PC_ORG_FILE_NAME,
+				MB.M_ORG_FILE_NAME,
+				MB.DISPLAY_FLAG
+		FROM
+				OP_MAIN_BANNER MB
+		WHERE 1=1
+		<if test="displayFlag != null and displayFlag != ''">
+		  AND MB.DISPLAY_FLAG = #{displayFlag}
+		</if>
+		ORDER BY
+				MB.DISPLAY_ORDER
+	</select>
+
+	<insert id="insertMainBanner" parameterType="saleson.shop.banner.domain.MainBannerManager">
+		/** mainbanner-mapper.insertMainBanner (메인 배너 등록) */
+		INSERT INTO OP_MAIN_BANNER (
+			BANNER_ID,
+			TITLE,
+			CONTENTS,
+			LINK_URL,
+			DISPLAY_ORDER,
+			CREATED_DATE,
+			PC_FILE_NAME,
+			M_FILE_NAME,
+			PC_ORG_FILE_NAME,
+			M_ORG_FILE_NAME,
+			DISPLAY_FLAG
+		) VALUES (
+			#{bannerId},
+			#{title},
+			#{linkUrl},
+			#{contents},
+			(SELECT IFNULL(MAX(DISPLAY_ORDER), 0) + 1 FROM OP_MAIN_BANNER),
+			<include refid="CommonMapper.datetime" />,
+			#{pcFileName},
+			#{mFileName},
+			#{pcOrgFileName},
+			#{mOrgFileName},
+			#{displayFlag}
+		)
+	</insert>
+
+	<update id="updateDisplayOrder" parameterType="saleson.shop.banner.domain.MainBannerManager">
+		/** mainbanner-mapper.updateDisplayOrder (메인 배너 순서 변경) */
+		UPDATE
+				OP_MAIN_BANNER
+		SET
+				DISPLAY_ORDER = #{displayOrder}
+		WHERE
+				BANNER_ID = #{bannerId}
+	</update>
+
+	<select id="getMainBannerDetails" parameterType="Integer" resultType="saleson.shop.banner.domain.MainBannerManager">
+		/** mainbanner-mapper.getMainBannerDetails (메인 배너 상세) */
+		SELECT
+				MB.BANNER_ID,
+				MB.TITLE,
+				MB.CONTENTS,
+				MB.LINK_URL,
+				MB.DISPLAY_ORDER,
+				MB.CREATED_DATE,
+				MB.PC_FILE_NAME,
+				MB.M_FILE_NAME,
+				MB.PC_ORG_FILE_NAME,
+				MB.M_ORG_FILE_NAME,
+				MB.DISPLAY_FLAG
+		FROM
+				OP_MAIN_BANNER MB
+		WHERE
+				MB.BANNER_ID = #{bannerId}
+	</select>
+
+	<update id="updateMainBannerFileDel" parameterType="saleson.shop.banner.domain.MainBannerManager">
+		/** mainbanner-mapper.updateMainBannerFileDel (메인 배너 논리적 파일 삭제) */
+		UPDATE
+				OP_MAIN_BANNER
+		SET
+				BANNER_ID = #{bannerId}
+				<choose>
+					<when test="fileType != null and fileType != '' and fileType == 'PC'.toString()">
+						, PC_FILE_NAME = NULL
+						, PC_ORG_FILE_NAME = NULL
+					</when>
+					<when test="fileType != null and fileType != '' and fileType == 'M'.toString()">
+						, M_FILE_NAME = NULL
+						, M_ORG_FILE_NAME = NULL
+					</when>
+				</choose>
+		WHERE
+				BANNER_ID = #{bannerId}
+	</update>
+
+	<update id="updateMainBanner" parameterType="saleson.shop.banner.domain.MainBannerManager">
+		/** mainbanner-mapper.updateMainBanner (메인 배너 수정) */
+		UPDATE
+				OP_MAIN_BANNER
+		SET
+				TITLE = #{title},
+				LINK_URL = #{linkUrl},
+				CONTENTS = #{contents},
+				<if test="pcFileName != null and pcFileName != ''">PC_FILE_NAME = #{pcFileName},</if>
+				<if test="pcOrgFileName != null and pcOrgFileName != ''">PC_ORG_FILE_NAME = #{pcOrgFileName},</if>
+				<if test="mFileName != null and mFileName != ''">M_FILE_NAME = #{mFileName},</if>
+				<if test="mOrgFileName != null and mOrgFileName != ''">M_ORG_FILE_NAME = #{mOrgFileName},</if>
+				DISPLAY_FLAG = #{displayFlag}
+		WHERE
+				BANNER_ID = #{bannerId}
+	</update>
+</mapper>

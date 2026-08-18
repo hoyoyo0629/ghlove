@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+	<springProperty scope="context" name="LOG_PATH" source="saleson.log.path" defaultValue="/data/backoffice/log"/>
+	<springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="ghlove"/>
+
+	<appender name="ORDER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+			<charset>utf8</charset>
+		</encoder>
+		<file>${LOG_PATH}/ghlove-order.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/ghlove-order-%d{yyyyMMdd}-%i.log</fileNamePattern>
+			<maxFileSize>100MB</maxFileSize>
+		</rollingPolicy>
+	</appender>
+
+
+    <appender name="CONSOLE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-%d{yyyyMMdd}-%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="saleson.common.filter.LogbackFilter" />
+		<encoder>
+			<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+			<charset>utf8</charset>
+		</encoder>
+	</appender>
+
+	<appender name="ON_DONATION_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <file>${LOG_PATH}/donation/on_donation.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/donation/on_donation-%d{yyyyMMdd}-%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="OFF_DONATION_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <file>${LOG_PATH}/donation/off_donation.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/donation/off_donation-%d{yyyyMMdd}-%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="PRESENT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <file>${LOG_PATH}/present/present.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/present/present-%d{yyyyMMdd}-%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="SWEETTRACKER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <file>${LOG_PATH}/sweettracker/sweettracker.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/sweettracker/sweettracker-%d{yyyyMMdd}-%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+    </appender>
+
+
+	<logger name="log4jdbc.log4j2" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+	</logger>
+    <logger name="jdbc.connection" level="OFF" additivity="false" />
+    <logger name="jdbc.sqlonly" level="OFF" additivity="false" />
+    <logger name="jdbc.audit" level="OFF" additivity="false" />
+    <logger name="jdbc.resultset" level="OFF" additivity="false" />
+	<logger name="jdbc.sqltiming" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+	</logger>
+    <logger name="jdbc.resultsettable" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="jdbc.org.hibernate" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+	<logger name="com.onlinepowers" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+	</logger>
+	<logger name="com.onlinepowers.framework.web.interceptor.WebLogInterceptor" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+
+        <springProfile name="production, development">
+		    <appender-ref ref="CONSOLE_FILE"/>
+        </springProfile>
+	</logger>
+	<logger name="saleson.common.configuration" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+
+        <springProfile name="production, development">
+            <appender-ref ref="CONSOLE_FILE"/>
+        </springProfile>
+	</logger>
+	<logger name="com.saleson" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+	</logger>
+	<logger name="com.springframework" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+	</logger>
+	<logger name="com.hibernate" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+	</logger>
+
+	<logger name="saleson.shop.order" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+
+        <springProfile name="production, development">
+		    <appender-ref ref="ORDER_FILE"/>
+        </springProfile>
+	</logger>
+
+	<logger name="saleson.api.order" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+        <springProfile name="production, development">
+		    <appender-ref ref="ORDER_FILE"/>
+        </springProfile>
+	</logger>
+
+	<logger name="saleson.shop.present" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+        <springProfile name="production, development">
+		    <appender-ref ref="ORDER_FILE"/>
+        </springProfile>
+	</logger>
+
+	<logger name="saleson.shop.donation" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+        <springProfile name="local, production, development">
+		    <appender-ref ref="ON_DONATION_FILE"/>
+        </springProfile>
+	</logger>
+
+	<logger name="saleson.api.donation" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+        <springProfile name="local, production, development">
+		    <appender-ref ref="ON_DONATION_FILE"/>
+        </springProfile>
+	</logger>
+
+	<logger name="saleson.shop.offgive" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+        <springProfile name="local, production, development">
+		    <appender-ref ref="OFF_DONATION_FILE"/>
+        </springProfile>
+	</logger>
+
+	<logger name="saleson.shop.present" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+        <springProfile name="local, production, development">
+		    <appender-ref ref="PRESENT_FILE"/>
+        </springProfile>
+	</logger>
+
+	<logger name="saleson.common.sweettracker" level="OFF" additivity="false">
+		<appender-ref ref="CONSOLE"/>
+        <springProfile name="local, production, development">
+		    <appender-ref ref="SWEETTRACKER"/>
+        </springProfile>
+	</logger>
+
+    <springProfile name="production">
+        <root level="OFF">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="CONSOLE_FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="development">
+        <root level="OFF">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="CONSOLE_FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!development, !production">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+</configuration>

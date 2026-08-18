@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css"
+        href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 본문 -->
+        <div class="mainArea">
+            <div class="cont-inner">
+                <ul class="member">
+                    <li class="member_box type01">
+                        <div class="title">
+                            <i class="icon-person01"></i>
+                            <span class="tit">전체회원</span>
+                        </div>
+                        <div class="count">
+                            <span class="num">1140000</span>
+                        </div>
+                    </li>
+                    <li class="member_box type02">
+                        <div class="title">
+                            <i class="icon-person02"></i>
+                            <span class="tit">신규회원</span>
+                        </div>
+                        <div class="count">
+                            <span class="total">TODAY<span class="num">70</span></span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="list_box">
+                    <ul class="list type01">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="icon-setting"></i>
+                                <div class="info">
+                                    <p class="tit">관리자 권한요청</p>
+                                    <p class="txt">WAIT<span class="num">11</span></p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                                <i class="icon-pencil"></i>
+                                <div class="info">
+                                    <p class="tit">오프라인 접수현황</p>
+                                    <p class="txt">TODAY<span class="num">11</span></p>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                                <i class="icon-receipt"></i>
+                                <div class="info">
+                                    <p class="tit">1:1 문의</p>
+                                    <p class="txt"><span class="text-primary">2</span>건 (답변대기<span
+                                            class="num">2</span>건)</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="list_box">
+                    <ul class="list type02">
+                        <li class="bg01">
+                            <a href="javascript:;">
+                                <p class="tit">총 기부현황</p>
+                                <p class="tit">(서울시 종로구)</p>
+                                <p class="txt"><span class="num">123,456,789</span>&nbsp;&#40;원&#41;</p>
+                                <p class="txt"><span class="num">156,789</span>&nbsp;&#40;건&#41;</p>
+                            </a>
+                        </li>
+                        <li class="bg02">
+                            <a href="javascript:;">
+                                <p class="tit">총 답례품 현황</p>
+                                <p class="tit">(서울시 종로구)</p>
+                                <p class="txt"><span class="num">123,456,789</span>&nbsp;&#40;원&#41;</p>
+                                <p class="txt"><span class="num">156,789</span>&nbsp;&#40;건&#41;</p>
+                            </a>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg_box">
+                <div class="cont-inner">
+                    <div class="list_box">
+                        <ul class="list type03">
+                            <li>
+                                <a href="javascript:;">
+                                    <p class="title">답례품 제공자</p>
+
+                                    <p class="tit"><span class="num">2</span>개</p>
+
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;">
+                                    <p class="title">등록된 답례품</p>
+                                    <p class="tit"> <span class="num">2</span>개</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:;">
+                                    <p class="title">승인대기 답례품</p>
+                                    <p class="tit"> <span class="num">2</span>건</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="cont-inner">
+                <div class="list_box pb-85">
+                    <ul class="list type04">
+                        <li class="bd01">
+                            <p class="tit">기부금액</p>
+                            <div class="graph">
+                                <canvas></canvas>
+                            </div>
+                            <div class="info-box">
+                                <dl>
+                                    <dt>평균</dt>
+                                    <dd><em>50,000,000</em> 원</dd>
+                                    <dt>총계</dt>
+                                    <dd><em>290,000,000</em> 원</dd>
+                                </dl>
+                            </div>
+                        </li>
+                        <li class="bd02">
+                            <p class="tit">기부건수</p>
+                            <div class="graph">
+                                <canvas></canvas>
+                            </div>
+                            <div class="info-box">
+                                <dl>
+                                    <dt>평균</dt>
+                                    <dd><em>50,000,000</em> 원</dd>
+                                    <dt>총계</dt>
+                                    <dd><em>290,000,000</em> 원</dd>
+                                </dl>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

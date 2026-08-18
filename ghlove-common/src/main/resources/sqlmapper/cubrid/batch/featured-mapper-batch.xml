@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.featured.FeaturedMapperBatch">
+	<update id="updateFeaturedOrdering" parameterType="saleson.shop.featured.domain.Featured">
+		UPDATE OP_FEATURED SET
+			<choose>
+				<when test='featuredCode == "esthetic"'>
+					ORDERING_ESTHETIC = #{ordering}
+				</when>
+				<when test='featuredCode == "nail"'>
+					ORDERING_NAIL = #{ordering}
+				</when>
+				<when test='featuredCode == "matsuge_extension"'>
+					ORDERING_MATSUGE_EXTENSION = #{ordering}
+				</when>
+				<when test='featuredCode == "hair"'>
+					ORDERING_HAIR = #{ordering}
+				</when>
+				<when test='featuredCode == "sale_outlets"'>
+					ORDERING_SALE_OUTLETS = #{ordering}
+				</when>
+				<otherwise>
+					ORDERING = #{ordering}
+				</otherwise>
+			</choose>
+			
+		WHERE FEATURED_ID = #{featuredId}
+	</update>
+</mapper>

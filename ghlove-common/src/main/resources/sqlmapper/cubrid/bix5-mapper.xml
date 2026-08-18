@@ -1,0 +1,1193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.common.bix5.Bix5Mapper">
+
+	<delete id="deleteBix5CntrAmt">
+		DELETE FROM B_CNTR_AMT;
+	</delete>
+	<insert id="bix5CntrAmt">
+		INSERT INTO B_CNTR_AMT (
+			cntr_ymd
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			,cntr_amt
+			,pre_amt
+			,cntr_cnt
+			,pre_cnt
+			,amt_rate
+			,cnt_rate
+			,frst_reg_dt
+		)
+		SELECT
+			TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+			, CURR.upper_locgov_code
+			, CURR.upper_locgov_nm
+			, CURR.locgov_code
+			, CURR.locgov_nm
+			, CURR.cntr_amt
+			, PRE.pre_amt
+			, CURR.cntr_Cnt
+			, PRE.pre_Cnt
+			, TO_CHAR(ROUND(CURR.cntr_Cnt * 1.0 / PRE.pre_Cnt * 100 - 100 ,1)) as amt_rate
+			, TO_CHAR(ROUND(CURR.cntr_amt * 1.0 / PRE.pre_amt * 100 - 100 ,1)) as cnt_rate
+			, DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') frst_reg_dt
+		from (
+				select clg.upper_locgov_code
+				, clg.upper_locgov_nm
+				, clg.locgov_code
+				, clg.locgov_nm
+				, count(1) AS cntr_Cnt
+				, sum(cntr_amt) AS cntr_amt
+			FROM
+				g_cntr gc
+				JOIN g_locgov clg ON clg.locgov_code = gc.cntr_locgov_code
+			WHERE 1=1
+				AND gc.cntr_sttus_code = '200'
+				AND substr(cntr_de, 1,8) <![CDATA[<]]>TO_CHAR(SYSDATE ,'YYYYMMDD')
+				AND substr(cntr_de, 1,8) <![CDATA[>=]]> TO_CHAR(SYSDATE ,'YYYY') || '0101'
+			GROUP BY clg.locgov_code
+		) CURR
+		left outer join (
+			select clg.upper_locgov_code
+			, clg.upper_locgov_nm
+			, clg.locgov_code
+			, clg.locgov_nm
+			, count(1) AS pre_Cnt
+			, sum(cntr_amt) AS pre_amt
+			FROM g_cntr gc
+			JOIN g_locgov clg ON clg.locgov_code = gc.cntr_locgov_code
+			WHERE 1=1
+			AND gc.cntr_sttus_code = '200'
+			AND substr(cntr_de, 1,8) <![CDATA[<]]> to_number(TO_CHAR(SYSDATE ,'YYYY'))-1 || TO_CHAR(SYSDATE ,'MMDD')
+			AND substr(cntr_de, 1,8) <![CDATA[>=]]> to_number(TO_CHAR(SYSDATE ,'YYYY'))-1 || '0101'
+			GROUP BY clg.locgov_code
+		) PRE on CURR.locgov_code = PRE.locgov_code
+	</insert>
+
+	<insert id="bix5CntrAmtMonth" >
+		MERGE INTO B_CNTR_AMT_MM bcam
+			USING(
+				SELECT
+					TO_CHAR(SYSDATE ,'YYYY') CNTR_YY
+					, TO_CHAR(SYSDATE ,'mm') CNTR_MM
+					, gl.upper_locgov_code
+					, gl.upper_locgov_nm
+					, gl.locgov_code
+					, gl.locgov_nm
+					, NVL(CURR.cntr_amt,0) cntr_amt
+					, NVL(PRE.pre_amt,0) pre_amt
+					, TO_CHAR(ROUND(
+						CASE
+							WHEN NVL(PRE.pre_amt,0) = 0 AND NVL(CURR.cntr_amt,0) = 0 THEN 0
+							WHEN NVL(PRE.pre_amt,0) = 0 AND NVL(CURR.cntr_amt,0) <![CDATA[>]]> 0 THEN 100
+							ELSE (((NVL(CURR.cntr_amt,0) * 1.0) - (PRE.pre_amt * 1.0)) / (PRE.pre_amt * 1.0)) * 100
+						END ,1)) AS amt_rate
+					, DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') frst_reg_dt
+				from
+					G_LOCGOV gl
+					left outer join (
+					select
+						clg.upper_locgov_code
+						, clg.upper_locgov_nm
+						, clg.locgov_code
+						, clg.locgov_nm
+						, count(1) AS cntr_Cnt
+						, sum(cntr_amt) AS cntr_amt
+					FROM
+						g_cntr gc
+						JOIN g_locgov clg ON clg.locgov_code = gc.cntr_locgov_code
+					WHERE 1=1
+						AND gc.cntr_sttus_code = '200'
+						AND substr(cntr_de, 1,6) = TO_CHAR(SYSDATE ,'YYYYMM')
+					GROUP BY clg.locgov_code
+					) CURR ON gl.locgov_code = CURR.locgov_code
+					left outer join (
+						select clg.upper_locgov_code
+						, clg.upper_locgov_nm
+						, clg.locgov_code
+						, clg.locgov_nm
+						, count(1) AS pre_Cnt
+						, sum(NVL(cntr_amt,0)) AS pre_amt
+					FROM
+						g_cntr gc
+						JOIN g_locgov clg ON clg.locgov_code = gc.cntr_locgov_code
+					WHERE 1=1
+						AND gc.cntr_sttus_code = '200'
+						AND substr(cntr_de, 1,6) = to_number(TO_CHAR(SYSDATE ,'YYYY'))-1 || TO_CHAR(SYSDATE ,'MM')
+					GROUP BY clg.locgov_code
+				) PRE on gl.locgov_code = PRE.locgov_code
+			) t
+			ON (bcam.cntr_yy = t.cntr_yy AND bcam.cntr_mm = t.cntr_mm AND bcam.locgov_code = t.locgov_code)
+			WHEN MATCHED THEN
+				UPDATE SET
+					bcam.cntr_yy = t.cntr_yy
+					,bcam.cntr_mm = t.cntr_mm
+					,bcam.upper_locgov_code = t.upper_locgov_code
+					,bcam.upper_locgov_nm = t.upper_locgov_nm
+					,bcam.locgov_code = t.locgov_code
+					,bcam.locgov_nm = t.locgov_nm
+					,bcam.pre_amt = t.pre_amt
+					,bcam.cntr_amt = t.cntr_amt
+					,bcam.amt_rate = t.amt_rate
+					,bcam.frst_reg_dt = t.frst_reg_dt
+			WHEN NOT MATCHED THEN
+				INSERT (
+					cntr_yy
+					,cntr_mm
+					,upper_locgov_code
+					,upper_locgov_nm
+					,locgov_code
+					,locgov_nm
+					,pre_amt
+					,cntr_amt
+					,amt_rate
+					,frst_reg_dt
+				) VALUES (
+					t.cntr_yy
+					,t.cntr_mm
+					,t.upper_locgov_code
+					,t.upper_locgov_nm
+					,t.locgov_code
+					,t.locgov_nm
+					,t.pre_amt
+					,t.cntr_amt
+					,t.amt_rate
+					,t.frst_reg_dt
+				);
+	</insert>
+
+	<delete id="deleteBix5CntrAmtBiz">
+		DELETE FROM B_CNTR_AMT_BIZ;
+	</delete>
+	<insert id="bix5CntrAmtBiz" >
+		INSERT INTO B_CNTR_AMT_BIZ (
+			cntr_ymd
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			,cntr_amt
+			,biz_amt
+			,cntr_rate
+			,biz_rate
+			,frst_reg_dt
+		)
+		select
+			rs.CNTR_YMD
+			, rs.upper_locgov_code
+			, rs.upper_locgov_nm
+			, rs.locgov_code
+			, rs.locgov_nm
+			, rs.cntr_amt
+			, rs.biz_amt
+			, TO_CHAR(ROUND(rs.cntr_amt * 1.0 / rs.tot_amt * 100 ,1)) as Cntr_rate
+			, TO_CHAR(ROUND(rs.biz_amt * 1.0 / rs.tot_amt * 100 ,1)) as biz_rate
+			, DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') frst_reg_dt
+		from (
+			SELECT
+				TO_CHAR(SYSDATE, 'YYYYMMDD') CNTR_YMD
+				, clg.upper_locgov_code
+				, clg.upper_locgov_nm
+				, clg.locgov_code
+				, clg.locgov_nm
+				, SUM(case when dsgn_dntn_biz_id = 0 then cntr_amt else 0 end) as cntr_amt
+				, SUM(case when dsgn_dntn_biz_id != 0 then cntr_amt else 0 end) as biz_amt
+				, SUM(cntr_amt) as tot_amt
+			from g_cntr gc
+			JOIN g_locgov clg ON clg.locgov_code = gc.cntr_locgov_code
+			where 1=1
+				AND gc.cntr_sttus_code = '200'
+				AND substr(gc.cntr_de, 1,8) <![CDATA[<]]> TO_CHAR(SYSDATE ,'YYYYMMDD')
+				AND substr(gc.cntr_de, 1,8) <![CDATA[>=]]> TO_CHAR(SYSDATE ,'YYYY') || '0101'
+			GROUP BY clg.locgov_code
+		) rs
+	</insert>
+
+	<delete id="deleteBix5CntrBiz">
+		DELETE FROM B_CNTR_BIZ;
+	</delete>
+	<insert id="bix5CntrBiz" >
+		INSERT INTO B_CNTR_BIZ(
+			cntr_ymd
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			,biz_nm
+			,cntr_amt
+			,cntr_rate
+			,cntr_status
+			,frst_reg_dt
+		)
+		SELECT
+			TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+			, clg.upper_locgov_code
+			, clg.upper_locgov_nm
+			, clg.locgov_code
+			, clg.locgov_nm
+			, GDNB.DSGN_DNTN_BIZ_TTL AS biz_nm
+			, CNTR.TOTAL_CNTR_AMT AS cntr_amt
+			, TO_CHAR(ROUND((CNTR.TOTAL_CNTR_AMT * 1.0) / (GDNB.GOAL_AMT * 1.0) * 100 ,1)) AS cntr_rate
+			, case WHEN GDNB.DSGN_DNTN_BIZ_STTS_CD = 2 THEN '진행중' ELSE GDNB.DSGN_DNTN_BIZ_STTS_CD END AS cntr_status
+			, DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') frst_reg_dt
+		FROM
+			G_DSGN_DNTN_BIZ_MNG GDNB
+			INNER JOIN G_LOCGOV clg ON GDNB.LCLGV_CD = clg.LOCGOV_CODE
+			INNER JOIN (
+				SELECT DSGN_DNTN_BIZ_ID
+				, SUM(CNTR_AMT) AS TOTAL_CNTR_AMT
+				FROM G_CNTR
+				WHERE 1 = 1
+				AND DSGN_DNTN_BIZ_ID != 0
+				GROUP BY DSGN_DNTN_BIZ_ID
+			) CNTR ON CNTR.DSGN_DNTN_BIZ_ID = GDNB.DSGN_DNTN_BIZ_ID
+		WHERE 1 = 1
+			AND GDNB.DSGN_DNTN_BIZ_STTS_CD = 2
+		ORDER BY clg.LOCGOV_CODE;
+	</insert>
+
+	<delete id="deleteBix5CntrPath">
+		DELETE FROM B_CNTR_PATH;
+	</delete>
+	<insert id="bix5CntrPath" >
+		INSERT INTO B_CNTR_PATH (
+			cntr_ymd
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			,cntr_path
+			,cntr_amt
+			,cntr_rate
+			,frst_reg_dt
+		)
+		SELECT
+			TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+			, clg.UPPER_LOCGOV_CODE
+			, clg.UPPER_LOCGOV_NM
+			, clg.LOCGOV_CODE
+			, clg.LOCGOV_NM
+			, gcl.platform_bucket
+			, SUM(gcl.cntr_amt) AS cntr_amt
+			, TO_CHAR(ROUND((SUM(gcl.cntr_amt) * 1.0) / (SUM(SUM(gcl.cntr_amt) * 1.0) OVER(PARTITION BY gcl.cntr_locgov_code)) * 100 ,1)) AS cntr_rate
+			, DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') frst_reg_dt
+		from (
+			SELECT
+			cntr_locgov_code
+			, case
+				when gc.cntr_path_code = 100 and (occ.detail IS NULL or occ.detail = '고향사랑e음' or occ.detail = '') then '고향사랑e음'
+				when gc.cntr_path_code = 100 and occ.detail = '위기브' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = '액티부키' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = '웰로' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = 'KB국민은행' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = 'IBK기업은행' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = '신한은행' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = '하나은행' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = 'NH농협은행' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = '체리' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = '디투홈' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = '광주은행' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = 'e제너두' then '민간연계'
+				when gc.cntr_path_code = 100 and occ.detail = '디지털지갑' then '민간연계'
+				when gc.cntr_path_code = 200 and (occ.detail = '' or occ.detail is null) then '농협창구' -- 오프라인기부
+			end as platform_bucket
+			, cntr_amt
+			from
+				g_cntr gc
+				left join op_common_code occ on occ.id = gc.link_instt_cd and occ.code_type = 'LINK_INSTT_CD' and occ.use_yn = 'Y'
+			where 1=1
+				and gc.cntr_sttus_code = 200
+			) gcl
+			JOIN g_locgov clg ON clg.locgov_code = gcl.cntr_locgov_code
+		GROUP BY  cntr_locgov_code, gcl.platform_bucket
+		ORDER BY cntr_locgov_code
+	</insert>
+
+	<delete id="deleteBix5CntrAmtCat">
+		DELETE FROM b_cntr_amt_cat;
+	</delete>
+	<insert id="bix5CntrAmtCat" >
+		insert into b_cntr_amt_cat(
+			cntr_ymd
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			,cntr_cost
+			,cntr_cnt
+			,cntr_rate
+		)
+		select
+		 cntr_ymd
+		 , upper_locgov_code
+		 , upper_locgov_nm
+		 , locgov_code
+		 , locgov_nm
+		 , txt as cntr_cost
+		 , cntr_cnt
+		 , case when r_amt <![CDATA[>]]> 0 then TO_CHAR(ROUND((cntr_amt * 1.0) / (r_amt * 1.0) * 100 ,1)) else '0' end AS cntr_rate
+		from(
+		select
+			TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+			, clg.upper_locgov_code
+			, clg.upper_locgov_nm -- 기부지자체광역지역
+			, clg.locgov_code
+			, clg.locgov_nm
+			, concat(clg.upper_locgov_nm, ' ', clg.locgov_nm) AS "기부지자체" -- 기부지자체코드
+			, base.txt as txt
+			, base.ord as ord
+			, NVL(t1.cntr_cnt,0) as cntr_cnt
+			, NVL(t1.cntr_amt,0) as cntr_amt
+			, sum(NVL(cntr_amt,0)) over (partition by cntr_locgov_code) as r_amt
+		from (
+			select
+				r2.locgov_code
+				,r1.txt
+				,r1.ord
+			from (
+					SELECT '10만원 미만' 			AS txt , 1 		AS ord FROM db_root UNION all
+					SELECT '10만원' 				AS txt , 2 		AS ord FROM db_root UNION all
+					SELECT '10만원 초과 ~ 20만원 미만' AS txt , 3 		AS ord FROM db_root UNION all
+					SELECT '20만원' 				AS txt , 4 		AS ord FROM db_root UNION all
+					SELECT '20만원 초과 ~ 2000만원 미만' AS txt , 5 	AS ord FROM db_root UNION all
+					SELECT '2000만원' 			AS txt , 6 		AS ord FROM db_root
+				) as r1
+				cross join (
+					select locgov_code
+					FROM g_locgov
+					where use_at = 'Y'
+				) r2
+			) base
+			left outer join
+			(
+				select
+					gc.cntr_locgov_code
+					, CASE WHEN cntr_amt <![CDATA[<]]> 100000 THEN '10만원 미만'
+					WHEN cntr_amt = 100000 THEN '10만원'
+					WHEN cntr_amt <![CDATA[>]]> 100000 AND cntr_amt <![CDATA[<]]> 200000 THEN '10만원 초과 ~ 20만원 미만'
+					WHEN cntr_amt = 200000 THEN '20만원'
+					WHEN cntr_amt <![CDATA[>]]> 200000 AND cntr_amt <![CDATA[<]]> 20000000 THEN '20만원 초과 ~ 2000만원 미만'
+					WHEN cntr_amt <![CDATA[>=]]> 20000000 THEN '2000만원'
+					END AS "금액대"
+					, sum(CASE WHEN substr(cntr_de, 1,4) = TO_CHAR(SYSDATE ,'YYYY') THEN cntr_amt ELSE 0 end) AS cntr_amt
+					, count(CASE WHEN substr(cntr_de, 1,4) = TO_CHAR(SYSDATE ,'YYYY') THEN 1 ELSE null end) AS cntr_cnt
+				FROM g_cntr gc
+				WHERE gc.cntr_sttus_code = '200'
+				AND substr(cntr_de, 1,4) = TO_CHAR(SYSDATE ,'YYYY')
+				GROUP BY cntr_locgov_code, "금액대"
+			) AS t1 on t1.cntr_locgov_code = base.locgov_code AND t1."금액대" = base.txt
+			LEFT JOIN g_locgov clg ON clg.locgov_code = base.locgov_code
+		order by "기부지자체" , base.ord
+		)
+	</insert>
+
+	<delete id="deleteBix5CntrOld">
+		DELETE FROM b_cntr_old;
+	</delete>
+	<insert id="bix5CntrOld" >
+		insert into b_cntr_old(
+			cntr_ymd
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			,cntr_old
+			,cntr_cnt
+			,cntr_rate
+		)
+		select
+			cntr_ymd
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, cntr_old
+			, cntr_cnt
+			, case when r_cnt <![CDATA[>]]> 0 then TO_CHAR(ROUND((cntr_cnt * 1.0) / (r_cnt * 1.0) * 100 ,1)) else '0' end AS cntr_rate
+		from (
+			select
+				TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+				, clg.upper_locgov_code
+				, clg.upper_locgov_nm
+				, clg.locgov_code
+				, clg.locgov_nm
+				, concat(clg.upper_locgov_nm, ' ', clg.locgov_nm) AS "기부지자체" -- 기부지자체코드
+				, base.txt as cntr_old
+				, base.ord
+				, NVL(t1.cntr_cnt,0) as cntr_cnt
+				, NVL(t1.cntr_amt,0) as cntr_amt
+				, sum(NVL(t1.cntr_cnt,0)) over (partition by clg.locgov_code) as r_cnt
+			from (
+				select
+					r2.locgov_code
+					,r1.txt
+					,r1.ord
+				from (
+					SELECT '20대 미만' AS txt , 1 AS ord FROM db_root UNION all
+					SELECT '20대' AS txt , 2 AS ord FROM db_root UNION all
+					SELECT '30대' AS txt , 3 AS ord FROM db_root UNION all
+					SELECT '40대' AS txt , 4 AS ord FROM db_root UNION all
+					SELECT '50대' AS txt , 5 AS ord FROM db_root UNION all
+					SELECT '60대' AS txt , 6 AS ord FROM db_root UNION all
+					SELECT '70대 이상' AS txt , 7 AS ord FROM db_root
+				) as r1
+				cross join (
+					select locgov_code
+					FROM g_locgov
+					where use_at = 'Y'
+				) r2
+			) base
+			left outer join
+			(
+				select
+					gc.cntr_locgov_code
+					, CASE WHEN oud.birthday is null THEN '미상'
+					WHEN datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[<]]> 20 THEN '20대 미만'
+					WHEN datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[>=]]> 20 and datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[<]]> 30 THEN '20대'
+					WHEN datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[>=]]> 30 and datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[<]]> 40 THEN '30대'
+					WHEN datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[>=]]> 40 and datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[<]]> 50 THEN '40대'
+					WHEN datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[>=]]> 50 and datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[<]]> 60 THEN '50대'
+					WHEN datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[>=]]> 60 and datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[<]]> 70 THEN '60대'
+					WHEN datediff(SYSDATE, TO_DATE(oud.birthday, 'yyyymmdd'))/365 <![CDATA[>=]]> 70 THEN '70대 이상'
+					END AS age_term
+					, sum(CASE WHEN substr(cntr_de, 1,4) = TO_CHAR(SYSDATE ,'YYYY') THEN cntr_amt ELSE 0 end) AS cntr_amt
+					, count(CASE WHEN substr(cntr_de, 1,4) = TO_CHAR(SYSDATE ,'YYYY') THEN 1 ELSE null end) AS cntr_cnt
+				FROM g_cntr gc
+				LEFT JOIN op_user_birthday oud ON gc.user_id = oud.user_id
+				WHERE gc.cntr_sttus_code = '200'
+				AND substr(cntr_de, 1,4) = TO_CHAR(SYSDATE ,'YYYY')
+				GROUP BY cntr_locgov_code, age_term
+			) AS t1 on t1.cntr_locgov_code = base.locgov_code AND t1.age_term = base.txt
+			LEFT JOIN g_locgov clg ON clg.locgov_code = base.locgov_code
+			order by "기부지자체" , base.ord
+		);
+	</insert>
+
+	<delete id="deleteBix5CntrAddr">
+		DELETE FROM b_cntr_addr;
+	</delete>
+	<insert id="bix5CntrAddr" >
+		INSERT INTO b_cntr_addr(
+			cntr_ymd
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			,cntr_locgov
+			,cntr_amt
+			,cntr_rate
+			,frst_reg_dt
+		)
+		/* 기부자 거주 개별 자치단체 TOP 10 */
+		/* 건수순위 */
+		SELECT
+			TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+			, upper_locgov_code
+			, "기부지자체광역지역"
+			, cntr_locgov_code
+			, locgov_nm
+		--	, psitn_locgov_code
+			, "거주지자체"
+		--	, "기부건수"
+			, "기부금액"
+			, TO_CHAR(ROUND(("기부금액" * 1.0) / (SUM("기부금액") OVER(PARTITION BY "기부지자체") * 1.0) * 100 ,1)) AS cntr_rate
+			, DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s') frst_reg_dt
+		FROM (
+			select
+				"기부지자체광역지역"
+				, upper_locgov_code
+				, "기부지자체"
+				, "거주지자체"
+				, locgov_nm
+				, cntr_locgov_code
+				, psitn_locgov_code
+				, "기부건수"
+				, "기부금액"
+				, rank()over(PARTITION BY "기부지자체" ORDER BY "기부금액" desc) AS "금액순위"
+			FROM (
+				SELECT
+					clg.upper_locgov_nm AS "기부지자체광역지역" -- "기부지자체광역지역"
+					, clg.upper_locgov_code
+					, concat(clg.upper_locgov_nm, ' ', clg.locgov_nm) AS "기부지자체" -- "기부지자체코드"
+					, clg.locgov_nm
+					, concat(plg.upper_locgov_nm, ' ', plg.locgov_nm) AS "거주지자체" -- "거주지자체코드"
+					, gc.cntr_locgov_code
+					, gc.psitn_locgov_code
+					, count(1) AS "기부건수"
+					, sum(cntr_amt) AS "기부금액"
+				FROM g_cntr gc
+					LEFT JOIN g_locgov plg ON plg.locgov_code = gc.psitn_locgov_code
+					LEFT JOIN g_locgov clg ON clg.locgov_code = gc.cntr_locgov_code
+					LEFT JOIN op_user_detail oud ON gc.user_id = oud.user_id
+				WHERE 1=1
+					AND gc.cntr_sttus_code = '200'
+					AND substr(gc.cntr_de, 1,4) = TO_CHAR(SYSDATE ,'YYYY')
+					--AND cntr_locgov_code = '47170'
+				GROUP BY "기부지자체광역지역","기부지자체","거주지자체"
+			) AS t1
+		) AS tt
+		ORDER BY "기부금액" DESC ;
+	</insert>
+
+	<delete id="deleteBix5GiftUsePoint">
+		DELETE FROM b_gift_usepoint;
+	</delete>
+	<insert id="bix5GiftUsePoint" >
+	<![CDATA[
+	insert into b_gift_usepoint (
+		cntr_ymd
+		, upper_locgov_code
+		, upper_locgov_nm
+		, locgov_code
+		, locgov_nm
+		, cntr_point
+		, cntr_rate
+	)
+	select
+		cntr_ymd
+		, upper_locgov_code
+		, upper_locgov_nm
+		, locgov_code
+		, locgov_nm
+		, cntr_point
+		, TO_CHAR(NVL(pnt_rate,0)) as cntr_rate
+	from(
+		select
+			TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+			, CURR.upper_locgov_code
+			, CURR.upper_locgov_nm
+			, CURR.locgov_code
+			, CURR.locgov_nm
+			, CURR.cntr_point
+			, PRE.pre_point
+			, ROUND(CURR.cntr_point * 1.0 / PRE.pre_point * 100 - 100 ,1) as pnt_rate
+		from (
+				select
+					clg.upper_locgov_code
+					, clg.upper_locgov_nm
+					, clg.locgov_code
+					, clg.locgov_nm
+					, sum(cntr_use_point) AS cntr_point
+				FROM g_cntr_use_point up
+				JOIN g_locgov clg ON clg.locgov_code = up.cntr_locgov_code
+				WHERE 1=1
+				AND substr(point_use_de, 1,8) < TO_CHAR(SYSDATE ,'YYYYMMDD')
+				AND substr(point_use_de, 1,8) >= TO_CHAR(SYSDATE ,'YYYY') || '0101'
+				GROUP BY clg.locgov_code
+			) CURR
+			left outer join (
+								select
+									clg.upper_locgov_code
+									, clg.upper_locgov_nm
+									, clg.locgov_code
+									, clg.locgov_nm
+									, sum(cntr_use_point) AS pre_point
+								FROM g_cntr_use_point up
+								JOIN g_locgov clg ON clg.locgov_code = up.cntr_locgov_code
+								WHERE 1=1
+								AND substr(point_use_de, 1,8) < to_number(TO_CHAR(SYSDATE ,'YYYY'))-1 || TO_CHAR(SYSDATE ,'MMDD')
+								AND substr(point_use_de, 1,8) >= to_number(TO_CHAR(SYSDATE ,'YYYY'))-1 || '0101'
+								GROUP BY clg.locgov_code
+							) PRE on CURR.locgov_code = PRE.locgov_code
+		)
+	]]>
+	</insert>
+
+	<delete id="deleteBix5GiftCnt">
+		DELETE FROM b_gift_cnt;
+	</delete>
+	<insert id="bix5GiftGiftCnt" >
+	<![CDATA[
+	insert into b_gift_cnt (
+		cntr_ymd
+		, upper_locgov_code
+		, upper_locgov_nm
+		, locgov_code
+		, locgov_nm
+		, gift_cnt
+	)
+	select
+		TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+		, gl.upper_locgov_code
+		, gl.upper_locgov_nm
+		, gl.locgov_code
+		, gl.locgov_nm
+		, count(it.item_id) as gift_cnt
+	FROM (
+			SELECT
+				I.ITEM_ID
+			FROM
+				OP_ITEM I
+			INNER JOIN OP_SELLER S ON I.SELLER_ID = S.SELLER_ID AND S.STATUS_CODE = '2'
+			WHERE 1=1
+			AND I.DATA_STATUS_CODE IN ('0', '1', '90')
+			AND I.ITEM_DATA_TYPE = '1'
+			GROUP BY I.ITEM_ID
+		) IT INNER JOIN OP_ITEM I ON IT.ITEM_ID = I.ITEM_ID
+		INNER JOIN OP_SELLER S ON I.SELLER_ID = S.SELLER_ID
+		inner join g_locgov gl on s.locgov_code = gl.locgov_code
+		group by CNTR_YMD, gl.upper_locgov_code, gl.upper_locgov_nm, gl.locgov_code, gl.locgov_nm
+	]]>
+	</insert>
+
+	<delete id="deleteBix5GiftUsePointCpr">
+		DELETE FROM b_gift_usepoint_cpr;
+	</delete>
+	<insert id="bix5GiftUsePointCpr" >
+	<![CDATA[
+	insert into B_GIFT_USEPOINT_CPR(
+		CNTR_YMD
+		, upper_locgov_code
+		, upper_locgov_nm
+		, locgov_code
+		, locgov_nm
+		, all_use_point
+		, use_point
+	)
+	select
+		TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+		, sepa.upper_locgov_code
+		, sepa.upper_locgov_nm
+		, sepa.locgov_code
+		, sepa.locgov_nm
+		, itg.all_use_point
+		, sepa.use_point
+	from (
+			select
+				clg.upper_locgov_code
+				, clg.upper_locgov_nm
+				, clg.locgov_code
+				, clg.locgov_nm
+				, sum(cntr_use_point) AS use_point
+			FROM g_cntr_use_point up
+			JOIN g_locgov clg ON clg.locgov_code = up.cntr_locgov_code
+			WHERE 1=1
+			AND substr(point_use_de, 1,8) < TO_CHAR(SYSDATE ,'YYYYMMDD')
+			AND substr(point_use_de, 1,8) >= TO_CHAR(SYSDATE ,'YYYY') || '0101'
+			GROUP BY clg.locgov_code
+		) sepa
+		,(
+			select
+				sum(cntr_use_point) AS all_use_point
+			FROM g_cntr_use_point up
+			JOIN g_locgov clg ON clg.locgov_code = up.cntr_locgov_code
+			WHERE 1=1
+			AND substr(point_use_de, 1,8) < TO_CHAR(SYSDATE ,'YYYYMMDD')
+			AND substr(point_use_de, 1,8) >= TO_CHAR(SYSDATE ,'YYYY') || '0101'
+		) itg
+		order by locgov_code
+	]]>
+	</insert>
+
+
+
+	<delete id="deleteBix5GiftCat">
+		DELETE FROM b_gift_cat;
+	</delete>
+	<insert id="bix5GiftCat" >
+	<![CDATA[
+		INSERT INTO B_GIFT_CAT(
+			cntr_ymd
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			,gift_cat
+			,gift_cnt
+			,cntr_rate
+		)
+		SELECT
+			TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+			, CLG.UPPER_LOCGOV_CODE
+			, CLG.UPPER_LOCGOV_NM
+			, CLG.LOCGOV_CODE
+			, CLG.LOCGOV_NM
+			, base.txt gift_cnt
+			, NVL(rs.regCnt,0) gift_cnt
+			, TO_CHAR(NVL(rs.rate,0)) as cntr_rate
+		from (
+			select
+				r2.locgov_code
+				,r1.txt
+				,r1.ord
+			from (
+				SELECT '농축산물' AS txt , 1 AS ord FROM db_root UNION all
+				SELECT '가공식품' AS txt , 2 AS ord FROM db_root UNION all
+				SELECT '관광서비스' AS txt , 3 AS ord FROM db_root UNION all
+				SELECT '생활용품' AS txt , 4 AS ord FROM db_root UNION all
+				SELECT '수산물' AS txt , 5 AS ord FROM db_root UNION all
+				SELECT '지역상품권' AS txt , 6 AS ord FROM db_root
+			) as r1
+			cross join ( select locgov_code FROM g_locgov where use_at = 'Y' ) r2
+		) base
+		left outer join (
+			SELECT
+				T2.locgov_code
+				, T2.name
+				, T2.regCnt
+				, format((T2.regCnt*1.0) / (sum(T2.regCnt)over(PARTITION BY T2.locgov_code)*1.0) * 100, 1) AS rate
+			FROM (
+				select
+					t1.locgov_code
+					, t1.name
+					, sum(t1.cnt) AS regCnt
+				from (
+					select
+						os.locgov_code
+						, ocg.name
+						, count(oi.item_id) AS cnt
+					FROM op_item oi
+						INNER JOIN op_item_category oic on oi.item_id = oic.item_id
+						INNER JOIN op_category oc on oic.category_id = oc.category_id
+						INNER JOIN op_category_group ocg on oc.category_group_id = ocg.category_group_id
+						INNER JOIN op_seller os on oi.seller_id = os.seller_id
+						INNER JOIN g_locgov gl on os.locgov_code = gl.locgov_code
+					where 1 = 1
+						AND oi.data_status_code IN ('30', '0', '1')
+					GROUP BY os.locgov_code , ocg.name
+					) AS t1
+				GROUP by locgov_code , name
+			) AS T2
+		) AS rs on rs.locgov_code = base.locgov_code AND rs.name = base.txt
+		LEFT JOIN g_locgov clg ON clg.locgov_code = base.locgov_code
+		order by CLG.LOCGOV_CODE , base.ord
+	]]>
+	</insert>
+
+	<delete id="deleteBix5GiftPoint">
+		DELETE FROM b_gift_point;
+	</delete>
+	<insert id="bix5GiftPoint" >
+	<![CDATA[
+		INSERT INTO B_GIFT_POINT(
+			CNTR_YMD
+			,UPPER_LOCGOV_CODE
+			,UPPER_LOCGOV_NM
+			,LOCGOV_CODE
+			,LOCGOV_NM
+			,POINT_CAT
+			,GIFT_CNT
+			,CNTR_RATE
+			,FRST_REG_DT
+		)
+		SELECT
+			TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+			, CLG.UPPER_LOCGOV_CODE
+			, CLG.UPPER_LOCGOV_NM
+			, CLG.LOCGOV_CODE
+			, CLG.LOCGOV_NM
+			, BASE.TXT
+			, NVL(RS.REGCNT,0) AS REGCNT
+			, NVL(RS.RATE,0) AS RATE
+			, DATE_FORMAT(NOW(),'%Y-%M-%D %H:%I:%S') FRST_REG_DT
+		FROM
+			(
+				SELECT
+					R2.LOCGOV_CODE
+					,R1.TXT
+					,R1.ORD
+				FROM (
+					SELECT '~1.5만' AS TXT , 1 AS ORD FROM DB_ROOT UNION ALL
+					SELECT '1.5만~3만' AS TXT , 2 AS ORD FROM DB_ROOT UNION ALL
+					SELECT '3만' AS TXT , 3 AS ORD FROM DB_ROOT UNION ALL
+					SELECT '3만~6만' AS TXT , 4 AS ORD FROM DB_ROOT UNION ALL
+					SELECT '6만' AS TXT , 5 AS ORD FROM DB_ROOT UNION ALL
+					SELECT '6만~' AS TXT , 6 AS ORD FROM DB_ROOT
+				) AS R1
+				CROSS JOIN ( SELECT LOCGOV_CODE FROM G_LOCGOV WHERE USE_AT = 'Y' ) R2
+			) BASE
+			LEFT OUTER JOIN (
+				SELECT
+					T2.LOCGOV_CODE
+					, T2.NAME
+					, T2.REGCNT
+					, FORMAT((T2.REGCNT*1.0) / (SUM(T2.REGCNT)OVER(PARTITION BY T2.LOCGOV_CODE)*1.0) * 100, 1) AS RATE
+				FROM (
+					SELECT
+						T1.LOCGOV_CODE
+						, T1.NAME
+						, COUNT(T1.ITEM_ID) AS REGCNT
+					FROM (
+
+						SELECT
+							OS.LOCGOV_CODE
+							, CASE
+								WHEN OI.SALE_PRICE <= 15000 THEN '~1.5만'
+								WHEN OI.SALE_PRICE > 15000 AND OI.SALE_PRICE < 30000 THEN '1.5만~3만'
+								WHEN OI.SALE_PRICE = 30000 THEN '3만'
+								WHEN OI.SALE_PRICE > 30000 AND OI.SALE_PRICE < 60000 THEN '3만~6만'
+								WHEN OI.SALE_PRICE = 60000 THEN '6만'
+								WHEN OI.SALE_PRICE > 60000 THEN '6만~'
+								ELSE '기타'
+							END AS NAME
+							, OI.ITEM_ID
+						FROM OP_ITEM OI
+							INNER JOIN OP_ITEM_CATEGORY OIC ON OI.ITEM_ID = OIC.ITEM_ID
+							INNER JOIN OP_CATEGORY OC ON OIC.CATEGORY_ID = OC.CATEGORY_ID
+							INNER JOIN OP_CATEGORY_GROUP OCG ON OC.CATEGORY_GROUP_ID = OCG.CATEGORY_GROUP_ID
+							INNER JOIN OP_SELLER OS ON OI.SELLER_ID = OS.SELLER_ID
+							INNER JOIN G_LOCGOV GL ON OS.LOCGOV_CODE = GL.LOCGOV_CODE
+						WHERE 1 = 1
+							AND OI.DATA_STATUS_CODE IN ('30', '0', '1')
+
+						) AS T1
+					GROUP BY T1.LOCGOV_CODE , T1.NAME
+					) AS T2
+			) AS RS ON RS.LOCGOV_CODE = BASE.LOCGOV_CODE AND RS.NAME = BASE.TXT
+			LEFT JOIN G_LOCGOV CLG ON CLG.LOCGOV_CODE = BASE.LOCGOV_CODE
+		ORDER BY CLG.LOCGOV_CODE , BASE.ORD
+	]]>
+	</insert>
+
+	<delete id="deleteBix5GiftCatSell">
+		DELETE FROM b_gift_cat_sell;
+	</delete>
+	<insert id="bix5GiftCatSell" >
+	<![CDATA[
+		insert into B_GIFT_CAT_SELL (
+			CNTR_YMD
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, gift_cat
+			, cntr_order_cnt
+			, cntr_rate
+		)
+		select
+			CNTR_YMD
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, gift_cat
+			, regCnt as cntr_order_cnt
+			, rate as cntr_rate
+		from(
+			select
+				TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+				, clg.upper_locgov_nm AS "기부지자체광역지역" -- 기부지자체광역지역
+				, concat(clg.upper_locgov_nm, ' ', clg.locgov_nm) AS "기부지자체" -- 기부지자체코드
+				, clg.upper_locgov_code
+				, clg.upper_locgov_nm
+				, clg.locgov_code
+				, clg.locgov_nm
+				, base.txt as gift_cat
+				, base.ord
+				, NVL(rs.regCnt,0) as regCnt
+				, TO_CHAR(NVL(rs.rate,0)) as rate
+			from (
+					select
+						r2.locgov_code
+						,r1.txt
+						,r1.ord
+					from (
+							SELECT '농축산물' AS txt , 1 AS ord FROM db_root UNION all
+							SELECT '가공식품' AS txt , 2 AS ord FROM db_root UNION all
+							SELECT '관광서비스' AS txt , 3 AS ord FROM db_root UNION all
+							SELECT '생활용품' AS txt , 4 AS ord FROM db_root UNION all
+							SELECT '수산물' AS txt , 5 AS ord FROM db_root UNION all
+							SELECT '지역상품권' AS txt , 6 AS ord FROM db_root
+						) as r1
+					cross join (
+							select locgov_code
+							FROM g_locgov
+							where use_at = 'Y'
+							) r2
+				) base
+			left outer join (
+							SELECT
+								T2.locgov_code
+								, T2.name
+								, T2.sCnt as regCnt
+								, format((T2.sCnt*1.0) / (sum(T2.sCnt)over(PARTITION BY T2.locgov_code)*1.0) * 100, 1) AS rate
+							FROM (
+							---------------------------------------------
+									select
+										t1.locgov_code
+										, t1.name
+										, sCnt AS sCnt
+										, sAmt
+									from (
+											select
+												os.locgov_code
+												, ocg.name
+												, sum(ooi.order_quantity) AS sCnt
+												, sum(ooi.sale_price) AS sAmt
+											FROM op_order_item AS ooi
+											LEFT outer JOIN op_user_birthday oud ON ooi.user_id = oud.user_id
+											INNER join op_item oi on ooi.item_id = oi.item_id
+											INNER JOIN op_item_category oic on oi.item_id = oic.item_id
+											INNER JOIN op_category oc on oic.category_id = oc.category_id
+											INNER JOIN op_category_group ocg on oc.category_group_id = ocg.category_group_id
+											INNER JOIN op_seller os on oi.seller_id = os.seller_id
+											INNER JOIN g_locgov gl on os.locgov_code = gl.locgov_code
+											where 1 = 1
+											AND oi.data_status_code IN ('30', '0', '1')
+											GROUP BY os.locgov_code , ocg.name
+										) AS t1
+									GROUP by locgov_code , name
+								) AS T2
+						) AS rs on rs.locgov_code = base.locgov_code AND rs.name = base.txt
+						LEFT JOIN g_locgov clg ON clg.locgov_code = base.locgov_code
+						order by "기부지자체" , base.ord
+			)
+	]]>
+	</insert>
+
+	<delete id="deleteBix5GiftDeli">
+		DELETE FROM b_gift_deli;
+	</delete>
+	<insert id="bix5GiftDeli" >
+	<![CDATA[
+		insert into B_GIFT_DELI(
+			CNTR_YMD
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, seller_id
+			, gift_nm
+			, DELI_TM
+		)
+		select
+			CNTR_YMD
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, company_name as seller_id
+			, item_name as gift_nm
+			, "평균소요" as DELI_TM
+		from(
+			select
+				TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+				, T.upper_locgov_code
+				, T.upper_locgov_nm
+				, T.locgov_code
+				, T.locgov_nm
+				, T.company_name
+				, T.item_name
+				, CAST(format(avg("발송시간"), 1) AS numeric(15,2)) AS "평균소요"
+				, rownum AS rnum
+			FROM (
+				select
+					gl.upper_locgov_code
+					, gl.upper_locgov_nm
+					, gl.locgov_code
+					, gl.locgov_nm
+					, os.company_name
+					, (TO_TIMESTAMP(oi.shipping_date,'yyyymmddHH24MISS')-TO_TIMESTAMP(oi.sales_date,'yyyymmddHH24MISS'))/3600 AS "발송시간"
+					, TO_TIMESTAMP(oi.shipping_date,'yyyymmddHH24MISS')
+					, TO_TIMESTAMP(oi.sales_date,'yyyymmddHH24MISS')
+					, oi.shipping_date
+					, oi.sales_date
+					, oi.item_name
+				FROM op_order_item oi
+				INNER JOIN op_seller os ON oi.seller_id = os.seller_id
+				LEFT JOIN g_locgov gl ON oi.locgov_code = gl.locgov_code
+				WHERE 1=1
+				AND substr(oi.sales_date, 1,4) = TO_CHAR(SYSDATE ,'YYYY')
+				AND oi.order_status = '40'
+				AND substr(oi.shipping_date, 1,4) = TO_CHAR(SYSDATE ,'YYYY')
+				AND length(oi.shipping_date) = 14
+				AND length(oi.sales_date) = 14
+			) AS T
+			GROUP by T.locgov_code , T.company_name
+			ORDER BY rnum, "평균소요"
+		)
+	]]>
+	</insert>
+
+	<delete id="deleteBix5PointUse">
+		DELETE FROM b_point_use;
+	</delete>
+	<insert id="bix5PointUse" >
+	<![CDATA[
+		insert into B_POINT_USE (
+			cntr_ymd
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, sum_cre_pnt
+			, sum_use_pnt
+			, sum_pnt
+			, sum_del_pnt
+			, use_rate
+		)
+		select
+			cntr_ymd
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, sum_cre_pnt
+			, sum_use_pnt
+			, sum_pnt
+			, sum_del_pnt
+			, use_rate
+		from(
+			SELECT
+				TO_CHAR(SYSDATE ,'YYYYMMDD') CNTR_YMD
+				, gl.upper_locgov_nm AS "기부지자체광역지역" -- "기부지자체광역지역"
+				,concat(gl.upper_locgov_nm, ' ', gl.locgov_nm) AS "기부지자체"
+				,gl.upper_locgov_code
+				,gl.upper_locgov_nm
+				,gl.locgov_code
+				,gl.locgov_nm
+				,gc.cntr_point AS sum_cre_pnt
+				, cup.cntr_use_point AS sum_use_pnt
+				, cntr_point - cntr_use_point AS sum_pnt
+				, 0 as sum_del_pnt
+				, format((cup.cntr_use_point*1.0) / (sum(gc.cntr_point)over(PARTITION BY gl.locgov_code)*1.0) * 100, 1) as use_rate
+			FROM (
+				SELECT
+					cntr_locgov_code
+					, sum(cntr_point) AS cntr_point
+				FROM g_cntr
+				WHERE 1=1
+				AND cntr_sttus_code = '200'
+				GROUP BY cntr_locgov_code
+				) gc
+				JOIN g_locgov gl ON gl.locgov_code = gc.cntr_locgov_code
+				JOIN (
+					SELECT cntr_locgov_code
+					, sum(cntr_use_point) AS cntr_use_point
+					FROM g_cntr_use_point up
+					WHERE 1=1
+					GROUP BY cntr_locgov_code
+				) AS cup ON gc.cntr_locgov_code = cup.cntr_locgov_code --AND gc.cntr_sn = cup.cntr_sn
+			WHERE 1=1
+			GROUP BY "기부지자체",gl.locgov_code
+			)
+
+	]]>
+	</insert>
+
+	<delete id="deleteBix5PointUseYear">
+		DELETE FROM b_point_use_year;
+	</delete>
+	<insert id="bix5PointUseYear" >
+	<![CDATA[
+		insert into B_POINT_USE_YEAR(
+			CNTR_YY
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, SUM_CRE_PNT
+		)
+		select
+			CNTR_YY
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, SUM_CRE_PNT
+		from (
+			SELECT
+				TO_CHAR(SYSDATE ,'YYYY') CNTR_YY
+				, gl.upper_locgov_nm AS "기부지자체광역지역"
+				, concat(gl.upper_locgov_nm, ' ', gl.locgov_nm) AS "기부지자체"
+				, gl.upper_locgov_code
+				, gl.upper_locgov_nm
+				, gl.locgov_code
+				, gl.locgov_nm
+				, gc.cntr_point AS SUM_CRE_PNT
+			FROM (
+				SELECT cntr_locgov_code
+				, sum(cntr_point) AS cntr_point
+				FROM g_cntr
+				WHERE 1=1
+				AND substr(cntr_de,1,4) = TO_CHAR(SYSDATE ,'YYYY')
+				AND cntr_sttus_code = '200'
+				GROUP BY cntr_locgov_code
+			) gc
+			JOIN g_locgov gl ON gl.locgov_code = gc.cntr_locgov_code
+			WHERE 1=1
+			GROUP BY "기부지자체",gl.locgov_code
+			)
+	]]>
+	</insert>
+
+	<delete id="deleteBix5PointYear">
+		DELETE FROM b_point_year;
+	</delete>
+	<insert id="bix5PointYear" >
+	<![CDATA[
+		insert into B_POINT_YEAR(
+			cntr_yy
+			,upper_locgov_code
+			,upper_locgov_nm
+			,locgov_code
+			,locgov_nm
+			, crePnt
+			, use1
+			, use2
+			, use3
+			, use4
+			, exPnt
+		)
+		select
+			cntr_yy
+			, upper_locgov_code
+			, upper_locgov_nm
+			, locgov_code
+			, locgov_nm
+			, crePnt
+			, use1
+			, use2
+			, use3
+			, use4
+			, exPnt
+		from (
+			SELECT /*+ ordered use_merge (gc) */
+				TO_CHAR(SYSDATE ,'YYYY') CNTR_YY
+				, gl.upper_locgov_code
+				, gl.upper_locgov_nm
+				, gl.locgov_code
+				, gl.locgov_nm
+				, CONCAT(gl.upper_locgov_nm, ' ', gl.locgov_nm) AS "기부지자체"
+				, gc.cntr_yy AS 연도
+				, SUM(gc.cntr_point) AS crePnt
+				, SUM(gc.cntr_point) AS 발생포인트
+				, SUM(NVL(cup.use_point_2023, 0)) AS use1
+				, SUM(NVL(cup.use_point_2024, 0)) AS use2
+				, SUM(NVL(cup.use_point_2025, 0)) AS use3
+				, SUM(NVL(cup.use_point_2026, 0)) AS use4
+				, SUM(gc.cntr_point) - SUM(NVL(cup.total_use_point, 0)) AS exPnt
+			  FROM (
+					SELECT
+			        	cntr_sn
+						, cntr_locgov_code
+			            , cntr_point
+			            , substring(cntr_de,1,4) AS cntr_yy
+					FROM g_cntr
+			        WHERE cntr_sttus_code = '200'
+			        	AND cntr_de >= '20230101' AND cntr_de < TO_CHAR(add_months(trunc(SYSDATE ,'YYYY'), 12),'YYYYMMDD')
+			       ) gc
+			  LEFT JOIN (
+			        SELECT
+			        	cntr_sn
+			            , SUM(CASE WHEN substring(point_use_de,1,4) = '2023' THEN cntr_use_point ELSE 0 END) AS use_point_2023
+			            , SUM(CASE WHEN substring(point_use_de,1,4) = '2024'  THEN cntr_use_point ELSE 0 END) AS use_point_2024
+			            , SUM(CASE WHEN substring(point_use_de,1,4) = '2025'  THEN cntr_use_point ELSE 0 END) AS use_point_2025
+			            , SUM(CASE WHEN substring(point_use_de,1,4) = '2026'  THEN cntr_use_point ELSE 0 END) AS use_point_2026
+			            , SUM(cntr_use_point) AS total_use_point
+			          FROM g_cntr_use_point
+			         WHERE 1=1
+			           AND point_use_de >= '20230101' AND point_use_de <  TO_CHAR(add_months(trunc(SYSDATE ,'YYYY'), 12),'YYYYMMDD')
+			         GROUP BY cntr_sn
+			       ) cup ON gc.cntr_sn = cup.cntr_sn
+			       /* 지자체명 조인 */
+				LEFT JOIN g_locgov gl ON gc.cntr_locgov_code = gl.locgov_code
+			GROUP BY gl.upper_locgov_nm, gl.locgov_nm, gc.cntr_yy
+			ORDER BY "기부지자체", 연도
+			)
+	]]>
+	</insert>
+</mapper>

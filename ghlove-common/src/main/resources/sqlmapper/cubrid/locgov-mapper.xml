@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.user.LocgovMapper">
+
+<resultMap id="UserBaseResult" type="com.onlinepowers.framework.security.userdetails.User">
+		<id property="userId" column="USER_ID" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="email" column="EMAIL" />
+		<result property="password" column="PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="statusCode" column="STATUS_CODE" />
+		<result property="loginCount" column="LOGIN_COUNT" />
+		<result property="loginDate" column="LOGIN_DATE" />
+		<result property="denyDate" column="DENY_DATE" />
+		<result property="leaveDate" column="LEAVE_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="createdDate" column="CREATED_DATE" />
+        <result property="phoneNumber" column="PHONE_NUMBER" />
+</resultMap>
+
+	<sql id="sqlLocgovListByParamWhere">
+		<where>
+			<!-- 검색조건 : 검색구분 + 값 -->
+			<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
+				<choose>
+					<when test="srchKey == 'LOCGOV_NM'">
+						AND CONCAT(L.UPPER_LOCGOV_NM, ' ', L.LOCGOV_NM)
+						LIKE CONCAT('%', #{srchValue},'%')
+					</when>
+					<when test="srchKey == 'CHARGER_NM'">
+						AND L.CHARGER_NM = (SELECT crypto_enc('normal',
+						#{srchValue}, ''))
+					</when>
+					<when test="srchKey == 'CHARGER_CTTPC'">
+						AND L.CHARGER_CTTPC = (SELECT crypto_enc('normal',
+						#{srchValue}, ''))
+					</when>
+				</choose>
+			</if>
+
+			<!-- 검색조건 : 등록일 (시작) -->
+			<if test="srchStartCreated != null and srchStartCreated != ''">
+				AND DATE_FORMAT(L.FRST_REGIST_PNTTM,'%Y%m%d') <![CDATA[ >= ]]>
+				#{srchStartCreated}
+			</if>
+
+			<!-- 검색조건 : 등록일 (종료) -->
+			<if test="srchEndCreated != null and srchEndCreated != ''">
+				AND DATE_FORMAT(L.FRST_REGIST_PNTTM,'%Y%m%d') <![CDATA[ <= ]]>
+				#{srchEndCreated}
+			</if>
+
+			<if test="locgovCode != null and locgovCode != ''">
+				AND L.LOCGOV_CODE = #{locgovCode}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="sqlLocgovPointListByParamWhere">
+		<where>
+			<if test="stdrYear != null and stdrYear != ''">
+				AND CS.STDR_YEAR = #{stdrYear}
+			</if>
+			<if test="locgovCode != null and locgovCode != ''">
+				AND CS.LOCGOV_CODE = #{locgovCode}
+			</if>
+		</where>
+	</sql>
+
+	<select id="getLocgovCountByParam"
+		parameterType="saleson.shop.user.support.LocgovSearchParam"
+		resultType="Integer">
+		/** locgov-mapper.getLocgovCountByParam (지자체관리 목록 총 갯수 조회) */
+		SELECT
+		COUNT(*)
+		FROM
+		G_LOCGOV L
+		<include refid="sqlLocgovListByParamWhere" />
+		ORDER BY
+		FRST_REGIST_PNTTM DESC
+	</select>
+
+	<select id="getLocgovListByParam"
+		parameterType="saleson.shop.user.support.LocgovSearchParam"
+		resultType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.getLocgovListByParam (지자체관리 목록 조회) */
+		SELECT
+			A.locgov_code,
+			A.upper_locgov_nm,
+			A.locgov_nm,
+			A.upper_locgov_code,
+			A.locgov_intrcn_cn,
+			crypto_dec('normal', A.charger_cttpc, '', 0) AS charger_cttpc,
+			crypto_dec('normal', A.charger_nm, '', 0) AS charger_nm,
+			A.charger_psitn_dept,
+			A.locgov_hmpg,
+			A.locgov_popltn_co,
+			A.locgov_ar,
+			A.locgov_spcprd,
+			A.gcct_use_at,
+			A.etrcsh_use_at,
+			A.use_at,
+			A.locgov_budget_amt,
+			A.bizrno,
+			A.locgov_zip,
+			A.bass_adres,
+			A.dtl_adres,
+			A.achlqr_sle_at,
+			A.frst_register_id,
+			DATE_FORMAT(A.frst_regist_pnttm,'%Y-%m-%d') AS frst_regist_pnttm,
+			A.last_updusr_id,
+			DATE_FORMAT(A.last_updt_pnttm,'%Y-%m-%d') AS last_updt_pnttm,
+			(SELECT point_rate
+			FROM g_ctbny_setup
+			WHERE locgov_code = A.locgov_code
+			AND stdr_year = DATE_FORMAT(now(), '%Y')) AS point_rate
+		FROM (
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				L.locgov_code,
+				L.upper_locgov_nm,
+				L.locgov_nm,
+				L.upper_locgov_code,
+				L.locgov_intrcn_cn,
+				L.charger_cttpc,
+				L.charger_nm,
+				L.charger_psitn_dept,
+				L.locgov_hmpg,
+				L.locgov_popltn_co,
+				L.locgov_ar,
+				L.locgov_spcprd,
+				L.gcct_use_at,
+				L.etrcsh_use_at,
+				L.use_at,
+				L.locgov_budget_amt,
+				L.bizrno,
+				L.locgov_zip,
+				L.bass_adres,
+				L.dtl_adres,
+				L.achlqr_sle_at,
+				L.frst_register_id,
+				L.frst_regist_pnttm,
+				L.last_updusr_id,
+				L.last_updt_pnttm
+			FROM
+				g_locgov L
+		<include refid="sqlLocgovListByParamWhere" />
+		ORDER BY
+			L.ordering
+		<include refid="CommonMapper.paginationFooter" />
+		) A
+	</select>
+
+	<select id="getLocgovPointCountBySearchParam"
+		parameterType="saleson.shop.user.support.ContributionSetupSearchParam"
+		resultType="Integer">
+		/** locgov-mapper.getLocgovPointCountBySearchParam (포인트 목록 총 갯수 조회) */
+		SELECT COUNT(*)
+		FROM G_CTBNY_SETUP CS
+		<include refid="sqlLocgovPointListByParamWhere" />
+	</select>
+
+	<select id="getLocgovPointListBySearchParam"
+		parameterType="saleson.shop.user.support.ContributionSetupSearchParam"
+		resultType="saleson.shop.user.domain.ContributionSetup">
+		/** locgov-mapper.getLocgovPointListBySearchParam (포인트 목록 조회) */
+		SELECT
+			A.stdr_year,
+			A.locgov_code,
+			A.lmt_amt,
+			A.point_rate,
+			A.point_valid_pd,
+			A.frst_register_id,
+			DATE_FORMAT(A.frst_regist_pnttm,'%Y-%m-%d') AS frst_regist_pnttm,
+			A.last_updusr_id,
+			DATE_FORMAT(IFNULL(A.last_updt_pnttm, A.frst_regist_pnttm),'%Y-%m-%d') AS last_updt_pnttm,
+			CASE WHEN IFNULL(M.user_name, '') != ''
+			THEN crypto_dec('normal', M.user_name, '', 0)
+			ELSE IFNULL(crypto_dec('normal', U.user_name, '', 0), '')
+			END AS last_updusr_name
+		FROM (
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				CS.stdr_year,
+				CS.locgov_code,
+				CS.lmt_amt,
+				CS.point_rate,
+				CS.point_valid_pd,
+				CS.frst_register_id,
+				CS.frst_regist_pnttm,
+				CS.last_updusr_id,
+				CS.last_updt_pnttm
+			FROM g_ctbny_setup CS
+		<include refid="sqlLocgovPointListByParamWhere" />
+		ORDER BY
+			DATE_FORMAT(CS.last_updt_pnttm,'%Y-%m-%d') DESC, CS.stdr_year DESC
+		<include refid="CommonMapper.paginationFooter" />
+		) A
+		LEFT OUTER JOIN op_manager M ON M.user_id = IFNULL(A.last_updusr_id, A.frst_register_id)
+		LEFT OUTER JOIN op_user U ON U.user_id = IFNULL(A.last_updusr_id, A.frst_register_id)
+	</select>
+
+	<select id="getContributionCountByLocgovCode"
+		parameterType="saleson.shop.user.support.LocgovSearchParam"
+		resultType="Integer">
+		/** locgov-mapper.getContributionCountByLocgovCode (지자체 코드에 해당하는 기부 건수조회) */
+		SELECT COUNT(*)
+		FROM G_CNTR C
+		<where>
+			<if test="locgovCodeList != null and locgovCodeList.size() gt 0">
+				<foreach item="locgovCode" index="index"
+					collection="locgovCodeList" open="(" separator="OR" close=")">
+					C.CNTR_LOCGOV_CODE = #{locgovCode}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteLocgov"
+		parameterType="saleson.shop.user.support.LocgovSearchParam">
+		/** locgov-mapper.deleteLocgov (지자체 삭제) */
+		DELETE FROM
+		G_LOCGOV
+		WHERE LOCGOV_CODE = #{locgovCode}
+	</delete>
+
+	<delete id="deleteContributionSetup"
+		parameterType="saleson.shop.user.domain.ContributionSetup">
+		/** locgov-mapper.deleteContributionSetup (기부금 설정 삭제) */
+		DELETE FROM G_CTBNY_SETUP
+		WHERE LOCGOV_CODE = #{locgovCode}
+	</delete>
+
+	<select id="getLocgovDetails" parameterType="saleson.shop.user.support.LocgovSearchParam" resultType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.getLocgovDetails (지자체관리 상세 정보 조회) */
+		SELECT
+			A.locgov_code,
+			A.upper_locgov_nm,
+			A.locgov_nm,
+			A.upper_locgov_code,
+			A.locgov_intrcn_cn,
+			crypto_dec('normal',A.charger_cttpc,'',0) as charger_cttpc,
+			crypto_dec('normal',A.charger_nm,'',0) as charger_nm,
+			A.charger_email,
+			A.charger_psitn_dept,
+			A.locgov_hmpg,
+			A.locgov_popltn_co,
+			A.locgov_ar,
+			A.locgov_spcprd,
+			A.gcct_use_at,
+			A.etrcsh_use_at,
+			A.use_at,
+			A.locgov_budget_amt,
+			A.bizrno,
+			A.locgov_zip,
+			A.bass_adres,
+			A.dtl_adres,
+			A.achlqr_sle_at,
+			A.frst_register_id,
+			A.frst_regist_pnttm,
+			A.last_updusr_id,
+			A.last_updt_pnttm,
+			A.point_rate,
+			A.process_dept_code,
+			A.administ_instt_code,
+			A.stdr_1level_amt,
+			A.stdr_2level_amt,
+			A.stdr_3level_amt,
+			A.lmtt_bgn_de,
+			A.lmtt_end_de,
+			A.violt_resn_cn,
+			A.offcs_nm,
+			A.offcs_file_nm,
+			A.orginl_file_nm,
+			A.fis_sp
+		FROM
+			(
+				SELECT
+					L.locgov_code,
+					L.upper_locgov_nm,
+					L.locgov_nm,
+					L.upper_locgov_code,
+					L.locgov_intrcn_cn,
+					L.charger_cttpc,
+					L.charger_nm,
+					CASE
+						WHEN L.charger_email IS NULL OR L.charger_email = ''
+						THEN (SELECT crypto_dec('normal', email, '', 0) FROM op_manager WHERE locgov_code = L.locgov_code and user_name = L.charger_nm LIMIT 1)
+						ELSE crypto_dec('normal', L.charger_email, '', 0)
+					END AS charger_email,
+					L.charger_psitn_dept,
+					L.locgov_hmpg,
+					L.locgov_popltn_co,
+					L.locgov_ar,
+					L.locgov_spcprd,
+					L.gcct_use_at,
+					L.etrcsh_use_at,
+					L.use_at,
+					L.locgov_budget_amt,
+					L.bizrno,
+					L.locgov_zip,
+					L.bass_adres,
+					L.dtl_adres,
+					L.achlqr_sle_at,
+					L.frst_register_id,
+					DATE_FORMAT(L.frst_regist_pnttm,'%Y-%m-%d') AS frst_regist_pnttm,
+					L.last_updusr_id,
+					DATE_FORMAT(L.last_updt_pnttm,'%Y-%m-%d') AS last_updt_pnttm,
+					(
+						SELECT point_rate
+						FROM g_ctbny_setup
+						WHERE locgov_code = L.locgov_code
+						AND stdr_year = DATE_FORMAT(now(), '%Y')
+					) AS point_rate,
+					L.process_dept_code,
+					L.administ_instt_code,
+					L.stdr_1level_amt,
+					L.stdr_2level_amt,
+					L.stdr_3level_amt,
+					CL.lmtt_bgn_de,
+					CL.lmtt_end_de,
+					CL.violt_resn_cn,
+					L.offcs_nm,
+					L.offcs_file_nm,
+					L.orginl_file_nm,
+					L.fis_sp
+				FROM
+					g_locgov L
+					LEFT OUTER JOIN g_cntr_lmtt CL ON L.locgov_code = CL.locgov_code
+				WHERE
+					L.locgov_code = #{locgovCode}
+			)A
+	</select>
+
+	<insert id="insertLocgov"
+		parameterType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.insertLocgov (지자체 등록) */
+		INSERT INTO G_LOCGOV (
+		LOCGOV_CODE,
+		UPPER_LOCGOV_NM,
+		LOCGOV_NM,
+		UPPER_LOCGOV_CODE,
+		LOCGOV_INTRCN_CN,
+		CHARGER_CTTPC,
+		CHARGER_NM,
+		CHARGER_EMAIL,
+		CHARGER_PSITN_DEPT,
+		LOCGOV_HMPG,
+		LOCGOV_POPLTN_CO,
+		LOCGOV_AR,
+		LOCGOV_SPCPRD,
+		GCCT_USE_AT,
+		ETRCSH_USE_AT,
+		LOCGOV_BUDGET_AMT,
+		BIZRNO,
+		LOCGOV_ZIP,
+		BASS_ADRES,
+		DTL_ADRES,
+		ACHLQR_SLE_AT,
+		USE_AT,
+		FRST_REGISTER_ID,
+		FRST_REGIST_PNTTM,
+		LAST_UPDUSR_ID,
+		LAST_UPDT_PNTTM,
+		PROCESS_DEPT_CODE,
+		ADMINIST_INSTT_CODE,
+		STDR_1LEVEL_AMT,
+		STDR_2LEVEL_AMT,
+		STDR_3LEVEL_AMT,
+		OFFCS_NM,
+		OFFCS_FILE_NM,
+		ORGINL_FILE_NM,
+		FIS_SP
+		) VALUES (
+		#{locgovCode},
+		(SELECT C.LABEL
+		FROM OP_COMMON_CODE C
+		WHERE C.CODE_TYPE = 'WDR'
+		AND C.LANGUAGE = 'ko'
+		AND C.USE_YN = 'Y'
+		AND C.ID = #{upperLocgovCode}
+		LIMIT 1),
+		(SELECT C.LABEL
+		FROM OP_COMMON_CODE C
+		WHERE C.CODE_TYPE = 'LOCGOV_CODE'
+		AND C.LANGUAGE = 'ko'
+		AND C.USE_YN = 'Y'
+		AND C.ID = #{locgovCode}
+		LIMIT 1),
+		#{upperLocgovCode},
+		#{locgovIntrcnCn},
+		crypto_enc('normal', #{chargerCttpc}, ''),
+		crypto_enc('normal', #{chargerNm}, ''),
+		crypto_enc('normal', #{chargerEmail}, ''),
+		#{chargerPsitnDept},
+		#{locgovHmpg},
+		#{locgovPopltnCo},
+		#{locgovAr},
+		#{locgovSpcprd},
+		#{gcctUseAt},
+		#{etrcshUseAt},
+		#{locgovBudgetAmt},
+		#{bizrno},
+		#{locgovZip},
+		#{bassAdres},
+		#{dtlAdres},
+		#{achlqrSleAt},
+		'Y',
+		#{frstRegisterId},
+		<include refid="CommonMapper.datetime" />
+		,
+		#{lastUpdusrId},
+		<include refid="CommonMapper.datetime" />
+		,
+		#{processDeptCode},
+		#{administInsttCode},
+		nvl(#{stdr1levelAmt}, 0),
+		nvl(#{stdr2levelAmt}, 0),
+		nvl(#{stdr3levelAmt}, 0),
+		#{offcsNm},
+		#{offcsFileNm},
+		#{orginlFileNm},
+		#{fisSp}
+		)
+	</insert>
+
+	<insert id="insertContributionSetup" parameterType="saleson.shop.user.domain.ContributionSetup">
+		/** locgov-mapper.insertContributionSetup (기부금 설정 등록) */
+		INSERT INTO G_CTBNY_SETUP (
+			STDR_YEAR,
+			LOCGOV_CODE,
+			LMT_AMT,
+			POINT_RATE,
+			POINT_VALID_PD,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		) VALUES (
+			#{stdrYear},
+			#{locgovCode},
+			#{lmtAmt},
+			#{pointRate},
+			#{pointValidPd},
+			#{frstRegisterId},
+			<include refid="CommonMapper.datetime" />,
+			#{lastUpdusrId},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<select id="getLoginUserLocgovCodeDetails" parameterType="Long"
+		resultType="saleson.shop.code.domain.Code">
+		/** locgov-mapper.getLoginUserLocgovCodeDetails (로그인 사용자
+		지자체 코드 상세 정보) */
+		SELECT
+				C.CODE_TYPE,
+				C.LANGUAGE,
+				C.ID,
+				CONCAT(IFNULL((
+								SELECT CONCAT(SC.LABEL, ' ')
+								FROM OP_COMMON_CODE SC
+								WHERE SC.ID = CONCAT(SUBSTR(C.ID, 1, 2), '000')
+								AND SC.CODE_TYPE = 'WDR'
+								AND SC.LANGUAGE = 'ko'
+								AND SC.USE_YN = 'Y'
+								LIMIT 1
+				), ''), C.LABEL) AS LABEL,
+				C.DETAIL,
+				C.ORDERING,
+				C.USE_YN,
+				C.UP_ID,
+				C.CODE_VALUE,
+				C.EXTENSION_CODE,
+				C.MAPPING_CODE
+		FROM
+				OP_COMMON_CODE C
+		INNER JOIN
+				OP_MANAGER M
+			ON	M.USER_ID = #{userId}
+			AND	M.LOCGOV_CODE = C.ID
+		WHERE
+				C.CODE_TYPE = 'LOCGOV_CODE'
+			AND	C.LANGUAGE = 'ko'
+			AND	C.USE_YN = 'Y'
+	</select>
+
+	<select id="getContributionSetupDetails"
+		parameterType="saleson.shop.user.support.ContributionSetupSearchParam"
+		resultType="saleson.shop.user.domain.ContributionSetup">
+		/** locgov-mapper.getContributionSetupDetails (기부금 설정 상세 조회) */
+		SELECT
+				CS.STDR_YEAR,
+				CS.LOCGOV_CODE,
+				CS.LMT_AMT,
+				CS.POINT_RATE,
+				CS.POINT_VALID_PD,
+				CS.FRST_REGISTER_ID,
+				DATE_FORMAT(CS.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM,
+				CS.LAST_UPDUSR_ID,
+				DATE_FORMAT(CS.LAST_UPDT_PNTTM,'%Y-%m-%d') AS LAST_UPDT_PNTTM,
+				(SELECT USER_NAME FROM OP_MANAGER WHERE USER_ID = CS.LAST_UPDUSR_ID) AS LAST_UPDUSR_NAME
+		FROM
+				G_CTBNY_SETUP CS
+		WHERE
+				CS.STDR_YEAR = #{stdrYear}
+			AND	CS.LOCGOV_CODE = #{locgovCode}
+	</select>
+
+	<update id="updateContributionSetup" parameterType="saleson.shop.user.domain.ContributionSetup">
+		/** locgov-mapper.updateContributionSetup (기부금 설정 수정) */
+		UPDATE
+				G_CTBNY_SETUP
+		SET
+				LAST_UPDUSR_ID = #{lastUpdusrId},
+				LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />,
+				POINT_RATE = #{pointRate}
+		WHERE
+				STDR_YEAR = #{stdrYear}
+		AND
+				LOCGOV_CODE = #{locgovCode}
+	</update>
+
+	<update id="updateLocgov" parameterType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.updateLocgov (지자체 수정) */
+		UPDATE	G_LOCGOV
+		SET		LOCGOV_INTRCN_CN = #{locgovIntrcnCn},
+				CHARGER_CTTPC = crypto_enc('normal', #{chargerCttpc}, ''),
+				CHARGER_NM = crypto_enc('normal', #{chargerNm}, ''),
+				CHARGER_EMAIL = crypto_enc('normal', #{chargerEmail}, ''),
+				CHARGER_PSITN_DEPT = #{chargerPsitnDept},
+				LOCGOV_HMPG = #{locgovHmpg},
+				LOCGOV_POPLTN_CO = #{locgovPopltnCo},
+				LOCGOV_BUDGET_AMT = #{locgovBudgetAmt},
+				BIZRNO = #{bizrno},
+				LOCGOV_ZIP = #{locgovZip},
+				BASS_ADRES = #{bassAdres},
+				DTL_ADRES = #{dtlAdres},
+				LAST_UPDUSR_ID = #{lastUpdusrId},
+				LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />,
+				PROCESS_DEPT_CODE = #{processDeptCode},
+				ADMINIST_INSTT_CODE = #{administInsttCode},
+				STDR_1LEVEL_AMT = nvl(#{stdr1levelAmt}, 0),
+				STDR_2LEVEL_AMT = nvl(#{stdr2levelAmt}, 0),
+				STDR_3LEVEL_AMT = nvl(#{stdr3levelAmt}, 0),
+				OFFCS_NM = #{offcsNm},
+		        OFFCS_FILE_NM = #{offcsFileNm},
+		        ORGINL_FILE_NM = #{orginlFileNm},
+				FIS_SP = #{fisSp}
+		WHERE
+		LOCGOV_CODE = #{locgovCode}
+	</update>
+
+	<delete id="deleteHonorCntrUser" parameterType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.deleteHonorCntrUser (명예기부자 삭제) */
+		DELETE FROM G_HONOR_CNTRBTR
+		WHERE STDR_YEAR = year(now())
+		  AND LOCGOV_CODE = #{locgovCode}
+	</delete>
+
+	<insert id="insertHonorCntrUser" parameterType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.insertLocgov (명예기부자 등록) */
+		INSERT INTO G_HONOR_CNTRBTR (
+			STDR_YEAR,
+			LOCGOV_CODE,
+			USER_ID,
+			HONOR_CNTRBTR_LEVEL_CODE,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		)
+		SELECT year(now()),
+			   #{locgovCode},
+		       USER_ID,
+		       ( case
+		       <if test="stdr3levelAmt >= 100">
+		       		when amt <![CDATA[ >= ]]> #{stdr3levelAmt} then #{stdr3levelAmtCode}
+		       </if>
+		       <if test="stdr2levelAmt >= 100">
+		       		when amt <![CDATA[ >= ]]> #{stdr2levelAmt} then #{stdr2levelAmtCode}
+		       </if>
+		       <if test="stdr1levelAmt >= 100">
+		       		when amt <![CDATA[ >= ]]> #{stdr1levelAmt} then #{stdr1levelAmtCode}
+		       </if>
+		       	 end
+		       ),
+               #{lastUpdusrId},
+               <include refid="CommonMapper.datetime" />,
+               #{lastUpdusrId},
+               <include refid="CommonMapper.datetime" />
+         FROM ( SELECT USER_ID,
+                       SUM(CNTR_AMT) AS AMT
+                  FROM G_CNTR
+                 WHERE YEAR(STTEMNT_PAY_DE) = YEAR(NOW())
+                   AND CNTR_LOCGOV_CODE = #{locgovCode}
+                   AND DELETE_AT = 'N'
+				   AND CNTR_STTUS_CODE = '200'
+		           AND STTEMNT_PAY_DE IS NOT NULL
+                 GROUP BY USER_ID
+                <choose>
+                	<when test="stdr1levelAmt >= 100">
+                		HAVING SUM(CNTR_AMT) <![CDATA[ >= ]]> #{stdr1levelAmt}
+                	</when>
+                	<when test="stdr2levelAmt >= 100">
+                		HAVING SUM(CNTR_AMT) <![CDATA[ >= ]]> #{stdr2levelAmt}
+                	</when>
+                	<when test="stdr3levelAmt >= 100">
+                		HAVING SUM(CNTR_AMT) <![CDATA[ >= ]]> #{stdr3levelAmt}
+                	</when>
+                </choose>
+              )
+	</insert>
+
+	<delete id="resetHonorCntrUser">
+		DELETE FROM G_HONOR_CNTRBTR
+	</delete>
+
+	<delete id="resetStdrAmt">
+		UPDATE G_LOCGOV
+		   SET STDR_1LEVEL_AMT = 0,
+			   STDR_2LEVEL_AMT = 0,
+			   STDR_3LEVEL_AMT = 0
+	</delete>
+
+
+	<select id="getCntrLmttCount" parameterType="string" resultType="Integer">
+		/** locgov-mapper.getCntrLmttCount (기부 제한 등록 여부 확인) */
+		SELECT COUNT(1)
+		  FROM G_CNTR_LMTT
+		 WHERE LOCGOV_CODE = #{locgovCode}
+	</select>
+
+	<insert id="insertCntrLmtt" parameterType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.insertCntrLmtt (기부 제한 등록) */
+		INSERT INTO G_CNTR_LMTT(
+			LMTT_BGN_DE,
+			LMTT_END_DE,
+			LOCGOV_CODE,
+			VIOLT_RESN_CODE,
+			VIOLT_RESN_CN,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		) VALUES (
+			#{lmttBgnDe},
+			#{lmttEndDe},
+			#{locgovCode},
+			'100',
+			#{violtResnCn},
+			#{lastUpdusrId},
+			<include refid="CommonMapper.datetime" />,
+			#{lastUpdusrId},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<update id="updateCntrLmmt" parameterType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.updateCntrLmmt (기부 제한 수정) */
+		UPDATE G_CNTR_LMTT
+		   SET LMTT_BGN_DE = #{lmttBgnDe},
+		       LMTT_END_DE = #{lmttEndDe},
+		       VIOLT_RESN_CN = #{violtResnCn},
+		       LAST_UPDUSR_ID = #{lastUpdusrId},
+		       LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />
+		 WHERE LOCGOV_CODE = #{locgovCode}
+	</update>
+
+	<delete id="deleteCntrLmmt" parameterType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.deleteCntrLmmt (기부 제한 삭제) */
+		DELETE
+		  FROM G_CNTR_LMTT
+		 WHERE LOCGOV_CODE = #{locgovCode}
+	</delete>
+
+	<select id="getProcessDeptCodeAndHonorAmt" parameterType="string" resultType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.getProcessDeptCode (부서 코드 및 명예기부금액 정보 가져오기) */
+		SELECT PROCESS_DEPT_CODE
+		       ,STDR_1LEVEL_AMT
+		       ,STDR_2LEVEL_AMT
+		       ,STDR_3LEVEL_AMT
+		  FROM G_LOCGOV
+		 WHERE LOCGOV_CODE = #{locgovCode}
+	</select>
+
+	<insert id="insertLocgovDeptHist" parameterType="saleson.shop.user.domain.LocgovDeptHist">
+		/** locgov-mapper.insertLocgovDeptHist (부서 코드 변경 등록) */
+		<selectKey keyProperty="deptHistNo" resultType="java.lang.String" order="BEFORE">
+        	SELECT NVL(MAX(DEPT_HIST_NO) + 1, 1) AS DEPT_HIST_NO FROM G_LOCGOV_DEPT_HIST WHERE LOCGOV_CODE = #{locgovCode}
+    	</selectKey>
+
+		INSERT INTO G_LOCGOV_DEPT_HIST (
+			LOCGOV_CODE,
+			DEPT_HIST_NO,
+			PROCESS_DEPT_CODE,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		) VALUES (
+			#{locgovCode},
+			#{deptHistNo},
+			#{processDeptCode},
+			#{frstRegisterId},
+			<include refid="CommonMapper.datetime" />,
+			#{frstRegisterId},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<select id="getLocgovDeptHistListCount" parameterType="saleson.shop.user.support.LocgovDeptSearchParam" resultType="int">
+		/** locgov-mapper.getLocgovDeptHistListCount (부서 코드 변경 이력 총 갯수) */
+		SELECT count(*)
+		  FROM G_LOCGOV_DEPT_HIST A
+		 WHERE 1 = 1
+		 <if test="locgovCode != null and !''.equals(locgovCode) ">
+		   AND A.LOCGOV_CODE = #{locgovCode}
+		 </if>
+		 ORDER BY A.LAST_UPDT_PNTTM DESC
+	</select>
+
+	<select id="getLocgovDeptHistList" parameterType="saleson.shop.user.support.LocgovDeptSearchParam" resultType="saleson.shop.user.domain.LocgovDeptHist">
+		/** locgov-mapper.getLocgovDeptHistList (부서 코드 변경 이력 조회) */
+			SELECT
+				C.locgov_code,
+				C.dept_hist_no,
+				C.process_dept_code,
+				C.last_updusr_id,
+				C.last_updt_pnttm,
+				crypto_dec('normal', C.user_name, '', 0) AS user_name,
+				crypto_dec('normal', C.login_id, '', 0) AS login_id
+			FROM
+			(
+				SELECT
+					locgov_code,
+					dept_hist_no,
+					process_dept_code,
+					last_updusr_id,
+					last_updt_pnttm,
+					user_name,
+					login_id
+				FROM (
+					<include refid="CommonMapper.paginationHeader" />
+					SELECT
+						A.locgov_code,
+						A.dept_hist_no,
+						A.process_dept_code,
+						A.last_updusr_id,
+						DATE_FORMAT(A.last_updt_pnttm,'%Y-%m-%d') AS last_updt_pnttm,
+						crypto_dec('normal', user_name, '', 0) AS user_name,
+						crypto_dec('normal', login_id, '', 0) AS login_id
+					FROM g_locgov_dept_hist A
+					LEFT OUTER JOIN op_user B ON A.last_updusr_id = B.user_id
+					WHERE 1 = 1
+					<if test="locgovCode != null and !''.equals(locgovCode) ">
+						AND A.locgov_code = #{locgovCode}
+					</if>
+					ORDER BY A.last_updt_pnttm DESC
+					<include refid="CommonMapper.paginationFooter" />
+						)
+			)C
+	</select>
+
+	<select id="getLocgovOffcsInfo" parameterType="string" resultType="saleson.shop.user.domain.Locgov">
+		/** locgov-mapper.getLocgovOffcsInfo (직인 파일 정보 가져오기) */
+		SELECT OFFCS_NM
+		       ,OFFCS_FILE_NM
+		       ,ORGINL_FILE_NM
+		  FROM G_LOCGOV
+		 WHERE LOCGOV_CODE = #{locgovCode}
+	</select>
+
+	<update id="updateLocgovOffcsInfo" parameterType="string">
+		/** locgov-mapper.updateLocgovOffcsInfo (직인 파일 정보 삭제) */
+		UPDATE G_LOCGOV
+		   SET OFFCS_NM = null
+		       ,OFFCS_FILE_NM = null
+		       ,ORGINL_FILE_NM = null
+		 WHERE LOCGOV_CODE = #{locgovCode}
+	</update>
+
+	<select id="getLocgovCodeByManagerId" parameterType="long" resultType="string">
+		/** locgov-mapper.getLocgovCodeById (관리자 자치구 코드 가져오기) */
+		SELECT LOCGOV_CODE
+		  FROM OP_MANAGER
+		 WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="getLocgovCodeBySellerId" parameterType="long" resultType="string">
+		/** locgov-mapper.getLocgovCodeById (답례품업체 자치구 코드 가져오기) */
+		SELECT LOCGOV_CODE
+		  FROM OP_SELLER
+		 WHERE SELLER_ID = #{userId}
+	</select>
+
+	<select id="getLocgovCodeBySellerUserId" parameterType="long"
+		resultType="string">
+		/** locgov-mapper.getLocgovCodeById (답례품관리자 자치구 코드 가져오기) */
+		SELECT LOCGOV_CODE
+		FROM OP_SELLER_USER
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="getUpperLocgovCode" parameterType="string"
+		resultType="string">
+		/** locgov-mapper.getUpperLocgovCode (상위지자체 코드 가져오기) */
+		SELECT UPPER_LOCGOV_CODE
+		FROM G_LOCGOV
+		WHERE LOCGOV_CODE = #{locgov}
+	</select>
+
+	<select id="getHonorUserList" parameterType="string"
+		resultType="saleson.shop.donation.domain.HonorCntr">
+		/*locgov-mapper.getHonorUserList (명예회원 리스트 가져오기) */
+			SELECT
+				E.user_id
+				,E.mber_ci
+				,E.upper_locgov_nm
+				,E.locgov_nm
+				,crypto_dec('normal', E.user_name, '', 0) AS user_name
+				,E.receive_sms
+			FROM
+			(
+				SELECT
+					A.user_id
+					,B.mber_ci
+					,C.upper_locgov_nm
+					,C.locgov_nm
+					,B.user_name
+					,D.receive_sms
+				FROM g_honor_cntrbtr A
+				INNER JOIN op_user B ON A.user_id = B.user_id
+				INNER JOIN g_locgov C ON A.locgov_code = C.locgov_code
+				INNER JOIN op_user_detail D ON B.user_id = D.user_id
+				WHERE A.locgov_code = #{locgovCode}
+				AND A.stdr_year = YEAR(NOW())
+			)E
+	</select>
+
+	<!-- 판매자 ID로 판매자 정보 조회. -->
+	<select id="getLocgById" parameterType="string" resultMap="UserBaseResult" >
+		SELECT
+			*
+		from OP_MANAGER
+		where
+			USER_ID = #{loginId}
+	</select>
+</mapper>

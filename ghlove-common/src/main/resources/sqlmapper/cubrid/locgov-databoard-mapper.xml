@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.community.locgovdataboard.LocgovDataBoardMapper">
+
+	<resultMap id="DataboardResult" type="saleson.shop.databoard.domain.Databoard">
+		<result property="dataId" column="DATA_ID" />
+		<result property="subject" column="SUBJECT" />
+		<result property="url" column="URL" />
+		<result property="categoryTeam" column="CATEGORY_TEAM" />
+		<result property="userName" column="USER_NAME" />
+		<result property="password" column="PASSWORD" />
+		<result property="email" column="EMAIL" />
+		<result property="content" column="CONTENT" />
+		<result property="hits" column="HITS" />
+		<result property="boardCode" column="BOARD_CODE" />
+		<result property="subCategory" column="SUB_CATEGORY" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="targetOption" column="TARGET_OPTION" />
+		<result property="relOption" column="REL_OPTION" />
+		<result property="urlType" column="URL_TYPE" />
+		<result property="noticeFlag" column="NOTICE_FLAG" />
+		<result property="visibleType" column="VISIBLE_TYPE" />
+		<result property="sellerSelectFlag" column="SELLER_SELECT_FLAG" />
+		<result property="newFlag" column="NEW_FLAG" />
+		<result property="fileTy" column="FILE_TY" />
+		<result property="useYn" column="USE_YN" />
+	</resultMap>
+
+
+
+	<select id="getDataboardCount" parameterType="saleson.shop.databoard.support.DataboardParam" resultType="Integer" >
+			SELECT COUNT(*)
+			FROM op_community_databoard N
+			<where>
+				<if test="subCategory != null and subCategory != ''">
+					AND SUB_CATEGORY = #{subCategory}
+				</if>
+				<if test="categoryTeam != null and categoryTeam != ''">
+					AND CATEGORY_TEAM LIKE CONCAT('%', #{categoryTeam}, '%')
+				</if>
+				<if test="query != null and query != ''">
+					<if test="where == 'SUBJECT'">
+						AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+					</if>
+					<if test="where == 'CONTENT'">
+						AND CONTENT LIKE CONCAT('%', #{query}, '%')
+					</if>
+				</if>
+				<if test="noticeFlag != null and noticeFlag != ''">
+					AND NOTICE_FLAG = #{noticeFlag}
+				</if>
+				<if test="visibleType != null and visibleType != ''">
+					AND (VISIBLE_TYPE = #{visibleType} OR VISIBLE_TYPE = 1)
+				</if>
+				<if test="startCreateDate != null and startCreateDate !='' and endCreateDate != null and endCreateDate !=''">
+					AND DATE_FORMAT(N.CREATED_DATE,'%Y%m%d') BETWEEN #{startCreateDate} AND #{endCreateDate}
+				</if>
+			</where>
+	</select>
+
+	<select id="getDataboardList" parameterType="saleson.shop.databoard.support.DataboardParam" resultMap="DataboardResult" >
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				A.data_id,
+				A.subject,
+				A.url,
+				A.category_team,
+				crypto_dec('normal', A.user_name, '', 0) user_name,
+				A.password,
+				A.email,
+				A.content,
+				A.hits,
+				A.board_code,
+				A.sub_category,
+				A.created_date,
+				A.target_option,
+				A.rel_option,
+				A.notice_flag,
+				A.visible_type,
+				A.seller_select_flag,
+				A.new_flag,
+				A.use_yn
+			FROM
+				(
+					SELECT
+						N.data_id,
+						N.subject,
+						N.url,
+						N.category_team,
+						N.user_name,
+						N.password,
+						N.email,
+						N.content,
+						N.hits,
+						N.board_code,
+						N.sub_category,
+						N.created_date,
+						N.target_option,
+						N.rel_option,
+						N.notice_flag,
+						N.visible_type,
+						N.seller_select_flag,
+						CASE WHEN DATE_FORMAT(ADDDATE(STR_TO_DATE(N.created_date,'%Y%m%d%H%i%s'), INTERVAL 3 DAY),'%Y%m%d%H%i%s') >= <include refid="CommonMapper.datetime"/> THEN 'Y'
+						ELSE 'N'
+						END AS new_flag,
+						use_yn
+					FROM op_community_databoard N
+				) A
+			<where>
+				<if test="visibleType != null and visibleType != ''">
+					AND (VISIBLE_TYPE = #{visibleType} OR VISIBLE_TYPE = 1)
+				</if>
+				<if test="subCategory != null and subCategory != ''">
+					AND SUB_CATEGORY = #{subCategory}
+				</if>
+				<if test="categoryTeam != null and categoryTeam != ''">
+					AND CATEGORY_TEAM LIKE CONCAT('%', #{categoryTeam}, '%')
+				</if>
+				<if test="noticeFlag != null and noticeFlag != ''">
+					AND NOTICE_FLAG = #{noticeFlag}
+				</if>
+				<if test="query != null and query != ''">
+					<if test="where == 'SUBJECT'">
+						AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+					</if>
+					<if test="where == 'CONTENT'">
+						AND CONTENT LIKE CONCAT('%', #{query}, '%')
+					</if>
+				</if>
+				<if test="startCreateDate != null and startCreateDate !='' and endCreateDate != null and endCreateDate !=''">
+					AND DATE_FORMAT(A.created_date,'%Y%m%d') BETWEEN #{startCreateDate} AND #{endCreateDate}
+				</if>
+			</where>
+			GROUP BY A.data_id
+			ORDER BY A.notice_flag DESC, A.data_id DESC	<!-- 2017.04.24 Jun-Eu Son 상단공지 우선 정렬 추가 -->
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getDataboard" parameterType="Integer" resultMap="DataboardResult" >
+		SELECT
+			A.data_id,
+			A.subject,
+			A.url,
+			A.category_team,
+			crypto_dec('normal', A.user_name, '', 0) user_name,
+			A.password,
+			A.email,
+			A.content,
+			A.hits,
+			A.board_code,
+			A.sub_category,
+			A.created_date,
+			A.target_option,
+			A.rel_option,
+			A.notice_flag,
+			A.visible_type,
+			A.seller_select_flag,
+			A.use_yn
+		FROM
+			(
+				SELECT
+					data_id,
+					subject,
+					url,
+					category_team,
+					user_name,
+					password,
+					email,
+					content,
+					hits,
+					board_code,
+					sub_category,
+					created_date,
+					target_option,
+					rel_option,
+					notice_flag,
+					visible_type,
+					seller_select_flag,
+					use_yn
+				FROM op_community_databoard
+				WHERE data_id = #{value}
+			)A
+	</select>
+
+
+	<insert id="insertDataboard" parameterType="saleson.shop.databoard.domain.Databoard">
+		INSERT INTO op_community_databoard (DATA_ID, SUBJECT, URL, CATEGORY_TEAM, USER_NAME, PASSWORD, EMAIL, CONTENT, HITS, BOARD_CODE, SUB_CATEGORY, CREATED_DATE, TARGET_OPTION, REL_OPTION, NOTICE_FLAG, VISIBLE_TYPE, SELLER_SELECT_FLAG, USE_YN)
+		VALUES (#{dataId}, #{subject}, #{url}, #{categoryTeam}, crypto_enc('normal', #{userName},''), #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{useYn})
+	</insert>
+
+
+	<update id="updateDataboard" parameterType="saleson.shop.databoard.domain.Databoard">
+		UPDATE op_community_databoard SET
+			SUBJECT = #{subject},
+			URL = #{url},
+			USER_NAME = crypto_enc('normal', #{userName},''),
+			CONTENT = #{content},
+			TARGET_OPTION = #{targetOption},
+			REL_OPTION = #{relOption},
+			NOTICE_FLAG = #{noticeFlag},
+			VISIBLE_TYPE = #{visibleType},
+			SELLER_SELECT_FLAG = #{sellerSelectFlag},
+			USE_YN=#{useYn}
+		WHERE DATA_ID = #{dataId}
+	</update>
+
+	<update id="addHitCount" parameterType="Integer">
+		UPDATE op_community_databoard
+		SET HITS = HITS + 1
+		WHERE DATA_ID = #{value}
+	</update>
+
+	<delete id="deleteDataboard" parameterType="Integer" >
+		DELETE FROM op_community_databoard
+		WHERE DATA_ID = #{value}
+	</delete>
+
+	<delete id="databoardListDelete" parameterType="Integer" >
+		DELETE FROM op_community_databoard
+		WHERE DATA_ID = #{value}
+	</delete>
+
+
+	<sql id="whereFrontDataboard">
+		<where>
+			AND USE_YN = 'Y'
+			<if test="subCategory != null and subCategory != ''">
+				AND SUB_CATEGORY = #{subCategory}
+			</if>
+			<if test="categoryTeam != null and categoryTeam != ''">
+				AND CATEGORY_TEAM LIKE CONCAT('%', #{categoryTeam}, '%')
+			</if>
+			<if test="query != null and query != ''">
+				<if test="where == 'SUBJECT'">
+					AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'ORG_FILE_NAME'">
+					AND DATA_ID IN (SELECT DATA_ID FROM OP_DATA_BOARD_FILE WHERE ORG_FILE_NAME LIKE CONCAT('%', #{query}, '%'))
+				</if>
+			</if>
+			AND (VISIBLE_TYPE = 2 OR VISIBLE_TYPE = 1)
+		</where>
+
+	</sql>
+
+	<select id="getFrontDataboardListCount" parameterType="saleson.shop.databoard.support.DataboardParam" resultType="int" >
+
+			SELECT
+			    COUNT(*)
+			FROM op_community_databoard
+			<include refid="whereFrontDataboard"/>
+
+	</select>
+
+	<select id="getFrontDataboardList" parameterType="saleson.shop.databoard.support.DataboardParam" resultMap="DataboardResult" >
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				A.data_id,
+			    A.subject,
+			    A.url,
+			    A.url_type ,
+			    A.category_team,
+			    A.target_option,
+				A.rel_option,
+			    A.sub_category,
+			    A.notice_flag,
+				<if test='conditionType != "main"'>
+				    crypto_dec('normal', A.user_name, '', 0) user_name,
+				    A.password,
+				    A.email,
+				    A.content,
+				    A.hits,
+				    A.board_code,
+			    </if>
+			    A.created_date,
+			    A.file_ty
+			FROM
+			(
+				SELECT
+				    D.data_id,
+				    D.subject,
+				    CASE WHEN url IS NULL OR url = ''
+				    THEN CONCAT('/data-board/detail?dataId=',D.data_id) ELSE TRIM(D.url) END AS url ,
+				    CASE WHEN D.url IS NULL OR D.url = '' THEN 0 ELSE 1 END AS url_type ,
+				    D.category_team,
+				    D.target_option,
+					D.rel_option,
+				    D.sub_category,
+				    D.notice_flag,
+					<if test='conditionType != "main"'>
+					    D.user_name,
+					    D.password,
+					    D.email,
+					    D.content,
+					    D.hits,
+					    D.board_code,
+				    </if>
+				    D.created_date,
+				    (SELECT GROUP_CONCAT(file_ty) FROM op_data_board_file WHERE data_id = D.data_id) AS file_ty
+				FROM op_community_databoard  D
+				<include refid="whereFrontDataboard"/>
+				ORDER BY IFNULL(D.notice_flag, 'N') DESC
+					, CASE WHEN IFNULL(D.notice_flag, 'N') = 'Y' THEN D.data_id ELSE 0 END DESC
+					<choose>
+						<when test="(sort != '' and sort != null) and (orderBy != '' and orderBy != null)">
+							<choose>
+								<when test='orderBy == "CREATED_DATE"'>, D.created_date </when>
+								<when test='orderBy == "HITS"'>, D.hits </when>
+								<otherwise>, D.created_date </otherwise>
+							</choose>
+							<choose>
+								<when test='sort == "ASC"'>ASC</when>
+								<otherwise>DESC</otherwise>
+							</choose>
+						</when>
+						<otherwise>
+							, D.created_date DESC
+						</otherwise>
+					</choose>
+			) A
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+
+	<select id="getFrontDataboardListByTeamCodes" parameterType="saleson.shop.databoard.support.DataboardParam" resultMap="DataboardResult" >
+			SELECT
+			    DATA_ID,
+			    SUBJECT,
+			    CASE WHEN URL IS NULL OR URL = '' THEN CONCAT('/board/view/',DATA_ID)
+			    	ELSE TRIM(URL)
+			    END AS URL ,
+			    CASE WHEN URL IS NULL OR URL = '' THEN 0
+			    	ELSE 1
+			    END AS URL_TYPE ,
+			    CATEGORY_TEAM,
+			    TARGET_OPTION,
+				REL_OPTION,
+			    SUB_CATEGORY,
+			    CREATED_DATE
+			FROM (
+				<foreach item="teamCode" index="index" collection="teamCodes" open="" separator="UNION" close="">
+					SELECT * FROM (
+						SELECT
+							DATA_ID, SUBJECT, URL, #{teamCode} AS CATEGORY_TEAM, TARGET_OPTION, REL_OPTION, SUB_CATEGORY, CREATED_DATE
+						FROM op_community_databoard
+						WHERE CATEGORY_TEAM LIKE CONCAT('%', #{teamCode}, '%') ORDER BY DATA_ID DESC LIMIT 5
+					) T#{index}
+		    	</foreach>
+			) T
+	</select>
+
+	<select id="getFrontDataboardFileList" parameterType="Integer" resultType="saleson.shop.databoard.domain.DataboardFile">
+		/** databoard-mapper.getFrontDataboardFileList (자료실 파일 목록 조회) */
+		SELECT
+				DATA_FILE_ID ,
+				DATA_ID,
+				FILE_NAME,
+				FILE_TY,
+				ORDERING,
+				CREATED_DATE,
+				ORG_FILE_NAME
+		FROM
+				op_community_databoard_file
+		WHERE
+				DATA_FILE_ID  = #{dataId}
+	</select>
+
+	<select id="getFrontDataboardFileDetail" parameterType="Integer" resultType="saleson.shop.databoard.domain.DataboardFile">
+		/** databoard-mapper.getFrontDataboardFileList (자료실 파일 조회) */
+		SELECT
+				DATA_ID,
+				DATA_ID,
+				FILE_NAME,
+				FILE_TY,
+				ORDERING,
+				CREATED_DATE,
+				ORG_FILE_NAME
+		FROM
+				op_community_databoard_file
+		WHERE
+				DATA_FILE_ID  = #{dataFileId}
+	</select>
+
+	<insert id="insertDataboardFile" parameterType="saleson.shop.databoard.domain.DataboardFile">
+		INSERT INTO op_community_databoard_file (
+			DATA_FILE_ID
+			, DATA_ID
+			, FILE_NAME
+			, FILE_TY
+			, ORDERING
+			, CREATED_DATE
+			, ORG_FILE_NAME
+		) VALUES (
+			#{dataFileId}
+			, #{dataId}
+			, #{fileName}
+			, #{fileTy}
+			, (SELECT IFNULL(MAX(ORDERING)+1, 1) FROM OP_DATA_BOARD_FILE WHERE DATA_ID = #{dataId})
+			, <include refid="CommonMapper.datetime"/>
+			, #{orgFileName}
+		)
+	</insert>
+
+	<delete id="deleteDataboardFile" parameterType="Integer" >
+		DELETE FROM op_community_databoard_file
+		WHERE DATA_FILE_ID = #{dataFileId}
+	</delete>
+</mapper>

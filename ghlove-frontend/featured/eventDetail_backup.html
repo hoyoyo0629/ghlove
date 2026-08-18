@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>지역 이벤트 상세-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/event.css">
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/evt_detail.css">
+    <link rel="stylesheet" href="/static/css/goods_card.css">
+
+</head>
+
+<body>
+<div id="saleson" v-cloak>
+    <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali ref="layoutHeader"></layout-header-ali>
+        <layout-header :menu-url="menuUrl"></layout-header>
+
+        
+        <section class="center" id="contents">
+            <div class="contents-wrap">
+                <div class="list-page-area">
+                    <div class="list-page-body">
+                        <div class="page-title">{{ featured.featuredName}}</div>
+                        <div class="page-info">
+                            <div class="page-info-list">
+                                <div class="writer">
+                                    {{ `${itemDateFormat(featured.startDate)} ~ ${itemDateFormat(featured.endDate)}` }}
+                                </div>
+                                <div class="date-created" v-show="featured.featuredHost">{{ featured.featuredHost }}</div>
+                                <div class="views" v-show="featured.featuredPhoneNo1 && featured.featuredPhoneNo2 && featured.featuredPhoneNo3">
+                                    {{ `${featured.featuredPhoneNo1}-${featured.featuredPhoneNo2}-${featured.featuredPhoneNo3}` }}
+                                </div>
+                            </div>
+                            <a :href="featured.link" class="share-con pointblue moreView">
+                                <img class="icon-img" src="/static/images/icon/btn-short_link.png"
+                                     alt="링크이동" v-show="featured.link">{{featured.link}}
+                            </a>
+                        </div>
+                        <div class="page-contents">
+                            <!-- 상단배너 -->
+                            <div class="top_banner">
+                                <img :src="bannerImage" @error="errorImage">
+
+                            </div>
+                            <!-- 에디터 상세 내용 : <div class="result_con">{{ unescapeHtml(result.question) }}</div>로 공백 없이 바인딩 -->
+                            <div class="result_con" v-html="appendCdnDomain(unescapeHtml(featured.featuredContent))"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 버튼그룹 -->
+                <div class="btn-box">
+                    <button type="button" class="blueBtn u-confirm last-btn" @click="goToList">
+                        목록<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt=""></span>
+                    </button>
+                </div>
+
+                <!-- 답례품 카드 -->
+                <div class="section all_goods">
+                    <ul class="goods-list-group">
+                        <li class="goods-list-items" v-for="(val,i,arr) in listData" :key="i">
+                            <div @click.prevent="jumpToDetails(val)" class="list_inner" tabindex="0" @keydown="jumpToDetailsE($event,val)" :role="val.itemName + ' 상세 페이지로 이동'">
+                                <span class="img_frame">
+                                    <img class="item_img" v-bind:src="itemImage(val.itemImage)" :alt="val.itemName" @error="this.$goodsItem.errorImage($event)">
+                                    <img src="/static/images/goods/goods_sold-out.png" alt="품절" v-show="!(val.adultItemYn === 'Y' && adultYn === 'N') && val.itemSoldOutFlag === 'Y'">
+                                    <img src="/static/images/goods/goods_19.png" alt="19세구매가능" v-show="val.adultItemYn === 'Y' && adultYn === 'N'">
+                                    <button type="button" class="icon-md-img" :class="val.wishlistFlag ? 'on' : ''"
+                                        @click.prevent="this.$goodsItem.addToWishList($event)"
+                                        @keydown="keydownDetails($event)" v-bind:id="val.itemId"
+                                        :title="val.wishlistFlag ? '관심 답례품 등록 상태, 해제하기' : '관심 답례품 해제 상태, 등록하기'"></button>
+                                    <button type="button" class="cart" @keydown="keydownDetails($event)" title="장바구니에 추가"
+                                        @click.stop="this.$goodsItem.addToCart(val.itemId, val.adultItemYn, adultYn)" v-if="this.$goodsItem.isShowCartIcon(val)"></button>
+                                </span>
+                                <button type="button" class="do_btn" @click.stop="this.$goodsItem.getLocGovInfo(val.locgovCode)">
+                                    <span class="btn_icon"></span>
+                                    <span class="btn_txt">{{ val.locgovNm }} 기부</span>
+                                    <span class="btn_arrow"></span>
+                                </button>
+                                <span class="card_title" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }">{{val.itemName}}</span>
+                                <span class="deepBlue" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }"><span class="pointSize">{{ formatNumber(val.salePrice) }}</span> P</span>
+                                <span class="tag_box" v-if="val.itemNewFlag == 'Y'">신규</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <!--<div class="btn-box moreBtn" v-show="moreBtnDisplay">
+                        <button class="formBtn more" type="button" v-on:click="nextPage()">더보기</button>
+                    </div>-->
+                    <pagination :current-page="currentPage" :total-pages="totalPage" @change="paging"></pagination>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <layout-tabbar-ali></layout-tabbar-ali>
+        <!-- footer component -->
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+    </div>
+    <!--//#wrap-->
+</div>
+<!--//#saleson-->
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+<script src="/static/js/main.js"></script>
+<script src="/static/js/jquery.cookie.js"></script>
+<script src="/modules/babel.min.js"></script>
+<script src="/modules/es6-promise.min.js"></script>
+<script src="/modules/es6-promise.auto.min.js"></script>
+<script src="/modules/axios.js"></script>
+<script src="/modules/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script src="/modules/op.common.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+<script src="/modules/op.wcslog.js"></script>
+<script src="/modules/goods.item.js"></script>
+
+<script type="text/babel">
+    Vue.use(VueAwesomeSwiper);
+    var vm = new Vue({
+        el: '#saleson',
+        components: {
+            'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+            'layout-header': httpVueLoader('/components/layouts/header_g.vue'),
+            //'layout-customer-lnb-ali': httpVueLoader('/components/layouts/customer-lnb_ali.vue'),
+            'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+            'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+            'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+            'layout-tabbar-ali': httpVueLoader('/components/layouts/m_tabbar_g.vue'),
+        },
+        data: {
+            isBtnShow: false,
+            isFileUse: false,
+            menuUrl: location.pathname,
+            featuredUrl: '',
+            featured: [],
+            itemListMap: [],
+            itemTypeList: [],
+            itemTypeIdKey: '',
+            itemTypeNameKey: '',
+            itemListMapKey: '',
+            adultYn: 'N',
+            moreBtnDisplay: false,
+            currentPage: 1,
+            listData: [],
+            bannerImage: '',
+            totalPage: 0,
+        },
+        methods: {
+            goToList() {
+                history.go(-1);
+            },
+            submit(page) {
+                const params = {
+                    page
+                    , 'itemsPerPage' : $goods.const.ITEMS_PER_GOODS
+                    , 'featuredUrl' : this.featuredUrl
+                };
+                this.currentPage = page;
+                this.showMoreBtn(false);
+                this.showLoading(true);
+                $s.api.getEventDetail(params, function (response) {
+                    vm.showLoading(false);
+                    const featured = response.featuredList.featured;
+                    vm.itemTypeIdKey = response.featuredList.itemTypeIdKey;
+                    vm.itemTypeNameKey = response.featuredList.itemTypeNameKey;
+                    //vm.featuredUrl = response.featuredList.featuredUrl;
+                    vm.featured = featured;
+                    //map
+                    vm.itemListMap = response.featuredList.itemListMap;
+
+                    // item list
+                    vm.itemTypeList = response.featuredList.itemTypeList;
+                    vm.itemListMapKey = vm.itemTypeList.shift()[vm.itemTypeIdKey];
+                    // vm.adultYn = response.adultYn;       // 19세 답례품 모두 보여주는 걸로 변경되어 수정
+                    vm.adultYn = 'Y';
+                    const array = vm.itemListMap[vm.itemListMapKey];
+                    if (array && array.length > 0) {
+                        array.forEach((v,i,arr) => {
+                            vm.listData.push(v);
+                        });
+                    }
+                    vm.checkImg();		// 선택된 답례품 없을 경우 이미지 표시 되지 않아 순서 변경
+                    vm.totalPage = response.pagination.totalPages;
+                    if (response.pagination.totalItems == 0) {
+                        vm.totalSerchCnt = 0;
+                        return;
+                    } else {
+                        vm.showMoreBtn(response.pagination.currentPage < response.pagination.totalPages);
+                    }
+
+                    //vm.getEventReply(page);
+                    //vm.makeOpenGraphTag(pageUrl, featured.featuredName, '', featured.featuredSimpleContent);
+                    // vm.setPageInfo(featured.featuredName, featured.featuredSimpleContent, '');
+                }, function (error) {
+                    vm.showLoading(false);
+                    // $s.error(error);
+                    console.log(error);
+                    $s.alert('문제가 발생했습니다.', function() {
+                        history.back();
+                    });
+                });
+            },
+
+            paging(page) {
+                if (this.currentPage == page) {
+                    return;
+                }
+                if (page < 1) {
+                    return;
+                }
+                this.submit(page);
+            },
+            itemDateFormat(val) {
+                return $goodsItem.dateFormat(val);
+            },
+            jumpToDetails:function(v){
+                // if (v.adultItemYn === 'Y' && this.adultYn === 'N') {
+                //     if ($s.isLogin()) {
+                //         $s.alert('19세 미만의 청소년은 이용할 수 없습니다.');
+                //     } else {
+                //         $s.redirect($s.pages.LOGIN + "?target=" + encodeURIComponent($s.requestContext.requestFullUri));
+                //     }
+                //     return ;
+                // }
+
+                $s.redirect("/items/details.html?code="+ v.itemUserCode);
+            },
+            jumpToDetailsE(e, v) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        this.jumpToDetails(v);
+                    }
+                },
+            keydownDetails(e) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        if ($(e.target).parents().is(".list_inner")) {
+                            e.stopPropagation();
+                        }
+                    }
+                },
+            showMoreBtn(isShow) {
+                this.moreBtnDisplay = isShow;
+            },
+            showLoading(isLoading) {
+                this.$refs.layoutFooter.showLoading(isLoading);
+            },
+            loadingMounted() {
+                $(window).resize(function () {
+                    vm.checkImg();
+                });
+                this.submit(1);
+            },
+            nextPage() {
+                this.paging(++this.currentPage);
+            },
+            checkImg : function () {
+                let imageSrc = Saleson.config.noImage;
+                let featured = this.featured;
+                if (window.innerWidth > 768) {
+                    imageSrc = featured.featuredImageSrc;
+                } else {
+					if (featured.featuredImageMobileSrc) {
+                    	imageSrc = featured.featuredImageMobileSrc;
+					} else {
+                    	imageSrc = featured.featuredImageSrc;
+					}
+                }
+
+                if (typeof imageSrc != 'undefined' && imageSrc != null && imageSrc != '') {
+                    imageSrc = this.itemImage(imageSrc);
+                }
+                vm.bannerImage = imageSrc;
+            },
+        },
+        // computed: {
+        //     bannerImage: {
+        //         get : function() {
+        //             let imageSrc = Saleson.config.noImage;
+        //             let featured = this.featured;
+        //             if (typeof featured != 'undefined' && featured != null) {
+        //                 // if (Saleson.isMobile()) {
+        //                 //     imageSrc = featured.featuredImageMobileSrc;
+        //                 // } else {
+        //                 //     imageSrc = featured.featuredImageSrc;
+        //                 // }
+        //                 if (window.innerWidth > 768) {
+        //                     imageSrc = featured.featuredImageMobileSrc;
+        //                 } else {
+        //                     imageSrc = featured.featuredImageSrc;
+        //                 }
+
+        //                 if (typeof imageSrc != 'undefined' && imageSrc != null && imageSrc != '') {
+        //                     imageSrc = this.itemImage(imageSrc);
+        //                 }
+        //             }
+
+        //             return imageSrc;
+        //         },
+        //         set : function(newValue) {
+        //             console.log(newValue);
+        //             return newValue;
+        //         },
+        //     }
+        // },
+        mounted: function () {
+            this.$nextTick(function () {
+                Saleson.init();
+                if ($s.core.getParameter('pages') === '') {
+                    $s.notFoundException();
+                    return;
+                }
+
+                this.featuredUrl = $s.core.getParameter('pages');
+                //initializeListEvent();
+            });
+        }
+    });
+</script>
+</body>
+
+</html>

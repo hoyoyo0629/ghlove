@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.nhapi.NhApiMapper">
+
+	<insert id="insertUserCntrLocgovForNh" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM stat_cntr_mber_loc WHERE user_id = #{userId} and sttemnt_pay_de = #{sttemntPayDe} and cntr_locgov_code = #{cntrLocgovCode};
+
+		INSERT INTO stat_cntr_mber_loc
+		(
+				user_id
+			,	mber_ci
+			, 	sttemnt_pay_de
+			,	cntr_locgov_code
+			, 	cntr_amt
+			,	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{userId}
+			,	#{mberCi}
+			,	#{sttemntPayDe}
+			,	#{cntrLocgovCode}
+			,	#{cntrAmt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertUserCntrForNh" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM stat_cntr_mber WHERE user_id = #{userId} and sttemnt_pay_de = #{sttemntPayDe};
+
+		INSERT INTO stat_cntr_mber
+		(
+				user_id
+			,	mber_ci
+			, 	sttemnt_pay_de
+			, 	cntr_amt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{userId}
+			,	#{mberCi}
+			,	#{sttemntPayDe}
+			,	#{cntrAmt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertLocgovForNh" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM stat_locgov WHERE locgov_code = #{locgovCode};
+		INSERT INTO stat_locgov
+		(
+				locgov_code
+			,	locgov_nm
+			, 	upper_locgov_code
+			, 	upper_locgov_nm
+			,	frst_register_id
+			,	frst_regist_pnttm
+		) VALUES
+		(
+				#{locgovCode}
+			,	#{locgovNm}
+			,	#{upperLocgovCode}
+			,	#{upperLocgovNm}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+</mapper>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="https://ilovegohyang.go.kr/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta
+      itemprop="image"
+      content="https://ilovegohyang.go.kr/static/images/cli-logo.png"
+    />
+    <!--     <meta HTTP-EQUIV="Refresh" Content="0; URL=/intro.html"> -->
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>메인-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/main-b.css" />
+    <link rel="stylesheet" href="/static/css/joind-agf.css" />
+
+    <meta name="author" content="고향사랑e음" />
+    <link rel="canonical" href="https://www.ilovegohyang.go.kr/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="title" content="고향사랑e음" />
+    <meta
+      name="description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta
+      name="keywords"
+      content="고향사랑e음, 고향사랑기부제, 답례품, 고향사랑, 세액공제, 기부, 고향사랑기부, 아이러브고향, 고향사랑이음, 기부금, 고향사랑 기부금"
+    />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="고향사랑e음" />
+    <meta
+      name="twitter:description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+
+    <meta
+      name="naver-site-verification"
+      content="b2f7567fe53f7e956b808c16454ed2e474e4a170"
+    />
+    <meta
+      name="google-site-verification"
+      content="I7B7cy461nFFcpcf6EO6hINjbNM0FiuxLuU_2gQhTwI"
+    />
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <!-- 가입완료 축하 모달  -->
+      <div class="black-bg">
+        <div class="overlayer join-complete">
+          <div class="overlayer-header"></div>
+          <div class="overlayer-body">
+            <h2>고향사랑e음<br />회원가입 완료</h2>
+            <img
+              src="/static/images/icon/cli-icon_join-complete.png"
+              alt="가입을 축하합니다"
+            />
+            <div class="line"></div>
+            <p class="s-txt" id="smsAgree">국민비서·SMS 수신동의</p>
+            <p class="s-txt" id="smsDisAgree">SMS 동의안함</p>
+            <p class="s-txt" id="emailAgree">email 수신동의</p>
+            <p class="s-txt" id="emailDisAgree">email 동의안함</p>
+            <!-- 개발필요 -->
+
+            <!-- 버튼그룹 -->
+            <div class="btn-box">
+              <button
+                type="button"
+                class="blueBtn u-confirm"
+                @click="closePopupLayer()"
+              >
+                확인
+                <span>
+                  <img
+                    src="/static/images/icon/cli-icon_btn-hover-arrow.png"
+                    alt=""
+                  />
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- //가입완료 축하 모달 -->
+      <!-- header component -->
+      <layout-header-ali></layout-header-ali>
+
+      <div class="main_banner_wrap">
+        <section class="main-banner">
+          <div class="center">
+            <!-- banner Image -->
+            <div class="main_banner" v-if="swiperList.length > 0">
+              <!-- <swiper ref="awesomeMainSwiper" class="main_slider" :options="swiperOption.mainSlider"> -->
+              <div
+                class="swiper-button-prev pc"
+                slot="button-prev"
+                @click="resumeAutoSlide()"
+              >
+                <span class="screen_out">이전슬라이드</span>
+              </div>
+              <swiper
+                class="main_slider"
+                id="mainBanner"
+                :options="swiperOption.mainSlider"
+                ref="mainBannerSlide"
+              >
+                <swiper-slide v-for="(item, index) in swiperList">
+                  <a :href="item.linkUrl" title="기부하기 페이지로 이동">
+                    <!--
+                      <img class="de-img" :src="bannerImage(item.bannerId,'pc')" :alt="item.title">
+                      <img class="mo-img" :src="bannerImage(item.bannerId,'m')" :alt="item.title">
+                    -->
+                    <img
+                      class="de-img"
+                      :src="item.pcFileSrc"
+                      :alt="item.title"
+                    />
+                    <img
+                      class="mo-img"
+                      :src="item.mFileSrc"
+                      :alt="item.title"
+                    />
+                  </a>
+                </swiper-slide>
+              </swiper>
+              <div
+                class="swiper-button-next pc"
+                slot="button-next"
+                @click="resumeAutoSlide()"
+              >
+                <span class="screen_out">다음슬라이드</span>
+              </div>
+              <div class="swiper-control">
+                <div class="stop_resume">
+                  <button
+                    type="button"
+                    v-if="AutoSlide == true"
+                    @click="stopAutoSlide"
+                  >
+                    <img
+                      class="icon-img"
+                      src="/static/images/icon/pause.png"
+                      alt="일시정지"
+                    />
+                  </button>
+                  <button type="button" v-else @click="resumeAutoSlide">
+                    <img
+                      class="icon-img"
+                      src="/static/images/icon/play.png"
+                      alt="재생"
+                    />
+                  </button>
+                </div>
+                <div class="swiper-pagination" slot="pagination"></div>
+              </div>
+            </div>
+            <!-- //banner Image -->
+          </div>
+        </section>
+      </div>
+
+      <section class="quick_donation_guid" id="contents">
+        <div class="center">
+          <!-- <a href="/donation/donation.html" class="de-img offline"> -->
+          <a href="javascript:void(0);" class="de-img offline" onclick="javascript:$s.donation.goDonationPage();">
+	          <img
+	              src="/static/images/do_quick-off.png"
+	              alt="기부하기 〉 바로 기부하러 가기"
+	          />
+          </a>
+          <a href="/donation/guide2.html" class="de-img online"
+            ><img
+              src="/static/images/do_quick-on.png"
+              alt="기부안내 PC,모바일 기부과정을 알고싶다면?"
+          /></a>
+          <!-- <a href="/donation/donation.html" class="mo-img offline"> -->
+          <a href="javascript:void(0);" class="mo-img offline" onclick="javascript:$s.donation.goDonationPage();">
+	          <img
+	              src="/static/images/do_quick-off_m.png"
+	              alt="기부하기 〉 바로 기부하러 가기"
+	          />
+          </a>
+          <a href="/donation/guide2.html" class="mo-img online"
+            ><img
+              src="/static/images/do_quick-on_m.png"
+              alt="기부안내 PC,모바일 기부과정을 알고싶다면?"
+          /></a>
+        </div>
+      </section>
+
+      <section class="donate-buy">
+        <h2 class="hidden">고향사랑e음</h2>
+        <div class="container">
+          <div class="buy link-box">
+            <a class="buy-link" href="/goods/index.html">
+              <span class="txt-wrap">
+                <span class="s-txt">답례품</span>
+                <span class="title-txt"
+                  ><span>답례품&nbsp;</span> <span>둘러보기</span></span
+                >
+              </span>
+              <span class="round-illustBtn">
+                <span></span>
+              </span>
+            </a>
+          </div>
+
+          <div class="donate link-box">
+            <a class="donate-link" href="/donation/list-select.html">
+              <span class="txt-wrap">
+                <span class="s-txt">고향사랑e음</span>
+                <span class="title-txt"
+                  ><span>기금사업&nbsp;</span> <span>둘러보기</span></span
+                >
+              </span>
+              <span class="round-illustBtn">
+                <span></span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+      <button type="button" class="top-banner" @click="goToGuid()">
+        <span class="center">
+          <span class="text_box">
+            <strong>안내서 내려받기</strong>
+            <span class="text">기부 & 답례품 안내를 확인 하세요.</span>
+          </span>
+          <span class="image_box">
+            <img src="/static/images/guide-down_arrow.png" alt="다운받기" />
+          </span>
+        </span>
+      </button>
+      <!-- <div class="top-banner" @click="goToGuid()" tabindex="0" @keydown="enterToGo($event)">
+            <div class="center">
+                <div class="text_box">
+                    <h3>가이드 다운로드</h3>
+                    <span class="text">기부 & 답례품 안내를 확인 하세요.</span>
+                </div>
+                <div class="image_box">
+                    <img src="/static/images/guide-down_arrow.png" alt="다운받기">
+                </div>
+            </div>
+        </div> -->
+
+      <section class="store">
+        <h2 class="hidden">고향사랑e음</h2>
+        <div class="center">
+          <div class="s_title">
+            <h2 class="wrap_items">
+              <span>답례품</span>
+              <a
+                href="/goods/index.html"
+                class="round-illustBtn_s"
+                title="답례품 몰 이동"
+                ><span></span
+              ></a>
+            </h2>
+            <p>고향사랑e음 종합정보 시스템에서 답례품을 제공합니다.</p>
+          </div>
+          <div class="store-card">
+            <ul class="store-card-list">
+              <li class="store-items gift1">
+                <button
+                  type="button"
+                  @click="goCategoryMall('tour')"
+                  title="관광서비스"
+                >관광서비스</button>
+              </li>
+              <li class="store-items gift2">
+                <button
+                  type="button"
+                  @click="goCategoryMall('farm')"
+                  title="농축산물"
+                >농축산물</button>
+              </li>
+              <li class="store-items gift3">
+                <button
+                  type="button"
+                  @click="goCategoryMall('aquatic')"
+                  title="수산물"
+                >수산물</button>
+              </li>
+              <li class="store-items gift4">
+                <button
+                  type="button"
+                  @click="goCategoryMall('process')"
+                  title="가공식품"
+                >가공식품</button>
+              </li>
+              <li class="store-items gift5">
+                <button
+                  type="button"
+                  @click="goCategoryMall('daily')"
+                  title="생활용품"
+                >생활용품</button>
+              </li>
+              <li class="store-items gift6">
+                <button
+                  type="button"
+                  @click="goCategoryMall('ticket')"
+                  title="지역상품권"
+                >지역상품권</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="slogan">
+        <img
+          class="d-img"
+          src="/static/images/slogan-pc2.png"
+          alt="기부로 마음을 전하세요. 고향사랑 마음은 더하고, 우리사회 행복은 곱하다."
+        />
+        <img
+          class="m-img"
+          src="/static/images/slogan-m2.png"
+          alt="기부로 마음을 전하세요. 고향사랑 마음은 더하고, 우리사회 행복은 곱하다."
+        />
+      </section>
+
+      <!-- Top&Chatbot fixed -->
+      <layout-fixed-btn></layout-fixed-btn>
+
+      <!-- footer component -->
+      <layout-footer-ali></layout-footer-ali>
+      <layout-popup></layout-popup>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <!--<script src="/modules/babel.min.js"></script>-->
+    <!--<script src="/modules/es6-promise.min.js"></script>-->
+    <!--<script src="/modules/es6-promise.auto.min.js"></script>-->
+    <!--<script src="/modules/axios.js"></script>-->
+    <!--<script src="/modules/vue.js"></script>-->
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-footer-ali": httpVueLoader(
+            "/components/layouts/footer_ali.vue"
+          ),
+          "layout-header-ali": httpVueLoader(
+            "/components/layouts/header_ali.vue"
+          ),
+          "layout-popup": httpVueLoader("/components/ui/popup-layer.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+        },
+        data: {
+          amountData: "234,256,456,789",
+          category: {
+            groups: [],
+          },
+          param: {
+            arrayRequiredItems: [],
+          },
+          promotion: {
+            displayImageList: [],
+          },
+          featured: {
+            displayImageList: [],
+          },
+          mdItems: [],
+          newItems: [],
+          groupBestItems: [],
+          firstGroupBestUrl: "",
+          event: [],
+          styleBooks: [],
+          swiperList: [],
+          swiperOption: {
+            mainSlider: {
+              centeredSlides: true,
+              loop: true,
+              // autoplay: {
+              //     delay: 2500,
+              //     disableOnInteraction: false,
+              // },
+			  autoplay: {
+				disableOnInteraction: false				// 드래그하여 슬라이드 넘길경우 멈추지 않게 하기 위함
+			  },
+              pagination: {
+                el: ".main_banner .swiper-pagination",
+                type: "fraction",
+              },
+              navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              },
+              grabCursor: true,
+            },
+            mdSlider: {
+              slidesPerView: 4,
+              spaceBetween: 30,
+              centerSlides: true,
+              navigation: {
+                nextEl: ".md_section .swiper-button-next",
+                prevEl: ".md_section .swiper-button-prev",
+              },
+              breakpoints: {
+                767: {
+                  slidesPerView: 2,
+                  spaceBetween: 16,
+                },
+              },
+              grabCursor: true,
+            },
+            newSlider: {
+              slidesPerView: "auto",
+              centerSlides: true,
+            },
+            bestSlider: {
+              slidesPerView: "auto",
+              resistance: true,
+              resistanceRatio: 0,
+              freeMode: true,
+            },
+          },
+          searchKeyword: "",
+          AutoSlide: true,
+        },
+        methods: {
+          // 기부절차안내 보기
+          viewProce: function () {
+            // $(".overlap").fadeIn(100);
+            location.href = "/donation/guide2.html";
+          },
+          // 기부절차안내 닫기
+          closeProce: function () {
+            $(".overlap").fadeOut(100);
+          },
+          goToListSelect: function () {
+            location.href = "/donation/list-select.html";
+          },
+          focusFn: function (e) {
+            $(e.target).parent(".serch-input-area").addClass("focuson");
+          },
+          // 내가 찾은 검색어 등록
+          setRecent: function () {
+            if ($s.isLogin()) {
+              const param = {};
+              param.searchKeyword = this.searchKeyword;
+
+              $s.api.setTotalSearchInsertRecent(param, function (response) {
+                //console.log(response);
+              });
+            }
+          },
+          // 통합검색 페이지로 이동
+          searchPage: function () {
+            if (this.searchKeyword == "") {
+              alert("검색어를 입력하세요");
+            } else {
+              this.setRecent();
+              location.href =
+                "/totalsearch/index.html?searchKeyword=" + this.searchKeyword;
+            }
+          },
+          getPromotion: function () {
+            $s.api.getPromotion(function (data) {
+              vm.promotion = data.promotion;
+              vm.featured = data.featured;
+            });
+          },
+          getMdItems: function () {
+            var params = {
+              limit: 10,
+            };
+
+            $s.api.getMdItems(params, function (data) {
+              vm.mdItems = data.list;
+
+              vm.googleAnalyticsImpression(data.list, "메인 MD");
+            });
+          },
+          getNewItems: function () {
+            var params = {
+              limit: 6,
+            };
+
+            $s.api.getNewItems(params, function (data) {
+              vm.newItems = data.content;
+              vm.googleAnalyticsImpression(data.content, "메인 신상품");
+            });
+          },
+          getGroupBestItems: function () {
+            var params = {
+              limit: 10,
+            };
+
+            $s.api.getGroupBestItems(params, function (data) {
+              var tempList = [];
+
+              for (var i = 0; i < data.list.length; i++) {
+                var bestItem = data.list[i];
+
+                if (i == 0) {
+                  vm.firstGroupBestUrl = bestItem.url;
+                }
+
+                bestItem.items.splice(5);
+                tempList.push(bestItem);
+
+                vm.googleAnalyticsImpression(bestItem, "메인 베스트");
+              }
+
+              vm.groupBestItems = tempList;
+            });
+          },
+          getEvent: function () {
+            var params = {
+              page: 1,
+              itemsPerPage: 4,
+            };
+
+            $s.api.getEvent(params, function (data) {
+              vm.event = data.content;
+            });
+          },
+          // getPopups: function () {
+          //     $s.api.getPopups(function (data) {
+          //         $s.api.popup.makePopup(data.list);
+          //     }, function (error) {
+          //         $s.alert(error.response.data.message);
+          //     });
+          // },
+          redirectByBestItem: function (item) {
+            this.redirectByItem(item.itemUserCode, item, "메인 베스트");
+          },
+          redirectByNewItem: function (item) {
+            this.redirectByItem(item.itemUserCode, item, "메인 신상품");
+          },
+          redirectByMdItem: function (item) {
+            this.redirectByItem(item.itemUserCode, item, "메인 MD");
+          },
+          redirectByItem: function (itemUserCode, item, listName) {
+            this.googleAnalyticsSelect(item, listName);
+            $s.redirect("/items/details.html?code=" + itemUserCode);
+          },
+
+          redirectByFeatured: function (featuredUrl) {
+            $s.redirect("/featured/detail.html?pages=" + featuredUrl);
+          },
+          getDisplayStyleBooks: function () {
+            $s.api.getDisplayStyleBooks(function (response) {
+              vm.styleBooks = response.list;
+            });
+          },
+          getStyleBookData: function (styleBooks, code) {
+            var data = {
+              url: $s.pages.INDEX,
+              imageSrc: $s.const.noImage,
+            };
+
+            try {
+              for (var i = 0; i < styleBooks.length; i++) {
+                var s = styleBooks[i];
+                if (s.displayGroupCode == code) {
+                  data.url = s.displayUrl;
+                  data.imageSrc = s.displayImageSrc;
+                  break;
+                }
+              }
+            } catch (e) {
+				console.log = () => {};
+			}
+
+            return data;
+          },
+          getJoinComfirmPop: function () {
+            if ($s.isLogin()) {
+              $("#emailAgree").hide();
+              $("#emailDisAgree").hide();
+              $("#smsAgree").hide();
+              $("#smsDisAgree").hide();
+              var status = $s.core.getSession($s.const.LOGIN_FIRST);
+              var emailAgree = $s.core.getSession($s.const.EMAIL_AGREE);
+              var smsAgree = $s.core.getSession($s.const.SMS_AGREE);
+              if ($s.const.LOGIN_FIRST_STATUS == status) {
+                $(".black-bg").addClass("show");
+                $s.core.removeSession($s.const.LOGIN_FIRST);
+                if ($s.const.STATUS_Y == emailAgree) {
+                  $("#emailAgree").show();
+                } else {
+                  $("#emailDisAgree").show();
+                }
+                if ($s.const.STATUS_Y == smsAgree) {
+                  $("#smsAgree").show();
+                } else {
+                  $("#smsDisAgree").show();
+                }
+                $s.core.removeSession($s.const.EMAIL_AGREE);
+              }
+            }
+          },
+          closePopupLayer: function () {
+            $(".black-bg").removeClass("show");
+          },
+          goCategoryMall: function (category) {
+            // $s.api.getSubmit('/api/present/login', '', function (response) {
+            //     var param = '';
+            //     if (response.isSuccess) {
+            //         param = (response.data == null) ? '' : response.data;
+
+            //         var domain = "";
+            //         if (window.location.hostname.indexOf("ilovegohyang.go.kr") > -1) {
+            //             domain = 'https://shop.ilovegohyang.go.kr';
+            //         } else {
+            //             domain = 'https://gohyang01.bbiz.kr';
+            //         }
+
+            //         //                        var child = window.open("https://gohyang01.bbiz.kr/kwa-home?search_value=&SCH_goods_group="+category+"&sch_method=and&_tss_=" + param, 'presentPopup', '_blank');
+            //         var child = window.open(domain + "/kwa-home?search_value=&SCH_goods_group=" + category + "&sch_method=and&_tss_=" + param, 'presentPopup');
+            //         // var child = window.open('https://gohyang01.bbiz.kr?_tss_=' + param, 'presentPopup', '_blank');
+            //         // child.location.href="https://gohyang01.bbiz.kr/kwa-home?search_value=&SCH_goods_group="+category+"&sch_method=and";
+            //     }
+            // });
+
+            $s.redirect(
+              "/goods/searchGoods.html?group=" + category + "&type=C"
+            );
+          },
+          goMall: function () {
+            // $s.api.getSubmit('/api/present/login', '', function (response) {
+            //     var param = '';
+            //     if (response.isSuccess) {
+            //         param = (response.data == null) ? '' : response.data;
+
+            //         var domain = "";
+            //         if (window.location.hostname.indexOf("ilovegohyang.go.kr") > -1) {
+            //             domain = 'https://shop.ilovegohyang.go.kr';
+            //         } else {
+            //             domain = 'https://gohyang01.bbiz.kr';
+            //         }
+
+            //         if ($s.config.isUseNetFunnel) {
+            //             NetFunnel_Action({ action_id: 'shop' }, function (ev, ret) {
+            //                 window.open(domain + '?_tss_=' + param, 'presentPopup');
+            //             });
+            //         } else {
+            //             window.open(domain + '?_tss_=' + param, 'presentPopup');
+            //         }
+
+            //     }
+            // });
+
+            $s.redirect("/goods/index.html");
+          },
+          goToGuid: function () {
+            location.href = "/api/data-board/file-download/109?dataFileId=109";
+          },
+          enterToGo(e) {
+            if (e.keyCode === 13) {
+              vm.goToGuid();
+            }
+          },
+          getInitBanner: function () {
+            var initBanner = [
+              {
+                pcFileSrc: "/static/images/main_banner4.png",
+                mFileSrc: "/static/images/m_main_banner4.png",
+                // linkUrl: '/donation/donation.html',
+                title:
+                  "고향에 기부갑니다, 고향이 배달옵니다, 고향사랑e음",
+              },
+			  {
+                pcFileSrc: "/static/images/main_banner0.png",
+                mFileSrc: "/static/images/m_main_banner0.png",
+                // linkUrl: '/donation/donation.html',
+                title:
+                  "고향에 기부하여 혜택받고, 내 고향도 살리는, 고향사랑e음",
+              },
+              {
+                pcFileSrc: "/static/images/main_banner1.png",
+                mFileSrc: "/static/images/m_main_banner1.png",
+                // linkUrl: '/donation/donation.html',
+                title:
+                  "내가 지금 사는 곳에는 기부할 수 없어요, 예시- 행정상 주소가 경상남도 거제인 경우 경상남도 거제시와 경상남도 도청을 제외한 모든 지자체에 기부가 가능합니다.",
+              },
+              {
+                pcFileSrc: "/static/images/main_banner2.png",
+                mFileSrc: "/static/images/m_main_banner2.png",
+                // linkUrl: '/donation/donation.html',
+                title:
+                  "기부한곳에 답례품만 주문할 수 있어요, 경상남도 하동군에 기부하셨다면 기부금액의 최대 30%가 경상남도 하동군 포인트로 생성되며, 경상남도 하동군에서만 답례품 구입이 가능합니다. 다른 지자체에서 답례품 구입은 불가합니다. (예시의 경우 경상남도 거제시, 경상남도 도청 등은 구입 불가)",
+              },
+              {
+                pcFileSrc: "/static/images/main_banner3.png",
+                mFileSrc: "/static/images/m_main_banner3.png",
+                // linkUrl: '/donation/list-select.html',
+                title:
+                  "온라인기부 가능시간 01:00 ~23:30, 고향사랑e음 상담센터 1522-2431, 평일 9시~18시(주말, 공휴일 휴무), 점심시간 12시~13시",
+              },
+            ];
+
+            vm.swiperList = initBanner;
+
+            /* $s.api.getSubmitNoAuth('/api/banner', null, function (response) {
+                        if (response.list && response.list.length > 0) {
+                            vm.swiperList = response.list;
+                        } else {
+                            vm.swiperList = initBanner;
+                        }
+
+
+                    }, function (err) {
+                        vm.swiperList = initBanner;
+                    });*/
+          },
+          //bannerImage: function (url,type) {
+          // return $s.config.apiDomain + '/api/common/mainBanner/' + type + '/' + url;
+          bannerImage: function (url) {
+            if (url == null || url == "") {
+              return $s.config.noImage;
+            }
+            return $s.config.cdnDomain + "" + this.unescapeHtml(url);
+          },
+          resumeAutoSlide: function () {
+            setTimeout(function () {
+              vm.$refs.mainBannerSlide.swiper.autoplay.start();
+            }, 10);
+            vm.AutoSlide = true;
+          },
+          stopAutoSlide: function () {
+            setTimeout(function () {
+              vm.$refs.mainBannerSlide.swiper.autoplay.stop();
+            }, 10);
+            vm.AutoSlide = false;
+          },
+          focusPopup() {
+            $("#popupArea").focus();
+          },
+          getServerIp() {
+            $s.api.getSubmit(
+              "/api/banner/server",
+              "",
+              function (response) {},
+              function (err) {}
+            );
+          },
+        },
+        computed: {
+          topBanners: function () {
+            return this.promotion.displayImageList;
+          },
+          displayStyleBook1: function () {
+            return this.getStyleBookData(this.styleBooks, "style-book-1");
+          },
+          displayStyleBook2: function () {
+            return this.getStyleBookData(this.styleBooks, "style-book-2");
+          },
+          displayStyleBook3: function () {
+            return this.getStyleBookData(this.styleBooks, "style-book-3");
+          },
+          displayStyleBook4: function () {
+            return this.getStyleBookData(this.styleBooks, "style-book-4");
+          },
+          displayStyleBook5: function () {
+            return this.getStyleBookData(this.styleBooks, "style-book-5");
+          },
+          displayStyleBook6: function () {
+            return this.getStyleBookData(this.styleBooks, "style-book-6");
+          },
+          displayStyleBook7: function () {
+            return this.getStyleBookData(this.styleBooks, "style-book-7");
+          },
+          newSwiper: function () {
+            return this.$refs.awesomeNewSwiper.swiper;
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init();
+
+            this.getInitBanner();
+
+            this.getJoinComfirmPop();
+
+            // this.categoryInfo(this);
+            // this.getPromotion();
+            // this.getMdItems();
+            // this.getNewItems();
+
+            // this.getGroupBestItems();
+
+            // this.getEvent();
+
+            this.makeOpenGraphTag(
+              Saleson.requestContext.href,
+              document.title,
+              "",
+              this.getMetaTagContent("description")
+            );
+
+            // this.getDisplayStyleBooks();
+
+            // this.getPopups();
+
+            //initializeMainEvent();
+
+            this.focusPopup();
+
+            this.getServerIp();
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

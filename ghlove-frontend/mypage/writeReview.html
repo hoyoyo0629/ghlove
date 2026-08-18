@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 답례품 > 주문조회 > 답례품 후기 작성 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+    <link rel="stylesheet" href="/static/css/mypage-goods_rev_write.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" class="items_detail_wrap" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              마이페이지
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              답례품
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              주문조회
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              답례품 후기 작성
+            </span>
+            <h2 class="page-title-txt">답례품 후기 작성</h2>
+          </div>
+
+          <div class="contents-wrap goods_write">
+            <div class="my_order">
+              <div class="g_info">
+                <div class="g_info_wrap">
+                  <div class="g_info__img"><img :src="reviewForm.image" alt="썸네일 이미지" @error="errorImage" /></div>
+                  <div class="g_info__txt">
+                    <div class="info_loc">{{reviewForm.locgovNm}}</div>
+                    <div class="info_title">{{reviewForm.itemName}}</div>
+                  </div>
+                </div>
+              </div>
+              <form>
+                <div class="info-field-group">
+                  <div class="info-field-items">
+                    <label for="userName" class="flied-title">이름</label>
+                    <input type="text" name="userName" id="userName" :value="result.userName+' ('+result.loginId+')'" readonly />
+                  </div>
+                  <div class="info-field-items">
+                    <label for="rev_score" class="flied-title">평가</label>
+                    <select name="rev_score" id="rev_score" v-model="reviewForm.score">
+                      <option value="5">★★★★★</option>
+                      <option value="4">★★★★☆</option>
+                      <option value="3">★★★☆☆</option>
+                      <option value="2">★★☆☆☆</option>
+                      <option value="1">★☆☆☆☆</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="line"></div>
+
+                <div class="info-field-group">
+                  <div class="info-field-items">
+                    <label for="revTitle" class="flied-title">제목 <span class="essential pointRed">*</span></label>
+                    <input type="text" name="revTitle" id="revTitle" v-model="reviewForm.subject" />
+                  </div>
+                  <div class="info-field-items">
+                    <label for="revContent" class="flied-title">내용 <span class="essential pointRed">*</span></label>
+                    <textarea name="revContent" id="revContent" v-model="reviewForm.content"></textarea>
+                  </div>
+                </div>
+
+                <div class="line"></div>
+
+                <div class="info-field-group">
+                  <div class="info-field-items">
+                    <label for="revFile" class="flied-title">첨부파일</label>
+                    <div class="file-add">
+                      <p class="grayTxt">
+                        이미지 파일만 등록 가능합니다. jpg, gif, png <br />
+                        움직이는 사진은 업로드 불가합니다.<br />
+                        최대 용량 : 5M / 최대 파일수 : 6개
+                      </p>
+
+                      <!-- 디자인 기반 화면 -->
+                      <ul class="file_list">
+                        <li class="file_items" v-for="(fileData, fileIndex) in reviewForm.files">
+                          <div class="icon-img delete_file cursor">
+                            <img src="/static/images/icon/mylist-del.png" alt="첨부파일삭제" @click="fileDelete(fileIndex)" />
+                          </div>
+                          <label for=""><img :src="reviewForm.fileImages[fileIndex]" alt="썸네일" /></label>
+                        </li>
+                        <li class="file_items" v-show="reviewForm.files && reviewForm.files.length < reviewForm.maxFileCount">
+                          <label class="cursor" for="imageSelect"><img src="/static/images/icon/add-img.png" alt="이미지첨부하기" /></label>
+                        </li>
+                      </ul>
+                      <input type="file" multiple class="hidden" name="" id="imageSelect" @change="fileSelect($event)" />
+
+                      <!-- 기획서 기반 화면
+                                        <input type="file" id="revFile" @change="fileSelect($event)">
+
+                                        <p class="selecFileName">
+                                            {{fileName}}
+                                            <span class="fileDelete">
+                                                <img class="icon-img" src="/static/images/icon/cli-icon_btn-close.png" alt="첨부파일 삭제">
+                                            </span>
+                                        </p>
+                                        -->
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- 버튼그룹 -->
+          <div class="btn-box many mid">
+            <button type="button" class="blueBtn cancellation" @click="goToBack()">
+              취소<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+            </button>
+            <button type="button" id="btnWrite" class="blueBtn u-confirm" @click="submitReview">
+              작성<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Top&Chatbot fixed -->
+      <layout-fixed-btn></layout-fixed-btn>
+
+      <!-- footer component -->
+      <layout-footer-ali ref="layoutFooter"></layout-footer-ali>
+    </div>
+    <!--//#wrap-->
+
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+        },
+        data: function () {
+          return {
+            reviewForm: {},
+            index: "",
+            itemSequence: "",
+            orderCode: "",
+            confirmFlag: "",
+            flag: "",
+            result: {
+              createdDate: "",
+              orderCode: "",
+              item: [],
+              paymentList: [],
+              shippingInfo: {},
+              totalCouponDiscountAmount: 0,
+              totalDiscountAmount: 0,
+              totalItemAmount: 0,
+              totalOrderAmount: 0,
+              totalShippingAmount: 0,
+              totalUserLevelDiscountAmount: 0,
+            },
+            page: {
+              onsubmitType: "return false;",
+              menuUrl: "/mypage/orderList.html",
+            },
+          };
+        },
+        methods: {
+          orderInfo: function () {
+            if ($s.isLogin() && !vm.orderCode) {
+              alert("주문 정보가 존재하지 않습니다.");
+              location.href = vm.page.menuUrl;
+            }
+
+            $s.api.getOrder(vm.orderCode, function (response) {
+              vm.result = response.order;
+
+              vm.reviewPop(vm.index, vm.itemSequence, vm.orderCode, vm.confirmFlag);
+            });
+          },
+          initReviewForm: function () {
+            return {
+              submitFlag: false,
+              point: {
+                point: 0,
+                photoPoint: 0,
+              },
+              maxFileCount: 6,
+              confirmFlag: false,
+              orderCode: "",
+              itemId: 0,
+              locgovNm: "",
+              itemName: "",
+              image: "",
+              options: "",
+              notDisplayOptionsFlag: false,
+              displayOptionsFlag: "N",
+              selecteFilterMaps: [],
+              filters: [],
+              files: [],
+              fileImages: [],
+              showStarFlags: [false, false, false, false, false],
+              score: 5,
+              content: "",
+              subject: "",
+            };
+          },
+          reviewPop: function (index, itemSequence, orderCode, confirmFlag) {
+            var order = this.result;
+            var item;
+
+            for (var i = 0; i < order.item.length; i++) {
+              if (order.item[i].itemSequence == itemSequence) {
+                item = order.item[i];
+              }
+            }
+
+            if (!item) {
+              $s.alert("후기를 작성할 답례품이 없습니다.", function () {
+                $s.closeAlert();
+                vm.goToBack();
+              });
+
+              return;
+            }
+
+            this.reviewForm = this.initReviewForm();
+
+            this.reviewForm.confirmFlag = confirmFlag;
+            this.reviewForm.orderCode = order.orderCode;
+            this.reviewForm.itemId = item.itemId;
+            this.reviewForm.locgovNm = item.locgovNm;
+            this.reviewForm.itemName = item.itemName;
+            this.reviewForm.image = this.itemImage(item.imageSrc);
+            this.reviewForm.options = item.options.replace("<br/>", "\n");
+
+            vm.itemName = item.itemName;
+
+            $s.api.getItemReviewInfo(
+              item.itemUserCode,
+              function (response) {
+                vm.reviewForm.point.point = response.pointReview;
+                vm.reviewForm.point.photoPoint = response.photoPointReview;
+                vm.reviewForm.filters = response.reviewFilters;
+              },
+              function (error) {
+                vm.showLoading(false);
+
+                $s.alert(error.response.data.message, function () {
+                  $s.closeAlert();
+                  vm.goToBack();
+                });
+
+                // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                $(".items_detail_wrap").on("click", "#op-alert", function () {
+                  vm.goToBack();
+                });
+              }
+            );
+          },
+          fileSelect: function (e) {
+            var size = 5;
+            var limit = 6;
+            var extensions = ["jpg", "jpeg", "png", "gif"];
+
+            var selectFiles = this.reviewForm.files;
+            var images = this.reviewForm.fileImages;
+            var fileList = e.target.files;
+
+            // 파일 첨부 개수 체크
+            if (limit < selectFiles.length + fileList.length) {
+              $s.alert("사진은 " + limit + "장까지 첨부 가능합니다.", "imageSelect");
+              return;
+            }
+
+            for (var i = 0; i < fileList.length; i++) {
+              var file = fileList[i];
+              var fileExt = fileList[i].name;
+
+              // 사이즈 체크
+              if (fileExt != "") {
+                if (file.size > size * 1024 * 1024) {
+                  $s.alert("파일크기는 " + size + "MB 이내로 등록 가능합니다.", "imageSelect");
+                  return;
+                }
+              }
+
+              // 확장자 체크
+              fileExt = fileExt.slice(fileExt.indexOf(".") + 1).toLowerCase();
+              if (!extensions.includes(fileExt)) {
+                $s.alert("이미지 파일(jpg, png, gif) 만 등록 가능합니다.", "imageSelect");
+                return;
+              }
+
+              // 미리보기 생성
+              try {
+                var reader = new FileReader();
+                var self = this;
+
+                reader.onload = function (ie) {
+                  images.push(ie.target.result);
+                  self.reviewForm.fileImages = images;
+                };
+
+                selectFiles.push(file);
+                self.reviewForm.files = selectFiles;
+
+                reader.readAsDataURL(file);
+              } catch (e) {
+                let errorBoolean = true;
+              }
+            }
+          },
+          fileDelete: function (fileIndex) {
+            var files = this.reviewForm.files;
+            var images = this.reviewForm.fileImages;
+
+            files.splice(fileIndex, 1);
+            images.splice(fileIndex, 1);
+          },
+          submitReview: function () {
+            if (vm.reviewForm.submitFlag) {
+              //$s.alert('작성중입니다.');
+              //return false;
+            }
+
+            var reviewForm = this.reviewForm,
+              formData = new FormData(),
+              subject = reviewForm.subject,
+              content = reviewForm.content,
+              score = reviewForm.score;
+
+            if (typeof score == "undefined" || score == 0) {
+              $s.alert("평가점수를 선택해 주세요");
+              return false;
+            }
+
+            if (typeof subject == "undefined" || subject == "") {
+              $s.alert("제목을 입력해 주세요", "revTitle");
+              return false;
+            }
+
+            if (typeof content == "undefined" || content == "") {
+              $s.alert("내용을 입력해 주세요", "revContent");
+              return false;
+            }
+
+            formData.append("subject", subject); // 후기제목
+            formData.append("content", content); // 후기내용
+            formData.append("score", score);
+            formData.append("itemId", reviewForm.itemId);
+            formData.append("item.itemName", reviewForm.itemName);
+            formData.append("orderCode", reviewForm.orderCode);
+            formData.append("options", reviewForm.notDisplayOptionsFlag ? "" : reviewForm.options);
+            formData.append("displayOptionsFlag", reviewForm.notDisplayOptionsFlag ? "N" : "Y");
+
+            var files = reviewForm.files;
+
+            if (files && files.length > 0) {
+              formData.append("itemReviewImageFile", files[0]);
+              for (var i = 0; i < files.length; i++) {
+                formData.append("itemReviewImageFiles[" + i + "]", files[i]);
+              }
+            }
+
+            var filters = reviewForm.selecteFilterMaps;
+
+            if (filters && filters.length > 0) {
+              for (var i = 0; i < filters.length; i++) {
+                formData.append("itemReviewFilters[" + i + "].itemId", filters[i].itemId);
+                formData.append("itemReviewFilters[" + i + "].filterGroupId", filters[i].filterGroupId);
+                formData.append("itemReviewFilters[" + i + "].filterCodeId", filters[i].filterCodeId);
+                formData.append("itemReviewFilters[" + i + "].ordering", filters[i].ordering);
+              }
+            }
+
+            $s.confirm(
+              "후기를 작성하시겠습니까?",
+              function () {
+                vm.showLoading(true);
+                if (vm.reviewForm.submitFlag) {
+                  //$s.alert('작성중입니다.');
+                  //return false;
+                }
+
+                vm.reviewForm.submitFlag = true;
+                $s.api.review(
+                  formData,
+                  function (response) {
+                    if (response.status === "OK") {
+                      vm.reviewForm.submitFlag = false;
+                      vm.showLoading(false);
+                      $s.alert(
+                        "등록해 주셔서 감사합니다. \n 스팸 게시물을 방지하기 위해 관리자 확인 후 게재됩니다. \n 이 점 양해 부탁 드립니다.",
+                        function () {
+                          vm.goToBack();
+                        }
+                      );
+                    } else {
+                      $s.alert(response);
+                    }
+                  },
+                  function (error) {
+                    vm.showLoading(false);
+                    $s.alert(error.response.data.message, function () {
+                      $s.closeAlert();
+                      vm.goToBack();
+                    });
+
+                    // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                    $(".items_detail_wrap").on("click", "#op-alert", function () {
+                      vm.goToBack();
+                    });
+                  }
+                );
+              },
+              "btnWrite"
+            );
+          },
+          goToBack: function () {
+            if (vm.flag == "list") {
+              location.href = "/mypage/orderList.html";
+            } else if (vm.flag == "detail") {
+              history.back();
+            }
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          onPageShow: function () {
+            vm.orderInfo();
+          },
+        },
+        watch: {},
+        computed: {},
+        mounted: function () {
+          this.$nextTick(function () {
+            //Saleson.init();
+            Saleson.init({ loginPage: true });
+            vm.index = $s.core.getParameter("index");
+            vm.itemSequence = $s.core.getParameter("itemSequence");
+            vm.orderCode = $s.core.getParameter("orderCode");
+            vm.confirmFlag = $s.core.getParameter("confirmFlag");
+            vm.flag = $s.core.getParameter("flag");
+
+            vm.orderInfo();
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

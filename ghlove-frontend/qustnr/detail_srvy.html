@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>온라인설문참여 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/joind-ag-sv.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <section v-if="isShow">
+                <div class="page-title-box">
+                    <h2 class="page-title-txt">온라인설문참여</h2>
+                </div>
+            </section>
+            <section>
+
+            </section>
+
+            <section id="contents" class="survey">
+                <div class="contents-wrap" v-if="isShow">
+                    <div class="center privacy-terms-area">
+                     	<div class="line"></div>
+                        <div class="privacy-terms-area-title">
+                          <h2 class="page-title-txt">{{result.qustnrSj}}</h2>
+                            <ul>
+                                <li><strong>설문기간 </strong> {{formatDate(result.qustnrBgnDe,'-')}} ~ {{formatDate(result.qustnrEndDe,'-')}}</li>
+                                <li><strong>참여자수 </strong> {{rspnsCount}}명</li>
+                            </ul>
+                     		<div class="line"></div>
+	                            <p>본 조사는 사용자가 더욱 편리하게 고향사랑e음을 사용할 수 있도록 하기 위한 고객 만족도 조사입니다.</p>
+	                            <p>시스템 사용 중 불편한 점이나 개선할 사항 등의 의견을 주시면 고향사랑e음 서비스 품질 향상을 위한 소중한 자료로 사용하겠으며 본 조사의 결과는 통계 목적으로만 처리됩니다. </p>
+	                            <p>바쁘시더라도 잠시 시간을 내시어 설문에 응해 주시면 대단히 감사하겠습니다.</p>
+                        	<div class="line"></div>
+                        </div>
+                        <div class="privacy-terms-area-content">
+                            <h2>개인정보 수집 및 이용 안내</h2>
+                            <div class="privacy-terms-area-content-box">
+                                <p>1. 수집하는 항목 : 고향사랑e음 ID, 성별, 연령대</p>
+                                <p>2. 수집목적 : 중복참여방지 확인, 설문조사 통계목적 활용</p>
+                                <p>3. 보유 및 이용기간 : 설문조사 종료 후 3개월 간 보관 후 폐기</p>
+                                <p>4. 개인정보 수집 및 이용에 대해 동의하지 않는 경우 설문에 참여할 수 없습니다.</p>
+                                ※ '동의함' 선택하지 않으면 응답 불가
+                            </div>
+							<div class="privacy-terms-agree-check">
+								<label for="agree_01" class="sr-only">동의함</label>
+								<input type="radio" v-model="agree01" id="agree_01" value="Y"> <label for="agree_01">동의함</label>&nbsp;&nbsp;&nbsp;
+								<label for="agree_02" class="sr-only">동의하지 않음</label>
+								<input type="radio" v-model="agree01" id="agree_02" value="N"> <label for="agree_02">동의하지 않음</label>
+							</div>
+                     		<div class="line"></div>
+                        </div>
+                    </div>
+          			<div class="center" v-if="resultCode != '102'">
+	                    <div class="center accept-terms-area" v-for="(survey, i) in result.qustnrQesitm" :key="i" :id="'question_' + survey.qustnrSn + '_' + survey.qustnrQesitmSn">
+	                         <h3 class="survey_tit"><span class="idx">{{i+1}}</span><span
+	                                class="survey_txt">{{survey.qestnCn}}</span></h3>
+	                        <div class="line"></div>
+	                        <ul :class="survey.qestnTyCode == 'rtype'? 'radio_list': ''">
+	                            <template>
+	                                <li v-for="(survItem, j) in survey.qustnrIem" :key="j" :style="survey.qestnTyCode == 'rtype'? 'gap: 0px;': 'width: 100%;gap: 0px;'">
+	                                    <input v-if="survey.qestnTyCode == 'rtype'" :disabled="survey.parentDisabled && survItem.iemCn !== '해당사항없음'"
+										 type="radio" :name="'selectAnswer_' + survey.qustnrQesitmSn" :id="i+'-'+j" v-model="survey.selected" 
+										 :value="survItem.qustnrIemSn" @change="onAnswerChange(survey)">
+	                                    <textarea v-else placeholder="100자까지 작성 가능합니다.(선택)" style="resize:none;" maxlength="100" :name="'selectAnswer_' + survey.qustnrQesitmSn" :id="i+'-'+j" v-model="survey.etcAnswerCn"></textarea>
+	                                    <label :style="survey.qestnTyCode == 'stype'? 'display:none;padding-left: 3px;' : 'padding-left: 3px;'" :for="i+'-'+j">{{survItem.iemCn}}</label>
+	                                </li>
+	                            </template>
+	                        </ul>
+	                    </div>
+	                    <!-- 버튼그룹 -->
+	                    <div class="btn-box">
+	                        <button id="qustnrBtn" type="button" class="blueBtn u-confirm" style="margin-top: 5rem;" @click="submit()" v-if="result.isShow == 'Y'">
+	                            제출하기
+	                            <span>
+	                                <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+	                            </span>
+	                        </button>
+	                    </div>
+                    </div>
+                    <!-- 이미 참여한 설문인 경우 -->
+                    <div class="center" v-if="resultCode == '102'">
+                    	<div class="center accept-terms-area">
+                    		<strong>이미 참여한 설문입니다.</strong>
+                    	</div>
+	                    <!-- 버튼그룹 -->
+	                    <div class="btn-box" >
+	                        <button id="qustnrBtn" type="button" class="blueBtn u-confirm" @click="goHome()" v-if="result.isShow == 'Y'">
+	                            홈으로
+	                            <span>
+	                                <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+	                            </span>
+	                        </button>
+	                    </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- topBtn component -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+            },
+            data: {
+                userName: "",
+                userGrade: "",
+                qustnrSn: "",
+				rspnsCount: "",
+				result: {},
+				resultCode: "",
+				agree01: "",
+                isShow: false
+            },
+            methods: {
+				surveyInit: function () {
+					vm.qustnrSn = $s.core.getParameter('qustnrSn');
+
+					if (!vm.qustnrSn) {
+						setTimeout(function() {
+							$s.alert('설문이 선택되지 않았습니다.', function () {
+								location.href = '/';
+							});
+						},100);
+						return false;
+					}
+
+					$s.api.getSubmit('/api/qustnr/' + vm.qustnrSn, {}, function (response) {
+						vm.rspnsCount = response.result.rspnsCount;
+						vm.resultCode = response.result.resultCode;
+
+
+						if(vm.resultCode == '100'){
+							$s.alert('지자체 담당자를 위한 설문입니다.', function(){
+								location.href = '/';
+							});
+						}
+						if(vm.resultCode == '101'){
+							$s.alert('존재하지 않는 설문조사입니다.', function(){
+								location.href = '/';
+							});
+						}
+						if(vm.resultCode == '102'){
+							$s.alert('이미 참여한 설문입니다.', function(){
+								location.href = '/';
+							});
+						}
+
+						vm.result = response.result.qestnar;
+						if (!$s.isLogin()) vm.result.isShow = 'N';
+						vm.isShow = true;
+					})
+				},
+				formatDate: function(date, str) {
+
+					var year = date.substring(0,4),
+					month = date.substring(4,6),
+					day = date.substring(6,8);
+
+
+				    if (month.length < 2)
+				        month = '0' + month;
+				    if (day.length < 2)
+				        day = '0' + day;
+
+			    	return [year, month, day].join(str);
+				},
+				wait: function (sec) {
+					var start = Date.now(), now = start;
+				    while (now - start < sec * 1000) {
+				        now = Date.now();
+				    }
+				},
+				submit: function () {
+					var params = [];
+
+					if(vm.agree01[0]==undefined || vm.agree01[0]=='N'){
+						$s.alert('개인정보 수집 및 이용에 대해\n 동의하지 않는 경우\n 설문에 참여할 수 없습니다.', 'agree_01');
+						return false;
+					}
+
+					for (var i in vm.result.qustnrQesitm) {
+						var d = vm.result.qustnrQesitm[i];
+
+						// if (!d.selected && !d.etcAnswerCn) {
+						if (!d.selected && d.qestnTyCode != 'stype') {
+							$s.alert('아직 답변하지 않은 질문이 있습니다.', i + '-' + 0);
+							return false;
+						}
+
+
+						if(d.qestnTyCode == 'stype' && d.selected == 0) { // 주관식 타입 저장
+							params.push({
+								qustnrSn : d.qustnrSn,
+								qustnrQesitmSn : d.qustnrQesitmSn,
+								qustnrIemSn : 99,
+								etcAnswerCn: d.etcAnswerCn
+							});
+						} else { //객관식 타입 저장
+							if(d.tempSelected === 98) {
+								params.push({
+									qustnrSn : d.qustnrSn,
+									qustnrQesitmSn : d.qustnrQesitmSn,
+									qustnrIemSn : d.tempSelected
+								});
+							} else {
+								params.push({
+									qustnrSn : d.qustnrSn,
+									qustnrQesitmSn : d.qustnrQesitmSn,
+									qustnrIemSn : d.selected
+								});
+							}
+						}
+					}
+
+
+					$s.api.postSubmit('/api/qustnr/' + vm.qustnrSn, params, function(response) {
+						if (response.status ==  'OK') {
+							$s.alert('설문에 참여해주셔서 감사합니다.', function () {
+								location.href = '/';
+							});
+							return false;
+						} else {
+							$s.alert(response.message, 'qustnrBtn');
+							return false;
+						}
+					}, function (err) {
+						$s.alert(response.message, 'qustnrBtn');
+							return false;
+					});
+				},
+				goHome: function() {
+					location.href = '/';
+				},
+				onAnswerChange: function (changedSurvey) {
+					const selectedLabel = changedSurvey.qustnrIem.find(item => item.qustnrIemSn === changedSurvey.selected).iemCn;
+					const child = this.result.qustnrQesitm.filter(q => q.parentSn === changedSurvey.qustnrQesitmSn);
+
+					child.forEach(item => {
+						if(selectedLabel === '아니오') {
+							item.selected = 12; // 12번째 해당사항없음을 체크하기 위한
+							item.tempSelected = 98;
+							item.parentDisabled = true;
+						} else {
+							item.parentDisabled = false;
+							if(item.selected == 12) {
+								item.selected = null;
+								item.tempSelected = null;
+							}
+						}
+					});
+				}
+            },
+            computed: {
+
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    Saleson.init({ loginPage: true });
+                    //Saleson.init();
+                    vm.surveyInit();
+        			//vm.paging(1);
+                });
+            }
+        });
+
+
+    </script>
+
+</body>
+
+</html>

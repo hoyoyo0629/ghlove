@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <!-- 상단 타이틀 영역 -->
+                    <div class="location">
+                        <a href="">답례품 관리</a> &gt; <a href="">특산물관 관리</a>
+                    </div>
+                    <h3><span>특산물관 관리</span></h3>
+                    <!-- // 상단 타이틀 영역 -->
+
+                    <!-- 조회 영역 -->
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                                <col />
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">키워드</td>
+                                    <td>
+                                        <div class="flex_box gap-08">
+                                            <input id="" name="" title="키워드" class="input_txt required _filter full" type="text" value="">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">특산물 소개</td>
+                                    <td>
+                                        <div class="flex_box col item-fend">
+                                            <textarea id="" name="" title="상품설명" maxlength="" class="full"></textarea>
+                                            <span>[0/200]</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">선택 상품</td>
+                                    <td>
+                                        <div class="flex_box gap-08">
+                                            <button type="button" class="btn btn-success btn-mini">상품추가</button>
+                                            <button type="button" class="btn btn-default btn-mini">전체삭제</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            
+                            </tbody>
+                        </table>
+
+                        <div class="btn_all btn_center">
+                            <div class="flex_box gap-08">
+                                <button type="button" class="btn btn-dark-gray btn-small">저장</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- // 조회 영역 -->
+
+                    <!-- 결과 영역 -->
+                    <div class="count_title mt-40">
+                        <h5>총 545,423건</h5>
+                        <span>
+                            <select id="" name="" title="화면출력수">
+                                <option value="10" selected="selected">10개 출력</option>
+                                <option value="20">20개 출력</option>
+                                <option value="50">50개 출력</option>
+                                <option value="100">100개 출력</option>
+                            </select>
+                        </span>
+                    </div>
+
+                    <div class="board_list">
+                        <table class="board_list_table">
+                            <colgroup>
+                                <col style="width:50px;">
+                                <col style="width:100px;">
+                                <col style="width:500px;">
+                                <col style="width:200px;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">No.</th>
+                                    <th scope="col">지자체</th>
+                                    <th scope="col">소개</th>
+                                    <th scope="col">키워드</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <a href="">강원도 횡성</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">낮과 밤의 뚜렷한 일교차, 풍부한 목초 및 산야초, 청정한 공기와 수질 등 한우를 사육하기에 좋은 환경 조건을 갖춘 지역으로, 한우 캐릭터를 군의 마스코트로 내세울 만큼 '한우의 고장'으로 유명하다.</div>
+                                    </td>
+                                    <td>
+                                        <div>한우,소고기</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="pagination-wrap">
+                            <p class="pagination op-pagination">
+                                <a href=" class=" first">&lt;&lt;</a>
+                                <a href="" class="prev">&lt;</a>
+                                <a href="">1</a>
+                                <a href="">2</a>
+                                <strong>3</strong>
+                                <a href="">4</a>
+                                <a href="">5</a>
+                                <a href="">6</a>
+                                <a href="">7</a>
+                                <a href="">8</a>
+                                <a href="">9</a>
+                                <a href="">10</a>
+                                <a href="" class="next">&gt;</a>
+                                <a href="" class="last">&gt;&gt;</a>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- // 결과 영역 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

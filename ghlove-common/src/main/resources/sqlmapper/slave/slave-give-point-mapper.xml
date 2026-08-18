@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.slave.SlaveGivePointMapper">
+
+    <!-- 기부 포인트현황 합계 -->
+    <select id="getGivePointSum" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="saleson.shop.give.givepoint.domain.GivePoint" >
+    	/* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointSum */
+    	SELECT
+    			CNTR_AMT
+    		,	CNTR_POINT
+    		,	CNTR_USE_POINT
+    		,	(CNTR_POINT - CNTR_USE_POINT) AS CNTR_BLCE_POINT
+    	FROM
+    	(
+        SELECT
+            IFNULL(SUM(GC.CNTR_AMT), 0) AS CNTR_AMT                                 -- 기부금액
+            , IFNULL(SUM(GC.CNTR_POINT), 0) AS CNTR_POINT                           -- 발생포인트
+            , (
+			    	SELECT IFNULL(SUM(CNTR_USE_POINT), 0)
+			    	FROM G_CNTR_USE_POINT
+			    	WHERE use_se_code ='1'
+			    	<if test="shLocgovCode != null and shLocgovCode != ''">
+						AND cntr_locgov_code = #{shLocgovCode}
+					</if>
+			      ) AS CNTR_USE_POINT
+        FROM G_CNTR GC
+        WHERE 1=1
+        AND GC.DELETE_AT = 'N'
+		and GC.cntr_sttus_code = '200'
+        and GC.sttemnt_pay_de is not NULL
+		<if test="shLocgovCode != null and shLocgovCode != ''">
+		AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+		</if>
+		) a
+    </select>
+
+    <!-- 기부 포인트현황 목록 count -->
+	<select id="getGivePointListCount" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="Integer" >
+		/* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointListCount */
+        SELECT COUNT(*) AS CNT
+		FROM(
+	        SELECT
+			    SUM(GC.CNTR_AMT) AS CNTR_AMT
+			FROM G_CNTR GC, G_LOCGOV GL
+			WHERE 1=1
+			AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+			AND GC.DELETE_AT = 'N'
+			and GC.cntr_sttus_code = '200'
+        	and GC.sttemnt_pay_de is not NULL
+			<if test="shLocgovCode != null and shLocgovCode != ''">
+			AND GL.LOCGOV_CODE = #{shLocgovCode}
+			</if>
+			GROUP BY GL.UPPER_LOCGOV_CODE
+				     , GL.LOCGOV_CODE
+	     ) A
+	</select>
+
+    <!-- 기부 포인트현황 목록 -->
+	<select id="getGivePointList" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="saleson.shop.give.givepoint.domain.GivePoint" >
+		<include refid="CommonMapper.paginationHeader" />
+			/* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointList */
+			SELECT
+				UPPER_LOCGOV_CODE
+				,UPPER_LOCGOV_NM
+				,LOCGOV_CODE
+				,LOCGOV_NM
+				,CNTR_AMT
+				,CNTR_POINT
+				,CNTR_USE_POINT
+				,(CNTR_POINT-CNTR_USE_POINT) AS CNTR_BLCE_POINT
+			FROM
+			(
+			SELECT
+	            GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+		        , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+		        , GL.LOCGOV_CODE AS LOCGOV_CODE
+		        , GL.LOCGOV_NM AS LOCGOV_NM
+		        , SUM(GC.CNTR_AMT) AS CNTR_AMT
+		        , SUM(GC.CNTR_POINT) AS CNTR_POINT
+		        , (
+			    	SELECT IFNULL(SUM(CNTR_USE_POINT), 0)
+			    	FROM G_CNTR_USE_POINT a, G_LOCGOV b
+			    	WHERE use_se_code ='1'
+			    		AND a.cntr_locgov_code = b.locgov_code
+						AND b.locgov_code = GL.locgov_code
+				    	<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND cntr_locgov_code = #{shLocgovCode}
+						</if>
+		    	) AS CNTR_USE_POINT
+	        FROM G_CNTR GC, G_LOCGOV GL
+	        WHERE 1=1
+	        AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+	        AND GC.DELETE_AT = 'N'
+	        and GC.cntr_sttus_code = '200'
+        	and GC.sttemnt_pay_de is not NULL
+	       <if test="shLocgovCode != null and shLocgovCode != ''">
+            AND GL.LOCGOV_CODE = #{shLocgovCode}
+            </if>
+	        GROUP BY  GL.UPPER_LOCGOV_CODE
+	                 , GL.LOCGOV_CODE
+	        ORDER BY GL.UPPER_LOCGOV_CODE
+                     , GL.LOCGOV_CODE
+			) A
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+    <!-- 기부 포인트현황 상세 누적합계 -->
+	<select id="getGivePointDetail" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="saleson.shop.give.givepoint.domain.GivePoint" >
+		/* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointDetail */
+		SELECT
+				CNTR_POINT
+			,	CNTR_USE_POINT
+			,	CNTR_POINT-CNTR_USE_POINT AS CNTR_BLCE_POINT
+		FROM
+		(
+			SELECT
+			    IFNULL(SUM(CNTR_POINT), 0) AS CNTR_POINT
+			   ,IFNULL(SUM((
+				    	SELECT IFNULL(SUM(A.CNTR_USE_POINT), 0)
+				    	FROM G_CNTR_USE_POINT A 
+				    	WHERE A.USE_SE_CODE ='1'
+				    	<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND A.cntr_locgov_code = #{shLocgovCode}
+						</if>
+						AND A.CNTR_SN = GC.CNTR_SN
+				      )),0) AS CNTR_USE_POINT
+			FROM G_CNTR GC
+			WHERE 1=1
+			AND year(GC.CNTR_DE) = #{shCntrYear}
+			AND GC.DELETE_AT = 'N'
+			and GC.cntr_sttus_code = '200'
+	        and GC.sttemnt_pay_de is not NULL
+			<if test="shLocgovCode != null and shLocgovCode != ''">
+			AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+			</if>
+		) A
+	</select>
+
+    <!-- 기부 포인트현황 상세 검색합계 -->
+	<select id="getGivePointDetailSum" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="saleson.shop.give.givepoint.domain.GivePoint" >
+		/* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointDetailSum */
+		SELECT
+			CNTR_POINT
+			,	CNTR_USE_POINT
+			,	CNTR_POINT - CNTR_USE_POINT AS CNTR_BLCE_POINT
+		FROM
+		(
+	    SELECT
+	        IFNULL(SUM(CNTR_POINT), 0) AS CNTR_POINT
+	        ,IFNULL(SUM((
+			    	SELECT IFNULL(SUM(A.CNTR_USE_POINT), 0)
+			    	FROM G_CNTR_USE_POINT A, OP_USER B
+			    	WHERE 1=1
+			    		AND A.use_se_code ='1'
+			    		AND A.user_id = B.user_id
+			    		AND A.CNTR_SN = GC.CNTR_SN
+			    	<if test="shLocgovCode != null and shLocgovCode != ''">
+						AND A.cntr_locgov_code = #{shLocgovCode}
+					</if>
+				    <if test="shUserName != null and shUserName != ''">
+			        	AND B.USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+			        </if>
+		      )),0) AS CNTR_USE_POINT
+	    FROM G_CNTR GC, OP_USER OU
+	    WHERE 1=1
+	    AND GC.USER_ID = OU.USER_ID
+	    AND GC.DELETE_AT = 'N'
+	    and GC.cntr_sttus_code = '200'
+        and GC.sttemnt_pay_de is not NULL
+	    <if test="shLocgovCode != null and shLocgovCode != ''">
+	    AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+	    </if>
+	    <if test="shCntrYear != null and shCntrYear != ''">
+	    AND year(GC.CNTR_DE) = #{shCntrYear}
+	    </if>
+	    <if test="shUserName != null and shUserName != ''">
+        AND OU.USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+        </if>
+		) A
+	</select>
+
+    <!-- 기부 포인트현황 상세 목록 count -->
+	<select id="getGivePointDetailListCount" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="Integer" >
+		/* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointDetailListCount */
+	    SELECT COUNT(*)
+		FROM g_cntr a
+		INNER JOIN op_user b ON a.user_id = b.user_id
+		WHERE 1 = 1
+			AND a.delete_at = 'N'
+			AND a.cntr_sttus_code = '200'
+			AND year(a.sttemnt_pay_de) = #{shCntrYear}
+			<if test="shLocgovCode != null and shLocgovCode != ''">
+            	AND a.cntr_locgov_code = #{shLocgovCode}
+            </if>
+            <if test="shUserName != null and shUserName != ''">
+            	AND b.user_name = (SELECT crypto_enc('normal', #{shUserName},''))
+            </if>
+	</select>
+
+    <!-- 기부 포인트현황 상세 목록 -->
+	<select id="getGivePointDetailList" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="saleson.shop.give.givepoint.domain.GivePoint" >
+	    <include refid="CommonMapper.paginationHeader" />
+		    /* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointDetailList */
+		    SELECT
+					a.sttemnt_pay_de
+				,	a.elctrn_pay_no
+				,	a.login_id
+				,	a.user_name
+				,	a.cntr_amt
+				,	a.cntr_point
+				,	a.cntr_use_point
+				,	a.cntr_point -  cntr_use_point as cntr_blce_point
+		    FROM
+		    (
+			    SELECT
+							a.sttemnt_pay_de
+						,	a.elctrn_pay_no
+						,	crypto_dec('normal', a.login_id, '', 0) AS login_id
+						,	CASE WHEN user_name IS NULL THEN '탈퇴회원' ELSE crypto_dec('normal', a.user_name, '', 0) END AS user_name
+						,	a.cntr_amt
+						,	a.cntr_point
+						,	(SELECT IFNULL(sum(cntr_use_point), 0) FROM g_cntr_use_point c WHERE c.cntr_sn = a.cntr_sn AND c.use_se_code ='1') as cntr_use_point 
+				FROM
+				(
+					SELECT
+							a.cntr_sn
+						,	a.sttemnt_pay_de
+						,	a.elctrn_pay_no
+						,	a.user_id
+						,	b.login_id
+						,	b.user_name
+						,	IFNULL(a.cntr_amt, 0) AS cntr_amt
+						,	IFNULL(a.cntr_point, 0) AS cntr_point
+					FROM g_cntr a
+					INNER JOIN op_user b ON a.user_id = b.user_id
+					WHERE 1 = 1
+						AND a.delete_at = 'N'
+						AND a.cntr_sttus_code = '200'
+						AND year(a.sttemnt_pay_de) = #{shCntrYear}
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+			            	AND a.cntr_locgov_code = #{shLocgovCode}
+			            </if>
+			            <if test="shUserName != null and shUserName != ''">
+			            	AND b.user_name = (SELECT crypto_enc('normal', #{shUserName},''))
+			            </if>
+				) a
+			) a
+			ORDER BY sttemnt_pay_de desc, user_name
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 회원 지자체 조회 -->
+    <select id="getLocgovCode" resultType="java.util.HashMap">
+    	/* saleson.shop.give.givepoint.SlaveGivePointMapper.getLocgovCode */
+        SELECT
+            M.LOCGOV_CODE
+            , L.LOCGOV_NM
+            , L.UPPER_LOCGOV_CODE
+            , (SELECT LABEL  FROM OP_COMMON_CODE OCC WHERE ID = L.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+        FROM OP_MANAGER M, G_LOCGOV L
+        WHERE 1=1
+        AND M.LOCGOV_CODE = L.LOCGOV_CODE
+        AND USER_ID = #{userId}
+    </select>
+    
+    <!-- 지자체 기부 포인트현황(년도별포함) count -->
+	<select id="getGivePointLocgovListCount" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="Integer" >
+		/* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointLocgovListCount */
+        SELECT COUNT(*) AS CNT
+		FROM(
+	        SELECT
+			    SUM(GC.CNTR_AMT) AS CNTR_AMT
+			FROM G_CNTR GC, G_LOCGOV GL
+			WHERE 1=1
+			AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+			AND GC.DELETE_AT = 'N'
+			and GC.cntr_sttus_code = '200'
+        	and GC.sttemnt_pay_de is not NULL
+			<if test="shLocgovCode != null and shLocgovCode != ''">
+			AND GL.LOCGOV_CODE = #{shLocgovCode}
+			</if>
+			GROUP BY year(GC.CNTR_DE)
+					 , GL.UPPER_LOCGOV_CODE
+				     , GL.LOCGOV_CODE
+				     
+	     ) A
+	</select>
+
+    <!-- 지자체별 기부 포인트현황(년도별포함 ) 목록-->
+	<select id="getGivePointLocgovList" parameterType="saleson.shop.give.givepoint.domain.GivePoint" resultType="saleson.shop.give.givepoint.domain.GivePoint" >
+		<include refid="CommonMapper.paginationHeader" />
+			/* saleson.shop.give.givepoint.SlaveGivePointMapper.getGivePointLocgovList */
+			SELECT
+				 CNTR_YEAR
+				,UPPER_LOCGOV_CODE
+				,UPPER_LOCGOV_NM
+				,LOCGOV_CODE
+				,LOCGOV_NM
+				,CNTR_AMT
+				,CNTR_POINT
+				,CNTR_USE_POINT
+				,(CNTR_POINT-CNTR_USE_POINT) AS CNTR_BLCE_POINT
+			FROM
+			(
+			SELECT
+	            YEAR(GC.CNTR_DE) AS CNTR_YEAR
+	            ,GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+		        , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+		        , GL.LOCGOV_CODE AS LOCGOV_CODE
+		        , GL.LOCGOV_NM AS LOCGOV_NM
+		        , SUM(GC.CNTR_AMT) AS CNTR_AMT
+		        , SUM(GC.CNTR_POINT) AS CNTR_POINT
+	        	, SUM((
+			    	SELECT IFNULL(SUM(CNTR_USE_POINT), 0)
+			    	FROM G_CNTR_USE_POINT a, G_LOCGOV b
+			    	WHERE use_se_code ='1'
+			    		AND a.cntr_locgov_code = b.locgov_code
+						AND b.locgov_code = GL.locgov_code
+				    	<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND a.cntr_locgov_code = #{shLocgovCode}
+						</if>
+						AND A.CNTR_SN  = GC.CNTR_SN 
+			      	)) AS CNTR_USE_POINT
+	        FROM G_CNTR GC, G_LOCGOV GL
+	        WHERE 1=1
+	        AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+	        AND GC.DELETE_AT = 'N'
+	        and GC.cntr_sttus_code = '200'
+        	and GC.sttemnt_pay_de is not NULL
+	       <if test="shLocgovCode != null and shLocgovCode != ''">
+            AND GL.LOCGOV_CODE = #{shLocgovCode}
+            </if>
+           	GROUP BY  YEAR(GC.CNTR_DE)
+                 	, GL.LOCGOV_CODE
+                 	, GL.UPPER_LOCGOV_CODE
+	        ORDER BY YEAR(GC.CNTR_DE) DESC
+                    , GL.LOCGOV_CODE 
+                    , GL.UPPER_LOCGOV_CODE
+			) A
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+
+
+</mapper>

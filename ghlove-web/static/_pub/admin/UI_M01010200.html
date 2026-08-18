@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 상단  -->
+        <div id="header">
+            <div class="header_wrap">
+                <h1><a href="javascript:;"><img src="../../content/opmanager/images/img_logo.png" alt="고향사랑기부제" /></a></h1>
+            </div>
+        </div>
+
+        <!-- 내용 -->
+        <div id="container" class="login">
+
+            <div class="login_cont">
+                <div class="login_tit mt-70">인증서 등록</div>
+
+                <div class="form-wrap">
+                    <div class="board_write">
+                        <table class="board_write_table">
+                            <colgroup>
+                                <col style="width: 220px;" />
+                            </colgroup>
+                            <tr>
+                                <td class="label">인증서 종류</td>
+                                <td>
+                                    <div>
+                                        <p class="txt">공동인증서(구 공인인증서)</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>아이디</td>
+                                <td>
+                                    <div>
+                                        <!-- 20221128 수정 -->
+                                        <input id="" name="" class="optional wd-150" title="아이디" type="text" value="" placeholder="아이디">
+                                        <!-- // 20221128 수정 -->
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- 20221130 수정 -->
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>비밀번호</td>
+                                <td>
+                                    <div>
+                                        <!-- 20221128 수정 -->
+                                        <input id="" name="" class="optional wd-150" title="비밀번호" type="password" value="" placeholder="비밀번호">
+                                        <!-- // 20221128 수정 -->
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- // 20221130 수정 -->
+                            <tr>
+                                <!-- 20221215 수정 -->
+                                <td class="label"><span class="required_mark">*</span>생년월일</td>
+                                <td>
+                                    <div class="flex_box gap-08 item-center">
+                                        <input id="" name="" class="optional wd-150" title="생년월일" type="text" value="" placeholder="생년월일">
+                                        <span class="wave">예)20221212</span>
+                                    </div>
+                                </td>
+                                <!-- // 20221215 수정 -->
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="button_wrap">
+                    <!-- 20221215 수정 -->
+                    <button type="button" class="btn btn-dark-gray btn-mid h-large"><span>폐기</span></button>
+                    <button type="button" class="btn btn-dark-gray btn-mid h-large"><span>확인</span></button>
+                    <button type="button" class="btn btn-default btn-mid h-large"><span>취소</span></button>
+                    <!-- // 20221215 수정 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단  -->
+        <div id="footer">
+            <div class="footer_wrap">
+                <span class="copy">COPYRIGHT (C) 고향사랑 ALL RIGHTS RESERVED. 고향사랑 ERSION : 0.00.0 T : <a class="txt"
+                        href="tel:02-0000-1100">02-0000-1100</a> F : <a class="txt"
+                        href="tel:02-1111-3322">02-1111-3322</a> E : <a class="txt"
+                        href="mailto:help@고향사랑.com">help@고향사랑.com</a></span>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

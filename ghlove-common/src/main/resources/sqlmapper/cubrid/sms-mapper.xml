@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.common.sms.SmsMapper">
+
+    <insert id="insertTifIpsSndngM">
+        INSERT INTO TIF_IPS_SNDNG_M (
+	        INFO_CRT_DT,
+	        LIST_SN,
+	        SVC_ID,
+	        SVC_GRP_ID,
+	        INSTT_CRT_SN,
+	        INSTT_CRT_DOC_ID,
+	        PRVC_IDNTFC_INFO,
+	        PRVC_IDNTFC_SE_CD,
+	        SNDNG_CNTNTS,
+	        IMG1_URL_INFO,
+	        IMG2_URL_INFO,
+	        IMG3_URL_INFO,
+	        ESB_IF_ID,
+	        ESB_TX_ID,
+	        ESB_INIT_TIME,
+	        ESB_TX_TIME,
+	        ESB_COMPT_TIME,
+	        ESB_STATUS_CD,
+	        ESB_WORK_GBN,
+	        ESB_ERR_MSG
+	    ) VALUES (
+	        #{infoCrtDt},
+	        #{listSn},
+	        #{svcId},
+	        #{svcGrpId},
+	        #{insttCrtSn},
+	        #{insttCrtDocId},
+	        #{prvcIdntfcInfo},
+	        #{prvcIdntfcSeCd},
+	        #{sndngCntnts},
+	        #{img1UrlInfo},
+	        #{img2UrlInfo},
+	        #{img3UrlInfo},
+	        #{esbIfId},
+	        #{esbTxId},
+	        #{esbInitTime},
+	        #{esbTxTime},
+	        #{esbComptTime},
+	        #{esbStatusCd},
+	        #{esbWorkGbn},
+	        #{esbErrMsg}
+	    );
+    </insert>
+
+	<insert id="insertTifIpsSndngMTaxCreditInfo">
+        INSERT INTO TIF_IPS_SNDNG_M (
+	        INFO_CRT_DT,
+	        LIST_SN,
+	        SVC_ID,
+	        SVC_GRP_ID,
+	        INSTT_CRT_SN,
+	        INSTT_CRT_DOC_ID,
+	        PRVC_IDNTFC_INFO,
+	        PRVC_IDNTFC_SE_CD,
+	        SNDNG_CNTNTS,
+	        IMG1_URL_INFO,
+	        IMG2_URL_INFO,
+	        IMG3_URL_INFO,
+	        ESB_IF_ID,
+	        ESB_TX_ID,
+	        ESB_INIT_TIME,
+	        ESB_TX_TIME,
+	        ESB_COMPT_TIME,
+	        ESB_STATUS_CD,
+	        ESB_WORK_GBN,
+	        ESB_ERR_MSG
+	    ) 
+	    SELECT #{infoCrtDt} as info_crt_dt
+			   ,NVL((SELECT sequence_id 
+		               FROM OP_SEQUENCE 
+		              WHERE sequence_key = 'TIF_IPS_SNDNG_M'),0) + ROWNUM AS list_sn
+			   ,#{svcId} AS svc_id
+			   ,#{svcGrpId} AS svc_grp_id
+		       ,NVL((SELECT sequence_id 
+		               FROM OP_SEQUENCE 
+		              WHERE sequence_key = 'TIF_IPS_SNDNG_M'),0) + ROWNUM AS instt_crt_sn
+		       ,#{insttCrtDocId} AS instt_crt_doc_id
+		       ,A.MBER_CI AS prvc_idntfc_info
+		       ,#{prvcIdntfcSeCd} AS prvc_idntfc_se_cd
+		       ,CONCAT(A.user_name,'|',A.TAX_YEAR,'|',FORMAT(A.cntr_amt, 0),'|',FORMAT(A.tax_amt, 0),'|', REPLACE (CRYPTO_DEC('normal',A.phone_number, '', 0),'-','')) AS sndng_cntnts
+		       ,#{img1UrlInfo} AS img1_url_info
+		       ,#{img2UrlInfo} AS img2_url_info
+		       ,#{img3UrlInfo} AS img3_url_info
+		       ,#{esbIfId} AS esb_if_id
+		       ,#{esbTxId} AS esb_tx_id
+		       ,#{esbInitTime} AS esb_init_time
+		       ,#{esbTxTime} AS esb_tx_time
+		       ,#{esbComptTime} AS esb_compt_time
+		       ,#{esbStatusCd} AS esb_status_cd
+		       ,#{esbWorkGbn} AS esb_work_gbn
+		       ,#{esbErrMsg} AS esb_err_msg
+		  FROM ( SELECT B.mber_ci
+		  				,CRYPTO_DEC('normal', B.user_name, '', 0) AS user_name
+		  				,#{taxYear} AS tax_year
+		  				,cntr_amt
+		  				,(CASE WHEN cntr_amt <![CDATA[>]]> 100000 
+		  				       THEN ROUND(((cntr_amt - 100000) * 0.165) + 100000,0) 
+		  				       ELSE cntr_amt END) AS tax_amt
+		  				,C.phone_number AS phone_number      
+				   FROM ( SELECT user_id
+				                 ,SUM(cntr_amt) AS cntr_amt 
+				            FROM G_CNTR 
+				           WHERE YEAR(sttemnt_pay_de) = #{taxYear} 
+				             AND delete_at = 'N' 
+				             AND cntr_sttus_code = '200' 
+				             AND sttemnt_pay_de IS NOT NULL 
+				           GROUP BY user_id ) A
+			      INNER JOIN OP_USER B 
+			         ON A.user_id = B.user_id
+			      INNER JOIN OP_USER_DETAIL C
+			         ON B.user_id = C.user_id
+			      WHERE B.mber_ci IS NOT NULL
+			        AND C.receive_sms = '0'
+				    AND cntr_amt <![CDATA[>]]> 0 ) A
+    </insert>
+    
+    <insert id="insertTifIpsSndngMHometownDayInfo">
+    	INSERT INTO TIF_IPS_SNDNG_M (
+	        INFO_CRT_DT,
+	        LIST_SN,
+	        SVC_ID,
+	        SVC_GRP_ID,
+	        INSTT_CRT_SN,
+	        INSTT_CRT_DOC_ID,
+	        PRVC_IDNTFC_INFO,
+	        PRVC_IDNTFC_SE_CD,
+	        SNDNG_CNTNTS,
+	        IMG1_URL_INFO,
+	        IMG2_URL_INFO,
+	        IMG3_URL_INFO,
+	        ESB_IF_ID,
+	        ESB_TX_ID,
+	        ESB_INIT_TIME,
+	        ESB_TX_TIME,
+	        ESB_COMPT_TIME,
+	        ESB_STATUS_CD,
+	        ESB_WORK_GBN,
+	        ESB_ERR_MSG
+	    ) 
+	    SELECT #{infoCrtDt} as info_crt_dt
+			   ,AA.list_sn
+			   ,#{svcId} AS svc_id
+			   ,#{svcGrpId} AS svc_grp_id
+		       ,AA.instt_crt_sn
+		       ,#{insttCrtDocId} AS instt_crt_doc_id
+		       ,AA.prvc_idntfc_info
+		       ,#{prvcIdntfcSeCd} AS prvc_idntfc_se_cd
+		       ,CONCAT(CRYPTO_DEC('normal', AA.user_name, '', 0),'|',#{sndngCntnts},'|', REPLACE(CRYPTO_DEC('normal',AA.phone_number, '', 0),'-','')) AS sndng_cntnts
+		       ,#{img1UrlInfo} AS img1_url_info
+		       ,#{img2UrlInfo} AS img2_url_info
+		       ,#{img3UrlInfo} AS img3_url_info
+		       ,#{esbIfId} AS esb_if_id
+		       ,#{esbTxId} AS esb_tx_id
+		       ,#{esbInitTime} AS esb_init_time
+		       ,#{esbTxTime} AS esb_tx_time
+		       ,#{esbComptTime} AS esb_compt_time
+		       ,#{esbStatusCd} AS esb_status_cd
+		       ,#{esbWorkGbn} AS esb_work_gbn
+		       ,#{esbErrMsg} AS esb_err_msg
+		  FROM (
+			  	SELECT NVL((SELECT sequence_id 
+				               FROM OP_SEQUENCE 
+				              WHERE sequence_key = 'TIF_IPS_SNDNG_M'),0) + ROWNUM AS list_sn
+					   ,NVL((SELECT sequence_id 
+				               FROM OP_SEQUENCE 
+				              WHERE sequence_key = 'TIF_IPS_SNDNG_M'),0) + ROWNUM AS instt_crt_sn
+				       ,mber_ci AS prvc_idntfc_info
+				       ,A.user_name
+				       ,B.phone_number
+				  FROM OP_USER A
+				 INNER JOIN OP_USER_DETAIL B
+				    ON A.user_id = B.user_id
+				 WHERE A.mber_ci IS NOT NULL
+				   AND A.status_code = '9'
+				   AND B.receive_sms = '0'
+				) AA
+    </insert>
+    
+    <update id="updateOpSequence">
+    	UPDATE OP_SEQUENCE 
+           SET SEQUENCE_ID = NVL((SELECT MAX(INSTT_CRT_SN) 
+                                    FROM TIF_IPS_SNDNG_M),0)
+         WHERE SEQUENCE_KEY = 'TIF_IPS_SNDNG_M'
+    </update>
+    
+    
+    <select id="getSmsSendList" resultType="saleson.common.sms.domain.TifIpsSndngM" parameterType="saleson.common.sms.domain.SmsIpsParam">
+    
+    	<include refid="CommonMapper.paginationHeader" />
+    
+		    SELECT
+				INSTT_CRT_SN 
+				, SVC_ID 
+				, SNDNG_CNTNTS 
+				, ESB_INIT_TIME 
+				, ESB_TX_TIME 
+				, ESB_COMPT_TIME 
+				, ESB_STATUS_CD 
+				, ESB_ERR_MSG 
+			FROM TIF_IPS_SNDNG_M
+			WHERE 1=1
+			<if test='where == "CONTENT"'>
+				AND SNDNG_CNTNTS LIKE CONCAT('%', #{query}, '%')
+			</if>
+			AND SVC_ID IN 
+			<foreach collection="svcIds" item="svcId" index="index" separator="," open="(" close=")">
+				#{svcId}
+			</foreach>
+			<if test='smsTypeStr != null and smsTypeStr != ""'>
+				AND SVC_ID = #{smsTypeStr}
+			</if>
+			<if test='searchStartDate != null and searchStartDate != ""'>
+				AND ESB_INIT_TIME BETWEEN CONCAT(#{searchStartDate}, '000000') AND CONCAT(#{searchEndDate}, '999999')
+			</if>
+			ORDER BY INSTT_CRT_SN DESC
+		<include refid="CommonMapper.paginationFooter" />
+    
+    </select>
+    
+    <select id="getSmsSendCnt" resultType="int" parameterType="saleson.common.sms.domain.SmsIpsParam">
+    
+		    SELECT
+				COUNT(1)
+			FROM TIF_IPS_SNDNG_M
+			WHERE 1=1
+			<if test='where == "CONTENT"'>
+				AND SNDNG_CNTNTS LIKE CONCAT('%', #{query}, '%')
+			</if>
+			AND SVC_ID IN 
+			<foreach collection="svcIds" item="svcId" index="index" separator="," open="(" close=")">
+				#{svcId}
+			</foreach>
+			<if test='smsTypeStr != null and smsTypeStr != ""'>
+				AND SVC_ID = #{smsTypeStr}
+			</if>
+			<if test='searchStartDate != null and searchStartDate != ""'>
+				AND ESB_INIT_TIME BETWEEN CONCAT(#{searchStartDate}, '000000') AND CONCAT(#{searchEndDate}, '999999')
+			</if>
+    
+    </select>
+    
+    
+    <select id="getInsttCrtSn" resultType="long">
+    	/* saleson.common.sms.SmsMapper.getInsttCrtSn 문자 순번 채번 */
+    	
+    	SELECT TIF_IPS_SNDNG_M_LIST_SN.NEXT_VALUE
+    
+    </select>
+    
+</mapper>

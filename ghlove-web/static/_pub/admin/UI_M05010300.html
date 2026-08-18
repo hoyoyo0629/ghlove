@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">기부금관리</a> &gt; <a href="">기부금 모금현황</a> &gt; <a href="">상세보기</a>
+                    </div>
+                    <h3><span>기부금 모금 상세현황</span></h3>
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">지자체명</td>
+                                    <td>
+                                        <div>
+                                            서울시 종로구
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">검색구분</td>
+                                    <td>
+                                        <div class="flex_box gap-08">
+                                            <select id="" name="" title="기부자명" class="wd-150">
+                                                <option value="">기부자명</option>
+                                            </select>
+                                            <input id="" name="" title="검색구분" class="input_txt required _filter half"
+                                                type="text" value="">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- 20221114 수정 -->
+                                    <td class="label">납부일</td>
+                                    <!-- // 20221114 수정 -->
+                                    <td>
+                                        <div>
+                                            <span class="datepicker">
+                                                <input id="searchStartDate" name="searchStartDate" title="가입일"
+                                                    class="datepicker hasDatepicker" type="text" value="" maxlength="8"
+                                                    autocomplete="off">
+                                                <button type="button" class="ui-datepicker-trigger">
+                                                    <span class="icon_calendar">날짜 선택</span>
+                                                </button>
+                                            </span>
+                                            <span class="wave">~</span>
+                                            <span class="datepicker">
+                                                <input id="searchEndDate" name="searchEndDate" title="주문일자 종료일"
+                                                    class="datepicker hasDatepicker" type="text" value="" maxlength="8"
+                                                    autocomplete="off">
+                                                <button type="button" class="ui-datepicker-trigger">
+                                                    <span class="icon_calendar">날짜 선택</span>
+                                                </button>
+                                            </span>
+                                            <span class="day_btns">
+                                                <a href="javascript:;" class="btn_date">오늘</a>
+                                                <a href="javascript:;" class="btn_date">1주일</a>
+                                                <a href="javascript:;" class="btn_date">한달</a>
+                                                <a href="javascript:;" class="btn_date">3개월</a>
+                                                <a href="javascript:;" class="btn_date">1년</a>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">기부형태</td>
+                                    <td>
+                                        <div class="flex_box gap-12">
+                                            <div class="input-form">
+                                                <input id="rdo01-1" name="rdo01" checked="checked" type="radio">
+                                                <label for="rdo01-1">전체</label>
+                                            </div>
+                                            <div class="input-form">
+                                                <input id="rdo01-2" name="rdo01" type="radio">
+                                                <label for="rdo01-2">온라인</label>
+                                            </div>
+                                            <div class="input-form">
+                                                <input id="rdo01-3" name="rdo01" type="radio">
+                                                <label for="rdo01-3">오프라인</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="btn_all btn_right">
+                            <div class="flex_box gap-08">
+                                <button type="button" class="btn btn-dark-gray btn-mini">초기화</button>
+                                <button type="button" class="btn btn-dark-gray btn-mini">검색</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board_write">
+                        <h3 class="mt50 fs24"><span>올해 누적합계</span></h3>
+                        <table class="board_write_table" summary="기부모금액">
+                            <colgroup>
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">기부금액</td>
+                                    <td>
+                                        <div>
+                                            100,000,000
+                                        </div>
+                                    </td>
+                                    <td class="label">기부인원</td>
+                                    <td>
+                                        <div>
+                                            90,000
+                                        </div>
+                                    </td>
+                                    <td class="label">발생포인트</td>
+                                    <td>
+                                        <div>
+                                            30,000,000
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="board_write">
+                        <h3 class="mt50 fs24"><span>검색 합계</span></h3>
+                        <table class="board_write_table" summary="기부모금액">
+                            <colgroup>
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                                <col style="width: 100px">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">기부금액</td>
+                                    <td>
+                                        <div>
+                                            -
+                                        </div>
+                                    </td>
+                                    <td class="label">기부인원</td>
+                                    <td>
+                                        <div>
+                                            -
+                                        </div>
+                                    </td>
+                                    <td class="label">발생포인트</td>
+                                    <td>
+                                        <div>
+                                            -
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="count_title mt-40">
+                        <h5>총 545,423건</h5>
+                        <span>
+                            <select id="" name="" title="화면출력수">
+                                <option value="10" selected="selected">10개 출력</option>
+                                <option value="20">20개 출력</option>
+                                <option value="50">50개 출력</option>
+                                <option value="100">100개 출력</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div class="board_list">
+                        <table class="board_list_table" summary="기부금 모금 상세현황">
+                            <caption>기부금 모금 상세현황</caption>
+                            <colgroup>
+                                <col style="width:50px;">
+                                <col style="width:150px;">
+                                <col style="width:100px;">
+                                <col style="width:100px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                                <col style="width:150px;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">No.</th>
+                                    <!-- 20221114 수정 -->
+                                    <th scope="col">납부일</th>
+                                    <!-- // 20221114 수정 -->
+                                    <th scope="col">기부자명</th>
+                                    <th scope="col">아이디</th>
+                                    <th scope="col">기부금액</th>
+                                    <th scope="col">발생포인트</th>
+                                    <th scope="col">기부형태</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>2</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            2022-09-21
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            홍길동
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            asdfa1
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            100,000,000,000
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            100,000,000,000
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            온라인
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>2</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            2022-09-21
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            홍길동
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            asdfa1
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            100,000,000,000
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            100,000,000,000
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            온라인
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="btn_all btn_right">
+                            <div class="flex_box gap-08 juc-sbt">
+                                <button type="button" class="btn btn-dark-gray btn-mini">엑셀</button>
+                                <button type="button" class="btn btn-default btn-mini">목록</button>
+                            </div>
+                        </div>
+                        <div class="pagination-wrap">
+                            <p class="pagination op-pagination">
+                                <a href=" class=" first">&lt;&lt;</a>
+                                <a href="" class="prev">&lt;</a>
+                                <a href="">1</a>
+                                <a href="">2</a>
+                                <strong>3</strong>
+                                <a href="">4</a>
+                                <a href="">5</a>
+                                <a href="">6</a>
+                                <a href="">7</a>
+                                <a href="">8</a>
+                                <a href="">9</a>
+                                <a href="">10</a>
+                                <a href="" class="next">&gt;</a>
+                                <a href="" class="last">&gt;&gt;</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

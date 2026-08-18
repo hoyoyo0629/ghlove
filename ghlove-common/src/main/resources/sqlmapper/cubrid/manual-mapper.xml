@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.manual.ManualMapper">
+
+	<select id="getManualCount" parameterType="saleson.shop.manual.support.ManualParam" resultType="Integer" >
+			select
+				count(*) as cnt
+			from g_mnl m, op_common_code c
+			where 1=1
+			and m.menu_se_code = c.id
+			and c.code_type = 'MENU_URL'
+			and c.use_yn = 'Y'
+			<if test="query != null and query != ''">
+				<if test="where == 'PAGE'">
+					and c.detail like concat('%', #{query}, '%')
+				</if>
+				<if test="where == 'SUBJECT'">
+					and m.menu_sj like concat('%', #{query}, '%')
+				</if>
+				<if test="where == 'CONTENT'">
+					and m.menu_cn like concat('%', #{query}, '%')
+				</if>
+			</if>
+			<if test="startCreateDate != null and startCreateDate !='' and endCreateDate != null and endCreateDate !=''">
+				and DATE_FORMAT(frst_regist_pnttm,'%Y%m%d') BETWEEN #{startCreateDate} AND #{endCreateDate}
+			</if>
+	</select>
+
+	<select id="getManualList" parameterType="saleson.shop.manual.support.ManualParam" resultType="saleson.shop.manual.domain.Manual" >
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				A.mnl_sn
+				, A.detail as page_gbn
+				, A.menu_sj
+				, A.frst_register_id
+				, (SELECT crypto_dec('normal', MGR.user_name, '', 0) FROM op_manager MGR WHERE user_id = A.frst_register_id) AS user_name
+				, A.inqire_co
+				, A.frst_regist_pnttm
+			FROM
+			(
+				SELECT
+					M.mnl_sn
+					, C.detail
+					, M.menu_sj
+					, M.frst_register_id
+					, M.inqire_co
+					, DATE_FORMAT(M.frst_regist_pnttm,'%Y-%m-%d') AS frst_regist_pnttm
+				FROM g_mnl M, op_common_code C
+				WHERE 1=1
+				AND M.menu_se_code = C.id
+				AND C.code_type = 'MENU_URL'
+				AND C.use_yn = 'Y'
+					<if test="query != null and query != ''">
+						<if test="where == 'PAGE'">
+							AND C.detail LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test="where == 'SUBJECT'">
+							AND M.menu_sj LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test="where == 'CONTENT'">
+							AND M.menu_cn LIKE CONCAT('%', #{query}, '%')
+						</if>
+					</if>
+					<if test="startCreateDate != null and startCreateDate !='' and endCreateDate != null and endCreateDate !=''">
+						AND DATE_FORMAT(frst_regist_pnttm,'%Y%m%d') BETWEEN #{startCreateDate} AND #{endCreateDate}
+					</if>
+				ORDER BY frst_regist_pnttm DESC
+			) A
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+
+
+
+	<select id="getManual" parameterType="Integer" resultType="saleson.shop.manual.domain.Manual" >
+		SELECT
+			mnl_sn
+			, menu_se_code
+			, menu_url
+			, menu_nm
+			, file_nm
+			, orginl_file_nm
+			, file_ty
+			, inqire_co
+			, menu_sj
+			, menu_cn
+			, frst_register_id
+			, frst_regist_pnttm
+			, last_updusr_id
+			, last_updt_pnttm
+		FROM g_mnl
+ 		WHERE mnl_sn = #{mnlSn}
+	</select>
+
+
+	<insert id="insertManual" parameterType="saleson.shop.manual.domain.Manual">
+		INSERT INTO g_mnl (
+			mnl_sn
+			, menu_se_code
+			, menu_url
+			, menu_nm
+			, file_nm
+			, orginl_file_nm
+			, file_ty
+			, inqire_co
+			, menu_sj
+			, menu_cn
+			, frst_register_id
+			, frst_regist_pnttm
+		) VALUES (
+			#{mnlSn}
+			, #{menuSeCode}
+			, (select label from op_common_code where code_type='MENU_URL' and id=#{menuSeCode} and use_yn='Y')
+			, (select detail from op_common_code where code_type='MENU_URL' and id=#{menuSeCode} and use_yn='Y')
+			, #{fileNm}
+			, #{orginlFileNm}
+			, #{fileTy}
+			, 0
+			, #{menuSj}
+			, #{menuCn}
+			, #{frstRegisterId}
+			, <include refid="CommonMapper.datetime"/>
+		)
+	</insert>
+
+
+	<update id="updateManual" parameterType="saleson.shop.manual.domain.Manual">
+		UPDATE g_mnl SET
+			menu_se_code = #{menuSeCode},
+			menu_sj = #{menuSj},
+			menu_cn = #{menuCn},
+			<if test="fileNm != null and fileNm != ''">
+				file_nm = #{fileNm},			
+			</if>
+			<if test="orginlFileNm != null and orginlFileNm != ''">
+				orginl_file_nm = #{orginlFileNm},
+			</if>
+			<if test="fileTy != null and fileTy != ''">
+				file_ty = #{fileTy},
+			</if>
+			last_updusr_id = #{lastUpdusrId},
+			last_updt_pnttm = <include refid="CommonMapper.datetime"/>
+		WHERE mnl_sn = #{mnlSn}
+	</update>
+
+	<delete id="deleteManual" parameterType="Integer" >
+		DELETE FROM g_mnl
+		WHERE mnl_sn = #{mnlSn}
+	</delete>
+
+	<update id="deleteManualFile" parameterType="Integer" >
+		UPDATE g_mnl SET
+			file_nm = null,
+			orginl_file_nm = null,
+			file_ty = null,
+			last_updusr_id = #{lastUpdusrId},
+			last_updt_pnttm = <include refid="CommonMapper.datetime"/>
+		WHERE mnl_sn = #{mnlSn}
+	</update>
+
+	<select id="getManualByMenuSeCode" parameterType="String" resultType="saleson.shop.manual.domain.Manual" >
+		SELECT
+			mnl_sn
+			, menu_se_code
+			, menu_url
+			, menu_nm
+			, file_nm
+			, orginl_file_nm
+			, file_ty
+			, inqire_co
+			, menu_sj
+			, menu_cn
+			, frst_register_id
+			, frst_regist_pnttm
+			, last_updusr_id
+			, last_updt_pnttm
+		FROM g_mnl
+ 		WHERE menu_se_code = #{menuSeCode}
+	</select>
+
+
+	<select id="getAllMenuListDept2" resultType="java.util.HashMap">
+    	select
+			menu_parent_id as menu_id
+			, (select menu_name from op_menu where menu_id = m.menu_parent_id ) as menu_name
+		from op_menu m , op_menu_right mr
+		where 1=1
+		and m.menu_id = mr.menu_id
+		and m.status_code = '1'
+		and m.display_flag = 'Y'
+		and mr.authority = #{authority}
+		group by menu_parent_id
+		order by m.menu_parent_id asc, m.MENU_SEQ asc, m.menu_id asc
+    </select>
+
+	<select id="getAllMenuListDept3" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    	select
+			m.menu_id
+			, m.menu_name
+			, m.file_nm as file_nm
+			, m.orginl_file_nm as orginl_file_nm
+		from op_menu_right mr, op_menu m
+		where 1=1
+		and mr.menu_id = m.menu_id
+		and m.menu_type = '3'
+		and m.status_code = '1'
+		and m.display_flag = 'Y'
+		and mr.authority = #{authority}
+		and m.menu_parent_id = #{menuId}
+		order by m.menu_parent_id asc, m.MENU_SEQ asc, m.menu_id asc
+    </select>
+
+    <update id="updateManagerManual" parameterType="saleson.shop.manual.domain.Manual">
+		UPDATE op_menu SET
+			file_nm = #{fileNm},
+			orginl_file_nm = #{orginlFileNm}
+		WHERE menu_id = #{menuId}
+	</update>
+
+	<select id="getOpMenu" resultType="saleson.shop.manual.domain.Manual">
+    	select
+			m.menu_id
+			, m.menu_name
+			, m.file_nm as file_nm
+			, m.orginl_file_nm as orginl_file_nm
+		from op_menu m
+		where 1=1
+		and menu_id = #{menuId}
+    </select>
+
+    <update id="managerDeleteManualFile" parameterType="String" >
+		UPDATE op_menu SET
+			file_nm = null,
+			orginl_file_nm = null
+		WHERE menu_id = #{menuId}
+	</update>
+</mapper>

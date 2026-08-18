@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>함안군 답례품 소개 : 고향사랑e음 고향소식</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+  </head>
+
+  <body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page hometown10">
+      <div id="wrap">
+
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <img src="/newsletter/static/images/vol001/detail_15.jpg" alt="함양군 답례품 제품 사진, HEYRICH 제품 사진, 함안곶감의 제품 사진, 망고수박의 사진, '달콤함에 반하다 백자멜론' 라고 쓰인 백자멜론 사진, '은은한주홍빛 노을 품은'라고 쓰인 노을 멜론 사진, 일월삼주 제품 포장 및 상품 사진">
+              <div class="banner_link_btn">
+                <a href="/goods/searchGoods-main.html?type=L&locgov=48730
+                " target="_blank" title="새창 열림">자세히 보기&nbsp;&nbsp;+</a>
+              </div>
+            </div>
+            <div class="tit_area">
+              <h4>경상남도 함안군</h4>
+              <h3>
+                함안군 <span class="blue">답례품 소개</span>
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar"></div>
+          <section id="" class="detail_contents_area">
+            <ul class="deco-arrow blue-deco blue">
+              <li>
+                경남 함안군에서는 함안 농산물을 비롯한 다양한 먹거리, 생활용품, 체험활동을 답례품으로 제공하고 있다.
+              </li>
+              <li>
+                제철농산물 중 함안곶감은 1월에서 2월, 함안수박, 메론(백자메론, 노을메론) 등은 4월 중순부터 6월까지 만날 수 있다. 답례품 포인트는 최대 5년간 사용가능하니, 제철농산물은 다음 해에 선택해도 된다.
+              </li>
+              <li>
+                특색있는 답례품으로는 타조알, 일월삼주-이주(함안전통주)가 있으며, 그 외에 각종 농산물 세트, 쌀, 한우, 불빵, 홍시주스, 수제치즈, 수제요거트, 국산참기름, 오븐찰떡, 현미누룽지, 흑마늘즙, 청국장, 장류, 찐빵 등의 먹거리가 있다.
+              </li>
+              <li>
+                생활용품으로 도자기접시, 원목주방용품 등이 있으며, 캠핑장이용권 등 관광체험서비스도 답례품으로 제공하고 있다.
+              </li>
+            </ul>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

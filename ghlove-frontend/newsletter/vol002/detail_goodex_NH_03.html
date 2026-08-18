@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>제2회 고향사랑의 날 기념식과 박람회 : 고향사랑e음 기부제 소식</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type="text/babel">
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+  </head>
+
+<body>
+  <div id="saleson" v-cloak>
+    <newsletter-header :ver="'vol002'"></newsletter-header>
+
+    <div class="newsletter_detail_page ">
+      <div id="wrap">
+
+        <h2>우수사례소개</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <div class="banner_img_wrap">
+                <div class="img_wrap"><img src="/newsletter/static/images/vol002/goodex/NH/03/detail_1.png" alt="태백시지부, 태백시, 농협태백시지부 고향사랑기부제 홍보 캠페인 , 2024"></div>
+                <div class="img_wrap"><img src="/newsletter/static/images/vol002/goodex/NH/03/detail_2.png" alt="태백시지부, 태백시, 농협태백시지부 고향사랑기부제 홍보 캠페인 , 2024"></div>
+              </div>
+              <!-- <div class="banner_link_btn">
+                <a href="#;">자세히 보기&nbsp;&nbsp;+</a>
+              </div> -->
+            </div>
+            <div class="tit_area">
+              <h4>농협</h4>
+              <h3> 태백시와 고향사랑기부제 
+                <span class="blue"> 홍보 캠페인  </span>
+              </h3>
+            </div>
+          </section>
+          <div class="bar blue-bar"></div>
+
+          <section class="detail_contents_area mt20">
+            <ul class="deco-circle blue-deco ">
+              <li>
+                추진 배경<br/>
+                - 고향사랑기부제의 원활한 시행을 위한 홍보 및 참여 확대
+              </li>
+              <li>
+                일&nbsp;&nbsp;&nbsp;&nbsp;시 : 24.10.10.(목) 12:30 ~ 13:30 
+              </li>
+              <li>
+                장&nbsp;&nbsp;&nbsp;&nbsp;소 : 태백시 오투리조트 대연회장 입구
+              </li>
+              <li>
+                참여인원<br/>
+                - 태백시 행정국장 이인숙, NH농협 태백시지부장 김준태 <br/>
+                - 태백시 지역사회고장협의체 대표위원장 심상운 등 
+                </li>
+              <li>
+                활동 내용<br/>
+                - 지역사회보장협의체 대회에 참석, 태백시 주요 답례품 전시 및 시식(시음) 행사<br/>
+                - 태백시·농협 공동 고향사랑기부제 기부동참 홍보 캠페인
+              </li>
+              <li>
+                향후 추진 방향<br/>
+                -  고향사랑기부제 동참은 지역 농·축산물 소비확대로 이어져 농업·농촌 발전을 도모
+              </li>
+            </ul>
+            <!-- <div class="bar blue-bar"></div>
+            <ul class="deco-circle blue-deco ">
+              <li></li>
+            </ul> -->
+          </section>
+        </div>
+        <a href="#wrap" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="맨 위로가기 버튼">
+        </a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

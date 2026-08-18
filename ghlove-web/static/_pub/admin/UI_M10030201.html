@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <!-- 상품 등록 popup -->
+    <div class="popup_wrap">
+        <div id="pop_header">
+            <h1 class="popup_title">상품 등록</h1>
+			<a href="javascript:self.close();" class="btn_close"><img src="../../content/opmanager/images/btn/btn_close.png" alt="닫기"></a>
+		</div>
+
+        <div class="popup_contents">
+            <div class="board_write">
+                <table class="board_write_table" summary="">
+                    <colgroup>
+                        <col style="width:220px;">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td class="label">카테고리</td>
+                            <td>
+                                <div class="flex_box gap-08">
+                                    <select id="" name="" title="카테고리" class="wd-150">
+                                        <option value="">전체</option>
+                                    </select>
+                                    <select id="" name="" title="카테고리" class="wd-150">
+                                        <option value="">2차 카테고리</option>
+                                    </select>
+                                    <select id="" name="" title="카테고리" class="wd-150">
+                                        <option value="">3차 카테고리</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">검색구분</td>
+                            <td>
+                                <div class="flex_box gap-08">
+                                    <select id="" name="" title="검색구분" class="wd-150">
+                                        <option value="">상품명</option>
+                                    </select>
+                                    <input id="" name="" title="검색구분" class="input_txt required _filter full" type="text" value="">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="btn_all btn_right">
+                <div class="flex_box gap-08">
+                    <button type="button" class="btn btn-dark-gray btn-mini"
+                        onclick="location.href='/opmanager/item/seller/list';">초기화</button>
+                    <button type="submit" class="btn btn-dark-gray btn-mini">검색</button>
+                </div>
+            </div>
+
+            <!-- 조회 결과 테이블 -->
+            <div class="board_list">
+                <table class="board_list_table" summary="상품 등록">
+                    <caption>상품 등록</caption>
+                    <colgroup>
+                        <col style="width:50px;">
+                        <col style="width:500px;">
+                        <col style="width:200px;">
+                        <col style="width:200px;">
+                        <col style="width:150px;">
+                        <col style="width:150px;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>상품명</th>
+                            <th>상품코드</th>
+                            <th>판매가</th>
+                            <th>상호명</th>
+                            <th>판매자</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sortable">
+                        <tr>
+                            <!-- 라디오 -->
+                            <td>
+                                <div>
+                                    <input type="radio" name="rad" value="" id="rad-01">
+                                </div>
+                            </td>
+                            <!-- // 라디오 -->
+                            <!-- 상품명 -->
+                            <td class="left break-word">
+                                <a href="javascript:Link.view('/opmanager/item/seller/edit/${item.itemUserCode}')" class="break-word">
+                                    <div class="flex_box item-center gap-08">
+                                        <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품명이미지" />
+                                        <div><span style="color:#e84700" class="mr5">품절</span>${item.itemName}</div>
+                                    </div>
+                                </a>
+                            </td>
+                            <!-- // 상품명 -->
+                            <!-- 상품코드 -->
+                            <td>
+                                <div>1231235</div>
+                            </td>
+                            <!-- // 상품코드 -->
+                            <!-- 판매가 -->
+                            <td>
+                                <div>30,000</div>
+                            </td>
+                            <!-- // 판매가 -->
+                            <!-- 상호명 -->
+                            <td>
+                                <div>asdfasdf</div>
+                            </td>
+                            <!-- // 상호명 -->
+                            <!-- 판매자 -->
+                            <td>
+                                <div>홍길동</div>
+                            </td>
+                            <!-- // 판매자 -->
+                        </tr>
+                        <tr>
+                            <!-- 라디오 -->
+                            <td>
+                                <div>
+                                    <input type="radio" name="rad" value="" id="rad-02">
+                                </div>
+                            </td>
+                            <!-- // 라디오 -->
+                            <!-- 상품명 -->
+                            <td class="left break-word">
+                                <a href="javascript:Link.view('/opmanager/item/seller/edit/${item.itemUserCode}')" class="break-word">
+                                    <div class="flex_box item-center gap-08">
+                                        <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품명이미지" />
+                                        <div>${item.itemName}</div>
+                                    </div>
+                                </a>
+                            </td>
+                            <!-- // 상품명 -->
+                            <!-- 상품코드 -->
+                            <td>
+                                <div>1231235</div>
+                            </td>
+                            <!-- // 상품코드 -->
+                            <!-- 판매가 -->
+                            <td>
+                                <div>30,000</div>
+                            </td>
+                            <!-- // 판매가 -->
+                            <!-- 상호명 -->
+                            <td>
+                                <div>asdfasdf</div>
+                            </td>
+                            <!-- // 상호명 -->
+                            <!-- 판매자 -->
+                            <td>
+                                <div>홍길동</div>
+                            </td>
+                            <!-- // 판매자 -->
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 페이지네이션 -->
+                <div class="pagination-wrap">
+                    <page:pagination-manager />
+                </div>
+                <!-- // 페이지네이션 -->
+            </div> <!-- // board_list -->
+            <!-- // 조회 결과 테이블 -->
+
+            <p class="popup_btns">
+                <button type="button" class="btn btn-active">저장</button>
+                <button type="button" class="btn btn-default">닫기</button>
+            </p>
+        </div>
+    </div>
+    <!-- // 상품 등록 popup -->
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

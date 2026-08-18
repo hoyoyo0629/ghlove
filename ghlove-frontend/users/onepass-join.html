@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="max-age=0, no-cache, no-store, must-revalidate, private">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>디지털원패스 회원가입 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+    <!-- ali Section Style :: 이건 꼭 쓰세요:) -->
+    <link rel="stylesheet" href="/static/css/joind-ag.css">
+    <link rel="stylesheet" href="/static/css/join-inf2.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css"> <!-- 모달 -->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- 종합정보 시스템 모달 -->
+            <div class="black-bg">
+                <div class="overlayer">
+                    <div class="overlayer-header">고향사랑e음 종합정보 시스템</div>
+                    <div class="overlayer-body">
+                        <h2> 고향사랑e음에서는 회원님의<br>아이디, 이름,이메일, 연락처 정보를 수집합니다.</h2>
+                        <p>제공된 정보는 이용자 식별, 계정연동 등을 위해<br>
+                            서비스 이용 중 보관됩니다.</p>
+                        <!-- 버튼그룹 -->
+                        <div class="btn-box">
+                            <button type="button" class="blueBtn cancellation" @click="closePopupLayer()">
+                                취소
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                            <button type="button" class="blueBtn u-confirm" @click="nextStep()">
+                                동의
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                        </div>
+                        <p>동의후에는 해당 서비스의 이용약관 및<br>
+                            개인 정보 취급 방침에 따라 정보가 관리 됩니다.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 가입완료 축하 모달  -->
+            <div class="black-bg" id="joinComplete">
+                <div class="overlayer join-complete">
+                    <div class="overlayer-header"></div>
+                    <div class="overlayer-body">
+                        <h2> 고향사랑e음<br>회원연동 완료</h2>
+                        <img src="/static/images/icon/cli-icon_join-complete.png" alt="가입을 축하합니다">
+                        <div class="line"></div>
+                        <!-- 개발필요 -->
+                        <p class="s-txt" id="smsAgree">국민비서·SMS 수신동의</p>
+                        <p class="s-txt" id="smsDisAgree">국민비서·SMS 동의안함</p>
+                        <p class="s-txt" id="emailAgree">email 수신동의</p>
+                        <p class="s-txt" id="emailDisAgree">email 동의안함</p>
+                        <!-- 버튼그룹 -->
+                        <div class="btn-box">
+                            <button type="button" class="blueBtn u-confirm" @click="closePopupLayer()">
+                                확인
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- //가입완료 축하 모달 -->
+
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+
+
+
+            <section class="joind center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        디지털원패스 회원가입
+                    </span>
+                    <h2 class="page-title-txt" :class="[stepStatus == '1'? '':'non']">디지털원패스 회원 연동</h2>
+                    <h2 class="page-title-txt" :class="[stepStatus == '2'? '':'non']">회원 연동 약관</h2>
+                    <h2 class="page-title-txt" :class="[stepStatus == '3'? '':'non']">회원 연동 정보 입력</h2>
+                </div>
+                <div class="steps-box">
+                    <div class="authentication" :class="[stepStatus == '1'? 'on':'']">
+                        <div class="steps-txt">본인<br>인증</div>
+                        <div class="icon-bg"></div>
+                    </div>
+                    <div class="agreement" :class="[stepStatus == '2'? 'on':'']">
+                        <div class="steps-txt">약관<br>동의</div>
+                        <div class="icon-bg"></div>
+                    </div>
+
+                    <div class="enter-info" :class="[stepStatus == '3'? 'on':'']">
+                        <div class="steps-txt">정보<br>입력</div>
+                        <div class="icon-bg"></div>
+                    </div>
+
+                    <div class="sign-up-complete">
+                        <div class="steps-txt">가입<br>완료</div>
+                        <div class="icon-bg"></div>
+                    </div>
+                </div>
+
+            </section>
+            <section id="contents" class="center">
+                <layout-mobile_auth v-show="stepStatus == '1'"></layout-mobile_auth>
+
+                <layout-agree v-show="stepStatus == '2'" @agree="getAgreeInfo"></layout-agree>
+
+                <form action="/" id="add-info" name="join" @submit.prevent v-show="stepStatus == '3'">
+                    <!-- 회원정보입력 -->
+                    <fieldset>
+                        <div class="add-info-area">
+                            <div class="lable-field">
+                                <h3><span>회원정보&nbsp;</span><span>입력</span></h3>
+                                <p class="essential"> <span>필수*</span> <span>입력정보</span></p>
+                            </div>
+                            <div class="info-field">
+                                <div class="info-field-group">
+                                    <div class="info-field-items">
+                                        <label for="memberLevel" class="flied-title">회원구분
+                                            <span class="essential"> *</span>
+                                        </label>
+                                        <span class="form-field">
+                                            <input type="text" name="memberLevel" id="memberLevel" :value="디폴트등급"
+                                                readonly>
+                                        </span>
+                                    </div>
+                                    <div class="info-field-items">
+                                        <label for="userName" class="flied-title">이름<span class="essential"> *
+                                            </span></label>
+                                        <span class="form-field">
+                                            <input type="text" name="userName" id="userName" v-model="param.userName"
+                                                readonly>
+                                        </span>
+                                    </div>
+                                    <div class="info-field-items">
+                                        <label for="userBirth" class="flied-title">생년월일<span class="essential"> *
+                                            </span></label>
+                                        <span class="form-field">
+                                            <input type="text" name="userBirth" id="userBirth"
+                                                v-model="param.birthday" readonly>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="line"></div>
+
+                                <div class="info-field-group">
+                                    <div class="info-field-items userNum">
+                                        <label class="flied-title">휴대폰번호<span class="essential"> *</span></label>
+
+                                        <span class="form-field">
+                                            <select name="phoneCode" id="phoneCode" v-model="param.phoneCode"
+                                                aria-label="휴대폰번호 앞자리를 선택하세요">
+                                                <option v-for="code in phoneCodes" :value="code.key.id">{{code.label}}
+                                                </option>
+                                            </select>
+                                            <span class="s-txt">-</span>
+                                            <input type="number" name="phoneMid" id="phoneMid" v-model="param.phoneMid"
+                                                maxlength="4"
+                                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                aria-label="휴대폰번호 가운데 3-4자리를 입력하세요">
+                                            <span class="s-txt">-</span>
+                                            <input type="number" name="phoneLast" id="phoneLast"
+                                                v-model="param.phoneLast" maxlength="4"
+                                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                                aria-label="휴대폰번호 마지막 4자리를 입력하세요">
+                                        </span>
+                                    </div>
+                                    <div class="info-field-items userEmail">
+                                        <label for="userEmail" class="flied-title">이메일주소<span class="essential"> *
+                                            </span></label>
+                                        <span class="form-field">
+                                            <span class="m-field">
+                                                <input type="text" name="emailFirst" id="emailFirst"
+                                                    v-model="param.emailFirst" aria-label="이메일 주소 @앞자리를 입력하세요">
+                                                <span class="s-txt">@</span>
+                                            </span>
+
+                                            <input id="emailAddress" type="text" v-model="param.emailAddress" aria-label="이메일 주소 @뒷자리를 작성하세요. 직접 작성하지 않고 선택하려면 다음으로 탭">
+                                            <select title="이메일 주소 @뒷자리 선택" id="emailL" :name="param.emailCode"
+                                                :id="param.emailCode" v-model="param.emailCode"
+                                                @change="emailChange($event)" aria-label="이메일 주소 @뒷자리를 선택하세요">
+                                                <option v-for="code in emailCodes" :value="code.key.id">{{code.label}}
+                                                </option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="info-field-items">
+                                        <label for="post" class="flied-title">주소<span class="essential"> *
+                                            </span></label>
+                                        <div class="form-field">
+                                            <div class="search-address m-field">
+                                                <input type="text" name="post" id="post" v-model="param.post" readonly="readonly" aria-label="주소찾기 버튼으로 주소를 입력하세요.">
+                                                <button type="button" id="postBtn" class="formBtn"
+                                                    @click="searchAddress()">주소찾기</button>
+                                            </div>
+                                            <div class="input-address">
+                                                <input type="text" name="address" id="address" v-model="param.address" readonly="readonly" aria-label="주소찾기 버튼으로 주소를 입력하세요.">
+                                                <input type="text" name="addressDetail" id="addressDetail" v-model="param.addressDetail" aria-label="상세주소를 입력하세요">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="line"></div>
+                                <div class="info-field-group">
+                                    <div class="info-field-items subscribe">
+                                        <label for="" class="flied-title">알림서비스 수신동의</label>
+                                        <div class="form-field">
+                                            <!-- 추가 개발 필요  -->
+                                            <div class="m-field">
+                                                <span class="s-txt"> SMS 수신동의</span>
+                                                <div class="subscribe-select">
+                                                    <input type="radio" name="sms_selectAgree" id="sms_agree" value="0"
+                                                        v-model="param.receiveSms">
+                                                    <label for="sms_agree">동의</label>
+                                                </div>
+                                                <div class="subscribe-select">
+                                                    <input type="radio" name="sms_selectAgree" id="sms_notAgree"
+                                                        value="1" v-model="param.receiveSms">
+                                                    <label for="sms_notAgree">동의안함</label>
+                                                </div>
+                                            </div>
+                                            <!-- //추가 개발 필요  -->
+                                            <div class="m-field">
+                                                <span class="s-txt"> EMAIL 수신동의</span>
+                                                <div class="subscribe-select">
+                                                    <input type="radio" name="selectAgree" id="agree" value="0"
+                                                        v-model="param.receiveEmail">
+                                                    <label for="agree">동의</label>
+                                                </div>
+                                                <div class="subscribe-select">
+                                                    <input type="radio" name="selectAgree" id="notAgree" value="1"
+                                                        v-model="param.receiveEmail">
+                                                    <label for="notAgree">동의안함</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="add-info-area">
+                            <h3><span>관심정보&nbsp;</span><span> 선택</span></h3>
+                            <div class="info-field">
+                                <div class="info-field-group">
+                                    <div class="info-field-items fa-select">
+                                        <label for="upperLocgovCode" class="flied-title">관심지자체</label>
+                                        <div class="form-field">
+                                            <span class="s-txt">관심 지자체를 선택해 주세요</span>
+                                            <div class="select-location">
+                                                <div class="select-location-items">
+                                                    <span>시·도</span>
+                                                    <select title="시·도 선택" name="upperLocgovCode" id="upperLocgovCode"
+                                                        v-model="param.upperLocgovCode"
+                                                        @change="getSubLocGovList($event)">
+                                                        <option value="n">시·도 선택</option>
+                                                        <option v-for="(data, index) in locGovList" :value="index">{{
+                                                            data.label }}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="select-location-items">
+                                                    <span>시·군·구</span>
+                                                    <select title="시·군·구 선택" name="locgovCodeSet" id="locgovCodeSet"
+                                                        v-model="param.locgovCodeSet">
+                                                        <option value="n"> 시·군·구 선택</option>
+                                                        <option v-for="(data, index) in subLocGovList" :value="index">{{
+                                                            data.locgovNm }}</option>
+                                                    </select>
+                                                </div>
+                                                <button class="formBtn" type="button" @click="addRow();">추가</button>
+                                            </div>
+                                            <div class="selected-location">
+                                                <div class="attention-location"
+                                                    v-for="(data, index) in param.interestLocGov" aria-label="선택 지자체">
+                                                    {{data.upperLocgovNm}} {{data.locgovNm}}<button class="delete"
+                                                        @click="deleteRow(data, index)">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="line favo"></div>
+                                <div class="info_txt_wrap">
+                                    <ul>
+                                        <li class="s_txt">※ 관심 지자체를 추가해 두시면 마이페이지 > 관심지자체에서 기부금 현황을 쉽게 확인할 수 있고 바로 기부하기
+                                            페이지로
+                                            이동도 가능합니다.</li>
+                                        <li class="s_txt">※ 자신의 주민등록 주소지에는 기부가 불가능합니다.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 버튼그룹 -->
+                        <div class="btn-box many">
+                            <button type="button" class="blueBtn cancellation" @click="goToMain()">
+                                취소
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                            <button type="button" class="blueBtn u-confirm" @click="submit()">
+                                회원등록
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </section>
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-agree': httpVueLoader('/components/layouts/join/onepass-agree.vue'),
+                'layout-mobile_auth': httpVueLoader('/components/layouts/join/onepass-mobile_auth.vue'),
+
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue')
+            },
+            data: {
+                // ali data
+                디폴트등급: ["일반회원"],
+                param: {
+                    loginId: "",
+                    phoneCode: "",
+                    emailCode: "",
+                    upperLocgovCode: "",
+                    locgovCode: "",
+                    locgovCodeSet: "",
+                    interestLocGov: [],
+                    rtnpsntList: [],
+                    password: "",
+                    passwordConfirm: "",
+                    userName: "",
+                    email: "",
+                    phoneNumber: "",
+                    gender: "",
+                    birthdayType: "1",
+                    birthday: "",
+                    post: "",
+                    address: "",
+                    addressDetail: "",
+                    receiveEmail: "1",
+                    receiveSms: "1",
+                    auth: false,
+                    birthdayFull: '',
+
+                    emailFirst: "",
+                    phoneMid: "",
+                    phoneLast: "",
+                    locGovList: [],
+                    agreeList: [],
+                    mberCi: "",
+                    mberDi: "",
+                    userKey: "",
+                    loginType: "ROLE_USER",
+                    emailAddress: "",
+                    isOnepass: "",
+                    loginPathCode: "",
+                    opMberCi: ""
+                },
+                isUnderAge: false,
+                phoneCodes: [],
+                emailCodes: [],
+                locGovList: [],
+                subLocGovList: [],
+                locgovCode: [],
+                agreeCheck: false,
+                stepStatus: '1',
+                categoryList: [],
+                checkDuplication: false,
+                password: {
+                    redPoint: {
+                        weekPwd: true,
+                        strongPwd: false
+                    }
+                }
+            },
+            methods: {
+                // *************** ali-add methods
+                goToMain: function () {
+                    location.href = $s.pages.INDEX;
+                    // 메인화면 URL 지정하기
+                },
+                modalLayer: function (e) {
+                    $(".black-bg").addClass("show");
+                    // e.preventDefault();
+                },
+                closePopupLayer: function () {
+                    $(".black-bg").removeClass("show");
+                },
+                eyeToggle: function () {
+                    let sTrue = $(".pwShowHide>img").attr("src");
+                    let showImg = "/static/images/icon/cli-icon_pw-show.png"
+
+                    if (sTrue != showImg) {
+                        $(".pwShowHide>img").attr("src", "/static/images/icon/cli-icon_pw-show.png");
+                        $("#userPW").attr('type', "text");
+                    } else {
+                        $(".pwShowHide>img").attr("src", "/static/images/icon/cli-icon_pw-hide.png");
+                        $("#userPW").attr('type', "password");
+                    }
+                },
+                searchAddress: function () {
+                    Common.popup("/users/jusoPopup.html", "pop", "570", "420", "yes");
+                },
+                emailChange: function (event) {
+                    if (event.target.value == 0) {
+                        vm.param.emailAddress = '';
+                        $("#emailAddress").attr("readonly", false);
+
+                    } else {
+                        vm.param.emailAddress = event.target.value;
+                        $("#emailAddress").attr("readonly", true);
+
+                    }
+                },
+                getAgreeInfo: function (response) {
+                    vm.param.agreeList = response.checkResult;
+                    vm.param.agreeCheck = response.agreeCheck;
+                    vm.stepStatus = 3;
+                },
+                changeId: function () {
+                    vm.checkDuplication = false;
+                },
+                openMobileAuth: function () {
+                    $("#getParentModal").removeClass("show");
+                    var child = Vue.child('layout-mobile_auth');
+                    if (child != null) {
+                        child.nextStep();
+                    }
+                },
+                checkFormValue: function () {
+                    if (vm.param.userName == '' || vm.param.birthdayFull == '' || vm.param.mberCi == '' || vm.param.gender == '') {
+                        $s.alert("본인인증을 해주세요");
+                        return false;
+                    }
+
+                    if (!vm.param.agreeCheck) {
+                        $s.alert("약관동의를 해주세요");
+                        return false;
+                    }
+
+                    //휴대폰번호 미입력 ,me-031
+                    ///^[0-9]{3}-[0-9]{3,4}-[0-9]{4}/.test(args)
+                    var phonePattern1 = /^[0-9]{3}$/g;
+                    var phonePattern2 = /^[0-9]{3,4}$/g;
+                    var phonePattern3 = /^[0-9]{4}$/g;
+
+                    if (vm.param.phoneMid == '') {
+						$s.alert("휴대폰 번호를 입력하세요","phoneMid");
+                        return false;
+					}
+
+					if (vm.param.phoneLast == '') {
+						$s.alert("휴대폰 번호를 입력하세요","phoneLast");
+                        return false;
+					}
+
+                    if (vm.param.phoneCode == '' || vm.param.phoneMid == '' || vm.param.phoneLast == ''
+                        || !phonePattern1.test(vm.param.phoneCode) || !phonePattern2.test(vm.param.phoneMid) || !phonePattern3.test(vm.param.phoneLast)) {
+                        $s.alert("휴대폰 번호를 입력하세요");
+                        return false;
+                    }
+
+                    //이메일주소 미입력 : me-032
+                    var regex = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+                    if (vm.param.emailFirst == '' || vm.param.emailCode == '' || !regex.test(vm.param.email)) {
+                        $s.alert("이메일 주소를 입력해주세요","emailFirst");
+                        return false;
+                    }
+
+                    //주소 미입력 : me-033
+                    if (vm.param.post == '' || vm.param.address == '' || vm.param.addressDetail == '') {
+                        $s.alert("주소찾기 버튼을 클릭해주세요","postBtn");
+                        return false;
+                    }
+
+                    return true;
+                },
+                submit: function () {
+                    if (vm.param.emailCode == '0') {
+                        vm.param.email = vm.param.emailFirst + '@' + vm.param.emailAddress;
+                    } else {
+                        vm.param.email = vm.param.emailFirst + '@' + vm.param.emailCode;
+                    }
+                    vm.param.phoneNumber = vm.param.phoneCode + '' + vm.param.phoneMid + '' + vm.param.phoneLast;
+
+                    if (!vm.checkFormValue()) {
+                        return false;
+                    }
+
+                    var locGovList = vm.param.interestLocGov;
+                    var list = [];
+                    vm.param.locGovList = [];
+
+                    for (var i = 0; i < locGovList.length; i++) {
+                        list.push(locGovList[i].locgovCode);
+                    }
+
+                    vm.param.locGovList = list;
+
+                    $s.confirm("디지털원패스 회원 연동을 진행하시겠습니까?", function () {
+                        vm.join();
+                    });
+
+                },
+                join: function () {
+                    $s.api.postSubmitNoAuth('/api/join/onepassJoin', vm.param,
+                        function (response) {
+                            if (response.status === "OK") {
+                                $s.closeAlert();
+                                $s.ev.log.joinUser(response.userId);
+                                $("#emailAgree").hide();
+                                $("#emailDisAgree").hide();
+                                $("#smsAgree").hide();
+                                $("#smsDisAgree").hide();
+                                if (vm.param.receiveEmail == '0') {
+                                    $("#emailAgree").show();
+                                } else {
+                                    $("#emailDisAgree").show();
+                                }
+                                if (vm.param.receiveSms == '0') {
+                                    $("#smsAgree").show();
+                                } else {
+                                    $("#smsDisAgree").show()
+                                }
+                                $("#joinComplete").show();
+                            }
+                        }, function (error) {
+                            $s.alert(error.response.data.description);
+                        });
+                },
+                deleteOnepassCookie: function (name) {
+                    // $s.deleteCookie("userKey");
+                    // $s.deleteCookie("intfToken");
+                    $s.deleteCookie("onepass-id");
+                    $s.deleteCookie("onepass-email");
+                },
+                closePopupLayer: function () {
+                    $(".black-bg").removeClass("show");
+                    location.href = $s.pages.INDEX;
+                },
+                joinFormData: function () {
+                    /*
+                                            if($s.core.getParameter('isOnepass')!="Y"
+                                                || !vm.getCookieValue("userKey")
+                                                || !vm.getCookieValue("intfToken")
+                                                || !vm.getCookieValue("onepass-id")
+                                                || !vm.getCookieValue("onepass-email")){
+                                                location.href="/users/login.html";
+                                                return false;
+                                            }
+                    */
+                    $s.api.postSubmitNoAuth('/api/join/entryForm', {}, function (response) {
+                        vm.phoneCodes = response.phoneCodes;
+                        vm.emailCodes = response.emailCodes;
+                        vm.locGovList = response.locGovList;
+                        vm.categoryList = response.categoryList;
+
+                        vm.param.phoneCode = response.phoneCodes[0].key.id;
+                        vm.param.emailCode = response.emailCodes[0].key.id;
+
+                        vm.param.upperLocgovCode = 'n';
+                        vm.param.locgovCodeSet = 'n';
+
+                        vm.param.userKey = vm.getCookieValue("userKey");
+                        if(vm.param.isOnepass == '' || vm.param.isOnepass == null) vm.param.isOnepass = $s.core.getParameter('isOnepass');
+                        vm.param.loginPathCode = '300';
+
+                        var str = '"';
+                        var email = vm.getCookieValue("onepass-email").replace(/\"/g, "");
+                        var emailIndex = email.lastIndexOf("@");
+                        if (emailIndex != -1) {
+                            vm.param.emailFirst = email.substring(0, emailIndex);
+                            var emailCode = email.substring(emailIndex + 1);
+                            var emailCodes = vm.emailCodes;
+                            var existEmailCode = false;
+                            if (emailCodes != null) {
+                                for (var i = 0; i < emailCodes.length; i++) {
+                                    if (emailCodes[i].key.id == emailCode) {
+                                        existEmailCode = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!existEmailCode) {
+                                vm.param.emailCode = response.emailCodes[0].key.id;
+                                vm.param.emailAddress = emailCode;
+                                $("#emailAddress").show();
+                            } else {
+                                vm.param.emailCode = emailCode;
+                                vm.param.emailAddress = emailCode;
+                                $("#emailAddress").hide();
+                            }
+                        }
+                        vm.deleteOnepassCookie();
+                    });
+                },
+                getSubLocGovList: function (event) {
+                    var code = vm.param.upperLocgovCode;
+                    if (code == "n") {
+                        vm.subLocGovList = null;
+                        vm.param.locgovCodeSet = 'n';
+                        return false;
+                    }
+                    var params = {};
+                    params.upperLocgovCode = vm.locGovList[code]['key'].id;
+                    $s.api.postSubmitNoAuth('/api/join/getSubLocGov', params, function (response) {
+                        vm.subLocGovList = response.subLocGovList;
+                    });
+                    vm.param.locgovCodeSet = 'n';
+                },
+                addRow: function () {
+                    var list = vm.param.interestLocGov;
+                    var upperLocgovCodeIdx = vm.param.upperLocgovCode;
+                    var locgovCodeIdx = vm.param.locgovCodeSet;
+
+                    if (upperLocgovCodeIdx == 'n') {
+                        $s.alert("시를 선택해주세요");
+                        return false;
+                    }
+
+                    if (locgovCodeIdx == 'n') {
+                        $s.alert('군.구를 선택해주세요');
+                        return false;
+                    }
+
+                    var upperLocgovInfo = vm.locGovList[upperLocgovCodeIdx];
+                    var locgovCodeInfo = vm.subLocGovList[locgovCodeIdx];
+                    var codeTxt = locgovCodeInfo.locgovCode;
+
+                    var tempList = [];
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].locgovCode != codeTxt) {
+                            tempList.push(list[i]);
+                        }
+                    }
+
+                    var param = {};
+                    param.locgovCode = locgovCodeInfo.locgovCode;
+                    param.upperLocgovNm = upperLocgovInfo.label;
+                    param.locgovNm = locgovCodeInfo.locgovNm;
+                    tempList.push(param);
+                    vm.param.interestLocGov = tempList;
+
+
+                },
+                deleteRow: function (data, index) {
+                    vm.param.interestLocGov.splice(index, 1);
+                },
+                checkIdUsedYn: function () {
+
+                    vm.checkDuplication = false;
+
+                    if (!vm.checkId()) {
+                        return false;
+                    }
+
+                    $s.api.postSubmitNoAuth("/api/join/getUserInfoByUserId", vm.param.loginId, function (response) {
+                        if (response.idCnt == 0) {
+                            $s.alert('사용가능한 아이디 입니다.');
+                            vm.checkDuplication = true;
+                        } else {
+                            $s.alert('이미 사용중인 아이디 입니다. 다른 아이디를 사용해주세요');
+                        }
+                    });
+                },
+                checkId: function () {
+
+                    var loginId = vm.param.loginId;
+
+                    if (!loginId) {
+                        $s.alert("아이디를 입력해주세요.");
+                        return false;
+                    }
+
+                    var idStart = /^[a-z]$/g;
+
+                    if (!idStart.test(loginId.substring(0, 1))) {
+                        $s.alert("영문자 소문자로 시작해 주세요");
+                        return false;
+                    }
+
+                    var idEngUpper = /[A-Z]/g;
+                    if (idEngUpper.test(loginId)) {
+                        $s.alert("영문자는 소문자만 허용됩니다");
+                        return false;
+                    }
+
+                    var english = loginId.search(/[a-z]/g);
+                    if (english < 0) {
+                        $s.alert("영문을 필히 포함해 주세요");
+                        return false;
+                    }
+
+                    var korean = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
+
+                    if (korean.test(loginId)) {
+                        $s.alert("한글은 포함할 수 없읍니다.");
+                        return false;
+                    }
+
+                    if (loginId.length < 6 || loginId.length > 20) {
+                        $s.alert("6 ~ 20 이내로 아이디를 생성해주세요");
+                        return false;
+                    }
+
+                    var regType3 = /^[a-z0-9_]{6,20}$/;
+                    if (!regType3.test(loginId)) {
+                        $s.alert("특수문자를 포함할수 없습니다.( _언더바 허용)");
+                        return false;
+                    }
+
+                    return true;
+                },
+                checkPwd: function () {
+                    var val = vm.param.passwordConfirm;
+                    var password = vm.param.password;
+                    var isPwdOk = false;
+                    vm.password.redPoint.weekPwd = false;
+                    vm.password.redPoint.strongPwd = false;
+
+                    var isPwdVail1 = false; // 숫자, 기호, 영문자 포함
+                    var isPwdVail2 = false; // 3개이상 연속 문자/숫자 제외
+                    var isPwdVail3 = false; // 아이디 포함
+                    var isPwdVail4 = false; // 길이
+
+                    var number = val.search(/[0-9]/g);
+                    var english = val.search(/[a-zA-Z]/g);
+                    var sword = val.search(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g);
+
+                    // 숫자나 기호, 영문자 포함
+                    if (number < 0 || english < 0 || sword < 0) {
+                        $("span.pw-validation").eq(1).removeClass("vali-confirm");
+                    } else {
+                        $("span.pw-validation").eq(1).addClass("vali-confirm");
+                        isPwdVail1 = true;
+                    }
+
+                    if (/(\w)\1\1/.test(val) || password == '' || val == '' || !vm.isContinued(val)) {
+                        $("span.pw-validation").eq(2).removeClass("vali-confirm");
+                    } else {
+                        $("span.pw-validation").eq(2).addClass("vali-confirm");
+                        isPwdVail2 = true;
+                    }
+
+                    var loginId = vm.param.loginId;
+                    if (val.indexOf(loginId) > -1) {
+                        $("span.pw-validation").eq(3).removeClass("vali-confirm");
+                    } else {
+                        $("span.pw-validation").eq(3).addClass("vali-confirm");
+                        isPwdVail3 = true;
+                    }
+
+                    if (!(val.length >= 8 && val.length <= 20)) {
+                        $("span.pw-validation").eq(4).removeClass("vali-confirm");
+                    } else {
+                        isPwdVail4 = true;
+                        $("span.pw-validation").eq(4).addClass("vali-confirm");
+                    }
+
+                    if (!isPwdVail1 || !isPwdVail2 || !isPwdVail3 || !isPwdVail4) {
+                        $("span.pw-validation").eq(0).removeClass("vali-confirm");
+                        vm.password.redPoint.weekPwd = true;
+                        vm.password.redPoint.strongPwd = false;
+                    } else {
+                        $("span.pw-validation").eq(0).addClass("vali-confirm");
+                        vm.password.redPoint.weekPwd = false;
+                        vm.password.redPoint.strongPwd = true;
+                        isPwdOk = true;
+                    }
+                    return isPwdOk;
+                },
+                isContinued: function (obj) {
+                    // 연속된 문자 확인
+                    var ascSeqCharCnt = 0; // 오름차순 연속 문자 카운트
+                    var descSeqCharCnt = 0; // 내림차순 연속 문자 카운트
+
+                    var char_0;
+                    var char_1;
+                    var char_2;
+
+                    var diff_0_1;
+                    var diff_1_2;
+
+                    for (var i = 0; i < obj.length; i++) {
+                        // charAt(): 문자값 반환
+                        char_0 = obj.charAt(i);
+                        char_1 = obj.charAt(i + 1);
+                        char_2 = obj.charAt(i + 2);
+
+                        // charCodeAt(): 유니코드값 반환
+                        diff_0_1 = char_0.charCodeAt(0) - char_1.charCodeAt(0);
+                        diff_1_2 = char_1.charCodeAt(0) - char_2.charCodeAt(0);
+
+                        if (diff_0_1 === 1 && diff_1_2 === 1) {
+                            ascSeqCharCnt += 1;
+                        }
+
+                        if (diff_0_1 === -1 && diff_1_2 === -1) {
+                            descSeqCharCnt += 1;
+                        }
+                    }
+                    if (ascSeqCharCnt >= 1 || descSeqCharCnt >= 1) {
+                        return false;
+                    }
+                    return true;
+                },
+                getAge: function (birthday) {
+                    birthday = Number(birthday.replace(/-/gi, '')); // '-' 문자 모두 '' 변경
+
+                    let today = new Date();
+                    let yearNow = String(today.getFullYear());
+                    let monthNow = String(today.getMonth() + 1);
+                    let dayNow = String(today.getDate());
+
+                    monthNow = (monthNow < 10) ? '0' + monthNow : monthNow;
+                    dayNow = (dayNow < 10) ? '0' + dayNow : dayNow;
+
+                    today = Number(yearNow + monthNow + dayNow);
+
+                    let age = Math.floor((today - birthday) / 10000);
+
+                    return age;
+                },
+                getCookieValue: function (key) {
+                    let cookieKey = key + "=";
+                    let result = "";
+                    const cookieArr = document.cookie.split(";");
+
+                    for (let i = 0; i < cookieArr.length; i++) {
+                        if (cookieArr[i][0] === " ") {
+                            cookieArr[i] = cookieArr[i].substring(1);
+                        }
+
+                        if (cookieArr[i].indexOf(cookieKey) === 0) {
+                            result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
+                            return result;
+                        }
+                    }
+                    return result;
+                },
+                mobileAuth: function (data) {
+                    let params = {};
+                    params.mberCi = data.mberCi;
+                    params.underAge = vm.isUnderAge;
+
+                    $s.api.postSubmitNoAuth("/api/join/checkOnepassMobileAuth", params, function (response) {
+                        vm.setMobileAuthInfo(data);
+                    });
+                },
+                setMobileAuthInfo: function (response) {
+                    vm.param.auth = true;
+                    var age = vm.getAge(response.birthday);
+                    if (age < 14) {
+                        vm.stepStatus = 2;
+                        vm.isUnderAge = true;
+                        vm.param.gender = (response.gender == 'M') ? '0' : '1';
+                        vm.param.userName = response.userName;
+                        vm.param.mberDi = response.mberDi;
+                        vm.param.mberCi = response.mberCi;
+                        var birthday = response.birthday;
+                        vm.param.birthday = birthday.substring(0, 4) + '-' + birthday.substring(4, 6) + '-' + birthday.substring(6, 8);
+                        vm.param.birthdayFull = birthday;
+                        var cellNo = response.cellNo;
+                        if (cellNo.length >= 11) {
+                            vm.param.phoneCode = cellNo.substring(0, 3);
+                            vm.param.phoneMid = cellNo.substring(3, 7);
+                            vm.param.phoneLast = cellNo.substring(7, 11);
+                        } else {
+                            vm.param.phoneCode = cellNo.substring(0, 3);
+                            vm.param.phoneMid = cellNo.substring(3, 6);
+                            vm.param.phoneLast = cellNo.substring(6, 10);
+                        }
+
+                        vm.param.auth = false;
+                        $("#getParentModal").addClass("show");
+                    } else {
+                        if (vm.isUnderAge == false) {
+                            vm.param.gender = (response.gender == 'M') ? '0' : '1';
+                            vm.param.userName = response.userName;
+                            vm.param.mberDi = response.mberDi;
+                            vm.param.mberCi = response.mberCi;
+                            var birthday = response.birthday;
+                            vm.param.birthday = birthday.substring(0, 4) + '-' + birthday.substring(4, 6) + '-' + birthday.substring(6, 8);
+                            vm.param.birthdayFull = birthday;
+                            vm.param.auth = true;
+                            var cellNo = response.cellNo;
+                            if (cellNo.length >= 11) {
+                                vm.param.phoneCode = cellNo.substring(0, 3);
+                                vm.param.phoneMid = cellNo.substring(3, 7);
+                                vm.param.phoneLast = cellNo.substring(7, 11);
+                            } else {
+                                vm.param.phoneCode = cellNo.substring(0, 3);
+                                vm.param.phoneMid = cellNo.substring(3, 6);
+                                vm.param.phoneLast = cellNo.substring(6, 10);
+                            }
+
+                        }
+
+                        if(vm.param.phoneMid != "" && vm.param.phoneLast != ""){
+                            $("#phoneCode").attr("disabled", true).css("background-color", "#f5f5f5");
+                            $("#phoneMid").attr("disabled", true).css("background-color", "#f5f5f5");
+                            $("#phoneLast").attr("disabled", true).css("background-color", "#f5f5f5");
+                        }
+
+                        vm.stepStatus = 2;
+                        vm.isUnderAge = false;
+                    }
+                }
+            },
+            computed: {
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    vm.param.opMberCi = $s.core.getData('opMberCi');
+                    $s.core.removeData('opMberCi');
+
+                    Saleson.init();
+                    vm.joinFormData();
+                });
+            }
+        });
+        window.app = vm;
+
+        // 캐시 초기화
+        window.addEventListener('unload', function () { });
+        window.addEventListener('beforeunload', function () { });
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+            window.addEventListener("message", mobileAuthResponse);
+            window.addEventListener("message", jusoCallBack);
+        });
+
+        // 휴대폰 인증 후 실행 method
+        function mobileAuthResponse(response) {
+            if (response.data.userName != undefined) {
+                if(response.data.mberCi != vm.param.opMberCi) {
+                    $s.alert('원패스 인증정보와 동일한 인증정보가 아닙니다.');
+                    return false;
+                }
+                vm.mobileAuth(response.data);
+            }
+        }
+
+        // function jusoCallBack(roadFullAddr, roadAddrPart1, addrDetail, roadAddrPart2, engAddr, jibunAddr, zipNo, admCd, rnMgtSn, bdMgtSn, detBdNmList, bdNm, bdKdcd, siNm, sggNm, emdNm, liNm, rn, udrtYn, buldMnnm, buldSlno, mtYn, lnbrMnnm, lnbrSlno, emdNo) {
+        //     // 팝업페이지에서 주소입력한 정보를 받아서, 현 페이지에 정보를 등록합니다.
+        //     vm.param.post = zipNo;
+        //     vm.param.address = roadAddrPart1 + roadAddrPart2;
+        //     vm.param.locgovCode = (admCd) ? admCd.substring(0, 5) : "";
+        //     vm.param.addressDetail = addrDetail;
+        // }
+        function jusoCallBack(response) {
+            if (response.data.admCd != undefined) {
+                // 팝업페이지에서 주소입력한 정보를 받아서, 현 페이지에 정보를 등록합니다.
+                vm.param.post = response.data.zipNo;
+                vm.param.address = response.data.roadAddrPart1 + response.data.roadAddrPart2;
+                vm.param.locgovCode = (response.data.admCd) ? response.data.admCd.substring(0, 5) : "";
+                vm.param.addressDetail = response.data.addrDetail;
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>

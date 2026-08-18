@@ -1,0 +1,129 @@
+server:
+  port: 8080
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  application.name: ghlove-web
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration
+
+saleson:
+  root: "/home/ghlove"
+  storage-root: ${saleson.root}/backoffice/static
+  static-root: ${saleson.root}/backoffice/static
+  file-root: ${saleson.root}
+  datasource:
+    jndi-flag: true
+    jndi-name: "jboss/cubridDS"
+  # 서비스 DOMAIN
+  URL:
+    shoppingmall: http://152.99.104.8
+    bo: http://152.99.104.8
+    api: http://152.99.104.8
+    frontend: http://152.99.104.8
+    oz: http://152.99.104.8
+
+  # API Allow Origin
+  # '*' or 'http://front.saleson.com' or 'http://front1.saleson.com,http://front2.saleson.com'
+  api:
+    crossorigins: http://localhost:3000
+
+  license::
+    clientid: icraft
+    creation.date: 20230719152530
+    hash.key: f7ed568324b16b6a9da30c60aefccfaee4b553afcd3707cf62aa78d1d6c8c3ce
+    file: ${saleson.license-root}/license/icraft-20230719152530.license
+    key: ${saleson.license-root}/license/icraft-20230719152530.key
+
+# slave jndi
+slave:
+  datasource:
+    jndi-flag: true
+    jndi-name: "jboss/slaveDS"
+    
+# ems jndi
+#email:
+#  datasource:
+#    jndi-flag: true
+#    jndi-name: "jboss/emsDS"
+    
+# analysis jndi
+analysis:
+  datasource:
+    jndi-flag: true
+    jndi-name: "jboss/analysisDS"
+
+# nhapi jndi
+nhapi:
+  datasource:
+    jndi-flag: true
+    jndi-name: "jboss/nhapiDS"
+
+# Log DataSource
+log:
+  datasource:
+    jndi-flag: true
+    jndi-name: "jboss/cubridDS"
+        
+logging:
+  level:
+    saleson: DEBUG
+    jdbc:
+      sqltiming: INFO
+      resultsettable: DEBUG
+      
+      
+#######################
+# TotalSearch Engine
+#######################
+totalsearch-server:
+  engine-url: 192.168.84.12:7577
+  ksf-url: 192.168.84.12:7614
+  
+magicline:
+  prop-path: ${saleson.root}/magicline/config/magicline.properties
+  conf-path: ${saleson.root}/magicline/config/
+  
+ems:
+  host: http://192.168.84.11:8682/api/sendMail.do
+  send:
+    username: 고향사랑e음
+    email: webmatser@ilovegohyang.go.kr
+    
+sci:
+  srvNo: "001001"   
+  
+# Outside Connection
+outconn:
+  # administration net
+  admin-addressinfo-url: http://192.168.84.55:4143/api/mopas/rsgstadresinfo
+  # seoul buga regist
+  seoul-buga-url: http://192.168.84.55:4142/api/seoul/epaymentno
+  # seoul sunap search
+  seoul-sunap-url: http://192.168.84.55:4141/api/etax/getSunapStatus
+  # contry(now) buga regist
+  contry-now-buga-url: http://192.168.84.55:4142/api/curgnr/epaymentno
+  # contry(now) sunap search
+  contry-now-sunap-url: http://192.168.84.55:4142/api/curgnr/receipt    
+
+
+######금융인증서#######
+fincert:
+  #url: https://certapi.yeskey.or.kr/oauth/2.0/api/token
+  #ucpidUrl: https://certapi.yeskey.or.kr/v1/ucpid/ucpid-info
+  url: https://192.168.239.18:4141/oauth/2.0/api/token
+  ucpidUrl:  https://192.168.239.18:4141/v1/ucpid/ucpid-info
+  client-id: ea1525f5-f619-4398-abc2-2c6d9581550d
+  client-secret: 8a6aa6d9-47d9-4999-9dd5-8f4a36d1b526
+  scope: ucpid
+  grant-type: client_credentials
+  server-id: server_ilovegohyang
+  cp-code: Y30000001301
+  manager-use: Y
+  
+next :
+  buga-request-url: https://192.168.84.55:4145/api/nextgnr/send
+  sunap-info-request-url: https://192.168.84.55:4145/api/nextgnr/sunapInfoConfirm

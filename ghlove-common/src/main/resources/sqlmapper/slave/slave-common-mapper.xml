@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommonMapper">
+
+	<sql id="paginationHeader">
+	
+	</sql>
+
+	<sql id="paginationFooter">
+		<if test="pagination != null">
+			<choose>
+				<when test="pagination.currentPage > 0">
+					LIMIT (#{pagination.currentPage} - 1) * #{pagination.itemsPerPage}, #{pagination.itemsPerPage}
+				</when>
+				<otherwise>
+					LIMIT (1 - 1) * #{pagination.itemsPerPage}, #{pagination.itemsPerPage}
+				</otherwise>
+			</choose>
+		</if>
+	</sql>
+	
+	<sql id="datetime">
+		DATE_FORMAT(NOW(), '%Y%m%d%H%i%s')
+	</sql>
+	
+	<sql id="date">
+		DATE_FORMAT(NOW(), '%Y%m%d')
+	</sql>
+	
+</mapper>
+
+
+
+

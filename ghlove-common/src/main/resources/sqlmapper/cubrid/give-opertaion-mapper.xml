@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.give.giveoperation.GiveOperationMapper">
+
+<resultMap id="CtbnyOpratn" type="saleson.shop.give.giveoperation.domain.CtbnyOpratn">
+    <id property="registSn" column="REGIST_SN"></id>
+    <result property="locgovCode" column="LOCGOV_CODE"></result>
+    <result property="bsnsPurpsCode" column="BSNS_PURPS_CODE"></result>
+    <result property="bsnsPurpsNm" column="BSNS_PURPS_NM"></result>
+    <result property="expndtrAmt" column="EXPNDTR_AMT"></result>
+    <result property="bsnsNm" column="BSNS_NM"></result>
+    <result property="bsnsCn" column="BSNS_CN"></result>
+    <result property="loginId" column="LOGIN_ID"></result>
+    <result property="frstRegisterId" column="FRST_REGISTER_ID"></result>
+    <result property="userName" column="USER_NAME"></result>
+    <result property="expndtrDe" column="EXPNDTR_DE"></result>
+    <collection property="fileList" column="registSn = regist_sn" javaType="List" ofType="saleson.shop.give.giveoperation.domain.CtbnyOpratnFile" select="getCtbnyOpratnFileList"></collection>
+</resultMap>
+
+
+	<!-- 기부 금액, 사용 금액 합계 -->
+	<select id="getGiveOperationTotalCnt" parameterType="saleson.shop.give.giveoperation.domain.GiveOperationSearchParam" resultType="saleson.shop.give.giveoperation.domain.GiveOperation" >
+		 /** give-operation-mapper.getGiveOperationTotalCnt (기부 금액, 사용 금액 합계) */
+		 SELECT NVL(CNTR_AMT, 0) AS CNTR_AMT
+		 		,NVL(EXPNDTR_AMT, 0) AS EXPNDTR_AMT
+		 		,NVL(CNTR_AMT,0) - NVL(EXPNDTR_AMT,0) AS BALANCE_AMT
+		   FROM ( SELECT ( SELECT SUM(CNTR_AMT) AS CNTR_AMT
+		                     FROM G_CNTR
+		                    WHERE 1=1
+	      					  AND DELETE_AT = 'N'
+	        				  AND CNTR_STTUS_CODE = '200'
+	        				  AND STTEMNT_PAY_DE IS NOT NULL
+	        				  <if test="shLocgovCode != null and shLocgovCode != ''">
+							  	AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+							  </if>
+	        			 ) AS CNTR_AMT
+	        			 ,(SELECT SUM(EXPNDTR_AMT)
+	        			     FROM G_CTBNY_OPRATN
+	        			    WHERE 1=1
+	        			    <if test="shLocgovCode != null and shLocgovCode != ''">
+								AND LOCGOV_CODE = #{shLocgovCode}
+							</if>
+							<if test="registSn != null and registSn != 0">
+								AND REGIST_SN != #{registSn}
+							</if>
+	        			    ) AS EXPNDTR_AMT
+	            )
+	</select>
+
+	<!-- 기부금 운용정보 리스트 총개수 -->
+	<select id="getGiveOperationListTotalCnt" parameterType="saleson.shop.give.giveoperation.domain.GiveOperationSearchParam" resultType="int" >
+		 /** give-operation-mapper.getGiveOperationListTotalCnt (기부금 운용정보 리스트 총개수) */
+		 SELECT COUNT(1) AS CNT
+		   FROM G_LOCGOV GL
+	      INNER JOIN ( SELECT YEAR(GC.STTEMNT_PAY_DE) AS CNTR_YEAR
+	      					  ,CNTR_LOCGOV_CODE
+	      					  ,SUM(CNTR_AMT) AS CNTR_AMT
+	      			     FROM G_CNTR GC
+	                    WHERE 1=1
+	                      AND GC.DELETE_AT = 'N'
+	        			  AND GC.CNTR_STTUS_CODE = '200'
+	        			  AND GC.STTEMNT_PAY_DE IS NOT NULL
+	        			  <if test="shLocgovCode != null and shLocgovCode != ''">
+						  	AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+						  </if>
+						  <if test="shCntrYear != null and shCntrYear != ''">
+						  	AND YEAR(GC.STTEMNT_PAY_DE) = #{shCntrYear}
+						  </if>
+	        			GROUP BY YEAR(GC.STTEMNT_PAY_DE), CNTR_LOCGOV_CODE ) GC
+	         ON GL.LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+	      WHERE 1=1
+	      <if test="shLocgovCode != null and shLocgovCode != ''">
+		  	AND GL.LOCGOV_CODE = #{shLocgovCode}
+		  </if>
+		  <if test="shCntrYear != null and shCntrYear != ''">
+		  	AND GC.CNTR_YEAR = #{shCntrYear}
+		  </if>
+	</select>
+
+	<!-- 기부금 운용정보 리스트 -->
+	<select id="getGiveOperationList" parameterType="saleson.shop.give.giveoperation.domain.GiveOperationSearchParam" resultType="saleson.shop.give.giveoperation.domain.GiveOperation" >
+		 /** give-operation-mapper.getGiveOperationList (기부금 운용정보 리스트) */
+		 <include refid="CommonMapper.paginationHeader" />
+		 SELECT GC.CNTR_YEAR
+		        ,GL.UPPER_LOCGOV_CODE
+		        ,(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+		        ,GL.LOCGOV_CODE
+		        ,GL.LOCGOV_NM AS LOCGOV_NM
+		        ,NVL(GC.CNTR_AMT, 0) AS CNTR_AMT
+		        ,NVL(GCO.EXPNDTR_AMT, 0) AS EXPNDTR_AMT
+		        ,NVL(GC.CNTR_AMT,0) - NVL(GCO.EXPNDTR_AMT,0) AS BALANCE_AMT
+		   FROM G_LOCGOV GL
+	      INNER JOIN ( SELECT YEAR(GC.STTEMNT_PAY_DE) AS CNTR_YEAR
+	      					  ,CNTR_LOCGOV_CODE
+	      					  ,SUM(CNTR_AMT) AS CNTR_AMT
+	      			     FROM G_CNTR GC
+	                    WHERE 1=1
+	                      AND GC.DELETE_AT = 'N'
+	        			  AND GC.CNTR_STTUS_CODE = '200'
+	        			  AND GC.STTEMNT_PAY_DE IS NOT NULL
+	        			  <if test="shLocgovCode != null and shLocgovCode != ''">
+						  	AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+						  </if>
+						  <if test="shCntrYear != null and shCntrYear != ''">
+						  	AND YEAR(GC.STTEMNT_PAY_DE) = #{shCntrYear}
+						  </if>
+	        			GROUP BY YEAR(GC.STTEMNT_PAY_DE), CNTR_LOCGOV_CODE ) GC
+	         ON GL.LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+	       LEFT OUTER JOIN ( SELECT YEAR(EXPNDTR_DE) AS CNTR_YEAR
+	       							,LOCGOV_CODE
+	       							,SUM(EXPNDTR_AMT) AS EXPNDTR_AMT
+	       					   FROM G_CTBNY_OPRATN
+	       					  WHERE 1=1
+	       					  <if test="shLocgovCode != null and shLocgovCode != ''">
+							  	AND LOCGOV_CODE = #{shLocgovCode}
+							  </if>
+							  <if test="shCntrYear != null and shCntrYear != ''">
+							  	AND YEAR(EXPNDTR_DE) = #{shCntrYear}
+							  </if>
+	       					  GROUP BY YEAR(EXPNDTR_DE), LOCGOV_CODE ) GCO
+	         ON GC.CNTR_YEAR = GCO.CNTR_YEAR
+	        AND GC.CNTR_LOCGOV_CODE = GCO.LOCGOV_CODE
+	      WHERE 1=1
+	      <if test="shLocgovCode != null and shLocgovCode != ''">
+		  	AND GL.LOCGOV_CODE = #{shLocgovCode}
+		  </if>
+		  <if test="shCntrYear != null and shCntrYear != ''">
+		  	AND GC.CNTR_YEAR = #{shCntrYear}
+		  </if>
+		  ORDER BY GC.CNTR_YEAR DESC, GL.UPPER_LOCGOV_CODE, GL.LOCGOV_CODE
+		  <include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 기부금 운용정보 리스트 -->
+	<select id="getCtbnyOpratnListTotalCnt" parameterType="saleson.shop.give.giveoperation.domain.GiveOperationSearchParam" resultType="int" >
+		 /** give-operation-mapper.getCtbnyOpratnListTotalCnt (기부금 사용정보 리스트) */
+		 SELECT COUNT(1) AS CNT
+	       FROM G_CTBNY_OPRATN GCO
+	      INNER JOIN OP_USER OU ON GCO.FRST_REGISTER_ID = OU.USER_ID
+	       LEFT OUTER JOIN OP_COMMON_CODE OCC
+	         ON CODE_TYPE = 'CNTR_USE'
+	        AND OCC.ID = GCO.BSNS_PURPS_CODE
+	      WHERE 1=1
+	      <if test="shLocgovCode != null and shLocgovCode != ''">
+	        AND GCO.LOCGOV_CODE = #{shLocgovCode}
+	      </if>
+	      <if test="shCntrDeStart != null and shCntrDeStart != ''">
+	        AND GCO.EXPNDTR_DE <![CDATA[>=]]> #{shCntrDeStart}
+	      </if>
+	      <if test="shCntrDeEnd != null and shCntrDeEnd != ''">
+	        AND GCO.EXPNDTR_DE <![CDATA[<=]]> #{shCntrDeEnd}
+	      </if>
+	      <if test="searchTxt != null and searchTxt != ''">
+	      	<choose>
+	      		<when test="'NAME'.equals(searchType)">
+	      			AND GCO.BSNS_NM LIKE CONCAT('%', #{searchTxt} , '%')
+	      		</when>
+	      		<when test="'PURPOSE'.equals(searchType)">
+	      			AND OCC.LABEL LIKE CONCAT('%', #{searchTxt} , '%')
+	      		</when>
+	      		<when test="'CONTENT'.equals(searchType)">
+	      			AND GCO.BSNS_CN LIKE CONCAT('%', #{searchTxt} , '%')
+	      		</when>
+	      		<when test="'ALL'.equals(searchType)">
+	      			AND ( GCO.BSNS_NM LIKE CONCAT('%', #{searchTxt} , '%')
+	      			      OR
+	      			      OCC.LABEL LIKE CONCAT('%', #{searchTxt} , '%')
+	      			      OR
+	      			      GCO.BSNS_CN LIKE CONCAT('%', #{searchTxt} , '%') )
+	      		</when>
+	      	</choose>
+	      </if>
+	</select>
+
+	<!-- 기부금 운용정보 리스트 -->
+	<select id="getCtbnyOpratnList" parameterType="saleson.shop.give.giveoperation.domain.GiveOperationSearchParam" resultType="saleson.shop.give.giveoperation.domain.CtbnyOpratn" >
+		 /** give-operation-mapper.getCtbnyOpratnList (기부금 사용정보 리스트) */
+		 <include refid="CommonMapper.paginationHeader" />
+		 SELECT 
+		 	A.regist_sn
+	        ,A.locgov_code
+	        ,A.bsns_purps_code
+	        ,A.bsns_purps_nm
+	        ,A.expndtr_amt
+	        ,A.bsns_nm
+	        ,A.bsns_cn
+	        ,A.file_cnt
+	        ,crypto_dec('normal', A.login_id, '', 0) AS login_id
+	        ,crypto_dec('normal', A.user_name, '', 0) AS user_name
+	        ,A.user_id
+	        ,A.expndtr_de 
+		 FROM 
+		 (
+			 SELECT regist_sn
+			        ,GCO.locgov_code
+			        ,GCO.bsns_purps_code
+			        ,NVL(OCC.label,'') AS bsns_purps_nm
+			        ,NVL(GCO.expndtr_amt,0) AS expndtr_amt
+			        ,GCO.bsns_nm
+			        ,GCO.bsns_cn
+			        ,NVL((SELECT COUNT(1) FROM G_CTBNY_OPRATN_FILE GCOF WHERE GCOF.regist_sn = GCO.regist_sn),0) AS file_cnt
+			        ,OU.login_id
+			        ,OU.user_name
+			        ,OU.user_id
+			        ,date_format(GCO.expndtr_de, '%Y-%m-%d') AS expndtr_de
+		       FROM G_CTBNY_OPRATN GCO
+		      INNER JOIN OP_USER OU ON GCO.frst_register_id = OU.user_id
+		       LEFT OUTER JOIN OP_COMMON_CODE OCC
+		         ON code_type = 'CNTR_USE'
+		        AND OCC.id = GCO.BSNS_PURPS_CODE
+		      WHERE 1=1
+		      <if test="shLocgovCode != null and shLocgovCode != ''">
+		        AND GCO.locgov_code = #{shLocgovCode}
+		      </if>
+		      <if test="shCntrDeStart != null and shCntrDeStart != ''">
+		        AND GCO.expndtr_de <![CDATA[>=]]> #{shCntrDeStart}
+		      </if>
+		      <if test="shCntrDeEnd != null and shCntrDeEnd != ''">
+		        AND GCO.expndtr_de <![CDATA[<=]]> #{shCntrDeEnd}
+		      </if>
+		      <if test="searchTxt != null and searchTxt != ''">
+		      	<choose>
+		      		<when test="'NAME'.equals(searchType)">
+		      			AND GCO.bsns_nm LIKE CONCAT('%', #{searchTxt} , '%')
+		      		</when>
+		      		<when test="'PURPOSE'.equals(searchType)">
+		      			AND OCC.label LIKE CONCAT('%', #{searchTxt} , '%')
+		      		</when>
+		      		<when test="'CONTENT'.equals(searchType)">
+		      			AND GCO.bsns_cn LIKE CONCAT('%', #{searchTxt} , '%')
+		      		</when>
+		      		<when test="'ALL'.equals(searchType)">
+		      			AND ( GCO.bsns_nm LIKE CONCAT('%', #{searchTxt} , '%')
+		      			      OR
+		      			      OCC.label LIKE CONCAT('%', #{searchTxt} , '%')
+		      			      OR
+		      			      GCO.bsns_cn LIKE CONCAT('%', #{searchTxt} , '%') )
+		      		</when>
+		      	</choose>
+		      </if>
+	  	) A
+	  	ORDER BY A.expndtr_de DESC
+		  <include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 기부금 운용정보 사용금액 합계 -->
+	<select id="getCtbnyOpratnListAmt" parameterType="saleson.shop.give.giveoperation.domain.GiveOperationSearchParam" resultType="int" >
+		 /** give-operation-mapper.getCtbnyOpratnListAmt (기부금 운용정보 사용금액 합계) */
+		 SELECT NVL(SUM(NVL(GCO.EXPNDTR_AMT,0)), 0) AS EXPNDTR_AMT
+	       FROM G_CTBNY_OPRATN GCO
+	      INNER JOIN OP_USER OU ON GCO.FRST_REGISTER_ID = OU.USER_ID
+	       LEFT OUTER JOIN OP_COMMON_CODE OCC
+	         ON CODE_TYPE = 'CNTR_USE'
+	        AND OCC.ID = GCO.BSNS_PURPS_CODE
+	      WHERE 1=1
+	      <if test="shLocgovCode != null and shLocgovCode != ''">
+	        AND GCO.LOCGOV_CODE = #{shLocgovCode}
+	      </if>
+	      <if test="shCntrDeStart != null and shCntrDeStart != ''">
+	        AND GCO.EXPNDTR_DE <![CDATA[>=]]> #{shCntrDeStart}
+	      </if>
+	      <if test="shCntrDeEnd != null and shCntrDeEnd != ''">
+	        AND GCO.EXPNDTR_DE <![CDATA[<=]]> #{shCntrDeEnd}
+	      </if>
+	      <if test="searchTxt != null and searchTxt != ''">
+	      	<choose>
+	      		<when test="'NAME'.equals(searchType)">
+	      			AND GCO.BSNS_NM LIKE CONCAT('%', #{searchTxt} , '%')
+	      		</when>
+	      		<when test="'PURPOSE'.equals(searchType)">
+	      			AND OCC.LABEL LIKE CONCAT('%', #{searchTxt} , '%')
+	      		</when>
+	      		<when test="'CONTENT'.equals(searchType)">
+	      			AND GCO.BSNS_CN LIKE CONCAT('%', #{searchTxt} , '%')
+	      		</when>
+	      		<when test="'ALL'.equals(searchType)">
+	      			AND ( GCO.BSNS_NM LIKE CONCAT('%', #{searchTxt} , '%')
+	      			      OR
+	      			      OCC.LABEL LIKE CONCAT('%', #{searchTxt} , '%')
+	      			      OR
+	      			      GCO.BSNS_CN LIKE CONCAT('%', #{searchTxt} , '%') )
+	      		</when>
+	      	</choose>
+	      </if>
+	</select>
+
+	<!-- 기부금 운용정보 사용정보 등록 -->
+	<insert id="insertCtbnyOpratn" parameterType="saleson.shop.give.giveoperation.domain.CtbnyOpratn">
+		/** give-operation-mapper.insertCtbnyOpratn (기부금 운용정보 사용정보 등록) */
+		<selectKey keyProperty="registSn" resultType="long" order="BEFORE">
+			SELECT NVL(MAX(REGIST_SN), 0) + 1 AS REGIST_SN
+			  FROM G_CTBNY_OPRATN
+		</selectKey>
+		INSERT INTO G_CTBNY_OPRATN (
+			REGIST_SN
+			,LOCGOV_CODE
+			,BSNS_PURPS_CODE
+			,BSNS_NM
+			,BSNS_CN
+			,EXPNDTR_DE
+			,EXPNDTR_AMT
+			,FRST_REGISTER_ID
+			,FRST_REGIST_PNTTM
+			,LAST_UPDUSR_ID
+			,LAST_UPDT_PNTTM
+			,RM
+		) VALUES (
+			#{registSn}
+			,#{locgovCode}
+			,#{bsnsPurpsCode}
+			,#{bsnsNm}
+			,#{bsnsCn}
+			,#{expndtrDe}
+			,#{expndtrAmt}
+			,#{frstRegisterId}
+			,<include refid="CommonMapper.datetime" />
+			,#{frstRegisterId}
+			,<include refid="CommonMapper.datetime" />
+			,#{rm}
+		)
+	</insert>
+
+	<!-- 기부금 운용정보 사용정보 등록 -->
+	<insert id="insertCtbnyOpratnFile" parameterType="saleson.shop.give.giveoperation.domain.CtbnyOpratnFile">
+		/** give-operation-mapper.insertCtbnyOpratn (기부금 운용정보 사용정보 등록) */
+		<selectKey keyProperty="registFileId" resultType="long" order="BEFORE">
+			SELECT NVL(MAX(REGIST_FILE_ID), 0) + 1 AS REGIST_FILE_ID
+			  FROM G_CTBNY_OPRATN_FILE
+		</selectKey>
+		INSERT INTO G_CTBNY_OPRATN_FILE (
+			REGIST_FILE_ID
+			,REGIST_SN
+			,FILE_NM
+			,ORGINL_FILE_NM
+			,FILE_TY
+			,SORT_ORDR
+			,FRST_REGISTER_ID
+			,FRST_REGIST_PNTTM
+			,LAST_UPDUSR_ID
+			,LAST_UPDT_PNTTM
+		) VALUES (
+			#{registFileId}
+			,#{registSn}
+			,#{fileNm}
+			,#{orginlFileNm}
+			,#{fileTy}
+			,( SELECT NVL(MAX(SORT_ORDR),0) + 1 AS SORT_ORDR FROM G_CTBNY_OPRATN_FILE WHERE REGIST_SN = #{registSn} )
+			,#{frstRegisterId}
+			,<include refid="CommonMapper.datetime" />
+			,#{lastUpdusrId}
+			,<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<select id="getCtbnyOpratnDetail" parameterType="long" resultMap="CtbnyOpratn">
+		/** give-operation-mapper.getCtbnyOpratnDetail (기부금 운용정보 사용정보 상세) */
+		SELECT 
+			A.regist_sn
+           ,A.locgov_code
+           ,A.bsns_purps_code
+           ,A.expndtr_amt
+           ,A.bsns_nm
+           ,A.bsns_cn
+           ,crypto_dec('normal', A.login_id  , '', 0) AS login_id
+           ,crypto_dec('normal', A.user_name  , '', 0) AS user_name
+           ,A.frst_register_id
+           ,A.expndtr_de
+           ,A.rm
+		FROM
+			(
+				SELECT regist_sn
+			           ,GCO.locgov_code
+			           ,bsns_purps_code
+			           ,NVL(expndtr_amt,0) AS expndtr_amt
+			           ,bsns_nm
+			           ,bsns_cn
+			           ,OU.login_id
+			           ,OU.user_name
+			           ,GCO.frst_register_id
+			           ,GCO.expndtr_de
+			           ,GCO.rm
+			      FROM G_CTBNY_OPRATN GCO
+			     INNER JOIN OP_USER OU
+			        ON GCO.frst_register_id = OU.user_id
+			     WHERE 1 = 1
+			       AND GCO.regist_sn = #{registSn}
+			) A
+	</select>
+
+	<select id="getCtbnyOpratnFileList" resultType="saleson.shop.give.giveoperation.domain.CtbnyOpratnFile">
+		/** give-operation-mapper.getCtbnyOpratnFile (기부금 운용정보 파일 목록) */
+		SELECT REGIST_FILE_ID
+		       ,REGIST_SN
+		       ,FILE_NM
+		       ,FILE_TY
+		       ,SORT_ORDR
+		       ,ORGINL_FILE_NM
+		       ,FRST_REGISTER_ID
+		       ,FRST_REGIST_PNTTM
+	      FROM G_CTBNY_OPRATN_FILE
+	     WHERE REGIST_SN = #{registSn}
+	</select>
+
+	<select id="getCtbnyOpratnFile" parameterType="long" resultType="saleson.shop.give.giveoperation.domain.CtbnyOpratnFile">
+		/** give-operation-mapper.getCtbnyOpratnFile (기부금 운용정보 파일 상세) */
+		SELECT REGIST_FILE_ID
+		       ,REGIST_SN
+		       ,FILE_NM
+		       ,FILE_TY
+		       ,SORT_ORDR
+		       ,ORGINL_FILE_NM
+		       ,FRST_REGISTER_ID
+		       ,FRST_REGIST_PNTTM
+	      FROM G_CTBNY_OPRATN_FILE
+	     WHERE REGIST_FILE_ID = #{registFileId}
+	</select>
+
+	<delete id="deleteCtbnyOpratnFile" parameterType="saleson.shop.give.giveoperation.domain.CtbnyOpratnFile">
+		/** give-operation-mapper.deleteCtbnyOpratnFile (기부금 운용정보 파일 삭제) */
+		DELETE
+		  FROM G_CTBNY_OPRATN_FILE
+		 WHERE 1 = 1
+		   <if test="registFileId != null and !''.equals(registFileId)">
+			   AND REGIST_FILE_ID = #{registFileId}
+		   </if>
+		   <if test="registSn != null and !''.equals(registSn)">
+			   AND REGIST_SN = #{registSn}
+		   </if>
+	</delete>
+
+	<update id="updateCtbnyOpratn" parameterType="saleson.shop.give.giveoperation.domain.CtbnyOpratn">
+		/** give-operation-mapper.updateCtbnyOpratn (기부금 운용정보 수정) */
+		UPDATE G_CTBNY_OPRATN
+		   SET BSNS_PURPS_CODE = #{bsnsPurpsCode}
+		       ,BSNS_NM = #{bsnsNm}
+		       ,BSNS_CN = #{bsnsCn}
+		       ,EXPNDTR_DE = #{expndtrDe}
+		       ,EXPNDTR_AMT = #{expndtrAmt}
+		       ,LAST_UPDUSR_ID = #{lastUpdusrId}
+		       ,LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />
+		       ,RM = #{rm}
+		 WHERE REGIST_SN = #{registSn}
+	</update>
+
+
+	<delete id="deleteCtbnyOpratn" parameterType="long">
+		/** give-operation-mapper.deleteCtbnyOpratn (기부금 운용정보 삭제) */
+		DELETE
+		  FROM G_CTBNY_OPRATN
+		 WHERE REGIST_SN = #{registSn}
+	</delete>
+
+</mapper>

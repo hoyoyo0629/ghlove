@@ -1,0 +1,1300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.main.MainMapper">
+
+	<resultMap id="userCountResult" type="saleson.common.opmanager.count.OpmanagerCount">
+		<id property="id" column="ID"/>
+		<result property="label" column="LABEL"/>
+		<result property="count" column="COUNT"/>
+	</resultMap>
+
+	<resultMap id="mainCountResult" type="saleson.common.opmanager.count.OpmanagerMainCount">
+		<id property="id" column="ID"/>
+		<result property="label" column="LABEL"/>
+		<result property="count" column="COUNT"/>
+	</resultMap>
+
+	<resultMap id="amountResult" type="saleson.shop.main.domain.MainChart">
+		<result property="cntrAmt" column="CNTR_AMT"/>
+		<result property="cntrDay" column="CNTR_DAY"/>
+	</resultMap>
+
+	<resultMap id='callResult' type='saleson.shop.give.givestate.domain.CallState'>
+		<result property="callKookmin" column="CALL_KOOKMIN"/>
+		<result property="callLov" column="CALL_LOV"/>
+		<result property="callGiver" column="CALL_GIVER"/>
+		<result property="callNhbank" column="CALL_NHBANK"/>
+		<result property="callTotal" column="CALL_TOTAL"/>
+		<result property="callAmt" column="CALL_AMT"/>
+		<result property="onlinecntr" column="on_cntr_cnt"/>
+		<result property="onlinecntramt" column="on_cntr_amt"/>
+		<result property="offlinecntr" column="off_cntr_cnt"/>
+		<result property="offlinecntramt" column="off_cntr_amt"/>
+		<result property="totalpresent" column="present_cnt"/>
+		<result property="totalpresentamt" column="present_amt"/>
+		<result property="userAmt" column="total_user"/>
+		<result property="totalcntr" column="total_cntr"/>
+		<result property="totalcntramt" column="total_cntramt"/>
+		<result property="frstregisterid" column="frst_register_id"/>
+		<result property="onlineprjcntr" column="on_cntr_prj_cnt"/>
+		<result property="onlineprjcntramt" column="on_cntr_prj_amt"/>
+		<result property="offlineprjcntr" column="off_cntr_prj_cnt"/>
+		<result property="offlineprjcntramt" column="off_cntr_prj_amt"/>
+	</resultMap>
+
+	<select id="getLocgovCdByUerId" parameterType="Long" resultType="String" >
+		<![CDATA[
+		SELECT LOCGOV_CODE
+          FROM OP_MANAGER
+         WHERE USER_ID = #{userId}
+		]]>
+	</select>
+
+	<!-- slave-main-mapper.xml 이랑 상이함 slave만 쿼리 수정내역있음 조형원 -->
+	<select id="getOpmanagerMainInfo" parameterType="java.util.HashMap" resultMap="mainCountResult">
+		SELECT
+			'today-subscribers' AS ID,
+			'금일 가입자' AS LABEL,
+			count(*) AS `COUNT`
+		FROM op_user a
+		WHERE a.created_date LIKE CONCAT(#{today}, '%')
+			AND  a.status_code = '9'
+		UNION ALL
+		SELECT
+			'all-subscribers' AS ID,
+			'전체 가입자' AS LABEL,
+			count(*) AS `COUNT`
+		FROM op_user a
+		WHERE a.status_code = '9'
+		UNION ALL
+		SELECT
+			'request-ready' AS ID,
+			'권한요청 대기' AS LABEL,
+			count(*) AS `COUNT`
+		FROM g_mngr_reqst
+		<choose>
+			<when test="userRole == 'SYS'">
+				WHERE confm_sttus_code = '200'
+			</when>
+			<otherwise>
+				WHERE confm_sttus_code = '200'
+			    	AND locgov_code = #{locgovCd}
+			</otherwise>
+		</choose>
+	    UNION ALL
+	    SELECT
+	    	'offline-receipt' AS ID,
+	    	'오프라인 접수(오늘)' AS LABEL,
+	    	count(*) AS `COUNT`
+	    FROM g_cntr
+	    WHERE cntr_path_code IN ('200', '300')
+		<choose>
+			<when test="userRole == 'SYS'">
+				AND cntr_de = #{today}
+			</when>
+			<otherwise>
+				AND cntr_de = #{today}
+			    <if test="shRceptBankCode != null and shRceptBankCode != ''">
+					AND rcept_bank_code = #{shRceptBankCode} -- 소속지점(은행)
+				</if>
+				<if test="shRceptBankNm != null and shRceptBankNm != ''">
+					AND rcept_bank_nm = #{shRceptBankNm} -- 소속지점명
+				</if>
+			</otherwise>
+		</choose>
+	    UNION ALL
+	    SELECT
+	    	'this-year-cntramt' AS ID,
+	    	(select concat('(',upper_locgov_nm ,' ', locgov_nm, ')') from g_locgov where locgov_code = #{locgovCd}) AS LABEL,
+	    	sum(CAST(cntr_amt AS bigint)) AS `SUM`
+	    FROM g_cntr
+		<choose>
+			<when test="userRole == 'SYS'">
+				WHERE 1=1
+			  	AND cntr_sttus_code  ='200'
+				AND cntr_de BETWEEN to_char(TRUNC(NOW(),'YYYY'),'YYYYMMDD') AND TO_CHAR(NOW(),'YYYYMMDD')
+			</when>
+			<otherwise>
+				WHERE 1=1
+				AND cntr_locgov_code = #{locgovCd}
+				AND cntr_sttus_code  ='200'
+				AND cntr_de BETWEEN to_char(TRUNC(NOW(),'YYYY'),'YYYYMMDD') AND TO_CHAR(NOW(),'YYYYMMDD')
+			</otherwise>
+		</choose>
+	    UNION ALL
+	    SELECT
+	    	'this-year-cntr' AS ID,
+	    	'총기부현황(건)' AS LABEL,
+	    	count(*) AS `COUNT`
+	    FROM G_CNTR
+		<choose>
+			<when test="userRole == 'SYS'">
+				WHERE 1=1
+				  AND cntr_sttus_code  ='200'
+				  AND cntr_de BETWEEN to_char(TRUNC(NOW(),'YYYY'),'YYYYMMDD') AND TO_CHAR(NOW(),'YYYYMMDD')
+			</when>
+			<otherwise>
+				WHERE 1=1
+				AND cntr_locgov_code = #{locgovCd}
+				AND cntr_sttus_code  ='200'
+				AND cntr_de BETWEEN to_char(TRUNC(NOW(),'YYYY'),'YYYYMMDD') AND TO_CHAR(NOW(),'YYYYMMDD')
+			</otherwise>
+		</choose>
+		UNION ALL
+   	    SELECT
+	    	'total-cntramt' AS ID,
+	    	(select concat('(',upper_locgov_nm ,' ', locgov_nm, ')') from g_locgov where locgov_code = #{locgovCd}) AS LABEL,
+	    	trunc(sum(CAST(cntr_amt AS bigint))/1000000) AS `SUM`
+	    FROM g_cntr
+		<choose>
+			<when test="userRole == 'SYS'">
+				WHERE 1=1
+			  	AND cntr_sttus_code  ='200'
+			</when>
+			<otherwise>
+				WHERE 1=1
+				AND cntr_locgov_code = #{locgovCd}
+				AND cntr_sttus_code  ='200'
+			</otherwise>
+		</choose>
+	    UNION ALL
+	    SELECT
+	    	'total-cntr' AS ID,
+	    	'총기부현황(건)' AS LABEL,
+	    	count(*) AS `COUNT`
+	    FROM G_CNTR
+		<choose>
+			<when test="userRole == 'SYS'">
+				WHERE 1=1
+				  AND cntr_sttus_code  ='200'
+			</when>
+			<otherwise>
+				WHERE 1=1
+				AND cntr_locgov_code = #{locgovCd}
+				AND cntr_sttus_code  ='200'
+			</otherwise>
+		</choose>
+	    UNION ALL
+	    SELECT
+	    	'this-year-presentamt' AS ID,
+	    	(select concat('(',upper_locgov_nm ,' ', locgov_nm, ')') from g_locgov where locgov_code = #{locgovCd}) AS LABEL,
+	    	sum(CAST(cntr_use_point AS bigint)) AS `SUM`
+	    FROM g_cntr_use_point
+		<choose>
+			<when test="userRole == 'SYS'">
+				WHERE 1=1
+				AND point_use_de BETWEEN to_char(TRUNC(NOW(),'YYYY'),'YYYYMMDD') AND TO_CHAR(NOW(),'YYYYMMDD')
+			</when>
+			<otherwise>
+				WHERE 1=1
+				AND cntr_locgov_code = #{locgovCd}
+				AND point_use_de BETWEEN to_char(TRUNC(NOW(),'YYYY'),'YYYYMMDD') AND TO_CHAR(NOW(),'YYYYMMDD')
+			</otherwise>
+		</choose>
+		AND use_se_code = '1'
+	    UNION ALL
+	    SELECT
+	    	'this-year-present' AS ID,
+	    	'총답례품현황(건)' AS LABEL,
+	    	count(*) AS `COUNT`
+	    FROM
+	    (
+	    	SELECT order_code
+	    	FROM g_cntr_use_point
+	    	<choose>
+				<when test="userRole == 'SYS'">
+					WHERE 1=1
+					AND point_use_de BETWEEN to_char(TRUNC(NOW(),'YYYY'),'YYYYMMDD') AND TO_CHAR(NOW(),'YYYYMMDD')
+				</when>
+				<otherwise>
+					WHERE 1=1
+					AND cntr_locgov_code = #{locgovCd}
+					AND point_use_de BETWEEN to_char(TRUNC(NOW(),'YYYY'),'YYYYMMDD') AND TO_CHAR(NOW(),'YYYYMMDD')
+				</otherwise>
+			</choose>
+				AND use_se_code = '1'
+	    	GROUP BY order_code
+	    )
+	    UNION ALL
+	    SELECT
+	    	'total-presentamt' AS ID,
+	    	(select concat('(',upper_locgov_nm ,' ', locgov_nm, ')') from g_locgov where locgov_code = #{locgovCd}) AS LABEL,
+	    	trunc(sum(CAST(cntr_use_point AS bigint))/1000000) AS `SUM`
+	    FROM g_cntr_use_point
+		<choose>
+			<when test="userRole == 'SYS'">
+				WHERE 1=1
+			</when>
+			<otherwise>
+				WHERE 1=1
+				AND cntr_locgov_code = #{locgovCd}
+			</otherwise>
+		</choose>
+		AND use_se_code = '1'
+	    UNION ALL
+	    SELECT
+	    	'total-present' AS ID,
+	    	'총답례품현황(건)' AS LABEL,
+	    	count(*) AS `COUNT`
+	    FROM
+	    (
+	    	SELECT order_code
+	    	FROM g_cntr_use_point
+	    	<choose>
+				<when test="userRole == 'SYS'">
+					WHERE 1=1
+				</when>
+				<otherwise>
+					WHERE 1=1
+					AND cntr_locgov_code = #{locgovCd}
+				</otherwise>
+			</choose>
+				AND use_se_code = '1'
+	    	GROUP BY order_code
+	    )
+	</select>
+
+	<select id="getOpmanagerMainBoardInfo" parameterType="java.util.HashMap" resultMap="userCountResult">
+		<![CDATA[
+		SELECT
+			'total-qnaopen' AS ID,
+			'QnA 총건수' AS LABEL,
+			count(*) AS `COUNT`
+		FROM OP_QNA
+		WHERE QNA_TYPE = '2'
+		AND DATA_STATUS_CODE = 0
+
+		UNION ALL
+
+		SELECT
+			'reply-qnaopen' AS ID,
+			'QnA 답변대기건수' AS LABEL,
+			count(*) AS `COUNT`
+		FROM OP_QNA
+		WHERE QNA_TYPE = '2'
+		AND ANSWER_COUNT = 0
+		AND DATA_STATUS_CODE = 0
+		UNION ALL
+
+		SELECT
+			'total-qna' AS ID,
+			'1대1 총건수' AS LABEL,
+			count(*) AS `COUNT`
+		FROM OP_QNA
+		WHERE QNA_TYPE = '0'
+		AND DATA_STATUS_CODE = 0
+
+		UNION ALL
+
+		SELECT
+			'reply-qna' AS ID,
+			'1대1 답변대기건수' AS LABEL,
+			count(*) AS `COUNT`
+		FROM OP_QNA
+		WHERE QNA_TYPE = '0'
+		AND ANSWER_COUNT = 0
+		AND DATA_STATUS_CODE = 0
+		]]>
+	</select>
+
+	<select id="getOpmanagerMainAmountChart" parameterType="java.util.HashMap" resultMap="amountResult">
+		<choose>
+			<when test="userRole == 'SYS'">
+			select
+			 NVL(CNTR_AMT,0)/1000 as CNTR_AMT
+			,to_char(to_date(CNTR_DAY,'YYYYMMDD'),'YYYY-MM-DD')as CNTR_DAY
+			from (
+			select TO_CHAR(SYSDATE-6,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-5,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-4,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-3,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-2,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-1,'YYYYMMDD')as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE,'YYYYMMDD') as CNTR_DAY
+			) A , (SELECT sum(CAST(CNTR_AMT AS bigint)) as  CNTR_AMT , CNTR_DE
+			FROM g_cntr
+			where
+		    sttemnt_pay_de is not null and delete_at ='N'
+		  	and cntr_sttus_code  ='200'
+			group by CNTR_DE) B
+			where A.CNTR_DAY =B.CNTR_DE(+)
+			</when>
+			<otherwise>
+			select
+			 NVL(CNTR_AMT,0)/1000 as CNTR_AMT
+			,to_char(to_date(CNTR_DAY,'YYYYMMDD'),'YYYY-MM-DD')as CNTR_DAY
+			from (
+			select TO_CHAR(SYSDATE-6,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-5,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-4,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-3,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-2,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-1,'YYYYMMDD')as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE,'YYYYMMDD') as CNTR_DAY
+			) A , (SELECT sum(CAST(CNTR_AMT AS bigint)) as  CNTR_AMT , CNTR_DE
+			FROM g_cntr
+			where CNTR_LOCGOV_CODE = #{locgovCd}
+		    and sttemnt_pay_de is not null and delete_at ='N'
+		  	and cntr_sttus_code  ='200'
+			group by CNTR_DE) B
+			where A.CNTR_DAY =B.CNTR_DE(+)
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getOpmanagerMainCountChart" parameterType="java.util.HashMap" resultMap="amountResult">
+		<choose>
+			<when test="userRole == 'SYS'">
+			select
+			 nvl(CNTR_AMT,0) as CNTR_AMT
+			,to_char(to_date(CNTR_DAY,'YYYYMMDD'),'YYYY-MM-DD')as CNTR_DAY
+			from (
+			select TO_CHAR(SYSDATE-6,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-5,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-4,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-3,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-2,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-1,'YYYYMMDD')as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE,'YYYYMMDD') as CNTR_DAY
+			) A , (SELECT count(CNTR_AMT) as  CNTR_AMT , CNTR_DE
+			FROM g_cntr
+			where
+		    sttemnt_pay_de is not null and delete_at ='N'
+		  	and cntr_sttus_code  ='200'
+			group by CNTR_DE) B
+			where A.CNTR_DAY =B.CNTR_DE(+)
+			</when>
+			<otherwise>
+			select
+			 nvl(CNTR_AMT,0) as CNTR_AMT
+			,to_char(to_date(CNTR_DAY,'YYYYMMDD'),'YYYY-MM-DD')as CNTR_DAY
+			from (
+			select TO_CHAR(SYSDATE-6,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-5,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-4,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-3,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-2,'YYYYMMDD') as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE-1,'YYYYMMDD')as CNTR_DAY
+			union
+			select TO_CHAR(SYSDATE,'YYYYMMDD') as CNTR_DAY
+			) A , (SELECT count(CNTR_AMT) as  CNTR_AMT , CNTR_DE
+			FROM g_cntr
+			where CNTR_LOCGOV_CODE = #{locgovCd}
+		    and sttemnt_pay_de is not null and delete_at ='N'
+		  	and cntr_sttus_code  ='200'
+			group by CNTR_DE) B
+			where A.CNTR_DAY =B.CNTR_DE(+)
+			</otherwise>
+		</choose>
+
+	</select>
+
+	<select id="getOpmanagerMainAmountChart_OLD" parameterType="java.util.HashMap" resultMap="amountResult">
+		<![CDATA[
+		select NVL(sum(CAST(CNTR_AMT AS bigint)),0)/1000 as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 6 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 6 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 6 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+
+		 union all
+		select NVL(sum(CAST(CNTR_AMT AS bigint)),0)/1000 as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 5 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 5 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 5 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select NVL(sum(CAST(CNTR_AMT AS bigint)),0)/1000 as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 4 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 4 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 4 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select NVL(sum(CAST(CNTR_AMT AS bigint)),0)/1000 as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 3 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 3 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 3 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select NVL(sum(CAST(CNTR_AMT AS bigint)),0)/1000 as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 2 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 2 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 2 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select NVL(sum(CAST(CNTR_AMT AS bigint)),0)/1000 as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 1 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 1 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 1 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select NVL(sum(CAST(CNTR_AMT AS bigint)),0)/1000 as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+
+	</select>
+
+	<select id="getOpmanagerMainCountChart_OLD" parameterType="java.util.HashMap" resultMap="amountResult">
+		<![CDATA[
+		select count(*) as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 6 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 6 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 6 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select count(*) as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 5 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 5 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 5 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select count(*) as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 4 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 4 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 4 ),'YYYYMMDD')
+		   and CNTR_LOCGOV_CODE = #{locgovCd}
+		   and sttemnt_pay_de is not null and delete_at ='N'
+		   and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select count(*) as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 3 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 3 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 3 ),'YYYYMMDD')
+		  and CNTR_LOCGOV_CODE = #{locgovCd}
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select count(*) as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 2 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 2 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 2 ),'YYYYMMDD')
+		  and CNTR_LOCGOV_CODE = #{locgovCd}
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select count(*) as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 1 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 1 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) - 1 ),'YYYYMMDD')
+		  and CNTR_LOCGOV_CODE = #{locgovCd}
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+		 union all
+		select count(*) as CNTR_AMT
+		     , ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ) AS CNTR_DAY
+		  from g_cntr
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ),'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		where CNTR_DE = to_char(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ),'YYYYMMDD')
+		  and CNTR_LOCGOV_CODE = #{locgovCd}
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+
+	</select>
+
+	<select id="getOpmanagerMainChartInfo" parameterType="java.util.HashMap" resultMap="mainCountResult">
+		<![CDATA[
+		SELECT
+			'total-amt' AS ID,
+			'일주일 기부금액 총계' AS LABEL,
+			NVL(sum(CAST(CNTR_AMT AS bigint)),0) AS `COUNT`
+		FROM G_CNTR
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		WHERE CNTR_DE BETWEEN TO_CHAR(ADDDATE(CURDATE(), - 6 ),'YYYYMMDD') AND TO_CHAR(CURDATE(), 'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		WHERE CNTR_DE BETWEEN TO_CHAR(ADDDATE(CURDATE(), - 6 ),'YYYYMMDD') AND TO_CHAR(CURDATE(), 'YYYYMMDD')
+		  and CNTR_LOCGOV_CODE = #{locgovCd}
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+
+		UNION ALL
+
+		SELECT
+			'avg-amt' AS ID,
+			'일주일 기부금액 평균' AS LABEL,
+			NVL(sum(CAST(CNTR_AMT AS bigint))/7,0) AS `COUNT`
+		FROM G_CNTR
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		WHERE CNTR_DE BETWEEN TO_CHAR(ADDDATE(CURDATE(), - 6 ),'YYYYMMDD') AND TO_CHAR(CURDATE(), 'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		WHERE CNTR_DE BETWEEN TO_CHAR(ADDDATE(CURDATE(), - 6 ),'YYYYMMDD') AND TO_CHAR(CURDATE(), 'YYYYMMDD')
+		  and CNTR_LOCGOV_CODE = #{locgovCd}
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+
+		UNION ALL
+
+		SELECT
+			'total-count' AS ID,
+			'일주일 기부건수 총계' AS LABEL,
+			count(*) AS `COUNT`
+		FROM G_CNTR
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		WHERE CNTR_DE BETWEEN TO_CHAR(ADDDATE(CURDATE(), - 6 ),'YYYYMMDD') AND TO_CHAR(CURDATE(), 'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		WHERE CNTR_DE BETWEEN TO_CHAR(ADDDATE(CURDATE(), - 6 ),'YYYYMMDD') AND TO_CHAR(CURDATE(), 'YYYYMMDD')
+		  and CNTR_LOCGOV_CODE = #{locgovCd}
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+	    <![CDATA[
+
+		UNION ALL
+
+		SELECT
+			'avg-count' AS ID,
+			'일주일 기부건수 평균' AS LABEL,
+			count(*)/7 AS `COUNT`
+		FROM G_CNTR
+		]]>
+<choose>
+	<when test="userRole == 'SYS'">
+		<![CDATA[
+		WHERE CNTR_DE BETWEEN TO_CHAR(ADDDATE(CURDATE(), - 6 ),'YYYYMMDD') AND TO_CHAR(CURDATE(), 'YYYYMMDD')
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+		]]>
+	</when>
+	<otherwise>
+		<![CDATA[
+		WHERE CNTR_DE BETWEEN TO_CHAR(ADDDATE(CURDATE(), - 6 ),'YYYYMMDD') AND TO_CHAR(CURDATE(), 'YYYYMMDD')
+		  and CNTR_LOCGOV_CODE = #{locgovCd}
+		  and sttemnt_pay_de is not null and delete_at ='N'
+		  and cntr_sttus_code  ='200'
+	    ]]>
+	</otherwise>
+</choose>
+
+	</select>
+
+<select id="getOpmanagerMainTableInfo" parameterType="saleson.shop.give.givestate.domain.GiveState" resultMap="mainCountResult">
+	 	 <![CDATA[
+	    SELECT
+	    	'total-cntr' AS ID,
+	    	'총 기부 건수' AS LABEL,
+	    	COUNT(*) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  = '200'
+		 AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+		 AND CNTR_DE <=  #{shCntrDeStart}
+
+	    UNION ALL
+	    SELECT
+	    	'online-cntr' AS ID,
+	    	'온라인 일반기부 건수' AS LABEL,
+	    	COUNT(*) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  = '200'
+		 AND CNTR_PATH_CODE = '100'
+	     AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+		 AND CNTR_DE <=  #{shCntrDeStart}
+	  	 AND ( DSGN_DNTN_BIZ_ID =  0 OR DSGN_DNTN_BIZ_ID IS NULL )
+
+	  	UNION ALL
+	    SELECT
+	    	'online-prj-cntr' AS ID,
+	    	'온라인 지정기부 건수' AS LABEL,
+	    	COUNT(*) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  = '200'
+		 AND CNTR_PATH_CODE = '100'
+	     AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+		 AND CNTR_DE <=  #{shCntrDeStart}
+		 AND ( DSGN_DNTN_BIZ_ID <> 0 AND DSGN_DNTN_BIZ_ID IS NOT NULL )
+
+	    UNION ALL
+	    SELECT
+	    	'offline-cntr' AS ID,
+	    	'오프라인 일반기부 건수' AS LABEL,
+	    	COUNT(*) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  = '200'
+		 AND CNTR_PATH_CODE IN ('200', '300')
+	     AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+		 AND CNTR_DE <= #{shCntrDeStart}
+		 AND ( DSGN_DNTN_BIZ_ID =  0 OR DSGN_DNTN_BIZ_ID IS NULL )
+
+	    UNION ALL
+	    SELECT
+	    	'offline-prj-cntr' AS ID,
+	    	'오프라인 지정기부 건수' AS LABEL,
+	    	COUNT(*) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  = '200'
+		 AND CNTR_PATH_CODE IN ('200', '300')
+	     AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+		 AND CNTR_DE <= #{shCntrDeStart}
+	     AND ( DSGN_DNTN_BIZ_ID <> 0 AND DSGN_DNTN_BIZ_ID IS NOT NULL )
+
+	    UNION ALL
+		SELECT
+	    	'total-cntramt' AS ID,
+	    	(SELECT CONCAT('(',UPPER_LOCGOV_NM ,' ', LOCGOV_NM, ')') FROM G_LOCGOV WHERE LOCGOV_CODE = #{locgovCd}) AS LABEL,
+	    	IFNULL(SUM(CAST(CNTR_AMT AS BIGINT)), 0) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  ='200'
+	     AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+	     AND CNTR_DE <=  #{shCntrDeStart}
+
+	    UNION ALL
+	    SELECT
+	    	'online-cntramt' AS ID,
+	    	'온라인 일반기부 금액' AS LABEL,
+	    	IFNULL(SUM(CAST(CNTR_AMT AS BIGINT)), 0) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  = '200'
+		 AND CNTR_PATH_CODE = '100'
+		 AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+	     AND CNTR_DE <=  #{shCntrDeStart}
+	   	 AND ( DSGN_DNTN_BIZ_ID =  0 OR DSGN_DNTN_BIZ_ID IS NULL )
+
+	    UNION ALL
+	    SELECT
+	    	'online-prj-cntramt' AS ID,
+	    	'온라인 지정기부 금액' AS LABEL,
+	    	IFNULL(SUM(CAST(CNTR_AMT AS BIGINT)), 0) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  = '200'
+		 AND CNTR_PATH_CODE = '100'
+		 AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+	     AND CNTR_DE <=  #{shCntrDeStart}
+	   	 AND ( DSGN_DNTN_BIZ_ID <> 0 AND DSGN_DNTN_BIZ_ID IS NOT NULL )
+
+	    UNION ALL
+	    SELECT
+	    	'offline-cntramt' AS ID,
+	    	'오프라인 일반기부 금액' AS LABEL,
+	    	IFNULL(SUM(CAST(CNTR_AMT AS BIGINT)), 0) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	     AND STTEMNT_PAY_DE IS NOT NULL
+	     AND DELETE_AT ='N'
+		 AND CNTR_STTUS_CODE  = '200'
+		 AND CNTR_PATH_CODE IN ('200', '300')
+		 AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+	     AND CNTR_DE <=  #{shCntrDeStart}
+		 AND ( DSGN_DNTN_BIZ_ID =  0 OR DSGN_DNTN_BIZ_ID IS NULL )
+
+	    UNION ALL
+	    SELECT
+	    	'offline-prj-cntramt' AS ID,
+	    	'오프라인 지정기부 금액' AS LABEL,
+	    	IFNULL(SUM(CNTR_AMT), 0) AS `COUNT`
+	    FROM G_CNTR
+	    WHERE 1=1
+	    AND STTEMNT_PAY_DE IS NOT NULL
+	    AND DELETE_AT ='N'
+		AND CNTR_STTUS_CODE  = '200'
+		AND CNTR_PATH_CODE IN ('200', '300')
+		AND CNTR_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+	    AND CNTR_DE <=  #{shCntrDeStart}
+		AND ( DSGN_DNTN_BIZ_ID <> 0 AND DSGN_DNTN_BIZ_ID IS NOT NULL )
+
+	    UNION ALL
+	    SELECT
+	    	'total-present' AS ID,
+	    	'총답례품현황(건)' AS LABEL,
+	    	COUNT(*) AS `COUNT`
+	    FROM
+	    (
+	    	SELECT ORDER_CODE
+	    	FROM G_CNTR_USE_POINT
+	    	WHERE USE_SE_CODE = '1'
+	    	 AND POINT_USE_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+	    	 AND POINT_USE_DE <=  #{shCntrDeStart}
+	    	GROUP BY ORDER_CODE
+	    )
+	    WHERE 1=1
+
+	    UNION ALL
+	    SELECT
+	    	'total-presentamt' AS ID,
+	    	(SELECT CONCAT('(',UPPER_LOCGOV_NM ,' ', LOCGOV_NM, ')') FROM G_LOCGOV WHERE LOCGOV_CODE = #{locgovCd}) AS LABEL,
+	    	IFNULL(SUM(CAST(CNTR_USE_POINT AS BIGINT)), 0) AS `SUM`
+	    FROM G_CNTR_USE_POINT
+	    WHERE USE_SE_CODE = '1'
+	     AND POINT_USE_DE >=  CONCAT(SUBSTR(#{shCntrDeStart}, 1, 4), '0101')
+	     AND POINT_USE_DE <= #{shCntrDeStart}
+		]]>
+	</select>
+
+	<select id="getOpmanagerMainCallTableInfo" parameterType='saleson.shop.give.givestate.domain.GiveState' resultMap="callResult">
+		 <![CDATA[
+		 SELECT
+			 sum(call_kookmin) as call_kookmin ,
+			 sum(call_lov) as call_lov,
+			 sum(call_giver) as call_giver,
+			 sum(call_nhbank) as call_nhbank,
+			 sum(call_kookmin + call_lov+ call_giver+ call_nhbank) as call_total
+			FROM OP_CALL
+			WHERE call_date = #{shCntrDeStart}
+		 ]]>
+
+	</select>
+
+		<select id="getOpmanagerMainCall" parameterType='saleson.shop.give.givestate.domain.GiveState' resultMap="callResult">
+		 <![CDATA[
+		 SELECT
+			  call_kookmin ,
+			  call_lov,
+			  call_giver,
+			  call_nhbank,
+			  frst_register_id
+			FROM OP_CALL
+			WHERE call_date = #{shCntrDeStart}
+		 ]]>
+
+	</select>
+
+	<insert id="opmanagerMainCall" parameterType='saleson.shop.give.givestate.domain.GiveState' >
+		 <![CDATA[
+		insert into op_call (call_kookmin,call_lov,call_giver,call_date,call_nhbank, call_platform, frst_register_id)
+		values( #{callKookmin}, #{callLov}, #{callGiver},#{callDate},#{callNhbank},#{callPlatform},#{registId})
+		 ]]>
+
+	</insert>
+
+
+	<delete id="opmanagerdeleteCall" parameterType='saleson.shop.give.givestate.domain.GiveState' >
+		 <![CDATA[
+		delete from op_call where call_date = #{callDate}
+		 ]]>
+
+	</delete>
+
+	<select id="opamanagerMainGift" resultType="string">
+		SELECT locgov_nm
+		FROM g_locgov
+		WHERE locgov_code
+		NOT IN (SELECT distinct NVL(S.locgov_code,0) FROM OP_SELLER S INNER JOIN op_item I ON I.SELLER_ID = S.SELLER_ID);
+	</select>
+
+		<select id="opmanageMainAmountGiftA"  parameterType='saleson.shop.give.givestate.domain.GiveState' resultType="long">
+	select
+		COUNT(*)
+	from
+		(
+		select
+			I.ITEM_ID
+		from
+			OP_ITEM I
+		inner join OP_SELLER S on
+			I.SELLER_ID = S.SELLER_ID
+			and S.STATUS_CODE = '2'
+		left join OP_ITEM_OPTION_SOLDOUT IOST on
+			I.ITEM_ID = IOST.ITEM_ID
+		where
+			I.DATA_STATUS_CODE in ('0', '1', '90')
+			and I.ITEM_DATA_TYPE = 1
+			and I.DATA_STATUS_CODE = '1'
+			and ( case
+				when I.SOLD_OUT = '1' then 'Y'
+				when I.ITEM_OPTION_FLAG = 'N'
+					and I.STOCK_FLAG = 'Y'
+					and I.STOCK_QUANTITY = 0 then 'Y'
+					when I.ITEM_OPTION_FLAG = 'Y'
+					and I.ITEM_OPTION_TYPE = 'T'
+					and I.STOCK_FLAG = 'Y'
+					and I.STOCK_QUANTITY = 0 then 'Y'
+					when I.ITEM_OPTION_FLAG = 'Y'
+					and IOST.ITEM_OPTION_SOLD_OUT_FLAG = 'Y' then 'Y'
+					else 'N'
+				end ) = 'N'
+			and S.LOCGOV_CODE is not null
+		   <![CDATA[AND I.created_date <= #{shCntrDeStart}]]>
+		group by
+			I.ITEM_ID ) I
+	</select>
+
+	<select id="opmanageMainAmountGiftB"  parameterType='saleson.shop.give.givestate.domain.GiveState' resultType="long">
+		select
+			COUNT(*)
+		from
+			(
+			select
+				I.ITEM_ID
+			from
+				OP_ITEM I
+			inner join OP_SELLER S on
+				I.SELLER_ID = S.SELLER_ID
+				and S.STATUS_CODE = '2'
+			left join OP_ITEM_OPTION_SOLDOUT IOST on
+				I.ITEM_ID = IOST.ITEM_ID
+			where
+				I.DATA_STATUS_CODE in ('0', '1', '90')
+				and I.ITEM_DATA_TYPE = 1
+				and I.DATA_STATUS_CODE = '1'
+				and ( I.SOLD_OUT = '1'
+					or (I.ITEM_OPTION_FLAG = 'N'
+						and I.STOCK_FLAG = 'Y'
+						and I.STOCK_QUANTITY = 0)
+					or (I.ITEM_OPTION_FLAG = 'Y'
+						and I.ITEM_OPTION_TYPE = 'T'
+						and I.STOCK_FLAG = 'Y'
+						and I.STOCK_QUANTITY = 0)
+					or (I.ITEM_OPTION_FLAG = 'Y'
+						and IOST.ITEM_OPTION_SOLD_OUT_FLAG = 'Y') )
+				and S.LOCGOV_CODE is not null
+		   <![CDATA[ AND I.created_date <= #{shCntrDeStart}]]>
+			group by
+				I.ITEM_ID ) I
+	</select>
+
+	<select id="getUserDashboard" parameterType='saleson.shop.give.givestate.domain.GiveState' resultType="int" >
+	SELECT
+			count(*) AS `COUNT`
+		FROM OP_USER a
+		WHERE a.status_code = '9'
+		<![CDATA[ AND created_date <= #{shCntrDeStart}]]>
+	</select>
+
+	<insert id="confirmDonationForReportBatch" parameterType="hashmap" >
+		INSERT INTO REPORT_DASHBOARD (
+		ON_CNTR_CNT,
+		ON_CNTR_AMT,
+		OFF_CNTR_CNT,
+		OFF_CNTR_AMT,
+		PRESENT_CNT,
+		PRESENT_AMT,
+		CALL_KOOKMIN,
+		CALL_LOV,
+		CALL_GIVER,
+		CALL_NHBANK,
+		CALL_AMT,
+		PRESENT,
+		TOTAL_CNTR,
+		TOTAL_CNTRAMT,
+		TOTAL_USER,
+		CREATED_DATE,
+		ON_CNTR_PRJ_CNT,
+		ON_CNTR_PRJ_AMT,
+		OFF_CNTR_PRJ_CNT,
+		OFF_CNTR_PRJ_AMT
+		) VALUES (
+		#{online-cntr},
+		#{online-cntramt},
+		#{offline-cntr},
+		#{offline-cntramt},
+		#{total-present},
+		#{total-presentamt},
+		#{callKookmin},
+		#{callLov},
+		#{callGiver},
+		#{callNhbank},
+		#{callAmt},
+		#{present},
+		#{total-cntr},
+		#{total-cntramt},
+		#{userAmt},
+		#{createdDate},
+		#{online-prj-cntr},
+		#{online-prj-cntramt},
+		#{offline-prj-cntr},
+		#{offline-prj-cntramt}
+		)
+
+	</insert>
+
+	<delete id="deleteDashBoardReport" parameterType='hashmap' >
+		DELETE FROM REPORT_DASHBOARD
+		<![CDATA[WHERE created_date = #{deleteDate}]]>
+	</delete>
+
+	<select id="dashBoardReport"  parameterType='saleson.shop.give.givestate.domain.GiveState' resultMap="callResult">
+		SELECT
+		*,
+		total_cntramt  -
+		(SELECT
+			total_cntramt
+		FROM
+			REPORT_DASHBOARD
+		<![CDATA[WHERE created_date = #{shCntrDeEnd}]]>) as totalCntrAmtCal,
+		total_cntr -
+		(SELECT
+			total_cntr
+		FROM
+			REPORT_DASHBOARD
+		<![CDATA[WHERE created_date = #{shCntrDeEnd}]]>) as totalCntrCal
+		FROM
+			REPORT_DASHBOARD
+		<![CDATA[WHERE created_date = #{shCntrDeStart}]]>
+		ORDER BY REPORT_CREATEDATE DESC
+		LIMIT 1
+	</select>
+
+	<select id="dashBoardReportForCal"  parameterType='saleson.shop.give.givestate.domain.GiveState' resultMap="callResult">
+		SELECT
+		total_cntr,
+		total_cntramt
+		FROM REPORT_DASHBOARD
+		<![CDATA[WHERE created_date = #{shCntrDeEnd}]]>
+		ORDER BY REPORT_CREATEDATE DESC
+		LIMIT 1
+	</select>
+
+	<select id="getGiveTotalAmt" parameterType='java.util.HashMap' resultType="Long">
+		SELECT
+			SUM(CNTR_AMT) AS totalAmt
+		FROM
+			G_CNTR
+		WHERE 1=1
+			AND CNTR_STTUS_CODE = 200
+			<choose>
+				<when test = "std eq 'prev'">
+					<![CDATA[
+						AND (
+							CNTR_DE >= DATE_FORMAT(ADD_MONTHS(TRUNC(CURRENT_DATE, 'YYYY'), -12), '%Y%m%d')
+							AND CNTR_DE < DATE_FORMAT(ADD_MONTHS(CURRENT_DATE, -12), '%Y%m%d')
+						)
+					]]>
+				</when>
+				<when test = "std eq 'now'">
+					<![CDATA[
+						AND (
+							CNTR_DE >= DATE_FORMAT(TRUNC(CURRENT_DATE, 'YYYY'), '%Y%m%d')
+							AND CNTR_DE < DATE_FORMAT(CURRENT_DATE, '%Y%m%d')
+						)
+					]]>
+				</when>
+			</choose>
+	</select>
+
+	<!-- 작년, 올해 총 기부금 Insert 쿼리 [배치] -->
+	<insert id="insertDyGramtInfo" parameterType="java.util.HashMap">
+		INSERT INTO G_DY_GRAMT
+			(
+				CREATED_AT,
+				STDR_DE,
+				LAST_YEAR_GRAMT,
+				NOW_YEAR_GRAMT
+			)
+		VALUES
+			(
+				DATE_FORMAT(SYS_DATETIME, '%Y%m%d%H%i%s%f'),
+				DATE_FORMAT(CURRENT_DATE, '%Y%m%d'),
+				#{lastYearGramt},
+				#{nowYearGramt}
+			)
+	</insert>
+
+	<!-- insertDyGramtInfo에서 Insert된 데이터를 오늘 기준(STDR_DE)로 가져옴  -->
+	<select id="nowDayGramt" resultType="java.util.HashMap">
+		SELECT
+			LAST_YEAR_GRAMT AS prevYearTotalAmt
+			,now_year_gramt AS nowYearTotalAmt
+		FROM
+			G_DY_GRAMT
+		WHERE
+			STDR_DE = DATE_FORMAT(SYS_DATE, '%Y%m%d')
+		ORDER BY CREATED_AT DESC
+		LIMIT 1
+	</select>
+</mapper>

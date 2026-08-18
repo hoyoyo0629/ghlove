@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="max-age=0, no-cache, no-store, must-revalidate, private">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>기부하기-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/joind-ag.css">
+    <link rel="stylesheet" href="/static/css/donation_doak.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css"><!-- 모달-->
+    <link rel="stylesheet" href="/static/css/notice-box.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap" class="dona">
+
+            <section class="center donation_steps">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                    <h2 class="page-title-txt">금결원 지로 테스트</h2>
+                </div>
+
+            </section>
+
+            <section id="contents" class="input_area">
+                    <fieldset>
+                        <div class="donation-info-area joind center">
+                            <div class="add-info-group">
+                                <div class="lable-field">
+                                    <h3>지로번호 선택</h3>
+                                </div>
+                                <div class="info-field">
+                                    <div class="info-field-group">
+                                        <div class="info-field-items">
+                                            <label for="upperLocgovCode" class="flied-title">지로번호 선택</label>
+                                            <span class="form-field selectCity">
+                                                <div class="select-location-items">
+                                                    <select aria-label="지로번호 선택" name="selectGiroNo" id="selectGiroNo" v-model="selectGiroNo">
+                                                    	<option value="">선택</option>
+                                                        <option value="1005376">26-1005376</option>
+                                                        <option value="1000805">27-1000805</option>
+                                                        <option value="1005185">28-1005185</option>
+                                                        <option value="1004953">41-1004953</option>
+                                                        <option value="샘플데이터">샘플테스트데이터</option>
+                                                    </select>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-field">
+                                    <div class="info-field-group">
+                                        <div class="info-field-items">
+                                            <label for="sortCode" class="flied-title">SORTCODE</label>
+                                            <input id="sortCode" type="text" value="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-field">
+                                    <div class="info-field-group">
+                                        <div class="info-field-items">
+                                            <label for="giroNo" class="flied-title">GIRONO</label>
+                                            <input id="giroNo" type="text" value="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-field">
+                                    <div class="info-field-group">
+                                        <div class="info-field-items">
+                                            <label for="elecNo" class="flied-title">ELECNO</label>
+                                            <input id="elecNo" type="text" value="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-field">
+                                    <div class="info-field-group">
+                                        <div class="info-field-items">
+                                            <label for="payerName" class="flied-title">PAYERNAME</label>
+                                            <input id="payerName" type="text" value="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-field">
+                                    <div class="info-field-group">
+                                        <div class="info-field-items">
+                                            <label for="birthDate" class="flied-title">BIRTHDATE</label>
+                                            <input id="birthDate" type="text" value="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="info-field">
+                                    <div class="info-field-group">
+                                        <div class="info-field-items">
+                                            <label for="callDt" class="flied-title">CALLDT</label>
+                                            <input id="callDt" type="text" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+            </section>
+			 <div class="btn-box many mb_b60">
+                   <button type="button" class="blueBtn u-confirm" @click="openGiroTest()" >
+                       지로 호출
+                       <span>
+                           <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                       </span>
+                   </button>
+               </div>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="/modules/op.donation.js?v=202308230318"></script>
+
+			<!-- 암호화 모듈 -->
+    <script src="/modules/jsencrypt.min.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        let giroPopup;
+
+        let vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-subsearch-ali': httpVueLoader('/components/layouts/subsearch_ali.vue'),
+                //'layout-donation-lnb-ali': httpVueLoader('/components/layouts/donation-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-help-btn': httpVueLoader('/components/ui/helpBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+            },
+            data: {
+				selectGiroNo : '',
+                giroParams : {}
+            },
+            methods: {
+				changeGiroNo: function (giroNo) {
+                    let params = {};
+					if(giroNo === '1005376')
+                    {
+                        params.sortCode = '26';
+                        params.giroNo = giroNo;
+                        params.elecNo = '2638011023609310632';
+                        params.birthDate = '760603';
+                        params.payerName = '원재공';
+                        $('#sortCode').val('26');
+                        $('#giroNo').val(giroNo);
+                        $('#elecNo').val('2638011023609310632');
+                        $('#payerName').val('원재공');
+                        $('#birthDate').val('760603');
+                        $('#callDt').val('20241231022415');
+                    }
+                    else if(giroNo === '1000805')
+                    {
+                        params.sortCode = '27';
+                        params.giroNo = giroNo;
+                        params.elecNo = '2729011023313602792';
+                        params.birthDate = '19760603';
+                        params.payerName = '원재공';
+                        $('#sortCode').val('26');
+                        $('#giroNo').val(giroNo);
+                        $('#elecNo').val('2729011023313602792');
+                        $('#payerName').val('원재공');
+                        $('#birthDate').val('760603');
+                        $('#callDt').val('20241231022415');
+                    }
+                    else if(giroNo === '1005185')
+                    {
+                        params.sortCode = '28';
+                        params.giroNo = giroNo;
+                        params.elecNo = '2811011023805630759';
+                        params.birthDate = '760603';
+                        params.payerName = '원재공';
+                        $('#sortCode').val('26');
+                        $('#giroNo').val(giroNo);
+                        $('#elecNo').val('2811011023805630759');
+                        $('#payerName').val('원재공');
+                        $('#birthDate').val('760603');
+                        $('#callDt').val('20241231022415');
+                    }
+                    else if(giroNo === '1004953')
+                    {
+                        params.sortCode = '41';
+                        params.giroNo = giroNo;
+                        params.elecNo = '4119011023420547099';
+                        params.birthDate = '760603';
+                        params.payerName = '원재공';
+                        $('#sortCode').val('26');
+                        $('#giroNo').val(giroNo);
+                        $('#elecNo').val('4119011023420547099');
+                        $('#payerName').val('원재공');
+                        $('#birthDate').val('760603');
+                        $('#callDt').val('20241231022415');
+                    }
+					else
+                    {
+                        params.sortCode = '11';
+                        params.giroNo = '1501702';
+                        params.elecNo = '1126023022010412065';
+                        params.birthDate = '970112';
+                        params.payerName = '테스트15';
+                        $('#sortCode').val('26');
+                        $('#giroNo').val(giroNo);
+                        $('#elecNo').val('1126023022010412065');
+                        $('#payerName').val('원재공');
+                        $('#birthDate').val('760603');
+                        $('#callDt').val('20241231022415');
+                    }
+                    vm.giroParams = params;
+                },
+
+
+                //금결원 인터넷지로 열기
+                openGiroTest : function() {
+					let giroParams = {};
+					//giroParams.sortCode = vm.giroParams.sortCode;
+                    //giroParams.giroNo =     vm.giroParams.giroNo;
+                    //giroParams.elecNo = vm.giroParams.elecNo;
+                    //giroParams.birthDate = vm.giroParams.birthDate;
+                    //giroParams.payerName = vm.giroParams.payerName;
+                    giroParams.sortCode = $('#sortCode').val();
+                    giroParams.giroNo = $('#giroNo').val();
+                    giroParams.elecNo = $('#elecNo').val();
+                    giroParams.birthDate = $('#birthDate').val();
+                    giroParams.payerName = $('#payerName').val();
+                    giroParams.callDt = $('#callDt').val();
+ 					giroParams.domain = 'https://www.ilovegohyang.go.kr';
+
+                    if(vm.giroParams.giroNo === undefined) {
+                        alert('지로번호 선택하세요');
+                        return false;
+                    }
+
+					giroPopup = window.open("", "popOpen", "width=720, height=682,scrollbars=yes, titlebar=0, toolbar=0, left=300, top=200");
+
+					$s.api.postSubmit('/api/ngdonation/giroPayTest', giroParams, function (response) {
+
+                        if (response.isMobile == 'Y') {   //모바일
+                            giroPopup.resizeTo(550, 800);
+                        } else {
+                            giroPopup.resizeTo(600, 800);
+                        }
+                        let form = document.createElement('form');
+                        form.setAttribute('method','post');
+                        form.setAttribute('target','popOpen');
+                        form.setAttribute('action', 'https://test.giro.or.kr/epay/hometown/index.do');
+
+                        let input = document.createElement('input');
+                        input.setAttribute('type', 'hidden'); // 태그 속성 설정
+                        input.setAttribute('id', 'ENC_DATA');
+                        input.setAttribute('name', 'ENC_DATA');
+                        input.setAttribute('value', response.result.data);
+
+                        form.appendChild(input);
+
+                        document.body.appendChild(form);
+                        form.submit();
+
+                    }, function (err) {
+						$s.error(err);
+                    });
+
+                },
+
+            },
+            computed: {
+
+            },
+            watch: {
+				selectGiroNo: function (giroNo) {
+                    if (giroNo != '') {
+                        vm.changeGiroNo(giroNo);
+                    } else {
+                        vm.giroParams = {};
+						$('#sortCode').val('');
+                        $('#giroNo').val('');
+                        $('#elecNo').val('');
+                        $('#payerName').val('');
+                        $('#birthDate').val('');
+                        $('#callDt').val('');
+                    }
+                }
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    Saleson.init();
+                });
+            }
+        });
+
+        // 캐시 초기화
+        window.addEventListener('unload', function(){});
+        window.addEventListener('beforeunload', function(){});
+
+    </script>
+
+</body>
+
+</html>

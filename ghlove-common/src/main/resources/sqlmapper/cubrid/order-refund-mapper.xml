@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.order.refund.OrderRefundMapper">
+
+	<resultMap id="OrderRefundResult" type="saleson.shop.order.refund.domain.OrderRefund">
+		<id property="refundCode" column="REFUND_CODE" />
+		<result property="orderCode" column="ORDER_CODE" />
+		<result property="orderSequence" column="ORDER_SEQUENCE" />
+		<result property="refundStatusCode" column="REFUND_STATUS_CODE" />
+		<result property="requestManagerUserName" column="REQUEST_MANAGER_USER_NAME" />
+		<result property="processManagerUserName" column="PROCESS_MANAGER_USER_NAME" />
+		<result property="returnBankName" column="RETURN_BANK_NAME" />
+		<result property="returnVirtualNo" column="RETURN_VIRTUAL_NO" />
+		<result property="returnBankInName" column="RETURN_BANK_IN_NAME" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+
+		<result property="userId" column="USER_ID" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="buyerName" column="BUYER_NAME" />
+		<result property="userName" column="USER_NAME" />
+		<result property="locgovNm" column="LOCGOV_NM" />
+		<result property="orderDate" column="ORDER_DATE" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="options" column="OPTIONS" />
+		<result property="itemUserCode" column="ITEM_USER_CODE" />
+	</resultMap>
+
+	<sql id="sqlDefaultColumnForRefund">
+		R.*,
+		O.BUYER_NAME,
+		O.LOGIN_ID,
+		O.USER_ID,
+		U.USER_NAME,
+		CONCAT(
+			L.UPPER_LOCGOV_NM,
+			' ',
+			L.LOCGOV_NM
+		) AS LOCGOV_NM,
+		O.CREATED_DATE AS ORDER_DATE
+	</sql>
+
+	<sql id="sqlDefaultFormForRefund">
+		FROM OP_ORDER_REFUND R
+			INNER JOIN OP_ORDER O
+				ON R.ORDER_CODE = O.ORDER_CODE
+				AND R.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+				AND O.DATA_STATUS_CODE = '1'
+			LEFT JOIN OP_USER U
+				ON O.USER_ID = U.USER_ID
+			LEFT JOIN G_LOCGOV L
+				ON U.LOCGOV_CODE = L.LOCGOV_CODE
+	</sql>
+
+	<sql id="whereRefund">
+		<if test="refundStatusCode != null and refundStatusCode != ''">
+			AND R.REFUND_STATUS_CODE = #{refundStatusCode}
+		</if>
+
+		<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+			AND DATE_FORMAT(R.CREATED_DATE, '%Y%m%d') BETWEEN #{searchStartDate} AND #{searchEndDate}
+		</if>
+
+		<if test="(query != null and query != '') and (where != null and where != '')">
+			<choose>
+				<when test="where == 'USER_NAME'">
+					AND O.BUYER_NAME LIKE CONCAT('%', #{query}, '%')
+				</when>
+				<when test="where == 'USER_ID'">
+					AND O.LOGIN_ID LIKE CONCAT('%', #{query},'%')
+				</when>
+				<when test='where == "REFUND_CODE"'>
+					AND R.REFUND_CODE LIKE CONCAT('%', #{query}, '%')
+				</when>
+				<when test='where == "ORDER_CODE"'>
+					AND R.ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+				</when>
+			</choose>
+		</if>
+
+		<if test="shLocgovCode != null and shLocgovCode != ''">
+			AND S.LOCGOV_CODE = #{shLocgovCode}
+		</if>
+
+		<if test="sellerId != null and sellerId > 0">
+			AND I.SELLER_ID = #{sellerId}
+		</if>
+	</sql>
+
+	<select id="getOrderRefundCountByParam" parameterType="saleson.shop.order.refund.support.OrderRefundParam"
+		resultType="Integer">
+		/* saleson.shop.order.refund.OrderRefundMapper.getOrderRefundCountByParam */
+		SELECT COUNT(1)
+		  FROM (
+				SELECT
+					   V1.REFUND_CODE
+					 , V1.REFUND_DATE
+					 , V1.ORDER_CODE
+					 , V1.ORDER_SEQUENCE
+					 , V1.REFUND_STATUS_CODE
+					 , V1.REQUEST_MANAGER_USER_NAME
+					 , V1.PROCESS_MANAGER_USER_NAME
+					 , V1.RETURN_BANK_NAME
+					 , V1.RETURN_VIRTUAL_NO
+					 , V1.RETURN_BANK_IN_NAME
+					 , V1.CREATED_DATE
+					 , V1.UPDATED_DATE
+					 , V1.BUYER_NAME
+					 , V1.LOGIN_ID
+					 , V1.USER_ID
+					 , V1.ORDER_DATE
+					 , V1.LOCGOV_CODE
+			      FROM (
+						SELECT
+							   R.REFUND_CODE
+							 , R.REFUND_DATE
+							 , R.ORDER_CODE
+							 , R.ORDER_SEQUENCE
+							 , R.REFUND_STATUS_CODE
+							 , R.REQUEST_MANAGER_USER_NAME
+							 , R.PROCESS_MANAGER_USER_NAME
+							 , R.RETURN_BANK_NAME
+							 , R.RETURN_VIRTUAL_NO
+							 , R.RETURN_BANK_IN_NAME
+							 , R.CREATED_DATE
+							 , R.UPDATED_DATE
+							 , O.BUYER_NAME
+							 , O.LOGIN_ID
+							 , O.USER_ID
+							 , O.CREATED_DATE AS ORDER_DATE
+							 , S.LOCGOV_CODE
+						  FROM OP_ORDER_REFUND R
+						     , OP_ORDER O
+						     , OP_ORDER_CANCEL_APPLY C
+						     , OP_ORDER_ITEM I
+						     , OP_SELLER S
+						 WHERE R.ORDER_CODE = O.ORDER_CODE
+						   AND R.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+						   AND R.REFUND_CODE = C.REFUND_CODE
+						   AND C.ORDER_CODE = I.ORDER_CODE
+						   AND C.ORDER_SEQUENCE = I.ORDER_SEQUENCE
+						   AND C.ITEM_SEQUENCE = I.ITEM_SEQUENCE
+						   AND I.SELLER_ID = S.SELLER_ID
+						   AND O.DATA_STATUS_CODE = '1'
+			   			<if test="refundStatusCode != null and refundStatusCode != ''">
+							AND R.REFUND_STATUS_CODE = #{refundStatusCode}
+						</if>
+				
+						<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+							AND DATE_FORMAT(R.CREATED_DATE, '%Y%m%d') BETWEEN #{searchStartDate} AND #{searchEndDate}
+						</if>
+				
+						<if test="(query != null and query != '') and (where != null and where != '')">
+							<choose>
+								<when test="where == 'USER_NAME'">
+									AND O.BUYER_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test="where == 'USER_ID'">
+									AND O.LOGIN_ID LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test='where == "REFUND_CODE"'>
+									AND R.REFUND_CODE LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test='where == "ORDER_CODE"'>
+									AND R.ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test='where == "ITEM_NAME"'>
+									AND I.ITEM_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test="where == 'ITEM_SELLER_CODE'">
+									AND I.ITEM_ID IN (
+										SELECT ITEM_ID FROM OP_ITEM
+										WHERE ITEM_SELLER_CODE LIKE CONCAT('%', #{query}, '%')
+									)
+								</when>
+							</choose>
+						</if>
+				
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND S.LOCGOV_CODE = #{shLocgovCode}
+						</if>
+				
+						<if test="sellerId != null and sellerId > 0">
+							AND I.SELLER_ID = #{sellerId}
+						</if>
+						<if test="isSellerLogin">
+							<if test="isSelectLimited">
+								AND (
+										<!-- R.REFUND_DATE <![CDATA[ >= ]]> DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d') -->
+										R.REFUND_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01')
+										OR R.REFUND_STATUS_CODE <![CDATA[ <> ]]> '2'
+									)
+							</if>
+						</if>
+						 UNION ALL
+						SELECT
+							   R.REFUND_CODE
+							 , R.REFUND_DATE
+							 , R.ORDER_CODE
+							 , R.ORDER_SEQUENCE
+							 , R.REFUND_STATUS_CODE
+							 , R.REQUEST_MANAGER_USER_NAME
+							 , R.PROCESS_MANAGER_USER_NAME
+							 , R.RETURN_BANK_NAME
+							 , R.RETURN_VIRTUAL_NO
+							 , R.RETURN_BANK_IN_NAME
+							 , R.CREATED_DATE
+							 , R.UPDATED_DATE
+							 , O.BUYER_NAME
+							 , O.LOGIN_ID
+							 , O.USER_ID
+							 , O.CREATED_DATE AS ORDER_DATE
+							 , S.LOCGOV_CODE
+						  FROM OP_ORDER_REFUND R
+						     , OP_ORDER O
+						     , OP_ORDER_RETURN_APPLY C
+						     , OP_ORDER_ITEM I
+						     , OP_SELLER S
+						 WHERE R.ORDER_CODE = O.ORDER_CODE
+						   AND R.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+						   AND R.REFUND_CODE = C.REFUND_CODE
+						   AND C.ORDER_CODE = I.ORDER_CODE
+						   AND C.ORDER_SEQUENCE = I.ORDER_SEQUENCE
+						   AND C.ITEM_SEQUENCE = I.ITEM_SEQUENCE
+						   AND I.SELLER_ID = S.SELLER_ID
+						   AND O.DATA_STATUS_CODE = '1'
+		    			<if test="refundStatusCode != null and refundStatusCode != ''">
+							AND R.REFUND_STATUS_CODE = #{refundStatusCode}
+						</if>
+				
+						<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+							AND DATE_FORMAT(R.CREATED_DATE, '%Y%m%d') BETWEEN #{searchStartDate} AND #{searchEndDate}
+						</if>
+				
+						<if test="(query != null and query != '') and (where != null and where != '')">
+							<choose>
+								<when test="where == 'USER_NAME'">
+									AND O.BUYER_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test="where == 'USER_ID'">
+									AND O.LOGIN_ID LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test='where == "REFUND_CODE"'>
+									AND R.REFUND_CODE LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test='where == "ORDER_CODE"'>
+									AND R.ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test='where == "ITEM_NAME"'>
+									AND I.ITEM_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test="where == 'ITEM_SELLER_CODE'">
+									AND I.ITEM_ID IN (
+										SELECT ITEM_ID FROM OP_ITEM
+										WHERE ITEM_SELLER_CODE LIKE CONCAT('%', #{query}, '%')
+									)
+								</when>
+							</choose>
+						</if>
+				
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND S.LOCGOV_CODE = #{shLocgovCode}
+						</if>
+				
+						<if test="sellerId != null and sellerId > 0">
+							AND I.SELLER_ID = #{sellerId}
+						</if>
+						<if test="isSellerLogin">
+							<if test="isSelectLimited">
+								AND (
+										<!-- R.REFUND_DATE <![CDATA[ >= ]]> DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d') -->
+										R.REFUND_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01')
+										OR R.REFUND_STATUS_CODE <![CDATA[ <> ]]> '2'
+									)
+							</if>
+						</if>
+			      	) V1
+				 GROUP
+				    BY V1.REFUND_CODE
+					 , V1.REFUND_DATE
+					 , V1.ORDER_CODE
+					 , V1.ORDER_SEQUENCE
+					 , V1.REFUND_STATUS_CODE
+					 , V1.REQUEST_MANAGER_USER_NAME
+					 , V1.PROCESS_MANAGER_USER_NAME
+					 , V1.RETURN_BANK_NAME
+					 , V1.RETURN_VIRTUAL_NO
+					 , V1.RETURN_BANK_IN_NAME
+					 , V1.CREATED_DATE
+					 , V1.UPDATED_DATE
+					 , V1.BUYER_NAME
+					 , V1.LOGIN_ID
+					 , V1.USER_ID
+					 , V1.ORDER_DATE
+					 , V1.LOCGOV_CODE
+			) V ,
+			G_LOCGOV L ,
+			OP_USER U
+		WHERE
+			V.LOCGOV_CODE = L.LOCGOV_CODE
+			AND V.USER_ID = U.USER_ID
+		ORDER BY
+			V.CREATED_DATE DESC
+	</select>
+
+	<select id="getOrderRefundListByParam" parameterType="saleson.shop.order.refund.support.OrderRefundParam"
+		resultMap="OrderRefundResult">
+
+		<include refid="CommonMapper.paginationHeader" />
+		/* saleson.shop.order.refund.OrderRefundMapper.getOrderRefundListByParam */
+		SELECT
+			   V.REFUND_CODE
+			 , V.REFUND_DATE
+			 , V.ORDER_CODE
+			 , V.ORDER_SEQUENCE
+			 , V.REFUND_STATUS_CODE
+			 , V.REQUEST_MANAGER_USER_NAME
+			 , V.PROCESS_MANAGER_USER_NAME
+			 , V.RETURN_BANK_NAME
+			 , V.RETURN_VIRTUAL_NO
+			 , V.RETURN_BANK_IN_NAME
+			 , V.CREATED_DATE
+			 , V.UPDATED_DATE
+			 , V.BUYER_NAME
+			 , V.LOGIN_ID
+			 , V.USER_ID
+			 , U.USER_NAME
+			 , CONCAT(
+				L.UPPER_LOCGOV_NM,
+				' ',
+				L.LOCGOV_NM
+				) AS LOCGOV_NM
+			 , V.ORDER_DATE
+			 , V.ITEM_NAME
+			 , V.OPTIONS
+			 , V.ITEM_USER_CODE
+		  FROM (
+				SELECT
+					   V1.REFUND_CODE
+					 , V1.REFUND_DATE
+					 , V1.ORDER_CODE
+					 , V1.ORDER_SEQUENCE
+					 , V1.REFUND_STATUS_CODE
+					 , V1.REQUEST_MANAGER_USER_NAME
+					 , V1.PROCESS_MANAGER_USER_NAME
+					 , V1.RETURN_BANK_NAME
+					 , V1.RETURN_VIRTUAL_NO
+					 , V1.RETURN_BANK_IN_NAME
+					 , V1.CREATED_DATE
+					 , V1.UPDATED_DATE
+					 , V1.BUYER_NAME
+					 , V1.LOGIN_ID
+					 , V1.USER_ID
+					 , V1.ORDER_DATE
+					 , V1.LOCGOV_CODE
+					 , V1.ITEM_NAME
+					 , V1.OPTIONS
+					 , V1.ITEM_USER_CODE
+			      FROM (
+						SELECT
+							   R.REFUND_CODE
+							 , R.REFUND_DATE
+							 , R.ORDER_CODE
+							 , R.ORDER_SEQUENCE
+							 , R.REFUND_STATUS_CODE
+							 , R.REQUEST_MANAGER_USER_NAME
+							 , R.PROCESS_MANAGER_USER_NAME
+							 , R.RETURN_BANK_NAME
+							 , R.RETURN_VIRTUAL_NO
+							 , R.RETURN_BANK_IN_NAME
+							 , R.CREATED_DATE
+							 , R.UPDATED_DATE
+							 , O.BUYER_NAME
+							 , O.LOGIN_ID
+							 , O.USER_ID
+							 , O.CREATED_DATE AS ORDER_DATE
+							 , S.LOCGOV_CODE
+							 , I.ITEM_NAME
+							 , I.OPTIONS
+							 , I.ITEM_USER_CODE
+						  FROM OP_ORDER_REFUND R
+						     , OP_ORDER O
+						     , OP_ORDER_CANCEL_APPLY C
+						     , OP_ORDER_ITEM I
+						     , OP_SELLER S
+						 WHERE R.ORDER_CODE = O.ORDER_CODE
+						   AND R.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+						   AND R.REFUND_CODE = C.REFUND_CODE
+						   AND C.ORDER_CODE = I.ORDER_CODE
+						   AND C.ORDER_SEQUENCE = I.ORDER_SEQUENCE
+						   AND C.ITEM_SEQUENCE = I.ITEM_SEQUENCE
+						   AND I.SELLER_ID = S.SELLER_ID
+						   AND O.DATA_STATUS_CODE = '1'
+			   			<if test="refundStatusCode != null and refundStatusCode != ''">
+							AND R.REFUND_STATUS_CODE = #{refundStatusCode}
+						</if>
+				
+						<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+							AND DATE_FORMAT(R.CREATED_DATE, '%Y%m%d') BETWEEN #{searchStartDate} AND #{searchEndDate}
+						</if>
+				
+						<if test="(query != null and query != '') and (where != null and where != '')">
+							<choose>
+								<when test="where == 'USER_NAME'">
+									AND O.BUYER_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test="where == 'USER_ID'">
+									AND O.LOGIN_ID LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test='where == "REFUND_CODE"'>
+									AND R.REFUND_CODE LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test='where == "ORDER_CODE"'>
+									AND R.ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test='where == "ITEM_NAME"'>
+									AND I.ITEM_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test="where == 'ITEM_SELLER_CODE'">
+									AND I.ITEM_ID IN (
+										SELECT ITEM_ID FROM OP_ITEM
+										WHERE ITEM_SELLER_CODE LIKE CONCAT('%', #{query}, '%')
+									)
+								</when>
+							</choose>
+						</if>
+				
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND S.LOCGOV_CODE = #{shLocgovCode}
+						</if>
+				
+						<if test="sellerId != null and sellerId > 0">
+							AND I.SELLER_ID = #{sellerId}
+						</if>
+						<if test="isSellerLogin">
+							<if test="isSelectLimited">
+								AND (
+										<!-- R.REFUND_DATE <![CDATA[ >= ]]> DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d') -->
+										R.REFUND_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01')
+										OR R.REFUND_STATUS_CODE <![CDATA[ <> ]]> '2'
+									)
+							</if>
+						</if>
+						 UNION ALL
+						SELECT
+							   R.REFUND_CODE
+							 , R.REFUND_DATE
+							 , R.ORDER_CODE
+							 , R.ORDER_SEQUENCE
+							 , R.REFUND_STATUS_CODE
+							 , R.REQUEST_MANAGER_USER_NAME
+							 , R.PROCESS_MANAGER_USER_NAME
+							 , R.RETURN_BANK_NAME
+							 , R.RETURN_VIRTUAL_NO
+							 , R.RETURN_BANK_IN_NAME
+							 , R.CREATED_DATE
+							 , R.UPDATED_DATE
+							 , O.BUYER_NAME
+							 , O.LOGIN_ID
+							 , O.USER_ID
+							 , O.CREATED_DATE AS ORDER_DATE
+							 , S.LOCGOV_CODE
+							 , I.ITEM_NAME
+							 , I.OPTIONS
+							 , I.ITEM_USER_CODE
+						  FROM OP_ORDER_REFUND R
+						     , OP_ORDER O
+						     , OP_ORDER_RETURN_APPLY C
+						     , OP_ORDER_ITEM I
+						     , OP_SELLER S
+						 WHERE R.ORDER_CODE = O.ORDER_CODE
+						   AND R.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+						   AND R.REFUND_CODE = C.REFUND_CODE
+						   AND C.ORDER_CODE = I.ORDER_CODE
+						   AND C.ORDER_SEQUENCE = I.ORDER_SEQUENCE
+						   AND C.ITEM_SEQUENCE = I.ITEM_SEQUENCE
+						   AND I.SELLER_ID = S.SELLER_ID
+						   AND O.DATA_STATUS_CODE = '1'
+		    			<if test="refundStatusCode != null and refundStatusCode != ''">
+							AND R.REFUND_STATUS_CODE = #{refundStatusCode}
+						</if>
+				
+						<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+							AND DATE_FORMAT(R.CREATED_DATE, '%Y%m%d') BETWEEN #{searchStartDate} AND #{searchEndDate}
+						</if>
+				
+						<if test="(query != null and query != '') and (where != null and where != '')">
+							<choose>
+								<when test="where == 'USER_NAME'">
+									AND O.BUYER_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test="where == 'USER_ID'">
+									AND O.LOGIN_ID LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test='where == "REFUND_CODE"'>
+									AND R.REFUND_CODE LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test='where == "ORDER_CODE"'>
+									AND R.ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test='where == "ITEM_NAME"'>
+									AND I.ITEM_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+								<when test="where == 'ITEM_SELLER_CODE'">
+									AND I.ITEM_ID IN (
+										SELECT ITEM_ID FROM OP_ITEM
+										WHERE ITEM_SELLER_CODE LIKE CONCAT('%', #{query}, '%')
+									)
+								</when>
+							</choose>
+						</if>
+				
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND S.LOCGOV_CODE = #{shLocgovCode}
+						</if>
+				
+						<if test="sellerId != null and sellerId > 0">
+							AND I.SELLER_ID = #{sellerId}
+						</if>
+						<if test="isSellerLogin">
+							<if test="isSelectLimited">
+								AND (
+										<!-- R.REFUND_DATE <![CDATA[ >= ]]> DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d') -->
+										R.REFUND_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01')
+										OR R.REFUND_STATUS_CODE <![CDATA[ <> ]]> '2'
+									)
+							</if>
+						</if>
+			      	) V1
+				 GROUP
+				    BY V1.REFUND_CODE
+					 , V1.REFUND_DATE
+					 , V1.ORDER_CODE
+					 , V1.ORDER_SEQUENCE
+					 , V1.REFUND_STATUS_CODE
+					 , V1.REQUEST_MANAGER_USER_NAME
+					 , V1.PROCESS_MANAGER_USER_NAME
+					 , V1.RETURN_BANK_NAME
+					 , V1.RETURN_VIRTUAL_NO
+					 , V1.RETURN_BANK_IN_NAME
+					 , V1.CREATED_DATE
+					 , V1.UPDATED_DATE
+					 , V1.BUYER_NAME
+					 , V1.LOGIN_ID
+					 , V1.USER_ID
+					 , V1.ORDER_DATE
+					 , V1.LOCGOV_CODE
+		   	 ) V
+		     , G_LOCGOV L
+		     , OP_USER U
+		 WHERE V.LOCGOV_CODE = L.LOCGOV_CODE
+		   AND V.USER_ID = U.USER_ID
+		 ORDER BY V.CREATED_DATE DESC
+		<include refid="CommonMapper.paginationFooter" />
+
+	</select>
+
+	<select id="getOrderRefundByCode" parameterType="String" resultMap="OrderRefundResult">
+		/* saleson.shop.order.refund.OrderRefundMapper.getOrderRefundByCode */
+		<!-- SELECT
+			R.*,
+			O.BUYER_NAME,
+			O.LOGIN_ID,
+			O.USER_ID,
+			U.USER_NAME,
+			CONCAT(
+				L.UPPER_LOCGOV_NM,
+				' ',
+				L.LOCGOV_NM
+			) AS LOCGOV_NM,
+			L.LOCGOV_CODE,
+			O.CREATED_DATE AS ORDER_DATE
+		FROM OP_ORDER_REFUND R
+			INNER JOIN OP_ORDER O
+				ON R.ORDER_CODE = O.ORDER_CODE
+				AND R.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+				AND O.DATA_STATUS_CODE = '1'
+			LEFT JOIN OP_USER U
+				ON O.USER_ID = U.USER_ID
+			LEFT JOIN G_LOCGOV L
+				ON U.LOCGOV_CODE = L.LOCGOV_CODE
+		<where>
+			R.REFUND_CODE = #{refundCode}
+		</where> -->
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', T_A.REQUEST_MANAGER_USER_NAME_ENC, '', 0) AS REQUEST_MANAGER_USER_NAME
+			, CRYPTO_DEC('normal', T_A.PROCESS_MANAGER_USER_NAME_ENC, '', 0) AS PROCESS_MANAGER_USER_NAME
+			, CRYPTO_DEC('normal', T_A.RETURN_BANK_NAME_ENC, '', 0) AS RETURN_BANK_NAME
+			, CRYPTO_DEC('normal', T_A.RETURN_VIRTUAL_NO_ENC, '', 0) AS RETURN_VIRTUAL_NO
+			, CRYPTO_DEC('normal', T_A.RETURN_BANK_IN_NAME_ENC, '', 0) AS RETURN_BANK_IN_NAME
+			, CRYPTO_DEC('normal', T_A.LOGIN_ID_ENC, '', 0) AS LOGIN_ID
+			, CRYPTO_DEC('normal', T_A.USER_NAME_ENC, '', 0) AS USER_NAME
+		FROM (
+			SELECT
+				OOR.REFUND_CODE,
+				OOR.REFUND_DATE,
+				OOR.ORDER_CODE,
+				OOR.ORDER_SEQUENCE ,
+				OOR.REFUND_STATUS_CODE,
+				OOR.REQUEST_MANAGER_USER_NAME AS REQUEST_MANAGER_USER_NAME_ENC,
+				OOR.PROCESS_MANAGER_USER_NAME AS PROCESS_MANAGER_USER_NAME_ENC,
+				OOR.RETURN_BANK_NAME AS RETURN_BANK_NAME_ENC,
+				OOR.RETURN_VIRTUAL_NO AS RETURN_VIRTUAL_NO_ENC,
+				OOR.RETURN_BANK_IN_NAME AS RETURN_BANK_IN_NAME_ENC,
+				OOR.CREATED_DATE ,
+				OOR.UPDATED_DATE ,
+				OU.LOGIN_ID AS LOGIN_ID_ENC,
+				OOI.USER_ID,
+				OU.USER_NAME AS USER_NAME_ENC,
+				CONCAT(
+					GL.UPPER_LOCGOV_NM,
+					' ',
+					GL.LOCGOV_NM
+				) AS LOCGOV_NM,
+				GL.LOCGOV_CODE,
+				OOI.CREATED_DATE AS ORDER_DATE
+			FROM OP_ORDER_REFUND OOR
+				, OP_ORDER_ITEM OOI
+				, OP_USER OU
+				, OP_SELLER OS
+				, G_LOCGOV GL
+			WHERE OOR.ORDER_CODE = OOI.ORDER_CODE 
+				AND OOR.ORDER_SEQUENCE = OOI.ORDER_SEQUENCE 
+				AND OOI.USER_ID = OU.USER_ID
+				AND OOI.SELLER_ID = OS.SELLER_ID(+)
+				AND OS.LOCGOV_CODE = GL.LOCGOV_CODE(+)
+				AND OOR.REFUND_CODE = #{refundCode}
+			GROUP BY OOR.REFUND_CODE
+		) T_A
+	</select>
+
+	<select id="getActiveRefundCodeByParam" parameterType="saleson.shop.order.refund.support.OrderRefundParam"
+		resultType="String">
+		/* saleson.shop.order.refund.OrderRefundMapper.getActiveRefundCodeByParam */
+		SELECT REFUND_CODE FROM OP_ORDER_REFUND A
+		<where>
+			A.ORDER_CODE = #{orderCode}
+			AND A.ORDER_SEQUENCE = #{orderSequence}
+			AND A.REFUND_STATUS_CODE = '1'
+			AND EXISTS (
+   				SELECT 1
+   				  FROM OP_ORDER_RETURN_APPLY R
+   				     , OP_ORDER_ITEM I
+   				     , OP_SELLER S
+				 WHERE R.ORDER_CODE = I.ORDER_CODE
+				   AND R.ORDER_SEQUENCE = I.ORDER_SEQUENCE
+				   AND R.ITEM_SEQUENCE = I.ITEM_SEQUENCE
+				   AND I.SELLER_ID = S.SELLER_ID
+				   AND A.ORDER_CODE = I.ORDER_CODE
+				   AND A.ORDER_SEQUENCE  = I.ORDER_SEQUENCE
+				   AND R.REFUND_CODE = A.REFUND_CODE
+				   AND R.REFUND_CODE IS NOT NULL
+			   		<if test="shLocgovCode != null and shLocgovCode != ''">
+						AND S.LOCGOV_CODE = #{shLocgovCode}
+					</if>
+
+					<if test="sellerId != null and sellerId > 0">
+						AND I.SELLER_ID = #{sellerId}
+					</if>
+   				)
+		</where>
+
+	</select>
+
+	<insert id="insertOrderRefund" parameterType="saleson.shop.order.refund.domain.OrderRefund">
+        <!--
+		<selectKey keyProperty="refundCode" resultType="String" order="BEFORE">
+			SELECT CONCAT('RE-', <include refid="CommonMapper.date" />, '-', COUNT(*) + 1)
+			FROM OP_ORDER_REFUND
+			WHERE
+				REFUND_DATE = <include refid="CommonMapper.date" />
+		</selectKey>
+		-->
+		/* saleson.shop.order.refund.OrderRefundMapper.insertOrderRefund */
+		INSERT INTO OP_ORDER_REFUND (
+			REFUND_CODE,
+			REFUND_DATE,
+			ORDER_CODE,
+			ORDER_SEQUENCE,
+			REFUND_STATUS_CODE,
+			REQUEST_MANAGER_USER_NAME,
+			PROCESS_MANAGER_USER_NAME,
+			RETURN_BANK_NAME,
+			RETURN_VIRTUAL_NO,
+			RETURN_BANK_IN_NAME,
+			CREATED_DATE
+		) VALUES (
+			#{refundCode},
+			<include refid="CommonMapper.date" />,
+			#{orderCode},
+			#{orderSequence},
+			#{refundStatusCode},
+			#{requestManagerUserName},
+			#{processManagerUserName},
+			#{returnBankName},
+			#{returnVirtualNo},
+			#{returnBankInName},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<update id="updateRefundStatus" parameterType="saleson.shop.order.refund.domain.OrderRefund">
+		/* saleson.shop.order.refund.OrderRefundMapper.updateRefundStatus */
+		UPDATE OP_ORDER_REFUND SET
+			REFUND_STATUS_CODE = '2',
+			RETURN_BANK_NAME = #{returnBankName},
+			RETURN_VIRTUAL_NO = #{returnVirtualNo},
+			RETURN_BANK_IN_NAME = #{returnBankInName},
+			PROCESS_MANAGER_USER_NAME = #{processManagerUserName},
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE
+			REFUND_CODE = #{refundCode}
+	</update>
+
+	<update id="updateRefundFinishedForItem" parameterType="saleson.shop.order.refund.domain.OrderRefund">
+		/* saleson.shop.order.refund.OrderRefundMapper.updateRefundFinishedForItem */
+		UPDATE OP_ORDER_ITEM OI
+		INNER JOIN (
+			SELECT
+				'CANCEL' AS TYPE,
+				ITEM_SEQUENCE
+			FROM OP_ORDER_CANCEL_APPLY
+			WHERE
+				REFUND_CODE = #{refundCode}
+
+			UNION
+
+			SELECT
+				'RETURN' AS TYPE,
+				ITEM_SEQUENCE
+			FROM OP_ORDER_RETURN_APPLY
+			WHERE
+				REFUND_CODE = #{refundCode}
+
+		) TARGET ON OI.ITEM_SEQUENCE = TARGET.ITEM_SEQUENCE
+		SET
+			OI.CANCEL_FLAG = 'Y',
+			OI.REFUND_STATUS = '2',
+			OI.SALES_CANCEL_DATE = <include refid="CommonMapper.datetime" />,
+			OI.CANCEL_REQUEST_FINISH_DATE = (
+				CASE WHEN TARGET.TYPE = 'CANCEL' THEN
+					<include refid="CommonMapper.datetime" />
+				ELSE
+					'00000000000000'
+				END
+			),
+			OI.RETURN_REQUEST_FINISH_DATE = (
+				CASE WHEN TARGET.TYPE = 'RETURN' THEN
+					<include refid="CommonMapper.datetime" />
+				ELSE
+					'00000000000000'
+				END
+			),
+			OI.ORDER_STATUS = (
+				CASE WHEN TARGET.TYPE = 'CANCEL' THEN
+					'75'
+				ELSE
+					'65'
+				END
+			)
+		<where>
+			ORDER_CODE = #{orderCode}
+			AND ORDER_SEQUENCE = #{orderSequence}
+		</where>
+	</update>
+
+	<delete id="deleteOrderRefundInfo" parameterType="saleson.shop.order.claimapply.domain.OrderCancelApply">
+		/* saleson.shop.order.refund.OrderRefundMapper.deleteOrderRefundInfo */
+		DELETE FROM OP_ORDER_REFUND
+		<where>
+			REFUND_CODE = #{refundCode}
+			AND ORDER_CODE = #{orderCode}
+			AND ORDER_SEQUENCE = #{orderSequence}
+			AND REFUND_STATUS_CODE = '1'
+		</where>
+	</delete>
+
+	<delete id="deleteOrderRefundInfoByReturn" parameterType="saleson.shop.order.claimapply.domain.OrderReturnApply">
+		/* saleson.shop.order.refund.OrderRefundMapper.deleteOrderRefundInfoByReturn */
+		DELETE FROM OP_ORDER_REFUND
+		<where>
+			REFUND_CODE = #{refundCode}
+			AND ORDER_CODE = #{orderCode}
+			AND ORDER_SEQUENCE = #{orderSequence}
+			AND REFUND_STATUS_CODE = '1'
+		</where>
+	</delete>
+</mapper>

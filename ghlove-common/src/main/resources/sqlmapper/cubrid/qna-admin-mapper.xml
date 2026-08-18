@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.qnaadmin.QnaAdminMapper">
+
+	<resultMap id="QnaAdminResult" type="saleson.shop.qnaadmin.domain.QnaAdmin">
+		<result property="qnaAdminId" column="QNA_ADMIN_ID" />
+		<result property="qnaGroup" column="QNA_GROUP" />
+		<result property="qnaType" column="QNA_TYPE" />
+		<result property="subject" column="SUBJECT" />
+		<result property="question" column="QUESTION" />
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="sellerId" column="SELLER_ID" />
+		<result property="sellerName" column="SELLER_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="itemId" column="ITEM_ID" />
+		<result property="orderCode" column="ORDER_CODE" />
+		<result property="answerCount" column="ANSWER_COUNT" />
+		<result property="secretFlag" column="SECRET_FLAG" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="qnaImage" column="QNA_IMAGE" />
+		<result property="locgovCode" column="LOCGOV_CODE" />
+		<result property="locgovName" column="LOCGOV_NAME" />
+	</resultMap>
+	
+	<resultMap id="QnaAdminAnswerResult" type="saleson.shop.qnaadmin.domain.QnaAdminAnswer">	
+		<result property="qnaAdminAnswerId" column="QNA_ADMIN_ANSWER_ID" />
+		<result property="qnaAdminId" column="QNA_ADMIN_ID" />
+		<result property="answer" column="ANSWER" />
+		<result property="userId" column="USER_ID" />
+		<result property="title" column="TITLE" />
+		<result property="sendSmsFlag" column="SEND_SMS_FLAG" />
+		<result property="sendMailFlag" column="SEND_MAIL_FLAG" />
+		<result property="answerDate" column="ANSWER_DATE" />
+		<result property="userNm" column="USER_NM" />
+	</resultMap>
+	
+	<resultMap id="QnaAdminAndAnswerResult" type="saleson.shop.qnaadmin.domain.QnaAdmin" extends="QnaAdminResult">
+		<result property="displayFlag" column="DISPLAY_FLAG" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="itemImage" column="ITEM_IMAGE" />
+		<result property="itemUserCode" column="ITEM_USER_CODE" />
+		<collection property="qnaAdminAnswer" resultMap="QnaAdminAnswerResult" />
+	</resultMap>
+		
+	<resultMap id="QnaAdminFileResult" type="saleson.shop.qnaadmin.domain.QnaAdminFile">
+		<result property="qnaAdminFileId" column="QNA_ADMIN_FILE_ID" />
+		<result property="qnaAdminId" column="QNA_ADMIN_ID" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileTy" column="FILE_TY" />
+		<result property="ordering" column="ORDERING" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="orgFileName" column="ORG_FILE_NAME" />
+		<result property="pathName" column="PATH_NAME" />
+	</resultMap>
+		
+	<resultMap id="QnaAdminAnswerFileResult" type="saleson.shop.qnaadmin.domain.QnaAdminAnswerFile">
+		<result property="qnaAdminAnswerFileId" column="QNA_ADMIN_ANSWER_FILE_ID" />
+		<result property="qnaAdminAnswerId" column="QNA_ADMIN_ANSWER_ID" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="fileTy" column="FILE_TY" />
+		<result property="ordering" column="ORDERING" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="orgFileName" column="ORG_FILE_NAME" />
+		<result property="pathName" column="PATH_NAME" />
+	</resultMap>
+	
+	
+	
+	<insert id="insertQnaAdmin" parameterType="saleson.shop.qnaadmin.domain.QnaAdmin">
+		INSERT INTO G_QNA_ADMIN (QNA_ADMIN_ID, QNA_GROUP, QNA_TYPE, SUBJECT, QUESTION, USER_ID, USER_NAME, EMAIL, ANSWER_COUNT, SECRET_FLAG, DISPLAY_FLAG, DATA_STATUS_CODE, USE_YN, HITS, LOCGOV_CODE, CREATED_DATE)
+		VALUES (#{qnaAdminId}, #{qnaGroup}, #{qnaType}, #{subject}, #{question}, #{userId}, #{userName}
+		<!-- , (SELECT EMAIL FROM OP_SELLER_USER WHERE USER_ID = #{userId}) -->	<!-- {email} --><!-- UserUtils.getUser() 유저 정보에 이메일 주소가 null 로 들어와서 쿼리로 임시 작성 -->
+		, IFNULL((SELECT EMAIL FROM OP_SELLER WHERE SELLER_ID = #{sellerId}), '')		<!-- 관리자가 판매자로 들어올 경우 -->
+		, #{answerCount}, #{secretFlag}, 'Y', '0', 'Y', 0, #{locgovCode}, #{createdDate})
+	</insert>
+	
+	<update id="updateQnaAdmin" parameterType="saleson.shop.qnaadmin.domain.QnaAdmin">
+		UPDATE G_QNA_ADMIN
+			SET
+				QNA_GROUP = #{qnaGroup}, 
+				SUBJECT = #{subject},
+				QUESTION = #{question},
+				DISPLAY_FLAG = 'Y'
+			WHERE QNA_ADMIN_ID = #{qnaAdminId}
+				AND DATA_STATUS_CODE = '0'
+				AND DISPLAY_FLAG = 'Y'
+	</update>
+	
+	<delete id="deleteQnaAdmin" parameterType="saleson.shop.qnaadmin.domain.QnaAdmin">
+		UPDATE G_QNA_ADMIN
+		SET
+			DATA_STATUS_CODE = '1'
+		WHERE QNA_ADMIN_ID = #{qnaAdminId}
+			AND DATA_STATUS_CODE = '0'
+			AND DISPLAY_FLAG = 'Y'
+	</delete>
+	
+	<insert id="insertQnaAdminAnswer" parameterType="saleson.shop.qnaadmin.domain.QnaAdminAnswer">
+		INSERT INTO G_QNA_ADMIN_ANSWER (QNA_ADMIN_ANSWER_ID, QNA_ADMIN_ID, ANSWER, USER_ID, TITLE, SEND_SMS_FLAG, SEND_MAIL_FLAG, DATA_STATUS_CODE, ANSWER_DATE)
+		VALUES (#{qnaAdminAnswerId}, #{qnaAdminId}, #{answer}, #{userId}, #{title}, #{sendSmsFlag}, #{sendMailFlag}, '0', #{answerDate})
+	</insert>
+	
+	<update id="updateQnaAdminAnswer" parameterType="saleson.shop.qnaadmin.domain.QnaAdminAnswer" >
+		UPDATE G_QNA_ADMIN_ANSWER SET
+			ANSWER = #{answer},
+			TITLE = #{title}, 
+			SEND_SMS_FLAG = #{sendSmsFlag},	
+			SEND_MAIL_FLAG = #{sendMailFlag}
+		WHERE 
+			QNA_ADMIN_ANSWER_ID = #{qnaAdminAnswerId}
+			AND DATA_STATUS_CODE = '0'
+	</update>
+	
+	<!-- 문의사항 QNA -->
+	<sql id="whereQnaAdmin">
+		<where>
+			AND Q.DATA_STATUS_CODE = '0'
+			AND Q.DISPLAY_FLAG = 'Y'
+
+			<if test='qnaGroup != null and qnaGroup != ""'>
+				AND Q.QNA_GROUP = #{qnaGroup}
+			</if>
+
+			<if test='qnaType != null and qnaType != ""'>
+				AND Q.QNA_TYPE = #{qnaType}
+			</if>
+			
+			<if test='itemId > 0'>	
+				AND Q.ITEM_ID = #{itemId}
+			</if>
+			
+			<if test='userId != null and userId != ""'>	
+				AND Q.USER_ID = #{userId}
+			</if>
+			<if test='searchStartDate != null and searchStartDate != ""'>
+				AND Q.CREATED_DATE <![CDATA[>=]]> TIMESTAMP(CONCAT(#{searchStartDate}, '000000'), 'yyyyMMddHHmmss') 
+			</if>
+			
+			<if test='searchEndDate != null and searchEndDate != ""'>
+				AND Q.CREATED_DATE <![CDATA[<=]]> TIMESTAMP(CONCAT(#{searchEndDate}, '235959'), 'yyyyMMddHHmmss') 
+			</if>
+			
+			<!-- <if test='sellerId > 0'>	
+				AND Q.SELLER_ID = #{sellerId}
+			</if> -->
+			
+			<if test="answerCount == 1">
+				AND Q.ANSWER_COUNT > 0
+			</if>
+			<if test="answerCount == 2">
+				AND Q.ANSWER_COUNT = 0
+			</if>
+			
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "USER_NAME"'>
+						AND Q.USER_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "LOGIN_ID"'>
+						AND LOGIN_ID LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "EMAIL"'>
+						AND Q.EMAIL LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "SUBJECT"'>
+						AND Q.SUBJECT LIKE CONCAT('%', #{query} ,  '%')					
+					</when>
+					<when test='where == "QUESTION"'>
+						AND Q.QUESTION LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "QNA_GROUP"'>
+						AND Q.QNA_GROUP = #{query}
+					</when>
+				</choose>
+			</if>
+
+			<if test="displayFlag != null and displayFlag != ''">
+				AND Q.DISPLAY_FLAG = #{displayFlag}
+			</if>
+			
+		</where>
+	</sql>
+	
+	<select id="getQnaAdminListByParam" parameterType="saleson.shop.qnaadmin.support.QnaAdminParam" resultMap="QnaAdminAndAnswerResult">
+			
+		SELECT
+			Q.*,
+			QA.*<!-- ,
+			I.ITEM_NAME,
+			I.ITEM_USER_CODE,
+			I.ITEM_IMAGE,
+			S.SELLER_NAME -->
+		FROM (
+			<include refid="CommonMapper.paginationHeader" />
+				SELECT
+					Q.*,
+					<!-- U.LOGIN_ID, -->
+					CASE WHEN SU.LOGIN_ID IS NOT NULL
+						THEN SU.LOGIN_ID
+						ELSE M.LOGIN_ID
+						END
+					AS LOGIN_ID,
+					(
+						SELECT
+							CASE 
+								WHEN LOCGOV.LOCGOV_CODE = LOCGOV.UPPER_LOCGOV_CODE 
+									THEN LOCGOV.UPPER_LOCGOV_NM
+								ELSE
+									CONCAT(LOCGOV.UPPER_LOCGOV_NM, ' ', LOCGOV.LOCGOV_NM)
+								END
+						FROM G_LOCGOV LOCGOV
+						WHERE LOCGOV.LOCGOV_CODE = SU.LOCGOV_CODE
+					) AS LOCGOV_NAME
+				FROM G_QNA_ADMIN Q
+					<!-- LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9' -->
+					LEFT JOIN OP_SELLER_USER SU ON Q.USER_ID = SU.USER_ID
+					LEFT JOIN OP_MANAGER M ON Q.USER_ID = M.USER_ID
+				
+				<where>
+					AND Q.DATA_STATUS_CODE = '0'
+					AND Q.DISPLAY_FLAG = 'Y'
+		
+					<if test='qnaGroup != null and qnaGroup != ""'>
+						AND Q.QNA_GROUP = #{qnaGroup}
+					</if>
+		
+					<if test='qnaType != null and qnaType != ""'>
+						AND Q.QNA_TYPE = #{qnaType}
+					</if>
+					
+					<if test='itemId > 0'>	
+						AND Q.ITEM_ID = #{itemId}
+					</if>
+					
+					<if test='userId != null and userId != ""'>	
+						AND Q.USER_ID = #{userId}
+					</if>
+					<if test='searchStartDate != null and searchStartDate != ""'>
+						AND Q.CREATED_DATE <![CDATA[>=]]> TIMESTAMP(CONCAT(#{searchStartDate}, '000000'), 'yyyyMMddHHmmss') 
+					</if>
+					
+					<if test='searchEndDate != null and searchEndDate != ""'>
+						AND Q.CREATED_DATE <![CDATA[<=]]> TIMESTAMP(CONCAT(#{searchEndDate}, '235959'), 'yyyyMMddHHmmss') 
+					</if>
+					
+					<!-- <if test='sellerId > 0'>	
+						AND Q.SELLER_ID = #{sellerId}
+					</if> -->
+					
+					<if test="answerCount == 1">
+						AND Q.ANSWER_COUNT > 0
+					</if>
+					<if test="answerCount == 2">
+						AND Q.ANSWER_COUNT = 0
+					</if>
+					
+					<if test='query != null and query != ""'>
+						<choose>
+							<when test='where == "USER_NAME"'>
+								AND Q.USER_NAME LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test='where == "LOGIN_ID"'>
+								AND LOGIN_ID LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test='where == "EMAIL"'>
+								AND Q.EMAIL LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test='where == "SUBJECT"'>
+								AND Q.SUBJECT LIKE CONCAT('%', #{query} ,  '%')					
+							</when>
+							<when test='where == "QUESTION"'>
+								AND Q.QUESTION LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test='where == "QNA_GROUP"'>
+								AND Q.QNA_GROUP = #{query}
+							</when>
+						</choose>
+					</if>
+		
+					<if test="displayFlag != null and displayFlag != ''">
+						AND Q.DISPLAY_FLAG = #{displayFlag}
+					</if>
+					
+					
+					<choose>
+						<when test="locgovCode != null and locgovCode != ''">
+							AND Q.LOCGOV_CODE = #{locgovCode}
+						</when>
+						<otherwise>
+							<if test="upperLocgovCode != null and upperLocgovCode != ''">
+								AND Q.LOCGOV_CODE IN (
+									SELECT LOCGOV.LOCGOV_CODE
+										FROM G_LOCGOV LOCGOV
+										WHERE LOCGOV.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+								)
+							</if>
+						</otherwise>
+					</choose>
+				</where>
+				
+				ORDER BY Q.CREATED_DATE DESC
+			<include refid="CommonMapper.paginationFooter" />
+		) Q
+		LEFT JOIN G_QNA_ADMIN_ANSWER QA ON Q.QNA_ADMIN_ID = QA.QNA_ADMIN_ID AND QA.DATA_STATUS_CODE = '0'
+
+		<!-- LEFT JOIN OP_ITEM I ON Q.ITEM_ID = I.ITEM_ID
+		LEFT JOIN OP_SELLER S ON S.SELLER_ID = Q.SELLER_ID -->
+		<!-- 상품Q&A 상품명으로 검색 2017-04-26 yulsun.yoo -->
+		<where>
+			<!-- <if test='query != null and query != ""'>
+				<if test='where == "ITEM_NAME"'>
+					AND I.ITEM_NAME LIKE CONCAT('%', #{query} , '%')
+				</if>
+			</if>
+			<if test='query != null and query != ""'>
+				<if test='where == "SUBJECT"'>
+					AND Q.SUBJECT LIKE CONCAT('%', #{query} , '%')
+				</if>
+			</if> -->
+			
+		</where>
+	</select>
+	
+	<select id="getQnaAdminListCountByParam" parameterType="saleson.shop.qnaadmin.support.QnaAdminParam" resultType="int">
+		<!-- SELECT
+			COUNT(*) AS CNT
+		FROM OP_QNA Q
+		INNER JOIN OP_USER U ON Q.USER_ID = U.USER_ID -->
+		SELECT
+			COUNT(1) AS CNT
+		FROM G_QNA_ADMIN Q
+			<!-- LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9'
+			LEFT JOIN OP_QNA_ADMIN_ANSWER QA ON Q.QNA_ADMIN_ID = QA.QNA_ADMIN_ID
+			LEFT JOIN OP_ITEM I ON Q.ITEM_ID = I.ITEM_ID -->
+		
+		<where>
+			AND Q.DATA_STATUS_CODE = '0'
+			AND Q.DISPLAY_FLAG = 'Y'
+
+			<if test='qnaGroup != null and qnaGroup != ""'>
+				AND Q.QNA_GROUP = #{qnaGroup}
+			</if>
+
+			<if test='qnaType != null and qnaType != ""'>
+				AND Q.QNA_TYPE = #{qnaType}
+			</if>
+			
+			<if test='itemId > 0'>	
+				AND Q.ITEM_ID = #{itemId}
+			</if>
+			
+			<if test='userId != null and userId != ""'>	
+				AND Q.USER_ID = #{userId}
+			</if>
+			<if test='searchStartDate != null and searchStartDate != ""'>
+				AND Q.CREATED_DATE <![CDATA[>=]]> TIMESTAMP(CONCAT(#{searchStartDate}, '000000'), 'yyyyMMddHHmmss') 
+			</if>
+			
+			<if test='searchEndDate != null and searchEndDate != ""'>
+				AND Q.CREATED_DATE <![CDATA[<=]]> TIMESTAMP(CONCAT(#{searchEndDate}, '235959'), 'yyyyMMddHHmmss') 
+			</if>
+			
+			<!-- <if test='sellerId > 0'>	
+				AND Q.SELLER_ID = #{sellerId}
+			</if> -->
+			
+			<if test="answerCount == 1">
+				AND Q.ANSWER_COUNT > 0
+			</if>
+			<if test="answerCount == 2">
+				AND Q.ANSWER_COUNT = 0
+			</if>
+			
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "USER_NAME"'>
+						AND Q.USER_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "LOGIN_ID"'>
+						AND LOGIN_ID LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "EMAIL"'>
+						AND Q.EMAIL LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "SUBJECT"'>
+						AND Q.SUBJECT LIKE CONCAT('%', #{query} ,  '%')					
+					</when>
+					<when test='where == "QUESTION"'>
+						AND Q.QUESTION LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "QNA_GROUP"'>
+						AND Q.QNA_GROUP = #{query}
+					</when>
+				</choose>
+			</if>
+
+			<if test="displayFlag != null and displayFlag != ''">
+				AND Q.DISPLAY_FLAG = #{displayFlag}
+			</if>
+			
+			<choose>
+				<when test="locgovCode != null and locgovCode != ''">
+					AND Q.LOCGOV_CODE = #{locgovCode}
+				</when>
+				<otherwise>
+					<if test="upperLocgovCode != null and upperLocgovCode != ''">
+						AND Q.LOCGOV_CODE IN (
+							SELECT LOCGOV.LOCGOV_CODE
+								FROM G_LOCGOV LOCGOV
+								WHERE LOCGOV.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+						)
+					</if>
+				</otherwise>
+			</choose>
+			
+		</where>
+		
+		<!-- 상품Q&A 상품명으로 검색 2017-04-26 yulsun.yoo -->
+		<!-- <if test='query != null and query != ""'>
+			<if test='where == "ITEM_NAME"'>
+				AND I.ITEM_NAME LIKE CONCAT('%', #{query} , '%')
+			</if>
+		</if> -->
+		
+	</select>
+	
+	<select id="getQnaAdminAnswerListByQnaAdminId" parameterType="long" resultMap="QnaAdminAnswerResult">
+		SELECT
+			QA.*
+		FROM G_QNA_ADMIN_ANSWER QA
+		WHERE QA.QNA_ADMIN_ID = #{qnaAdminId}	
+			AND DATA_STATUS_CODE = '0'	
+	</select>
+	
+	<select id="getQnaAdminAnswerByQnaAdminId" parameterType="long" resultMap="QnaAdminAnswerResult">
+		SELECT 
+			B.* <!-- , 
+			IFNULL(
+				(SELECT 
+					M.USER_NAME
+				 FROM OP_MANAGER M
+				 WHERE M.USER_ID = B.USER_ID),
+				 (SELECT 
+					S.SELLER_NAME
+				  FROM OP_SELLER S
+				  WHERE S.SELLER_ID = B.USER_ID)
+			) USER_NM -->
+		FROM G_QNA_ADMIN_ANSWER B  
+		WHERE B.QNA_ADMIN_ID = #{qnaAdminId}
+		AND DATA_STATUS_CODE = '0'
+	</select>
+	
+	
+	
+	<select id="getQnaAdminByQnaAdminId" parameterType="long" resultMap="QnaAdminAndAnswerResult">
+		SELECT
+			Q.*,
+			QA.*<!-- ,
+			I.ITEM_NAME,
+			I.ITEM_USER_CODE -->
+		FROM (
+			SELECT
+				Q.*,
+			    U.LOGIN_ID
+			FROM G_QNA_ADMIN Q
+				LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9'
+			WHERE QNA_ADMIN_ID = #{qnaAdminId}		
+		) Q
+		LEFT JOIN G_QNA_ADMIN_ANSWER QA ON Q.QNA_ADMIN_ID = QA.QNA_ADMIN_ID
+		AND Q.DATA_STATUS_CODE = '0'
+		<!-- LEFT JOIN OP_ITEM I ON Q.ITEM_ID = I.ITEM_ID -->
+	</select>
+	
+	<!-- <update id="updateQnaAdminAnswerCount" parameterType="long">
+		UPDATE OP_QNA_ADMIN_ANSWER
+		SET ANSWER_COUNT = (SELECT COUNT(*) FROM OP_QNA_ADMIN_ANSWER WHERE QNA_ADMIN_ID = #{qnaAdminId} )
+		WHERE QNA_ADMIN_ID = #{qnaAdminId}
+	</update> -->
+	
+	<!-- 지자체 문의 첨부파일 추가 -->
+	<insert id="insertQnaAdminFile" parameterType="saleson.shop.qnaadmin.domain.QnaAdminFile">
+		INSERT INTO G_QNA_ADMIN_FILE (QNA_ADMIN_FILE_ID, QNA_ADMIN_ID, FILE_NAME, FILE_TY, ORG_FILE_NAME, CREATED_DATE)
+			VALUES (#{qnaAdminFileId}, #{qnaAdminId}, #{fileName}, #{fileTy}, #{orgFileName}, #{createdDate})
+	</insert>
+	
+	<!-- 지자체 문의 첨부파일 삭제 -->
+	<delete id="deleteQnaAdminFile" parameterType="saleson.shop.qnaadmin.domain.QnaAdminFile">
+		DELETE FROM G_QNA_ADMIN_FILE
+			WHERE QNA_ADMIN_FILE_ID = #{qnaAdminFileId}
+	</delete>
+	
+	<!-- 지자체 문의 첨부파일 목록 조회 -->
+	<select id="getQnaAdminFileList" parameterType="saleson.shop.qnaadmin.domain.QnaAdmin" resultMap="QnaAdminFileResult">
+		 SELECT QNA_ADMIN_FILE_ID
+		 	, FILE_NAME
+		 	, ORG_FILE_NAME
+		 	, PATH_NAME
+		 	FROM G_QNA_ADMIN_FILE
+			WHERE QNA_ADMIN_ID = #{qnaAdminId}
+	</select>
+	
+	<!-- 지자체 문의 첨부파일 조회 -->
+	<select id="getQnaAdminFile" parameterType="long" resultMap="QnaAdminFileResult">
+		 SELECT QNA_ADMIN_FILE_ID
+		 	, FILE_NAME
+		 	, ORG_FILE_NAME
+		 	, PATH_NAME
+		 	FROM G_QNA_ADMIN_FILE
+			WHERE QNA_ADMIN_FILE_ID = #{qnaAdminFileId}
+	</select>
+	
+	<!-- 관리자 문의답변 첨부파일 추가 -->
+	<insert id="insertQnaAdminAnswerFile" parameterType="saleson.shop.qnaadmin.domain.QnaAdminAnswerFile">
+		INSERT INTO G_QNA_ADMIN_ANSWER_FILE (QNA_ADMIN_ANSWER_FILE_ID, QNA_ADMIN_ANSWER_ID, FILE_NAME, FILE_TY, ORG_FILE_NAME, CREATED_DATE)
+		VALUES (#{qnaAdminAnswerFileId}, #{qnaAdminAnswerId}, #{fileName}, #{fileTy}, #{orgFileName}, #{createdDate})
+	</insert>
+	
+	<!-- 관리자 문의답변 첨부파일 삭제 -->
+	<delete id="deleteQnaAdminAnswerFile" parameterType="saleson.shop.qnaadmin.domain.QnaAdminAnswerFile">
+		DELETE FROM G_QNA_ADMIN_ANSWER_FILE
+			WHERE QNA_ADMIN_ANSWER_FILE_ID = #{qnaAdminAnswerFileId}
+	</delete>
+	
+	<!-- 관리자 문의답변 첨부파일 목록 조회 -->
+	<select id="getQnaAdminAnswerFileList" parameterType="saleson.shop.qnaadmin.domain.QnaAdminAnswer" resultMap="QnaAdminAnswerFileResult">
+		 SELECT QNA_ADMIN_ANSWER_FILE_ID
+		 	, FILE_NAME
+		 	, ORG_FILE_NAME
+		 	, PATH_NAME
+		 	FROM G_QNA_ADMIN_ANSWER_FILE
+			WHERE QNA_ADMIN_ANSWER_ID = #{qnaAdminAnswerId}
+	</select>
+	
+	<!-- 관리자 문의답변 첨부파일 조회 -->
+	<select id="getQnaAdminAnswerFile" parameterType="long" resultMap="QnaAdminAnswerFileResult">
+		 SELECT QNA_ADMIN_ANSWER_FILE_ID
+		 	, FILE_NAME
+		 	, ORG_FILE_NAME
+		 	, PATH_NAME
+		 	FROM G_QNA_ADMIN_ANSWER_FILE
+			WHERE QNA_ADMIN_ANSWER_FILE_ID = #{qnaAdminAnswerFileId}
+	</select>
+	
+	
+	<select id="getQnaAdminAnswerByQnaAdminAnswerId" parameterType="long" resultMap="QnaAdminAnswerResult">
+		SELECT
+				*
+			FROM G_QNA_ADMIN_ANSWER
+			WHERE QNA_ADMIN_ANSWER_ID = #{qnaAdminAnswerId}
+				AND DATA_STATUS_CODE = '0'
+	</select>
+	
+	<delete id="deleteQnaAdminAnswer" parameterType="saleson.shop.qnaadmin.domain.QnaAdminAnswer">
+		UPDATE G_QNA_ADMIN_ANSWER
+		SET
+			DATA_STATUS_CODE = '1'
+		WHERE QNA_ADMIN_ANSWER_ID = #{qnaAdminAnswerId}
+			AND DATA_STATUS_CODE = '0'
+	</delete>
+	
+	
+</mapper>

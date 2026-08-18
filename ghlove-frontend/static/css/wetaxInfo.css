@@ -1,0 +1,58 @@
+.info_wrap {
+    max-width: 390px;
+    min-width: 320px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+.info_wrap .btn-box{
+    flex-direction: column;
+    align-items: center;
+}
+.info_wrap .btn-box button{
+    width: 120px;
+    margin-bottom: 16px;
+}
+.image_box {
+    width: 100%;
+}
+.image_box img{
+    width: 390px;
+}
+.mEpayNum{
+    position: absolute;
+    top: 60px;
+    left: 130px;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 10px 0px;
+    border:4px;
+    background-color:transparent !important;
+    text-align: center;
+}
+.mEpayNum:focus{
+    box-shadow: unset;
+    border: 0;
+}
+.screen_out {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 4px 6px 3px;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.16);
+}
+
+.wetaxBtn{
+    border: 1px solid transparent;
+    min-width: 300px;
+    padding: 16px 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: var(--main-color2);
+}
+.wetaxBtn img{
+    width: 100%;
+}

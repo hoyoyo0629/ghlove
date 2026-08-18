@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">시스템관리</a> &gt; <a href="">사용자 권한관리</a>
+                    </div>
+                    <h3><span>사용자 권한관리</span></h3>
+                    <div class="flex_box gap-20">
+                        <div class="board_list">
+                            <table class="board_list_table" summary="사용자 권한관리">
+                                <caption>사용자 권한관리</caption>
+                                <colgroup>
+                                    <col style="width:50px;">
+                                    <col style="width:300px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No.</th>
+                                        <th scope="col">그룹</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background:#fff;">
+                                        <td>1</td>
+                                        <td>시스템 관리자</td>
+                                    </tr>
+                                    <tr style="background:#fff;">
+                                        <td>1</td>
+                                        <td>시스템 관리자</td>
+                                    </tr>
+                                    <tr style="background:#fff;">
+                                        <td>1</td>
+                                        <td>시스템 관리자</td>
+                                    </tr>
+                                    <tr style="background:#fff;">
+                                        <td>1</td>
+                                        <td>시스템 관리자</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="btn_all btn_center">
+                                <div class="flex_box gap-08 juc-center">
+                                    <button type="button" class="btn btn-dark-gray btn-mini">저장</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="board_write half mt10">
+                            <table class="board_write_table" summary="">
+                                <colgroup>
+                                    <col style="width:150px;">
+                                    <col>
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <td class="label" valign="top" style="padding-top: 15px; font-size: 13px">메뉴권한
+                                        </td>
+                                        <td>
+                                            <div style="padding: 15px 10 15px 15px">
+                                                <p><label><input type="checkbox" class="check-all"> 전체선택</label></p>
+                                                <div id="blog-landing" class="input_wrap col-w-7"
+                                                    style="height: 100vh;">
+                                                    <div class="section">
+                                                        <div class="menu1">
+                                                            <label><input type="checkbox" class="check-all">
+                                                                환경설정</label>
+                                                        </div>
+                                                        <ul>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all">
+                                                                        기본정보설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1101"> 운영자관리</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1102"> 운영자 역할 관리</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1103"> 상점기본정보</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1104"> 접속IP관리</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1105"> ISMS관리</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all">
+                                                                        결제정보 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1201"> 결제정보 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1202"> 온라인 입금 계좌</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1203"> 카드 혜택 관리</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1204"> PG 설정</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all">
+                                                                        운영설정</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1301"> SEO 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1302"> 포인트 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1305"> 배송업체 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1315"> 출고지 / 배송비 관리 </label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1316"> 반품/교환 주소 관리</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1308"> 약관/개인정보취급방침</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1309"> 배송/반품/환불/교환 </label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1311"> 팝업관리 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1312"> 이메일 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1317"> 상품랭킹 산정기준 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1320"> UMS 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1319"> 도서산간주소 관리</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1321"> GoogleAnalytics 설정</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1323"> 임시 주문정보 설정</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all"> 시스템
+                                                                        관리</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1401"> 공통코드 관리</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1402"> 메세지 관리</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="1403"> Batch Job</label>
+                                                                </span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="section">
+                                                        <div class="menu1">
+                                                            <label><input type="checkbox" class="check-all"> UMS
+                                                                캠페인</label>
+                                                        </div>
+                                                        <ul>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all"> UMS
+                                                                        캠페인 등록</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="13101" checked="checked"> 캠페인 대상
+                                                                        조회 / 등록</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="13102" checked="checked"> 캠페인 등록
+                                                                        (전체대상)</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="13103" checked="checked"> 정기발송 등록
+                                                                        (전체대상)</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all"> UMS
+                                                                        정기발송</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="13201" checked="checked"> 정기발송
+                                                                        목록</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all"> UMS
+                                                                        캠페인 발송 내역</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="13301" checked="checked"> UMS 발송
+                                                                        내역</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="13302" checked="checked">
+                                                                        정산내역</label>
+                                                                </span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="section">
+                                                        <div class="menu1">
+                                                            <label><input type="checkbox" class="check-all"> 통계</label>
+                                                        </div>
+                                                        <ul>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all">
+                                                                        매출통계</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6201" checked="checked"> 일자별
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6202" checked="checked"> 월별
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6203" checked="checked"> 년도별
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6209" checked="checked"> 결제타입별
+                                                                        매출</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6204" checked="checked"> 회원별
+                                                                        매출</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all"> 판매
+                                                                        통계</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6301" checked="checked"> 판매자별
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6302" checked="checked"> 상품별
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6303" checked="checked"> 카테고리별
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6304" checked="checked"> 지역별
+                                                                        통계</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all">
+                                                                        방문자통계</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6101" checked="checked">
+                                                                        접속통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6102" checked="checked">
+                                                                        방문자접속경로</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all"> 로그인
+                                                                        통계</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6401" checked="checked"> 로그인
+                                                                        통계</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all">
+                                                                        GoogleAnalytics 통계</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6501" checked="checked"> 사용자
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6502" checked="checked"> 페이지
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6503" checked="checked"> 세션
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6504" checked="checked"> 유입
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6505" checked="checked"> 켐페인
+                                                                        통계</label>
+                                                                </span>
+                                                            </li>
+                                                            <li>
+                                                                <span class="menu2">
+                                                                    <label><input type="checkbox" class="check-all"> 이벤트
+                                                                        제휴 통계</label>
+                                                                </span>
+
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6601" checked="checked"> 이벤트
+                                                                        통계</label>
+                                                                </span>
+                                                                <span class="menu3">
+                                                                    <label><input type="checkbox" name="menuIds"
+                                                                            value="6602" checked="checked"> 상품 이벤트
+                                                                        통계</label>
+                                                                </span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

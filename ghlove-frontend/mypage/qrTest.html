@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>지정기부-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <!-- <link rel="stylesheet" href="/static/css/event.css"> -->
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+    <link rel="stylesheet" href="/static/css/designation.css">
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali></layout-mypage-lnb-ali>
+
+        <section class="main_contents" style="margin:50px;text-align:center;">
+        	<img class="item_img" :src="qrCodeData" alt="qr 데이터 이미지" style="width:300px;height:300px;">
+            <!-- banner Image -->
+
+
+        </section>
+        <layout-fixed-btn></layout-fixed-btn>
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                //'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali_dsg.vue'),
+                //'layout-mypage-lnb-ali': httpVueLoader('/components/layouts/mypage-lnb_ali.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue')
+            },
+            data: {
+                result: {},
+                arrList: [  {label: '최근등록순', value: 'LATEST'}
+                            , {label: '참여금액순', value: 'AMOUNT'}
+                            , {label: '모금율순', value: 'RATE'}
+                            , {label: '종료임박순', value: 'ENDING'}
+                ],
+                prjList: [
+                            /*{label: '사회적 취약계층의 지원 및 청소년 육성보호', value: '100'}
+                            , {label: '지역주민의 문화, 예술, 보건 등의 증진', value: '200'}
+                            , {label: '시민참여, 자원봉사 등 지역공동체 활성화 지원', value: '300'}
+                            , {label: '그 밖에 주민의 복리증진에 필요한 사업의 추진', value: '400'}*/
+                ],
+                prjCard: [
+                    /*{ imgUrl: '/static/images/prj01.png', donationAmount: '678,400,000', gaugeResult: 41, period: '2022-05-01 ~ 2023-12-31', status: '종료', name: "폭우가 지나간 자리, 희망이 필요합니다", locGovList: "전라남도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj02.png', donationAmount: '896,190,000', gaugeResult: 100, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "1.35kg으로 태어난 샛별이, 위탁 엄마의 걱정", locGovList: "경상북도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj03.png', donationAmount: '190,758,189,000', gaugeResult: 130, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "홀로 외롭게, 항암 치료를 견디는 경미씨", locGovList: "서울특별시", subLocGovList: "테스트구" },
+                    { imgUrl: '/static/images/prj04.png', donationAmount: '13,390,000,000', gaugeResult: 86, period: '2022-05-01 ~ 2023-12-31', status: '종료', name: "암소와 함께하는 변화의 시작, 암소 ‘해피’의 기적", locGovList: "전라남도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj05.png', donationAmount: '698,756,000,000', gaugeResult: 99, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "213시간만에 진화.. 역대 최장, 최악 산불기록한 화재 재난현장 도움의 손길을 보내주세요", locGovList: "강원특별자치도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj06.png', donationAmount: '456,148,000', gaugeResult: 53, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "거대바위 대형 낙석사고, 관심과 손길이 필요합니다.", locGovList: "경상북도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj07.png', donationAmount: '170,000', gaugeResult: 9, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "독거 어르신들께 따뜻한 겨울을!", locGovList: "서울특별시", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj08.png', donationAmount: '376,756,523,000', gaugeResult: 150, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "겨울 대비 재난형 가축전염병 차단", locGovList: "충청남도", subLocGovList: "테스트군" },*/
+                ],
+
+                swiperOption: {
+                    mainSlider: {
+                        centeredSlides: true,
+                        slidesPerView: "auto",
+                        spaceBetween: 60,
+                        autoplay: true,
+                        loop: true,
+                        pagination: {
+                            el: '.main_banner .swiper-pagination',
+                            type: "fraction",
+                        },
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+                        grabCursor: true
+                    },
+                    /*mdSlider: {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                        centerSlides: true,
+                        navigation: {
+                            nextEl: '.md_section .swiper-button-next',
+                            prevEl: '.md_section .swiper-button-prev',
+                        },
+                        breakpoints: {
+                            767: {
+                                slidesPerView: 2,
+                                spaceBetween: 16
+                            }
+                        },
+                        grabCursor: true
+                    },
+                    newSlider: {
+                        slidesPerView: 'auto',
+                        centerSlides: true
+                    },
+                    bestSlider: {
+                        slidesPerView: 'auto',
+                        resistance: true,
+                        resistanceRatio: 0,
+                        freeMode: true
+                    },*/
+                },
+                menuUrl: location.pathname,
+                representativeBanners: [],
+                AutoSlide: true,
+                sortLabel: '최근등록순',
+                sort: 'LATEST',
+                prjStatus: '',
+                bsnsType: '',
+                bsnsLabel: '사업구분 전체',
+                searchKeyword: '',
+                upperLocgovCode: '',
+                locgovCode: '',
+                prjStatusList: [],
+                totalSearchCnt: 0,
+				qrCodeData: "",
+            },
+            methods: {
+                showLoading: function (isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+                },
+                initCallFunction: function () {
+					this.getTestQrCode();
+                },
+                loadingMounted: function () {
+                    this.initCallFunction();
+                },
+				getTestQrCode: function () {
+					$s.api.getTestQrCode(
+						function (response) {
+							vm.qrCodeData = response.qrCode;
+						}
+						, function (error) {
+							let errorBoolean = true;
+						}
+					);
+				},
+				getQrData: function () {
+					return this.qrCodeData;
+				},
+            },
+            watch: {
+                prjStatus: function (val) {
+                    this.selectPrjStatus(val);
+                },
+            },
+            computed: {
+                // 차후에 메인 배너 여러개 생기면 사용할 것
+                // topBanners: function () {
+                //     return this.promotion.displayImageList;
+                // },
+                //newSwiper: function () {
+                //    return this.$refs.awesomeNewSwiper.swiper;
+                //}
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init();
+                });
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

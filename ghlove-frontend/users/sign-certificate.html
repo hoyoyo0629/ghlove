@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>로그인 > 인증서등록 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+    <!-- ali Section Style :: 이건 꼭 쓰세요:) -->
+    <link rel="stylesheet" href="/static/css/login-idse.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+
+
+            <section class="find-idpw center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        로그인
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        인증서 등록
+                    </span>
+                    <h2 class="page-title-txt">인증서 등록</h2>
+                </div>
+
+
+            <!-- 아이디 / 비밀번호 찾기 -->
+            <form @submit.prevent>
+                <div class="find-tab-area">
+                    <fieldset>
+                        <div class="form_wrap_line certificate">
+                            <div class="form-group">
+                                <p><strong>공동인증서(구 공인인증서)</strong></p>
+                            </div>
+                            <div class="line"></div>
+                            <div class="info-field-items">
+                                <label for="userId" class="flied-title">아이디</label>
+                                <span class="form-field">
+                                    <input type="text" v-model="param.loginId"
+                                        name="userId" id="userId" value="" autocomplete="off" required>
+                                </span>
+                            </div>
+                            <div class="info-field-items">
+                                <label for="userPw" class="flied-title">휴대폰번호</label>
+                                <span class="form-field">
+                                    <input type="number" v-model="param.phoneNumber"
+                                        name="userPw" id="userPw" value=""
+                                        maxlength="11"
+                                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" required>
+                                </span>
+                            </div>
+                            <div class="info-field-items">
+                                <label for="userBirth" class="flied-title">생년월일</label>
+                                <span class="form-field">
+                                    <input type="number" name="userBirth" id="userBirth"
+                                        v-model="param.birthday"
+                                        maxlength="8"
+                                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" required>
+                                    <span class="s-txt">입력 예) 20221213</span>
+                                </span>
+                            </div>
+
+                            <div class="btn-group btn-box many">
+                                <button type="button" class="blueBtn cancellation" @click="remove();">폐기</button>
+                                <button type="button" class="blueBtn cancellation" @click="canCel();">취소</button>
+                                <button type="button" class="blueBtn u-confirm" @click="doSignData()">확인</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+
+            </section>
+
+
+
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <!-- SNS 계정 연동 -->
+    <script src="/modules/crypto-js.min.js"></script>
+    <script src="/modules/hmac-sha256.min.js"></script>
+    <script src="/modules/enc-base64.min.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="/developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js" charset="utf-8"></script>
+    <script src="/static/js/sns.js"></script>
+
+<!--     <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery-1.10.2.js"></script> -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery.blockUI.js"></script>
+    <!-- <script type="text/javascript" src="/MagicLine4Web/ML4Web/js/ext/json2.js"></script> -->
+    <!-- ML4WEB JS -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/ML_Config.js"></script>
+    <!-- 간편인증 JS -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ML4Web_Config.js"></script>
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/magicline-js-api.min.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-auth': httpVueLoader('/components/layouts/auth/auth.vue')
+            },
+            data: {
+                param :{
+                    loginId: '',
+                    phoneNumber : "",
+                    birthday : "",
+                    mberDn : ""
+                }
+            },
+            methods: {
+                remove : function(){
+
+                    if(!vm.checkForm()){
+                        return false;
+                    }
+
+                    //me-053 폐기 버튼 클릭 시
+                    $s.confirm("등록된 인증서를 삭제 하시겠습니까?", function () {
+                        $s.api.postSubmitNoAuth("/api/user/signRemove", vm.param, function(response){
+                            $s.alert('폐기되었습니다.', function(){
+                                history.back(-1);
+                            });
+                        });
+                    });
+                },
+                canCel : function(){
+                    history.back(-1);
+                },
+                submit : function(){
+                    $s.api.postSubmitNoAuth("/api/user/signRegister", vm.param, function(response){
+                        $s.alert('등록되었습니다.', function(){
+                            history.back(-1);
+                        });
+                    });
+                },
+                doSignData : function() {
+
+                    if(!vm.checkForm()){
+                        return false;
+                    }
+
+                    var birthday = vm.param.birthday;
+                    vm.param.birthday = birthday.replace(/-/gi,"");
+
+                    magicline.uiapi.MakeSignData( "LOGIN", null, mlCallBack);
+                },
+                checkForm : function(){
+                    if(!vm.param.loginId){
+                        $s.alert("아이디를 입력하세요.","userId");
+                        return false;
+                    }
+
+                    if(!vm.param.phoneNumber){
+                        $s.alert("휴대폰번호를 입력하세요.","userPw");
+                        return false;
+                    }
+
+                    if(!vm.param.birthday || vm.param.birthday.length !=8){
+                        $s.alert("생년월일을 입력하세요.","userBirth");
+                        return false;
+                    }
+                    return true;
+                }
+            },
+            computed: {
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    Saleson.init();
+                });
+            }
+        });
+        window.app = vm;
+    </script>
+
+    <script>
+        // MagicLine 결과값 수신 CallBack
+        // code    : 전자서명 결과값
+        // message : 전자서명 메시지
+        function mlCallBack(code, message){
+            if(code==0){
+                var formData = {
+                    "signOrigin" : "LOGIN",
+                    "sign" : encodeURIComponent( message.encMsg ),
+                    "csCheckType" : "1",
+                    "signData" : "LOGIN"
+                }
+
+                $s.api.postSubmit('/api/magicline/signedFormRGhlove', formData,
+                    function (response){
+                        if (response.status === "OK") {
+                            if (response.result === "SUCCESS") {
+                                // 		DN		: "cn=850테스트유효001,ou=people,ou=상호연동테스트,o=Government of Korea,c=KR"
+                                // 		message : ""
+                                // 		result	: "SUCCESS"
+                                //console.log("DN", response.DN);
+                                //console.log("message", response.message);
+                                //console.log("result", response.result);
+                                vm.param.mberDn = response.DN;
+                                if (response.DN == ""){
+                                    $s.alert("서명 검증에 실패 하였습니다.");
+                                } else {
+                                    vm.submit();
+                                }
+
+                            } else {
+                                // 		DN		: ""
+                                // 		message : "서명 검증에 실패 하였습니다."
+                                // 		result	: "FALI"
+                                $s.alert(response.message);
+                            }
+                        }
+                    }, function (error) {
+                        $s.alert(error.response.data.description);
+                });
+
+            }else{
+                alert("결과값 수신에 실패하였습니다.");
+                return;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

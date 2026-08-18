@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.transfer.TransferMapper">
+
+    <!-- <select id="getTempItemImageMigTablesGroupByItemIdList" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+        SELECT
+		    ITEM_IMAGE_ID
+		    , ITEM_ID
+		    , ITEM_CODE
+		FROM TEMP_ITEM_IMAGE_MIG_TABLES
+		WHERE CREATE_DATE IS NULL
+		AND MIGRATION_YN = 'Y'
+		WHERE MIGRATION_YN = 'N'
+		<if test='item_id_list != null and item_id_list != "" and item_id_list.size !=0'>
+            AND ITEM_ID IN
+            <foreach item="list" collection="item_id_list" open="(" separator="," close=")">
+                #{list}
+            </foreach>
+        </if>
+		GROUP BY ITEM_ID
+		ORDER BY ITEM_ID ASC
+		<if test='count != null and count != ""'>
+		    LIMIT #{count}
+		</if>
+    </select> -->
+
+    <!-- <select id="getTempItemImageMigTablesByItemIdList" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+        SELECT
+		    ITEM_IMAGE_ID
+		    , ITEM_ID
+		    , IMAGE_NAME
+		    , ORDERING
+		FROM TEMP_ITEM_IMAGE_MIG_TABLES
+		WHERE ITEM_ID = #{item_id}
+		AND   MIGRATION_YN = 'N'
+		AND CREATE_DATE IS NULL
+		ORDER BY ORDERING ASC
+		ORDER BY ITEM_IMAGE_ID ASC
+		
+		-->
+	
+	
+	<select id="getTempItemImageMigTablesByItemIdList" parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+        SELECT
+		    ITEM_IMAGE_ID
+		    , ITEM_ID
+		    , IMAGE_NAME
+		    , ORDERING
+		    , ITEM_CODE
+		    , SERIAL_NUM
+		FROM TEMP_ITEM_IMAGE_MIG_TABLES
+		WHERE 1=1
+		AND   MIGRATION_YN = 'N'
+		<if test='item_id_list != null and item_id_list != "" and item_id_list.size !=0'>
+            AND ITEM_ID IN
+            <foreach item="list" collection="item_id_list" open="(" separator="," close=")">
+                #{list}
+            </foreach>
+        </if>
+		ORDER BY ITEM_IMAGE_ID ASC
+		<if test='count != null and count != ""'>
+		    LIMIT #{count}
+		</if>
+    </select>
+    
+
+    <!-- <select id="getItemCode" parameterType="String" resultType="String" >
+        SELECT
+		    ITEM_CODE
+		FROM MIG_OP_ITEM_IMAGE_MGT						OP_ITEM 을 MIG_OP_ITEM 로 변경 MIG_OP_ITEM_IMAGE_MGT
+		WHERE ITEM_ID = #{item_id}
+    </select> -->
+
+    <insert id="insertOpItemImage" parameterType="java.util.HashMap" >
+        INSERT INTO MIG_OP_ITEM_IMAGE (ITEM_IMAGE_ID, ITEM_ID, IMAGE_NAME, ORDERING, CREATED_DATE, SERIAL_NUM)			<!-- OP_ITEM_IMAGE 를 MIG_OP_ITEM_IMAGE 로 변경 -->
+        VALUES(#{item_image_id}, #{item_id}, #{image_name}, #{ordering}, DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'), #{serial_num});
+    </insert>
+
+    <update id="updateTempItemImageMigTables" parameterType="java.util.HashMap" >
+        UPDATE TEMP_ITEM_IMAGE_MIG_TABLES
+        SET CREATE_DATE = NOW()
+          <if test='image_no == "1"'>,IMAGE_PATH1 = #{image_path}</if>
+          <if test='image_no == "2"'>,IMAGE_PATH2 = #{image_path}</if>
+          <if test='image_no == "3"'>,IMAGE_PATH3 = #{image_path}</if>
+          <if test='image_no == "4"'>,IMAGE_PATH4 = #{image_path}</if>
+          , MIGRATION_YN = 'Y'		<!-- 추가 -->
+        WHERE ITEM_IMAGE_ID = #{item_image_id}
+        <!-- AND ITEM_ID = #{item_id}
+        AND ORDERING = #{ordering} -->
+    </update>
+
+    <!-- <update id="updateOpItem" parameterType="java.util.HashMap" >
+        UPDATE MIG_OP_ITEM_IMAGE_MGT					OP_ITEM 을 MIG_OP_ITEM 로 변경 MIG_OP_ITEM_IMAGE_MGT
+        SET ITEM_IMAGE = #{item_image}
+        WHERE ITEM_ID = #{item_id}
+    </update> -->
+
+
+
+
+
+    <!-- 테스트용도 -->
+    <!-- <select id="getTempItemCode" parameterType="String" resultType="String" >
+        select
+		    item_code
+		from temp_op_item
+		where item_id = #{item_id}
+    </select>
+
+	<insert id="insertTempOpItemImage" parameterType="java.util.HashMap" >
+        INSERT INTO temp_op_item_image (item_image_id, item_id, image_name, ordering, created_date)
+		VALUES((select IFNULL(max(item_image_id), 0) + 1 from temp_op_item_image), #{item_id}, #{image_name}, #{ordering}, DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'));
+	</insert>
+
+	<update id="updateTempOpItem" parameterType="java.util.HashMap" >
+		update temp_op_item
+		set item_image = #{item_image}
+		where item_id = #{item_id}
+	</update> -->
+
+
+</mapper>

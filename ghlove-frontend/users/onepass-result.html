@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="../../../../favicon.ico">
+	<title>디지털원패스 연동결과 | 고향사랑e음</title>
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+	<!-- Custom styles for this template -->
+	<link rel="stylesheet" href="/static/css/swiper.min.css">
+	<link rel="stylesheet" href="/static/css/common.css">
+	<link rel="stylesheet" href="/static/css/layout.css">
+	<link rel="stylesheet" href="/static/css/popup.css">
+	<link rel="stylesheet" href="/static/css/users.css">
+
+	<!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+<body>
+<div id="Saleson" v-cloak>
+	<section class="contents login_contents">
+		<div id="Saleson" v-cloak>
+			<form @submit.prevent="submit">
+				<input type="hidden" id="loginType" name="loginType" v-model="loginRequest.loginType">
+				<input type="hidden" id="loginId" name="loginId" v-model="loginRequest.loginId">
+			</form>
+		</div>
+	</section>
+</div>
+
+<form name="frm" method="POST">
+	<input type="hidden" name="isOnepass" />
+	<input type="hidden" name="mberCi" />
+</form>
+
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+
+<!-- SNS 계정 연동 -->
+
+
+<script src="/modules/crypto-js.min.js"></script>
+<script src="/modules/hmac-sha256.min.js"></script>
+<script src="/modules/enc-base64.min.js"></script>
+
+<script src="/modules/babel.min.js"></script>
+<script src="/modules/es6-promise.min.js"></script>
+<script src="/modules/es6-promise.auto.min.js"></script>
+<script src="/modules/axios.js"></script>
+<script src="/modules/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+
+
+<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+<script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js" charset="utf-8"></script>
+<script src="/static/js/sns.js"></script>
+
+<!-- 접속자대기 -->
+<script type="text/javascript" src="/static/js/netfunnel.js"></script>
+<script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+<script type="text/babel">
+    Vue.use(VueAwesomeSwiper);
+    var vm = new Vue({
+        el: '#Saleson',
+        components: {
+        },
+        data: {
+			loginRequest: {
+				loginType: 'ROLE_USER',
+				loginId: '',
+				password: ''
+			},
+			mberCi : '',
+			target: $s.pages.INDEX,
+        },
+        methods: {
+	        submit: function () {
+				var passParam = {};
+				passParam.loginId = vm.loginRequest.loginId;
+				passParam.passwordType = 'P';
+
+				$s.api.postSubmit('/api/user/passwordtype', passParam, function (passResponse) {
+					$s.api.onepassAuthToken(vm.loginRequest, function () {
+						$s.redirect(vm.target);
+					});
+				});
+	        },
+			onepassJoin : function (isOnepass, mberCi){
+				//debugger;
+				document.frm.isOnepass.value = isOnepass;
+				document.frm.mberCi.value = mberCi;
+				document.frm.action = "/users/onepass-join.html";
+				document.frm.submit();
+			}
+        },
+	    mounted: function() {
+            this.$nextTick(function () {
+
+	            Saleson.init();
+				if($s.config.isUseNetFunnel) {
+		           NetFunnel_Complete();
+		        }
+				$s.core.removeData('opMberCi');
+
+				var result = $s.core.getParameter("result");
+	            var loginId = $s.core.getParameter("loginId");
+	            var userKey = $s.core.getParameter("uk");
+	            var intfToken = $s.core.getParameter("iT");
+
+	            var onepassId = $s.core.getParameter("oi");
+	            var onepassEmail = $s.core.getParameter("oe");
+
+				document.cookie = "userKey=" + userKey + ";path=/";
+				document.cookie = "intfToken=" + intfToken + ";path=/";
+				document.cookie = "onepass-id=" + onepassId;
+				document.cookie = "onepass-email=" + onepassEmail;
+				//encodeURIComponent();
+				if (result == "success") {	// 디지털원패스 로그인
+					vm.loginRequest.loginId = loginId;
+					// console.log("loginId", loginId);
+					//return false;
+					this.submit();
+
+				} else if (result == "new") {	// 신규회원
+					// alert("회원정보가 없습니다. \n회원연동 페이지로 이동합니다.");
+					//return false;
+					$s.core.setData('opMberCi', $s.core.getParameter("ci"));
+					$s.redirect("/users/onepass-join.html?isOnepass=Y");
+
+				} else if (result == "logout") {	// 로그아웃
+					$s.deleteCookie("userKey");
+        			$s.deleteCookie("intfToken");
+        			$s.deleteCookie("onepass-id");
+        			$s.deleteCookie("onepass-email");
+
+					$s.logout();
+				} else {
+					$s.deleteCookie("userKey");
+        			$s.deleteCookie("intfToken");
+        			$s.deleteCookie("onepass-id");
+        			$s.deleteCookie("onepass-email");
+
+					alert("디지털원패스 연동에 실패하셨습니다.");
+					$s.redirect($s.pages.LOGIN);
+				}
+
+            });
+        }
+    });
+</script>
+
+
+</body>
+</html>
+

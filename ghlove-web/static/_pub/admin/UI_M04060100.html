@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+
+
+
+                    <div class="location">
+                        <a href="">시스템관리</a> &gt; <a href="">공통 코드관리</a>
+                    </div>
+                    <h3><span>공통코드 관리</span></h3>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- (왼쪽) CODE-TYPE 코드구분  ----------------------------------------------------- -->
+                            <div class="col-sm-3" id="dvCodeType" name="dvCodeType">
+                                <div>
+                                    <div style="text-align:right;background-color:#f8f8f8;padding:10px;">
+                                        <input id="SimpleSearch" type="text" placeholder="CodeType Filter.."
+                                            style="width:100%;">
+                                        <i>
+                                            <font>total: 29</font>
+                                        </i>
+                                    </div>
+
+                                    <ul class="list-group" id="simpleSearchList"
+                                        style="height:600px;margin:30px 0px;overflow:auto">
+                                        <li class="list-group-item">11ST_DELIVERY_COMPANY<span class="badge">22</span>
+                                        </li>
+                                        <li class="list-group-item">ALLOW_IP<span class="badge">234</span></li>
+                                        <li class="list-group-item">AUCTION_DELIVERY_COMPANY<span
+                                                class="badge">20</span></li>
+                                        <li class="list-group-item">CANCEL_REASON<span class="badge">4</span></li>
+                                        <li class="list-group-item">CJ_BANK_LIST<span class="badge">12</span></li>
+                                        <li class="list-group-item">DEFAULT_BANK_LIST<span class="badge">14</span></li>
+                                        <li class="list-group-item">EMAIL<span class="badge">3</span></li>
+                                        <li class="list-group-item">EXCHANGE_REASON<span class="badge">4</span></li>
+                                        <li class="list-group-item">FAQ_TYPE<span class="badge">6</span></li>
+                                        <li class="list-group-item">INICIS_BANK_LIST<span class="badge">14</span></li>
+                                        <li class="list-group-item">INICIS_CARD_LIST<span class="badge">24</span></li>
+                                        <li class="list-group-item">ITEM_COLOR<span class="badge">9</span></li>
+                                        <li class="list-group-item">ITEM_PRIVATE_TYPE<span class="badge">5</span></li>
+                                        <li class="list-group-item">MAIL_PWSEARCH<span class="badge">6</span></li>
+                                        <li class="list-group-item">MAIL_QNA_COMPLETE<span class="badge">8</span></li>
+                                        <li class="list-group-item">NICEPAY_BANK_LIST<span class="badge">22</span></li>
+                                        <li class="list-group-item">ORDER_PAY_TYPE<span class="badge">11</span></li>
+                                        <li class="list-group-item">ORDER_STATUS<span class="badge">9</span></li>
+                                        <li class="list-group-item">PHONE<span class="badge">4</span></li>
+                                        <li class="list-group-item">QNA_GROUP_1<span class="badge">10</span></li>
+                                        <li class="list-group-item">QNA_GROUP_2<span class="badge">5</span></li>
+                                        <li class="list-group-item">QNA_GROUP_3<span class="badge">6</span></li>
+                                        <li class="list-group-item">QNA_GROUP_4<span class="badge">4</span></li>
+                                        <li class="list-group-item">QNA_GROUP_5<span class="badge">2</span></li>
+                                        <li class="list-group-item">QNA_GROUP_6<span class="badge">1</span></li>
+                                        <li class="list-group-item">QNA_GROUPS<span class="badge">10</span></li>
+                                        <li class="list-group-item">REMITTANCE_TYPE<span class="badge">4</span></li>
+                                        <li class="list-group-item">RETURN_REASON<span class="badge">4</span></li>
+                                        <li class="list-group-item">TEL<span class="badge">18</span></li>
+                                    </ul>
+                                </div>
+                                <!-- (왼쪽) CODE-TYPE 코드구분  ----------------------------------------------------- -->
+                            </div>
+
+                            <!-- 코드 데이터  -->
+                            <div class="col-sm-9">
+                                <!-- (오른쪽) CODE-TYPE 코드구분  ----------------------------------------------------- -->
+                                <!-- 조회 부 -------------------------------------------------------------------- -->
+                                <table class="board_write_table" summary="공통코드">
+                                    <!-- 공통코드 -->
+                                    <colgroup>
+                                        <col style="width:220px;">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td class="label">검색구분</td>
+                                            <td>
+                                                <div>
+                                                    <select id="where" name="where" title="키워드선택">
+                                                        <option value="ID">코드값</option>
+                                                        <option value="LABEL">코드라벨</option>
+                                                    </select>
+                                                    <input id="query" name="query" title="검색어 입력" placeholder="Search.."
+                                                        type="text" class="three" value="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- 버튼시작 -->
+                                <div class="btn_all">
+                                    <div class="btn_right">
+                                        <div class="flex_box gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm"><span class="glyphicon glyphicon-repeat"></span>초기화</button>
+                                            <button type="submit" class="btn btn-dark-gray btn-sm"><span class="glyphicon glyphicon-search"></span> 검색</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 버튼 끝-->
+
+                                <div class="count_title mt20">
+                                    <h5>전체 : 572건 조회</h5>
+                                </div>
+
+                                <div class="board_write">
+                                    <table class="board_list_table" summary="공통코드">
+                                        <!-- 공통코드 -->
+                                        <caption>공통코드</caption>
+                                        <colgroup>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                            <col>
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">코드구분</th>
+                                                <th scope="col">코드</th>
+                                                <th scope="col">코드라벨</th>
+                                                <th scope="col">코드상세</th>
+                                                <th scope="col">정렬순서</th>
+                                                <th scope="col">사용여부</th>
+                                                <th scope="col">상위ID</th>
+                                                <th scope="col">코드값</th>
+                                                <th scope="col">확장코드</th>
+                                                <th scope="col">매핑코드</th>
+                                                <th scope="col">-</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>02</td>
+                                                <td>02</td>
+                                                <td>02</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>031</td>
+                                                <td>031</td>
+                                                <td>031</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>032</td>
+                                                <td>032</td>
+                                                <td>032</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>033</td>
+                                                <td>033</td>
+                                                <td>033</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>041</td>
+                                                <td>041</td>
+                                                <td>041</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>042</td>
+                                                <td>042</td>
+                                                <td>042</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>043</td>
+                                                <td>043</td>
+                                                <td>043</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>044</td>
+                                                <td>044</td>
+                                                <td>044</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>051</td>
+                                                <td>051</td>
+                                                <td>051</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>TEL</td>
+                                                <td>052</td>
+                                                <td>052</td>
+                                                <td>052</td>
+                                                <td></td>
+                                                <td>Y</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>
+                                                    <div class="flex_box juc-center gap-08">
+                                                        <a href="" class="btn btn-gradient btn-xs">수정</a>
+                                                        <a href="" class="delete_item btn btn-gradient btn-xs">삭제</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!--// board_write E-->
+
+                                <div class="btn_all btn_right">
+                                    <div class="flex_box">
+                                        <a href="" class="btn btn-active btn-sm"><span
+                                                class="glyphicon glyphicon-plus"></span>등록</a>
+                                    </div>
+                                </div>
+                                <div class="pagination-wrap">
+                                    <p class="pagination op-pagination">
+                                        <a href=" class=" first">&lt;&lt;</a>
+                                        <a href="" class="prev">&lt;</a>
+                                        <a href="">1</a>
+                                        <a href="">2</a>
+                                        <strong>3</strong>
+                                        <a href="">4</a>
+                                        <a href="">5</a>
+                                        <a href="">6</a>
+                                        <a href="">7</a>
+                                        <a href="">8</a>
+                                        <a href="">9</a>
+                                        <a href="">10</a>
+                                        <a href="" class="next">&gt;</a>
+                                        <a href="" class="last">&gt;&gt;</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="No-Cache">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>고객센터 > Q&amp;A > Q&amp;A 보기 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/event.css">
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/data_v.css">
+    <link rel="stylesheet" href="/static/css/research-box.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-customer-lnb-ali :menu-url="page.menuUrl"></layout-customer-lnb-ali>
+
+
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        고객센터
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        Q&amp;A
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        Q&amp;A 보기
+                    </span>
+                    <h2 class="page-title-txt">Q&amp;A 보기</h2>
+                </div>
+            </section>
+            <section id="contents">
+                <div class="contents-wrap">
+                    <div class="center">
+                        <div class="s-contents list-page-wrapper">
+                            <div class="list-page-area">
+                                <div class="list-page-body">
+                                    <div class="page-title">{{ result.qnaDetailType == 'A' ? 'A.' : '' }} {{
+                                        unescapeHtml(result.subject) }}</div>
+                                    <div class="page-info">
+                                        <div class="page-info-list">
+                                            <div class="writer">{{ result.qnaDetailType == 'A' ? '관리자' : result.userName
+                                                }}</div>
+                                            <div class="date-created">{{ result.createdDate }}</div>
+                                            <div class="views">조회 {{ result.hits }}</div>
+                                        </div>
+                                        <button type="button" class="share-con pointGray" @click="clip">
+                                            <img src="/static/images/icon/cli-icon_share-con.png" alt=""> URL 복사
+                                        </button>
+                                    </div>
+                                    <div class="page-contents" style="white-space:pre-wrap;">{{
+                                        unescapeHtml(result.question) }}</div>
+                                    <div class="page-file-list" v-if="isFileUse">
+                                        <div class="file-list-label"><img
+                                                src="/static/images/icon/cli-icon_file-list.png" alt="첨부자료"> 첨부자료</div>
+                                        <div class="file-list-title">
+                                            <span v-for="(data, index) in result.fileList">
+                                                <a href="javascript:void(0);" class="downloadFn"
+                                                    @click="fileDownload(data.qnaFileId, data.qnaDetailType, data.orgFileName);">{{
+                                                    data.orgFileName }}</a><br />
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <nav class="prev-next-box">
+                                        <a href="javascript:void(0);" class="prev"
+                                            @click="goToDetail('P', result.prevInfo)">
+                                            <strong class="main-c1">＜</strong>
+                                            <span class="nab-label">이전글 보기</span>
+                                            <span class="target-title" v-if="!result.prevInfo.isNoData">{{
+                                                result.prevInfo.qnaSecretFlag == 'Y' ? '비밀글입니다.' : unescapeHtml(result.prevInfo.subject) }}</span>
+                                            <span class="target-title" v-else>이전글이 존재하지 않습니다.</span>
+                                        </a>
+                                        <span class="col-line"></span>
+                                        <a href="javascript:void(0);" class="next"
+                                            @click="goToDetail('N', result.nextInfo)">
+                                            <span class="target-title" v-if="!result.nextInfo.isNoData">{{
+                                                result.nextInfo.qnaSecretFlag == 'Y' ? '비밀글입니다.' : unescapeHtml(result.nextInfo.subject) }}</span>
+                                            <span class="target-title" v-else>다음글이 존재하지 않습니다.</span>
+                                            <span class="nab-label">다음글 보기</span>
+                                            <strong class="main-c1">＞</strong>
+                                        </a>
+                                    </nav>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- 버튼그룹 -->
+                        <div class="btn-box many">
+                            <button type="button" class="blueBtn cancellation" @click="deleteQna()" v-if="isBtnShow">
+                                삭제<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt=""></span>
+                            </button>
+                            <button type="button" class="blueBtn u-confirm" @click="goToModify()" v-if="isBtnShow">
+                                수정<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt=""></span>
+                            </button>
+                            <button type="button" class="blueBtn u-confirm last-btn" @click="goToList()">
+                                목록<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt=""></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+
+                //'layout-customer-lnb-ali': httpVueLoader('/components/layouts/customer-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue') //pagination
+            },
+            data: {
+                result: {
+                    subject: '',
+                    userName: '',
+                    createdDate: '',
+                    hits: 0,
+                    question: '',
+                    qnaDetailType: '',
+                    prevInfo: {
+                        qnaId: 0,
+                        qnaAnswerId: 0,
+                        subject: '',
+                        isNoData: true
+                    },
+                    nextInfo: {
+                        qnaId: 0,
+                        qnaAnswerId: 0,
+                        subject: '',
+                        isNoData: true
+                    },
+                    fileList: []
+                },
+                param: {
+                    qnaId: 0,
+                    qnaAnswerId: 0
+                },
+                page: {
+                    menuUrl: "/qna/qna-open.html"
+                },
+                isBtnShow: false,
+                isFileUse: true
+            },
+            methods: {
+                init: function () {
+                    var qnaId = $s.core.getParameter('qnaId');
+                    var qnaAnswerId = $s.core.getParameter('qnaAnswerId');
+                    history.replaceState({}, null, location.pathname + "?qnaId=" + qnaId + "&qnaAnswerId=" + qnaAnswerId);
+
+                    vm.param.qnaId = qnaId;
+                    vm.param.qnaAnswerId = qnaAnswerId;
+                    vm.submit();
+                    vm.addHits();
+                },
+                submit: function () {
+                    $s.api.getQnaOpenDetail(vm.param,
+                        function (response) {
+                            if (!response || !response.detail || !response.detail.qnaId) {
+                                vm.goToList();
+                                return false;
+                            }
+
+                            vm.result.subject = response.detail.subject;
+                            vm.result.userName = response.detail.userName;
+                            vm.result.createdDate = response.detail.createdDate;
+                            vm.result.hits = response.detail.hits;
+                            vm.result.question = response.detail.question;
+                            vm.result.qnaDetailType = response.detail.qnaDetailType;
+                            vm.result.fileList = response.fileList;
+
+                            if (response.detail.nextQnaInfo) {
+                                var nextQnaInfoArr = response.detail.nextQnaInfo.split('|');
+
+                                if (nextQnaInfoArr.length == 4) {
+                                    vm.result.nextInfo.qnaId = parseInt(nextQnaInfoArr[0]);
+                                    vm.result.nextInfo.qnaAnswerId = parseInt(nextQnaInfoArr[1]);
+                                    vm.result.nextInfo.subject = nextQnaInfoArr[2];
+                                    vm.result.nextInfo.isNoData = false;
+                                    vm.result.nextInfo.qnaSecretFlag = nextQnaInfoArr[3];
+                                }
+                            }
+
+                            if (response.detail.prevQnaInfo) {
+                                var prevQnaInfoArr = response.detail.prevQnaInfo.split('|');
+
+                                if (prevQnaInfoArr.length == 4) {
+                                    vm.result.prevInfo.qnaId = parseInt(prevQnaInfoArr[0]);
+                                    vm.result.prevInfo.qnaAnswerId = parseInt(prevQnaInfoArr[1]);
+                                    vm.result.prevInfo.subject = prevQnaInfoArr[2];
+                                    vm.result.prevInfo.isNoData = false;
+                                    vm.result.prevInfo.qnaSecretFlag = prevQnaInfoArr[3];
+                                }
+                            }
+
+                            // 작성자&문의글&답변이 없으면 수정, 삭제 가능
+                            if (response.writerFlag == 'Y' && response.detail.qnaDetailType == 'Q'
+                                && response.detail.answerCount == 0) {
+                                vm.isBtnShow = true;
+                            }
+                        }, function(error){
+                            $s.alert(error.response.data.description, function (response) {
+                                location.href = "/qna/qna-open.html";
+                            });
+                        }
+                    );
+                },
+                addHits: function () {
+                    $s.api.updateQnaOpenHits(vm.param,
+                        function (response) { }
+                    );
+                },
+                goToDetail: function (type, detailInfo) {
+                    if (detailInfo.isNoData) {
+                        var typeTxt = (type == 'N') ? "다음글" : "이전글";
+                        $s.alert(typeTxt + "이 존재하지 않습니다.");
+                        return false;
+                    }
+
+                    location.href = "/qna/qna-detail.html?qnaId=" + detailInfo.qnaId + "&qnaAnswerId=" + detailInfo.qnaAnswerId;
+                },
+                clip: function () {
+                    var textarea = document.createElement("textarea");
+                    document.body.appendChild(textarea);
+                    textarea.value = window.document.location.href;
+                    textarea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textarea);
+                    $s.alert("URL이 복사되었습니다.");
+                },
+                fileDownload: function (qnaFileId, qnaDetailType, orgFileName) {
+                    $s.api.getQnaOpenFileDownload({ "qnaFileId": qnaFileId, "qnaDetailType": qnaDetailType },
+                        function (response) {
+                            const link = document.createElement("a");
+                            link.href = window.URL.createObjectURL(new Blob([response]));
+                            link.setAttribute("download", orgFileName);
+                            link.style.cssText = "display:none";
+                            document.body.appendChild(link);
+                            link.click();
+                            link.remove();
+                        },
+                        function (response) {
+                            $s.alert("첨부자료를 다운로드 할 수 없습니다.");
+                        }
+                    );
+                },
+                deleteQna: function () {
+                    $s.confirm("해당 게시물을 삭제 하시겠습니까?", function () {
+                        $s.api.deleteQnaOpen({ "qnaId": vm.param.qnaId },
+                            function (response) {
+                                $s.alert("삭제되었습니다.", function () {
+                                    vm.goToList();
+                                });
+                            },
+                            function (error) {
+                                $s.alert(error.response.data.message);
+                            }
+                        );
+                    });
+                },
+                // *************** ali-add methods
+                goToMain: function () {
+                    location.href = "UI_P02010.html"
+                },
+                goToList: function () {
+                    location.href = "/qna/qna-open.html";
+                },
+                goToModify: function () {
+                    location.href = "/qna/qna-edit.html?qnaId=" + vm.param.qnaId + "&qnaAnswerId=" + vm.param.qnaAnswerId;
+                },
+                closePopupLayer: function () {
+                    $(".black-bg").removeClass("show");
+                },
+                modalLayer: function (e) {
+                    $(".black-bg").addClass("show");
+                },
+                slideNoticeBody: function (index) {
+                    var obj = $(".notice-body").eq(index);
+                    $(obj).slideToggle();
+                },
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init({ loginPage: true });
+                    //Saleson.init();
+                    vm.init();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

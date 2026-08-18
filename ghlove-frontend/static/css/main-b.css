@@ -1,0 +1,808 @@
+.de-img {
+  display: inline-block;
+}
+
+.mo-img {
+  display: none;
+}
+
+/* 가이드 다운로드 배너 */
+.top-banner {
+  text-align: center;
+  background-color: var(--gray2);
+  cursor: pointer;
+  color: #fff;
+  width: 100%;
+}
+
+.top-banner:hover {
+  background-color: var(--sub-color1);
+}
+
+.top-banner .center {
+  display: block;
+  width: 600px;
+  height: 70px;
+  padding: 28px 0 20px;
+  background-image: url('/static/images/guide-download.png');
+  background-size: auto 70px;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+}
+
+.top-banner .text_box {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.top-banner .text_box strong{
+  font-family: var(--fs-kangwonGyoT), 'Noto Sans KR', sans-serif;
+  font-size: 22px;
+  margin-right: 20px;
+}
+.top-banner .image_box {
+  position: absolute;
+  right: 28px;
+  top: 10px;
+  width: 38px;
+  /* transition: top 0.3s, right 0.3s; */
+  animation: upDown 0.3s ease-in-out infinite alternate;
+}
+
+.top-banner:hover .image_box {
+  animation-play-state: paused;
+}
+
+@keyframes upDown {
+  0% {
+    top: 7px;
+  }
+
+  100% {
+    top: 13px;
+  }
+}
+
+@keyframes upDownMobile {
+  0% {
+    top: 7px;
+  }
+
+  100% {
+    top: 13px;
+  }
+}
+
+.top-banner h3 {
+  font-family: var(--fs-kangwonGyoT), 'Noto Sans KR', sans-serif;
+  font-size: 22px;
+  margin-right: 20px;
+  /* border: 1px solid red;
+  line-height: 1em; */
+}
+
+.top-banner span.text {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+section .center img {
+  max-width: 100%;
+}
+
+section .center img.m-img {
+  display: none;
+}
+
+
+/* 메인 배너 */
+.main_banner_wrap {
+  position: relative;
+}
+
+section.main-banner {
+  /* background-image: url('/static/images/cli-main_bg.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  background-position: center bottom;
+  height: 390px; */
+  background-color: #002667;
+  padding-bottom: 60px;
+}
+
+section.main-banner .center {
+  min-height: 130px;
+  height: inherit;
+}
+
+.main_banner .swiper-control {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: self-end;
+  gap: 6px;
+}
+
+.main_banner .stop_resume,
+.main_banner .swiper-pagination {
+  background-color: var(--main-color1);
+  color: #fff;
+  border-radius: 40px;
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-height: 36px;
+  font-weight: 600;
+  line-height: 1em;
+}
+
+.main_banner .swiper-pagination {
+  position: unset;
+  font-size: 14px;
+}
+
+.main_banner .stop_resume {
+  padding: 9px;
+  line-height: 1px;
+}
+
+.main_banner .stop_resume img {
+  max-width: unset;
+}
+
+.main_banner .swiper-button-next,
+.main_banner .swiper-button-prev {
+    top: 56%;
+    background-color: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 60px;
+    background-size: 10px 18px;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.16);
+}
+
+
+.main_banner .swiper-button-prev {
+    left: -30px;
+    background-image: url('/static/images/icon/paging_btn_prev.png');
+}
+.main_banner .swiper-button-next {
+  right: -30px;
+  background-image: url('/static/images/icon/paging_btn_next.png');
+}
+
+.overlap {
+  background-image: none;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+
+}
+
+.overlap .overlap_wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.overlap .overlap_wrap .img_txt img {
+  min-width: 360px;
+}
+
+.overlap .banner_btn {
+  position: absolute;
+  top: 14px;
+  right: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  line-height: 1.5em;
+  font-weight: 500;
+  padding: 6px;
+  border-radius: 4px;
+  box-shadow: none;
+  /* border: 2px solid transparent; */
+}
+
+.overlap .banner_btn:hover {
+  /* border: 2px solid white; */
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 기부절차안내 바로가기 */
+section.quick_donation_guid {
+  background: linear-gradient(transparent 50%, #F9F9F9 50%, #F9F9F9 100%);
+}
+
+section.quick_donation_guid .center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 110px;
+  margin-top: -60px;
+  position: relative;
+  z-index: 998;
+}
+
+section.quick_donation_guid .center a {
+  padding: 20px 8%;
+  height: 110px;
+  width: 100%;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+section.quick_donation_guid .center a img {
+  height: 100%;
+  object-fit: contain;
+}
+
+section.quick_donation_guid .center a.offline {
+  background: var(--main-color2);
+  border-radius: 10px 0 0 10px;
+}
+
+section.quick_donation_guid .center a.online {
+  background: var(--gray5);
+  border: 1px solid var(--gray4);
+  border-radius: 0 10px 10px 0;
+}
+
+
+/* 기부 답례품 소개 - 링크 */
+section.donate-buy {
+  /* height: 360px; */
+  padding: 70px 0;
+  box-sizing: content-box;
+  background-color: #f9f9f9;
+  background-image: url('/static/images/donate-buy.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: auto 83%;
+}
+
+section.donate-buy .container {
+  display: flex;
+  justify-content: space-between;
+  height: inherit;
+
+  max-width: 1160px;
+  padding: 0 60px;
+}
+
+section.donate-buy .link-box {
+  width: 225px;
+}
+
+section.donate-buy .link-box a {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--margin-padding-8)*5) calc(var(--margin-padding-8)*4);
+  border: 1px solid var(--gray4);
+  border-radius: 10px 0 10px 10px;
+  background-color: rgba(255, 255, 255, 0.6);
+  position: relative;
+  top: 0;
+  font-weight: 500;
+  transition: border-bottom 0.3s, top 0.2s ease-in-out;
+  height: 320px;
+}
+
+section.donate-buy .link-box a:hover {
+  border-color: var(--main-color2);
+  box-shadow: 0 0 0 1px var(--main-color2) inset;
+  top: -10px;
+}
+
+section.donate-buy .donate.link-box>a {
+  border-radius: 10px 10px 10px 0px;
+}
+
+section.donate-buy .buy.link-box>a {
+  border-radius: 10px 0 10px 10px;
+}
+
+section.donate-buy .link-box>a span.txt-wrap {
+  display: flex;
+  flex-direction: column
+}
+
+section.donate-buy .link-box>a span.s-txt {
+  color: var(--main-color2);
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+section.donate-buy .link-box>a .round-illustBtn {
+  flex: 0 0 auto;
+}
+
+section.donate-buy .link-box>a span.title-txt {
+  color: var(--gray2);
+  font-size: 32px;
+  margin-bottom: calc(var(--margin-padding-8)*5);
+  font-weight: 700;
+  line-height: 1.25em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  letter-spacing: -1px;
+}
+
+section.donate-buy .link-box>a span.round-illustBtn {
+  padding: 13px 0;
+  display: inline-block;
+}
+
+
+section.donate-buy .link-box>a:hover .round-illustBtn span {
+  width: 30px;
+  height: 30px;
+}
+
+section.donate-buy .link-box>a:hover .round-illustBtn span::after {
+  transform: scale(1, 1);
+}
+
+
+/* 답례품 */
+section.store {
+  padding: 60px 0 100px;
+}
+
+section.store .s_title h2 {
+  padding-left: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+section.store .s_title p {
+  font-size: 18px;
+  color: var(--gray3);
+}
+
+section.store a.round-illustBtn_s {
+  line-height: 20px;
+}
+
+section.store .store-card .store-card-list {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+section.store .store-card .store-card-list button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
+}
+
+section.store .store-card .store-card-list .store-items {
+  max-width: 200px;
+  width: 100%;
+  height: 200px;
+  border: 1px solid var(--gray4);
+  background-color: var(--gray5);
+  border-radius: 50px;
+  background-position: center 7px;
+  background-repeat: no-repeat;
+  background-size: 200px auto;
+  transition: background-color 0.1s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+}
+
+section.store .store-card .store-items:hover {
+  border: 1px solid var(--main-color1);
+  background-color: var(--sub-color1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+
+}
+
+section.store .store-card .store-items.gift1 {
+  background-image: url('/static/images/cli-icon_main-gift1-01.png');
+}
+
+section.store .store-card .store-items.gift1:hover {
+  background-image: url('/static/images/cli-icon_main-gift1-02.png');
+}
+
+section.store .store-card .store-items.gift2 {
+  background-image: url('/static/images/cli-icon_main-gift2-01.png');
+}
+
+section.store .store-card .store-items.gift2:hover {
+  background-image: url('/static/images/cli-icon_main-gift2-02.png');
+}
+
+section.store .store-card .store-items.gift3 {
+  background-image: url('/static/images/cli-icon_main-gift3-01.png');
+}
+
+section.store .store-card .store-items.gift3:hover {
+  background-image: url('/static/images/cli-icon_main-gift3-02.png');
+}
+
+section.store .store-card .store-items.gift4 {
+  background-image: url('/static/images/cli-icon_main-gift4-01.png');
+}
+
+section.store .store-card .store-items.gift4:hover {
+  background-image: url('/static/images/cli-icon_main-gift4-02.png');
+}
+
+section.store .store-card .store-items.gift5 {
+  background-image: url('/static/images/cli-icon_main-gift5-01.png');
+}
+
+section.store .store-card .store-items.gift5:hover {
+  background-image: url('/static/images/cli-icon_main-gift5-02.png');
+}
+
+section.store .store-card .store-items.gift6 {
+  background-image: url('/static/images/cli-icon_main-gift6-01.png');
+}
+
+section.store .store-card .store-items.gift6:hover {
+  background-image: url('/static/images/cli-icon_main-gift6-02.png');
+}
+
+
+
+/* 하단 배너*/
+section.slogan {
+  width: 100%;
+  background-color: var(--main-color2);
+  text-align: center;
+
+}
+
+section.slogan .d-img {
+  display: inline-block;
+  max-width: 1080px;
+  width: 100%;
+  height: 400px;
+  object-fit:cover;
+
+}
+section.slogan .m-img {
+  display: none;
+}
+
+
+@media screen and (max-width:1280px) {
+  section.main-banner .center img.d-img {
+    width: 35%;
+  }
+}
+
+@media screen and (max-width:1030px) {
+
+
+  section.main-banner .center {
+    width: 100%;
+    margin: 0;
+  }
+
+  section.main-banner .center img.d-img {
+    width: 40%;
+    display: block;
+  }
+
+
+  section.store .store-card .store-card-list {
+    flex-wrap: wrap;
+  }
+
+  section.store .store-card .store-card-list .store-items {
+    width: 30.333%;
+    margin: 1.5%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  }
+
+
+}
+
+@media screen and (max-width:768px) {
+  .de-img {
+    display: none;
+  }
+
+  .mo-img {
+    display: inline-block;
+  }
+
+
+  section.main-banner {
+    padding-bottom: 0;
+  }
+
+  section.main-banner .center {
+    width: 100%;
+  }
+
+  section.main-banner .center .swiper-slide {
+    /* height: 430px; */
+    text-align: center;
+  }
+
+  section.main-banner .center .swiper-slide img {
+    height: 430px;
+    object-fit: cover;
+  }
+
+  section .center img.m-img {
+    display: block;
+  }
+
+  section.main-banner .center img.d-img {
+    display: none;
+  }
+
+  .main_banner .swiper-control {
+    bottom: 60px
+  }
+
+  .main_banner .stop_resume,
+  .main_banner .swiper-pagination {
+    padding: 7px 17px;
+  }
+
+  .main_banner .swiper-pagination {
+    font-size: 12px;
+  }
+
+  .main_banner .stop_resume {
+    padding: 5px;
+    line-height: 1px;
+  }
+
+
+
+
+  /* 기부절차안내 바로가기 */
+  section.quick_donation_guid .center {
+    /*margin-top: -50px;*/
+    margin-top: -20px;
+  }
+
+  section.quick_donation_guid .center a {
+    padding: 10px 20px;
+  }
+
+  section.quick_donation_guid .center a img {
+    height: 124px;
+  }
+
+
+  /* 가이드 다운로드 */
+  .top-banner .center {
+    min-width: unset;
+    width: 350px;
+    height: unset;
+  }
+
+  .top-banner .text_box {
+    flex-direction: column;
+    padding-left: 10px;
+  }
+
+  .top-banner .image_box {
+    animation: upDownMobile 0.3s ease-in-out infinite alternate;
+  }
+
+  @keyframes upDownMobile {
+    0% {
+      top: 20px;
+    }
+
+    100% {
+      top: 25px;
+    }
+  }
+
+  section.donate-buy {
+    height: 420px;
+    padding: 80px 0 30px;
+    background-size: 90%;
+    background-position: center 275px;
+    background-image: url('/static/images/m_donate-buy2.png');
+  }
+
+  section.donate-buy .container {
+    flex-direction: column;
+    padding: 0;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+
+  section.donate-buy .link-box {
+    width: 100%;
+    /* text-align: left; */
+  }
+
+  section.donate-buy .link-box a {
+    flex-direction: row;
+    align-items: flex-end;
+    height: unset;
+    padding: 20px 20px 28px;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  section.donate-buy .donate.link-box>a,
+  section.donate-buy .buy.link-box>a {
+    border-radius: 10px;
+  }
+
+  section.donate-buy .link-box>a span.txt-wrap {
+    margin-right: 10%;
+  }
+
+  section.donate-buy .link-box>a span.title-txt {
+    margin-bottom: 0;
+    font-size: 20px;
+    flex-direction: row;
+  }
+
+  section.donate-buy .buy.link-box>a {
+    margin: 0;
+  }
+
+  section.donate-buy .link-box>a span.s-txt {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  section.donate-buy .link-box>a:hover .round-illustBtn span {
+    width: 18px;
+    height: 27px;
+  }
+
+  section.donate-buy .link-box>a:hover .round-illustBtn span::after {
+    transform: scale(1, 1);
+  }
+
+
+  section .s_title {
+    margin-bottom: calc(var(--margin-padding-8)*4);
+  }
+
+  section .s_title h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+  }
+
+  section.store a.round-illustBtn_s {
+    line-height: 34px;
+  }
+
+  section.store .s_title p {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  section.store .store-card .store-card-list {
+    gap: unset;
+  }
+
+  section.store .store-card .store-card-list .store-items {
+    border-radius: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
+    max-width: 100px;
+    height: 110px;
+    background-size: contain;
+    background-position: unset;
+
+  }
+
+  section.store .store-card .store-items.gift1 {
+    background-image: url('/static/images/main-gift1-01m.png');
+  }
+
+  section.store .store-card .store-items.gift1:hover {
+    background-image: url('/static/images/main-gift1-02m.png');
+  }
+
+  section.store .store-card .store-items.gift2 {
+    background-image: url('/static/images/main-gift2-01m.png');
+  }
+
+  section.store .store-card .store-items.gift2:hover {
+    background-image: url('/static/images/main-gift2-02m.png');
+  }
+
+  section.store .store-card .store-items.gift3 {
+    background-image: url('/static/images/main-gift3-01m.png');
+  }
+
+  section.store .store-card .store-items.gift3:hover {
+    background-image: url('/static/images/main-gift3-02m.png');
+  }
+
+  section.store .store-card .store-items.gift4 {
+    background-image: url('/static/images/main-gift4-01m.png');
+  }
+
+  section.store .store-card .store-items.gift4:hover {
+    background-image: url('/static/images/main-gift4-02m.png');
+  }
+
+  section.store .store-card .store-items.gift5 {
+    background-image: url('/static/images/main-gift5-01m.png');
+  }
+
+  section.store .store-card .store-items.gift5:hover {
+    background-image: url('/static/images/main-gift5-02m.png');
+  }
+
+  section.store .store-card .store-items.gift6 {
+    background-image: url('/static/images/main-gift6-01m.png');
+  }
+
+  section.store .store-card .store-items.gift6:hover {
+    background-image: url('/static/images/main-gift6-02m.png');
+  }
+  section.slogan{
+    /* background-image: url('/static/images/slogan-m.png'); */
+
+  }
+
+
+  section.slogan .d-img {
+    display: none;
+  }
+
+  section.slogan .m-img {
+    display: block;
+/*        height: 437px;*/
+    object-fit:cover;
+    width: 100%;
+  }
+
+}
+
+@media screen and (max-width:460px) {
+
+  section.donate-buy {
+    /*height: 380px;*/
+    background-image: url('/static/images/m_donate-buy3.png');
+  }
+
+  /* section.donate-buy .link-box>a .round-illustBtn {
+    transform: scale(0.70);
+    transform-origin: bottom right;
+  } */
+
+  section.donate-buy .link-box>a span.title-txt {
+    margin-bottom: 0;
+  }
+
+  section.store {
+    padding: 60px 0;
+  }
+
+  section .s_title h2 {}
+
+  section .s_title {
+    margin-bottom: 0px;
+  }
+
+  section.store .s_title p {
+    padding: 0 10%;
+    line-height: 1.5em;
+  }
+
+}

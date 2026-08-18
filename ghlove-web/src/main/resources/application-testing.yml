@@ -1,0 +1,106 @@
+server:
+  port: 8080
+
+spring:
+  application.name: ghlove-web
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration
+
+saleson:
+  root: "/home/ghlove"
+  storage-root: ${saleson.root}/backoffice/static
+  static-root: ${saleson.root}/backoffice/static
+  file-root: ${saleson.root}
+  datasource:
+    jndi-flag: true
+    jndi-name: "jboss/cubridDS"
+  # 서비스 DOMAIN
+  URL:
+    shoppingmall: http://152.99.104.8
+    bo: http://152.99.104.8
+    api: http://152.99.104.8
+    frontend: http://152.99.104.8
+    oz: http://152.99.104.8
+  # API Allow Origin
+  # '*' or 'http://front.saleson.com' or 'http://front1.saleson.com,http://front2.saleson.com'
+  api:
+    crossorigins: http://localhost:3000
+  license:
+    clientid: icraft
+    creation.date: 20230510095913
+    hash.key: 3ef4d7bc45f69defb175e66b7e2f99f0ec7fa826cb9ec2d552a9e3a872b21c70
+    file: ${saleson.license-root}/license/icraft-20230510095913.license
+    key: ${saleson.license-root}/license/icraft-20230510095913.key
+    
+# Log DataSource
+log:
+  datasource:
+    jndi-flag: true
+    jndi-name: "jboss/cubridDS"
+        
+# Logging Level
+logging:
+  level:
+    org.springframework.web: INFO
+    com.onlinepowers: INFO
+    saleson: INFO
+    jdbc:
+      sqltiming: DEBUG
+      resultsettable: INFO
+      
+#######################
+# TotalSearch Engine
+#######################
+totalsearch-server:
+  engine-url: 192.168.84.58:7577
+  ksf-url: 192.168.84.58:7614
+  
+magicline:
+  prop-path: ${saleson.root}/magicline/config/magicline.properties
+  conf-path: ${saleson.root}/magicline/config/
+  
+ems:
+  host: http://192.168.84.11:8682/api/sendMail.do
+  send:
+    username: 고향사랑e음
+    email: webmatser@ilovegohyang.go.kr
+    
+sci:
+  srvNo: "001001"   
+  
+# Outside Connection
+outconn:
+  # administration net
+  admin-addressinfo-url: http://192.168.84.55:4142/api/mopas/rsgstadresinfo
+  # juso search api
+  juso-api:
+    url: http://www.juso.go.kr/addrlink/addrLinkApiJsonp.do
+    key: U01TX0FVVEgyMDIyMTEyNTE0MTUzMTExMzI1OTc=
+  # korea receipt api
+  korea-api:
+    loginIp: 152.99.104.11
+    loginUrl: https://192.168.239.18:4141/jwtLoginAction.do
+    actionUrl: https://192.168.239.18:4141/jwtAction.do?actionId=ATESFACA001C11
+    key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/RzW8TWg9hB7T1BWFSrwAASoNt/tBjTYWojvo3gB5MRjx+TI+tI7BqmhhxjAPv3mDNjBgeCW/J5UsCdYOt/dDyYyGiXjHSTE+JsX6Z1i3soDJJzwGnYLbRpbAb9mUi75T0Imwa4P4TLMHFzjw7r57MvJd26RKJnJe0IPGBK0CcQIDAQAB
+    id : ilovegohyang
+    password : rhgid\#rlqn
+  # seoul buga regist
+  seoul-buga-url: http://192.168.84.55:4142/api/seoul/epaymentno
+  # seoul sunap search
+  seoul-sunap-url: http://192.168.84.55:4141/api/etax/getSunapStatus
+  # contry(now) buga regist
+  contry-now-buga-url: http://192.168.84.55:4142/api/curgnr/epaymentno
+  # contry(now) sunap search
+  contry-now-sunap-url: http://192.168.84.55:4142/api/curgnr/receipt    
+
+######금융인증서#######
+fincert:
+  url: https://certapi.yeskey.or.kr/oauth/2.0/api/token
+  ucpidUrl: https://certapi.yeskey.or.kr/v1/ucpid/ucpid-info
+  client-id: ea1525f5-f619-4398-abc2-2c6d9581550d
+  client-secret: 8a6aa6d9-47d9-4999-9dd5-8f4a36d1b526
+  scope: ucpid
+  grant-type: client_credentials
+  server-id: server_ilovegohyang
+  cp-code: Y30000001301
+  manager-use: N

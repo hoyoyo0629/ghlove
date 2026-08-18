@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>제2회 고향사랑의 날 기념식과 박람회 : 고향사랑e음 기부제 소식</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type="text/babel">
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+    <style>
+      .newsletter_detail_page .detail_contents_area .img_wrap{margin-bottom:0;width:100%;}
+      @media screen and (max-width: 768px) {
+        .newsletter_detail_page .detail_contents_area .img_wrap{margin-bottom:0;}
+      }
+    </style>
+</head>
+
+<body>
+  <div id="saleson" v-cloak>
+    <newsletter-header :ver="'vol002'"></newsletter-header>
+
+    <div class="newsletter_detail_page">
+      <div id="wrap">
+
+        <h2>기부제 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:20px">
+              <img src="/newsletter/static/images/vol002/donation/local/detail_1.png" alt="키워드로 보는 언론 속의 고향사랑 기부제">
+              <!-- <div class="banner_link_btn">
+                <a href="#;">자세히 보기&nbsp;&nbsp;+</a>
+              </div> -->
+            </div>
+            <div class="tit_area">
+              <h4>한국지방행정연구원</h4>
+              <h3>키워드로 보는 <span class="blue">언론 속의 고향사랑 기부제</span></h3>
+            </div>
+          </section>
+
+          <section id="" class="detail_contents_area">
+            <div class="bar blue-bar">
+              <p class="blue">1. 연관어 분석</p>
+            </div>
+            <p class="ul-title blue-bg">24년 1분기(1.1&#126;3.31) 동안 ‘고향사랑 기부제’ 관련<br>뉴스에서 언급된 연관어 분석 결과</p>
+            <div class="img_wrap">
+              <img src="/newsletter/static/images/vol002/donation/local/detail_2_1.png" alt="하단 참조">
+              <div class="blind">
+                연관어 분석 이미지. 전남 글자를 중심으로 '대구경북호남향우회', '간담회', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '' 등 단어들이 배치되어 있다.
+              </div>
+            </div>
+
+            <!-- <p class="ul-title blue-bg">지역발전, 지역사회, 지역경제 활성화 등</p> -->
+            <ul class="deco-arrow blue-deco blue"><li>지역발전, 지역사회, 지역경제 활성화 등</li></ul>
+            <ul class="deco-circle blue-deco">
+              <li>전남·경기 공동협력 과제중 하나로 고향사랑 기부제 상호 홍보 및 기부문화 활성화가 언급, 목포시와 담양군이 노인요양시설 간 고향사랑 상호기부 동참 등</li>
+            </ul>
+            <br/>
+
+            <ul class="deco-arrow blue-deco blue"><li>인구감소, 상생발전 등</li></ul>
+            <ul class="deco-circle blue-deco">
+              <li>
+                서울·충남 '상생발전을 위한 우호교류강화 업무협약' 체결*(7.17)하며 협약 주요 내용중에 고향사랑 기부제 활성화 추진 등이 포함 등<br/>
+                * 서울시와 충남도가 초고령사회·지방인구소멸 문제에 대비하기 위해 '서울-지방 상생형 주거정책 모델'인 '골드시티' 업무협약 체결
+              </li>
+            </ul>
+
+            <br>
+
+            <ul class="deco-arrow blue-deco blue"><li>답례품, 특산물 등</li></ul>
+            <ul class="deco-circle blue-deco">
+              <li>안성시의 대표 떡집 답례품을 활용한 이벤트 진행, 부산 남구에서 추석맞이 고향사랑 기부제 이벤트로 50명을 추첨하여 
+                기부자가 선택한 답례품 추가 증정, 부산시에서 ‘고향사랑 기부 2+2 왕이벤트’ 진행 등</li>
+              <li>일부 지자체들의 답례품 공급업체 모집 등</li>
+            </ul>
+
+            <br>
+
+            <ul class="deco-arrow blue-deco blue"><li>전라남도, 인천광역시, 동해시, 봉화군, 청양군 등</li></ul>
+            <ul class="deco-circle blue-deco">
+              <li>전남 : 중국에 있는 호남 향우들이 전남 사랑 서포터즈에 가입, 전남도가 4월부터 추진한 ‘365 고향사랑기부 캠페인’에 파리올림픽에 참가한 전남 출신 및 소속 선수들이 캠페인에 참여, 
+                대구경북호남향우회에서도 ‘365 고향사랑기부 캠페인’에 동참 등</li>
+              <li>인천광역시 : 인천 정체성 확립과 고향사랑기부제 활성화를 위한 공동선언 발표(9.9) 등</li>
+              <li>동해시 : 고향사랑기금 활용 시민 제안 공모 등</li>
+              <li>봉화군 : 봉화은어축제에서 봉화출신 배우 이성민이 참여하며 고향사랑 기부제 기부 등</li>
+              <li>청양군 : 고향사랑 기부금 2억 원 모금 및 기부자 1,400명 돌파 등</li>
+            </ul>
+          </section>
+
+          <section class="detail_contents_area">
+            <!-- <p class="ul-title blue-bg"></p> -->
+            <ul class="deco-arrow blue-deco blue"><li>지역별 연관어 분석 결과 (`24.7.1 ~ `24.9.30)</li></ul>
+
+            <div class="img_table_wrap">
+              <table>
+                <caption>지역별 언론사들 연관어 분석 결과 표 (24년 7월 1일부터 24년 9월 30일까지의 결과)</caption>
+                <tbody>
+                  <tr>
+                    <th>서울·경기·인천 (223건)</th>
+                    <th>강원 (11건)</th>
+                  </tr>
+                  <tr>
+                    <td><img src="/newsletter/static/images/vol002/donation/local/detail_2_1.png" alt="하단 참조"></td>
+                    <td><img src="/newsletter/static/images/vol002/donation/local/detail_2_2.png" alt="하단 참조"></td>
+                  </tr>
+                  <tr>
+                    <th>충청 (83건)</th>
+                    <th>경상 (64건)</th>
+                  </tr>
+                  <tr>
+                    <td><img src="/newsletter/static/images/vol002/donation/local/detail_2_3.png" alt="하단 참조"></td>
+                    <td><img src="/newsletter/static/images/vol002/donation/local/detail_2_4.png" alt="하단 참조"></td>
+                  </tr>
+                  <tr>
+                    <th>전라 (84건)</th>
+                    <th>제주 (1건)</th>
+                  </tr>
+                  <tr>
+                    <td><img src="/newsletter/static/images/vol002/donation/local/detail_2_5.png" alt="하단 참조"></td>
+                    <td><img src="/newsletter/static/images/vol002/donation/local/detail_2_6.png" alt="하단 참조"></td>
+                  </tr>
+                  <tr>
+                    <th colspan="2">지역별 연관어 Top3</th>
+                  </tr>
+                  <tr class="big_img">
+                    <td colspan="2"><img src="/newsletter/static/images/vol002/donation/local/detail_2_7.png" alt="하단 참조"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="detail_contents_area">
+            <div class="bar blue-bar">
+              <p class="blue">2. 키워드 트렌드(주간)</p>
+            </div>
+            <p class="ul-title blue-bg">24년 2분기(7.1~9.30) 동안 ‘고향사랑 기부제’가 언급된 뉴스(466건) 중 주간 단위로 언급된 빈도수는 다음과 같음</p>
+
+            <div class="img_wrap">
+              <img src="/newsletter/static/images/vol002/donation/local/detail_3.png" alt="하단 참조">
+              <div class="blind">
+                연관어 분석 이미지. 전남 글자를 중심으로 '대구경북호남향우회', '간담회', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '' 등 단어들이 배치되어 있다.
+              </div>
+            </div>
+            <br>
+            <ul class="deco-arrow blue-deco blue"><li>7월 1일~7월 7일(45건)</li></ul>
+            <ul class="deco-circle blue-deco">
+              <li>대구경북호남향우회, ‘전남 365 고향사랑기부 캠페인’ 참여, 동해시의 고향사랑기금 활용 시민 아이디어 공모전 개최 등</li>
+            </ul>
+            <br>
+            <ul class="deco-arrow blue-deco blue"><li>8월 19일~8월 25일(53건)·8월 26일~9월 1일(52건)</li></ul>
+            <ul class="deco-circle blue-deco">
+              <li>- 추석맞이 강남구 직거래 장터에서 고향사랑 기부제 등을 알리기 위해 8개 지자체*가 참여한 친선도시 홍보관 운영<br>
+                * 강원 양구군, 경기도 광주시, 충북 증평군, 충북 영동군, 충남 당진시, 충남 청양군, 경북 영주시, 전북 군산시 등</li>
+              <li>전남·경기 공동협력 과제로 고향사랑 기부제 상호 홍보 및 기부문화 활성화 도모, 전남의 ‘365 고향사랑 기부 캠페인’ 등</li>
+            </ul>
+            <br>
+            <ul class="deco-arrow blue-deco blue"><li>9월 9일~9월 15일(44건)</li></ul>
+            <ul class="deco-circle blue-deco">
+              <li>일부 지자체들의 행안부 고향사랑 우수사례 경진대회에서 수상하며 언급(9.6) 등</li>
+              <li>인천시가 11개 향우회와 함께 인천 정체성 확립과 고향사랑기부제 활성화를 위한 공동선언 발표(9.9) 등</li>
+            </ul>
+          </section>
+
+          <section class="detail_contents_area">
+            <div class="bar blue-bar">
+              <p class="blue">3. 관계도 분석</p>
+            </div>
+            <p class="ul-title blue-bg">‘고향사랑 기부제’와 관련된 뉴스에서 추출된 개체명 간 (인물, 장소, 기관, 키워드) 사이의 연결 관계를 분석한 결과는 다음과 같음</p>
+            <br>
+            <div class="img_wrap">
+              <img src="/newsletter/static/images/vol002/donation/local/detail_4.png" alt="하단 참조">
+              <div class="blind">
+                연관어 분석 이미지. 전남 글자를 중심으로 '대구경북호남향우회', '간담회', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '' 등 단어들이 배치되어 있다.
+              </div>
+            </div>
+          </section>
+
+
+
+
+
+        </div>
+
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>

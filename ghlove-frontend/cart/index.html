@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="ko">
+
+<head id="saleson-head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="Expires" content="-1">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-Control" content="No-Cache">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>마이페이지 > 장바구니 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+    <link rel="stylesheet" href="/static/css/order_ali.css">
+    <link rel="stylesheet" href="/static/css/lclgv_chc/map.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css"> <!-- 모달 -->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <layout-header-ali ref="layoutHeader"></layout-header-ali>
+        <layout-header :menu-url="menuUrl" @show-map-select="showMapSelect" ref="layoutHeaderSearchPc"></layout-header>
+
+		<div id="wrap">
+            <!-- 지자체 선택 팝업  -->
+            <div class="black-bg" ref="getParentModal">
+                <div class="overlayer join-complete">
+                    <div class="overlayer-header" style="font-size: 26px; height: 60px;line-height: 60px;padding: 0;">지자체 선택</div>
+                    <div class="overlayer-body" style="padding-top: 30px; border-radius: 0 0 15px 15px;">
+                        <layout-map-select @show-loading="showLoading" @select-lclgv="selectLclgvPc"></layout-map-select>
+                    </div>
+                    <div class="btn-box">
+                        <button type="button" class="temp-button hidden_txt" title="지자체 선택팝업 닫기" style="top: 18px; right: 18px;" @click="closeMapSelect()">지자체 선택 팝업 닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="cart_contents" ref="itemListDom">
+            <div class="page-title-box">
+                <span class="ali_breadcrumb">
+                    <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                    <span class="txt-arrow"><span class="sr-only">></span></span>
+                    마이페이지
+                    <span class="txt-arrow"><span class="sr-only">></span></span>
+                    장바구니
+                </span>
+                <div>
+                    <h2 class="page-title-txt" v-if="stepStatus == '1'">장바구니</h2>
+                    <h2 class="page-title-txt" v-else-if="stepStatus == '2'">주문/결제</h2>
+                    <h2 class="page-title-txt" v-else="stepStatus == '3'">주문완료</h2>
+                </div>
+                <div class="steps-box">
+                    <div class="step_status cart" :class="[stepStatus == '1'? 'on':'']">
+                        <div class="icon-bg"><span v-if="stepStatus == '1'" class="sr-only">현재단계</span><span class="sr-only">장바구니</span></div>
+                    </div>
+
+                    <div class="step_status payment" :class="[stepStatus == '2'? 'on':'']">
+                        <div class="icon-bg"><span v-if="stepStatus == '2'" class="sr-only">현재단계</span><span class="sr-only">주문결제</span></div>
+                    </div>
+
+                    <div class="step_status complete" :class="[stepStatus == '3'? 'on':'']">
+                        <div class="icon-bg"><span v-if="stepStatus == '3'" class="sr-only">현재단계</span><span class="sr-only">주문완료</span></div>
+                    </div>
+
+                </div>
+            </div>
+            <form class="center cart_wrap needs-validation" @submit.prevent="submit" id="contents">
+
+                <div class="cart_top" v-show="displayBuyItems.length > 0">
+                    <div class="chk_box check-level1">
+                        <input type="checkbox" id="all" v-model="selectAll" ref="selectAll" @keyup.enter="selectAll = !selectAll">
+                        <label for="all">전체선택</label>
+                    </div>
+                    <div class="btn_area">
+                        <button type="button" class="formBtn del" @click="deleteCartList()" id="itemDeleteBtn">선택삭제</button>
+                    </div>
+                </div>
+                <div v-show="displayBuyItems.length > 0" v-for="(data, i) in displayBuyItems" :key="i">
+                    <div class="mobile_section_bar"></div>
+                     <div class="contents_wrap">
+                        <div class="s-contents">
+                            <div class="cart_top">
+                                <div class="chk_box check-level1">
+                                    <input type="checkbox" :id="data.locgovCode" :value="data.locgovCode"
+                                        v-model="selected" @click="selectLocgov(data.locgovCode)" @keyup.enter="selectLocgovEnter(data.locgovCode)"
+                                        :ref="data.locgovCode" :aria-label="data.locgovNm + ' 전체 상품 선택'">
+                                    <label :for="data.locgovCode">{{data.locgovNm}}</label>
+                                </div>
+                                <div class="grade-bg">
+                                    잔여 포인트 : <span class="blue-txt">{{Number(data.givePoint).toLocaleString()}} P</span>
+                                </div>
+                            </div>
+
+                            <div class="list_body">
+                                <div class="list_wrap">
+                                    <div class="list-title">
+                                        <div class="date-col chk_date">답례품정보</div>
+                                        <div class="date-col g_amtprc">
+                                            <div class="g_info_wrap">
+                                                <div class="date-col g_info__amount">수량</div>
+                                                <div class="date-col g_info__price">답례품 포인트</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <ul class="item_list-group">
+                                        <li class="list-items" v-for="(item, idx) in data.locgovItems" :key="idx">
+                                            <div class="date-col g_info">
+                                                <div class="g_info_wrap">
+                                                    <div class="date-col chk_date">
+                                                        <div class="check_input">
+                                                        <label :for="item.cartId" class="sr-only">{{item.itemName}}</label>
+                                                        <input type="checkbox"
+                                                                :id="item.cartId" :value="item.cartId"
+                                                                @keyup.enter="itemCartIdEnter(item.cartId)"
+                                                                v-model="selected" :aria-label="item.itemName+' 선택'">
+                                                        </div>
+                                                    </div>
+                                                    <div class="link_wrap" @click="jumpToDetails(item)"
+                                                        tabindex="0"
+                                                        :role="item.item.itemName + ' 상세 페이지로 이동'">
+                                                        <div class="g_info__img"><img
+                                                                v-bind:src="itemImage(item.item.imageSrc)"
+                                                                :alt="item.item.itemName + ' 이미지'">
+                                                        </div>
+                                                        <div class="g_info__txt">
+                                                            <label v-if="item.istextOptionAfterCart === false" style="color: red; font-weight: bold;">● 상품의 옵션이 변경되었습니다. 장바구니에 다시 담아주세요.</label>
+                                                            <div class="info_loc">[{{item.companyName}}]</div>
+                                                            <div class="info_title"><span v-html="item.itemName"></span></div>
+                                                            <div class="info_opt"><span v-html="item.options"></span></div>
+                                                            <div class="info_opt"><span v-html="formatTextOption(item.textOption)"></span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="date-col g_amtprc">
+                                                <div class="g_info_wrap">
+                                                    <div class="g_info__amount">
+                                                        <input type="hidden" :ref="'storedQuantity_' + item.cartId"
+                                                            :value="item.itemPrice.quantity">
+                                                        <label :for="item.itemId +'Quantity'" class="sr-only">주문 수량</label>
+                                                        <input :id="item.itemId +'Quantity'"  type="number" :value="item.itemPrice.quantity"
+                                                                :ref="'changeQuantity_' + item.cartId" aria-label="주문 수량">
+                                                        <button type="button" class="formBtn modify" :id="'updateQuantityBtn' + item.cartId"
+                                                            @click="updateCartQuantity(item.cartId, item.orderQuantity.maxQuantity, item.orderQuantity.minQuantity, 'updateQuantityBtn' + item.cartId)">변경</button>
+                                                    </div>
+                                                    <div class="g_info__price">
+                                                        {{Number(item.itemPrice.saleAmount).toLocaleString()}}
+                                                        P
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="cart_bot">
+                                    <div class="smallTxt"> 답례품 포인트 <span
+                                            class="bot_P">{{Number(data.selectedSumPrice).toLocaleString()}} P</span> +
+                                        무료배송 =</div>
+                                    <div class="bigTxt">
+                                        <span class="bot_txt"> 결제 예정 포인트</span>
+                                        <span class="bot_price pointblue"
+                                            v-show="data.selectedSumPrice <= data.givePoint">{{Number(data.selectedSumPrice).toLocaleString()}}P</span>
+                                        <span class="bot_price pointRed"
+                                            v-show="data.selectedSumPrice > data.givePoint">{{Number(data.selectedSumPrice).toLocaleString()}}P
+                                        </span>
+                                    </div>
+                                    <span class="pointRed" v-show="data.selectedSumPrice > data.givePoint"> ( 주문불가
+                                        )</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="mobile_section_bar"></div>  -->
+                </div>
+                <div class="common_none" v-show="displayBuyItems.length == 0">
+                    <div class="list-none">
+                        <img src="/static/images/icon/empty-cart.png" alt="상품 없음">
+                        "장바구니에 담겨있는 답례품이 없습니다."
+                    </div>
+                </div>
+
+            </form>
+            <!-- 버튼그룹 -->
+            <div class="btn-box order" v-show="displayBuyItems.length > 0">
+                <button type="button" class="blueBtn cancellation" @click="goBack">
+                    취소<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="이전화면으로 이동"></span>
+                </button>
+                <button type="button" class="blueBtn u-confirm" @click="buyOrderList" id="buyOrderListBtn" :disabled="buyOrderListBtnDisabled">
+                    선택 답례품 주문<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png"
+                            alt="선택한 답례품 주문페이지로 이동"></span>
+                </button>
+            </div>
+            <div class="cart_info_txt center">
+                <ul>
+                    <li class="txt__list"><span class="spch">※</span> <span class="list__txt">장바구니답례품은 30일간 보관됩니다. 더 오래
+                            보관하시려면 [관심답례품]으로 등록하세요.</span> </li>
+                    <li class="txt__list"><span class="spch">※</span> <span class="list__txt">장바구니답례품이 품절되면 자동으로 목록에서
+                            삭제됩니다.</span> </li>
+                </ul>
+            </div>
+
+        </section>
+        <!-- <modal-order-add v-show="stepStatus == '2'"></modal-order-add> -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header': httpVueLoader('/components/layouts/header_g.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                // 'layout-tabbar-ali': httpVueLoader('/components/layouts/m_tabbar_g.vue'),
+                // 'naver-pay-button': httpVueLoader('/components/ui/naver/naver-pay-button.vue')
+                'layout-map-select': httpVueLoader('/components/ui/lclgv_chc/map.vue'),
+            },
+            data: {
+                stepStatus: '1',
+
+                displayNaverPayFlag: false,
+                list: [],
+                itemGroups: [],
+                orderPrice: [],
+                selected: [],				// 선택된 자치구 + 장바구니 정보
+                buyItems: [],				// 장바구니 정보
+                groupsSaleAmount: [],
+                groupsRealShipping: [],
+                menuUrl: location.pathname,
+                displayBuyItems: [],		// 화면에 표시하기 위한 자치구 + 장바구니 정보
+                checkItemList: [],			// 선택된 장바구니 정보만
+                buyOrderListBtnDisabled: false,
+            },
+            methods: {
+                jumpToDetails: function (v) {
+                    // if (v.adultItemYn === 'Y' && this.adultYn === 'N') {
+                    //     if ($s.isLogin()) {
+                    //         $s.alert('19세 미만의 청소년은 이용할 수 없습니다.');
+                    //     } else {
+                    //         $s.redirect($s.pages.LOGIN + "?target=" + encodeURIComponent($s.requestContext.requestFullUri));
+                    //     }
+                    //     return ;
+                    // }
+
+                    $s.redirect("/items/details.html?code=" + v.itemUserCode);
+                },
+
+                getCartItems: function (isInit) {
+					vm.showLoading(true);
+                    vm.buyOrderListBtnDisabled = false;
+                    $s.api.getCartItems(function (response) {
+						vm.showLoading(false);
+                        vm.buyItems = [];
+                        vm.groupsRealShipping = [];
+                        vm.groupsSaleAmount = [];
+                        vm.displayBuyItems = [];
+                        if (response.list.length > 0) {
+                            vm.displayNaverPayFlag = response.displayNaverPayFlag;
+                            vm.list = response.list[0];
+                            vm.orderPrice = response.orderPrice;
+                            let itemGroups = vm.list.itemGroups;
+                            vm.itemGroups = itemGroups;
+                            for (var i = 0; i < itemGroups.length; i++) {
+                                if (itemGroups[i].singleShipping === true) {
+                                    var tempArray = [itemGroups[i].buyItem];
+                                    vm.buyItems.push(tempArray);
+                                    vm.groupsSaleAmount.push(itemGroups[i].buyItem.itemPrice.saleAmount);
+
+                                    if (itemGroups[i].shippingPaymentType === '1') {
+                                        vm.groupsRealShipping.push(itemGroups[i].realShipping);
+                                    } else {
+                                        vm.groupsRealShipping.push(0);
+                                    }
+
+                                } else {
+                                    vm.buyItems.push(itemGroups[i].buyItems);
+
+                                    if (itemGroups[i].shippingPaymentType === '1') {
+                                        vm.groupsRealShipping.push(itemGroups[i].realShipping);
+                                    } else {
+                                        vm.groupsRealShipping.push(0);
+                                    }
+
+                                    var groupsSaleAmount = 0;
+                                    for (var j = 0; j < itemGroups[i].buyItems.length; j++) {
+                                        groupsSaleAmount += itemGroups[i].buyItems[j].itemPrice.saleAmount;
+                                    }
+
+                                    vm.groupsSaleAmount.push(groupsSaleAmount);
+                                }
+                            }
+
+                            let givePointList = response.givePointList;
+
+                            try {
+                                if (!givePointList || givePointList.length == 0) {
+                                    /*$s.alert("포인트가 부족합니다.", function() {
+                                        history.back();
+                                    });
+                                    return;*/
+                                    givePointList = [];
+                                }
+                            } catch (e) {
+                                $s.error();
+                                /*$s.alert("포인트가 부족합니다.", function() {
+                                    history.back();
+                                });
+                                return;*/
+                                givePointList = [];
+                            }
+
+                            let items = vm.list.items;
+
+                            let itemsLength = items.length;
+
+                            let givePointLength = givePointList.length;
+
+                            for (let i = 0; i < itemsLength; i++) {
+                                let item = items[i];
+                                let locgovCode = item.locgovCode;
+                                if (!vm.existLocgovCode(vm.displayBuyItems, locgovCode)) {
+                                    let locgovObj = { locgovCode: locgovCode, locgovNm: item.locgovNm, locgovItems: [], givePoint: 0, sumPrice: 0, selectedSumPrice: 0, sellerName: item.sellerName };
+                                    loopGive: for (let j = 0; j < givePointLength; j++) {
+                                        if (locgovCode == givePointList[j].cntrLocgovCode) {
+                                            locgovObj.givePoint = givePointList[j].cntrBlcePoint;
+                                            break loopGive;
+                                        }
+                                    }
+                                    vm.displayBuyItems.push(locgovObj);
+                                }
+                                // 필수 추가정보
+                                item.istextOptionAfterCart = '';
+
+                                if (item.textOption && item.textOption != ''){
+                                    if(item.cartCreatedDate < item.updatedDate){
+                                        item.istextOptionAfterCart = false;
+                                        // 선택 답례품 주문 버튼 비활성화 처리
+                                        vm.buyOrderListBtnDisabled = true;
+                                    }
+                                }
+                            }
+
+                            for (let i = 0; i < itemsLength; i++) {
+                                vm.pushLocgovItem(vm.displayBuyItems, items[i]);
+                            }
+                            let locgovItemLength = vm.displayBuyItems.length;
+                            for (let i = 0; i < locgovItemLength; i++) {
+                                let locgovItem = vm.displayBuyItems[i];
+
+                                if (locgovItem && locgovItem.locgovItems) {
+                                    vm.displayBuyItems[i].sumPrice = vm.getLocgovSumPrice(locgovItem.locgovItems);
+                                    /*if (locgovItem.givePoint < vm.getLocgovSumPrice(locgovItem.locgovItems)) {
+                                        $s.alert(locgovItem.locgovNm + " 포인트가 부족합니다.", function() {
+                                            history.back();
+                                        });
+                                        return false;
+                                    }*/
+                                }
+                            }
+                        }
+                        if (isInit) {
+                            let selected = [];
+
+							if (vm.list && vm.list.items) {
+	                            let itemsLength = vm.list.items.length;
+
+	                            for (let i = 0; i < itemsLength; i++) {
+	                                let data = vm.list.items[i];
+	                                selected.push(data.cartId);
+                            	}
+							}
+
+
+							if (vm.displayBuyItems) {
+	                            let buyItemsLength = vm.displayBuyItems.length;
+
+	                            for (let i = 0; i < buyItemsLength; i++) {
+	                                let locgovItem = vm.displayBuyItems[i];
+	                                selected.push(locgovItem.locgovCode);
+	                            }
+							}
+
+
+                            vm.selected = selected;
+                        }
+                        vm.getSelectedSumPrice();
+                    }, vm.commError);
+                },
+
+                // 필수 추가정보
+                formatTextOption: function (textOption) {
+                    if(!textOption) return;
+                    /*return textOption.split("||").join("<br>");*/
+                    return textOption.split('||')
+                                        .map(item => {
+                                            const parts = item.split(' : ');
+                                            const title = parts[0]? parts[0].trim() : '';
+                                            let value = parts[1]? parts[1].trim() : '';
+
+                                            if(value.length > 20){
+                                                value = value.substring(0,20) + '...';
+                                            }
+                                            return `${title} : ${value}`;
+                                            })
+                                        .join('<br>');
+
+                },
+
+                updateCartQuantity: function (cartId, orderMaxQuantity, orderMinQuantity, focusId) {
+                    this.showLoading(true);
+
+                    let storeQuantity = 0;
+                    let quantity = 0;
+
+                    let refs = this.$refs;
+
+                    try {
+                        storeQuantity = refs["storedQuantity_" + cartId][0].value;
+                        quantity = refs["changeQuantity_" + cartId][0].value;
+                    } catch (e) {
+                        $s.error();
+                    }
+
+                    try {
+                        if (quantity === '' || quantity === 0) {
+                            $s.alert("답례품의 수량을 입력해 주세요.", focusId);
+                            refs["changeQuantity_" + cartId][0].value = storeQuantity;
+                            this.showLoading(false);
+                            return;
+                        }
+                        if (orderMinQuantity > 0 && quantity < orderMinQuantity) {
+                            $s.alert('최소 주문 수량은 ' + orderMinQuantity + '개 입니다.', focusId);
+                            //document.getElementById('quantity-' + cartId).value = orderMinQuantity;
+                            refs["changeQuantity_" + cartId][0].value = storeQuantity;
+                            this.showLoading(false);
+                            return;
+                        }
+
+                        if (orderMaxQuantity > 0 && quantity > orderMaxQuantity) {
+                            $s.alert('최대 주문 수량은 ' + orderMaxQuantity + '개 입니다.', focusId);
+                            //document.getElementById('quantity-' + cartId).value = orderMaxQuantity;
+                            refs["changeQuantity_" + cartId][0].value = storeQuantity;
+                            this.showLoading(false);
+                            return;
+                        }
+                    } catch (e) {
+                        vm.showLoading(false);
+
+                        $s.alert('문제가 발생했습니다.', focusId);
+                        return false;
+                    }
+
+                    var params = {
+                        'cartId': cartId,
+                        'quantity': quantity
+                    };
+
+                    $s.api.updateCartQuantity(params, function () {
+                        vm.showLoading(false);
+                        try {
+                            var calcQuantity = quantity - storeQuantity;
+                            if (calcQuantity != 0) {
+                                var addQuantityFlag = calcQuantity > 0;
+                                calcQuantity = addQuantityFlag ? calcQuantity : calcQuantity * -1;
+                                $s.ga.changeFromCartQuantity([vm.getGoogleAnalyticsItem(cartId, calcQuantity)], addQuantityFlag);
+                            }
+                            vm.getCartItems();
+                        } catch (e) {
+							$s.error();
+                        }
+
+                        //location.reload();
+                    }, vm.commError);
+                },
+                /*
+                                deleteCart: function (cartId) {
+                                    $s.confirm("답례품을 장바구니에서 삭제하시겠습니까?", function () {
+                                        $s.api.deleteCart([cartId], function () {
+
+                                            try {
+                                                $s.ga.removeFromCart([vm.getGoogleAnalyticsItem(cartId)]);
+                                            } catch (e) {
+                                                $s.error();
+                                            }
+
+                                            location.reload();
+                                        });
+                                    });
+                                },
+                */
+                // 선택 상품 삭제
+                deleteCartList: function () {       // me-072(선택한 상품을 장바구니에서 삭제 하시겠습니까?) me-040(상품을 선택해 주세요.)
+                    // if (this.selected.length === 0) {
+                    if (this.checkItemList.length === 0) {
+                        $s.alert("답례품을 선택해주세요.", "itemDeleteBtn");
+                        return false;
+                    }
+
+                    $s.confirm("선택한 답례품을 장바구니에서 삭제하시겠습니까?", function () {
+                        vm.showLoading(true);
+                        $s.api.deleteCart(vm.checkItemList, function (response) {
+                            vm.showLoading(false);
+                            if(response.status == "OK"){
+                                vm.getCartItems();
+                                $s.alert("해당 답례품이 장바구니에서 삭제되었습니다.");
+                                var params = { 'id': vm.checkItemList }
+
+                                try {
+                                    var gaItems = [];
+                                    for (var i = 0; i < vm.selected.length; i++) {
+                                        gaItems.push(vm.getGoogleAnalyticsItem(vm.selected[i]));
+                                    }
+                                    //$s.ga.removeFromCart(gaItems);
+                                } catch (e) {
+                                $s.error();
+                                }
+                                vm.selected = [];
+                            // location.reload();
+                                //vm.$refs.layoutHeader.getCartInfo();
+
+
+
+                            } else {
+                                vm.getCartItems();
+                                $s.alert("잠시 후 다시 시도해주세요.");
+                            }
+
+                        }, vm.commError);
+                    }, "itemDeleteBtn");
+                },
+
+                // buyOrder: function (cartId) {
+                //     vm.selected = false;
+                //     vm.selected = [cartId];
+                //     this.saveOrderItemTemp(vm.selected, "답례품을 선택해 주세요.");
+                // },
+
+                buyOrderList: function () {         // me-047(해당 지자체의 포인트가 부족합니다. ) me-040(상품을 선택해 주세요.)
+                    //this.saveOrderItemTemp(vm.selected, "구매할 상품을 선택해 주세요.");
+                    this.saveOrderItemTemp(vm.checkItemList, "답례품을 선택해 주세요.");
+                },
+
+                saveOrderItemTemp: function (availableItem, message) {
+                    this.showLoading(true);
+                    if (availableItem.length === 0) {
+                        this.showLoading(false);
+                        $s.alert(message, "buyOrderListBtn");
+                        return;
+                    }
+                    let length = vm.displayBuyItems.length;
+                    for (let i = 0; i < length; i++) {
+                        if (vm.displayBuyItems[i].selectedSumPrice > vm.displayBuyItems[i].givePoint) {
+                            this.showLoading(false);
+                            $s.alert(vm.displayBuyItems[i].locgovNm + "의 포인트가 부족합니다.", "buyOrderListBtn");
+                            return;
+                        }
+                    }
+
+                    let cartIds = [];
+                    let isSuccess = true;
+                    let quantity = -1;
+                    /*
+                                        for (let i = 0; i < availableItem.length; i++) {
+                                            quantity = parseInt(document.getElementById('quantity-' + availableItem[i]).value);
+                                            if (quantity <= 0) {
+                                                isSuccess = false;
+                                            }
+                                            cartIds[i] = availableItem[i];
+
+                                        }
+                                        if (isSuccess == false) {
+                                            $s.alert("상품의 수량을 확인해주세요.");
+                                            return;
+                                        }
+                    */
+                    let displayLength = vm.displayBuyItems.length;
+                    for (let j = 0; j < displayLength; j++) {
+                        let itemsLength = vm.displayBuyItems[j].locgovItems.length;
+                        for (let k = 0; k < itemsLength; k++) {
+                            let item = vm.displayBuyItems[j].locgovItems[k];
+                            for (let i = 0; i < availableItem.length; i++) {
+                                if (availableItem[i] == item.cartId) {
+                                    if (item.itemPrice.quantity < 1) {
+                                        $s.alert("답례품의 수량을 확인해주세요.", "buyOrderListBtn");
+                                        this.showLoading(false);
+                                        return;
+                                    }
+                                    // 필수 추가정보: 날짜 변경에 따른 정합성 체크 추가
+                                    if(item.istextOptionAfterCart !== false){
+                                        cartIds.push(availableItem[i]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    let campaignCode = $s.core.getSession('campaign_code');
+
+                    let params = {
+                        'cartIds': cartIds,
+                        'campaignCode': campaignCode
+                    };
+
+                    if ($s.isLogin()) {
+                        $s.api.buyOrder(params, function () {
+                            vm.showLoading(false);
+                            let url = '/order/step1.html';
+                            $s.redirect(url);
+                        }, vm.commError);
+                    } else {
+                        this.showLoading(false);
+                        Saleson.init({ loginPage: true });
+                    }
+                },
+                getGoogleAnalyticsItem(cartId, quantity) {
+
+                    try {
+                        var list = this.buyItems;
+
+                        for (var i = 0; i < list.length; i++) {
+
+                            var buyItem = list[i];
+                            for (var j = 0; j < buyItem.length; j++) {
+
+                                var item = buyItem[j];
+                                if (cartId == item.cartId) {
+
+                                    if (typeof quantity == 'undefined' || quantity == null || quantity == '') {
+                                        quantity = item.itemPrice.quantity
+                                    }
+
+                                    return {
+                                        id: item.itemUserCode,
+                                        nm: item.itemName,
+                                        qt: quantity,
+                                        va: item.options
+                                    }
+                                }
+
+                            }
+                        }
+                    } catch (e) {
+						console.log = () => {};
+					}
+
+                    return null;
+                },
+                loadingMounted: function () {			// 하위컴포넌트 로딩 중 화면 로딩 후 실행 함수
+                    this.initCallFunction();
+                },
+                initCallFunction: function () {
+                    let config = {
+                        childList: true,
+                        subtree: true
+                    };
+                    let observer = new MutationObserver($goods.setInputTypeNumber);
+                    observer.observe(this.$refs.itemListDom, config);
+
+                    vm.getCartItems(true);
+                },
+                pushLocgovItem: function (array, item) {
+                    let length = array.length;
+                    for (let i = 0; i < length; i++) {
+                        if (array[i].locgovCode == item.locgovCode) {
+                            array[i].locgovItems.push(item);
+                            return;
+                        }
+                    }
+                },
+                existLocgovCode: function (array, locgovCode) {
+                    if (!array) {
+                        return false;
+                    } else {
+                        try {
+                            let length = array.length;
+                            for (let i = 0; i < length; i++) {
+                                if (array[i].locgovCode == locgovCode) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                },
+                getLocgovSumPrice: function (items) {			// 전체 결제 금액
+                    let length = items.length;
+                    let sumPrice = 0;
+                    for (let i = 0; i < length; i++) {
+                        if(items[i].istextOptionAfterCart !== false){
+                            sumPrice += items[i].itemPrice.saleAmount;
+                        }
+
+                    }
+                    return sumPrice;
+                },
+                getSelectedSumPrice: function () {				// 선택 상품 결제 금액
+                    try {
+                        let displayBuyItemsLength = vm.displayBuyItems.length;
+                        for (let i = 0; i < displayBuyItemsLength; i++) {
+                            let buyItems = vm.displayBuyItems[i];
+                            let selectedSumPrice = 0;
+                            let buyItemsLength = buyItems.locgovItems.length;
+                            for (let j = 0; j < buyItemsLength; j++) {
+                                let buyItem = buyItems.locgovItems[j];
+                                let length = vm.checkItemList.length;
+                                for (let k = 0; k < length; k++) {
+                                    let cartId = vm.checkItemList[k];
+                                    if (buyItem.cartId == cartId) {
+                                        if(buyItem.istextOptionAfterCart !== false){
+                                            selectedSumPrice += buyItem.itemPrice.saleAmount;
+                                        }
+
+                                    }
+                                }
+                            }
+                            Vue.set(buyItems, 'selectedSumPrice', selectedSumPrice);
+                        }
+                    } catch (e) {
+                        $s.error();
+                    }
+                },
+                showLoading: function (isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+                },
+                commError: function (error) {
+                    vm.showLoading(false);
+                    $s.api.handleApiExeption(error, "contents");
+                },
+                itemCartIdEnter: function (cartId) {
+                    //$("#" + cartId)[0].checked = !$("#" + cartId)[0].checked;
+                    if ($("#" + cartId)[0].checked) {
+                        let idx = this.selected.indexOf(cartId);
+                        this.selected.splice(idx);
+                    } else {
+                        this.selected.push(cartId);
+                    }
+                },
+                selectLocgovEnter: function (locgovCode) {
+                    this.$refs[locgovCode][0].checked = !this.$refs[locgovCode][0].checked;
+                    this.selectLocgov(locgovCode);
+                },
+                selectLocgov: function (locgovCode) {
+                    let cnt = 0;
+                    let selectedLength = this.selected.length;
+                    for (let i = 0; i < selectedLength; i++) {
+                        let regLocgovCode = vm.selected[i];
+                        if (locgovCode == regLocgovCode) {
+                            cnt++;
+                        }
+                    }
+
+                    let checked = this.$refs[locgovCode][0].checked;
+
+                    if (checked) {		// 자치구 전체 추가
+                        let addItemList = [];
+                        let displayBuyItemsLength = vm.displayBuyItems.length;
+                        for (let i = 0; i < displayBuyItemsLength; i++) {
+                            let buyItem = vm.displayBuyItems[i];
+                            if (buyItem.locgovCode == locgovCode) {
+                                let locgovItemsLength = buyItem.locgovItems.length;
+                                for (let j = 0; j < locgovItemsLength; j++) {
+                                    let item = buyItem.locgovItems[j];
+                                    let itemCnt = 0;
+                                    let selectedLength2 = vm.selected.length;
+                                    for (let k = 0; k < selectedLength2; k++) {
+                                        let regLocgovCodeCartId = vm.selected[k];
+                                        if (item.cartId == regLocgovCodeCartId) {
+                                            itemCnt++;
+                                        }
+                                    }
+                                    if (itemCnt == 0) {
+                                        addItemList.push(item.cartId);
+                                    }
+                                }
+                            }
+                        }
+
+                        let addItemListLength = addItemList.length;
+                        for (let i = 0; i < addItemListLength; i++) {
+                            let addCartId = addItemList[i];
+                            vm.selected.push(addCartId);
+                        }
+
+                        if (cnt == 0) {
+                            this.selected.push(locgovCode);
+                        }
+
+                    } else {			// 자치구 전체 삭제
+                        let removeItemList = [];
+
+                        let displayBuyItemsLength = vm.displayBuyItems.length;
+                        for (let i = 0; i < displayBuyItemsLength; i++) {
+                            let buyItem = vm.displayBuyItems[i];
+                            if (buyItem.locgovCode == locgovCode) {
+                                let locgovItemsLength = buyItem.locgovItems.length;
+                                for (let j = 0; j < locgovItemsLength; j++) {
+                                    let item = buyItem.locgovItems[j];
+                                    let itemCnt = 0;
+                                    let selectedLength2 = vm.selected.length;
+                                    for (let k = 0; k < selectedLength2; k++) {
+                                        let regLocgovCodeCartId = vm.selected[k];
+                                        if (item.cartId == regLocgovCodeCartId) {
+                                            itemCnt++;
+                                        }
+                                    }
+                                    if (itemCnt > 0) {
+                                        removeItemList.push(item.cartId);
+                                    }
+                                }
+                            }
+                        }
+
+                        let removeIdxs = [];
+                        let removeItemListLength = removeItemList.length;
+                        for (let i = 0; i < removeItemListLength; i++) {
+                            let cartId = removeItemList[i];
+                            let selectedLength2 = vm.selected.length;
+                            for (let j = 0; j < selectedLength2; j++) {
+                                let regLocgovCodeCartId = vm.selected[j];
+                                if (cartId == regLocgovCodeCartId) {
+                                    removeIdxs.push(j);
+                                }
+                            }
+                        }
+
+                        removeIdxs.sort(function (a, b) {		// 내림차순 정렬
+                            return b - a;
+                        });
+
+                        let removeIdxsLength = removeIdxs.length;
+                        for (let i = 0; i < removeIdxsLength; i++) {		// 아이템 삭제
+                            let deleteOrder = removeIdxs[i];
+                            vm.selected.splice(deleteOrder, 1);
+                        }
+                    }
+                },
+                goBack: function () {
+                    history.back();
+                },
+				commError: function (error) {
+					vm.showLoading(false);
+					$s.api.handleApiExeption(error, "contents");
+				},
+                selectLclgvPc: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+                    this.$refs.layoutHeaderSearchPc.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+                    this.closeMapSelect();
+                },
+                selectLclgvMo: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+                    this.$refs.layoutHeaderSearchMobile.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+                    this.closeMapSelect();
+                },
+                showMapSelect: function () {
+                    this.$refs.getParentModal.setAttribute('style', 'display: block;top: 0;');
+                },
+                closeMapSelect: function () {
+                    this.$refs.getParentModal.removeAttribute('style');
+                },
+				onPageShow: function () {
+					this.loadingMounted();
+				},
+            },
+            watch: {
+                selected: {
+                    handler(newSelected) {			// 자치구 선택, 전체선택 제어용
+                        let add = [];
+                        let remove = [];
+                        let locgovItemCnt = 0;
+
+                        let displayBuyItemsLength = vm.displayBuyItems.length;
+
+                        for (let i = 0; i < displayBuyItemsLength; i++) {
+                            let locgovItem = vm.displayBuyItems[i];
+                            let count = 0;
+                            locgovItemCnt++;
+                            let itemLength = locgovItem.locgovItems.length;
+                            locgovItemCnt += itemLength;
+                            let newSelectedLength = newSelected.length;
+
+                            for (let j = 0; j < newSelectedLength; j++) {
+                                let cartId = newSelected[j];
+                                let locgovItemsLength = locgovItem.locgovItems.length;
+
+                                for (let k = 0; k < locgovItemsLength; k++) {
+                                    let item = locgovItem.locgovItems[k];
+                                    if (item.cartId == cartId) {
+                                        count++;
+                                    }
+                                }
+                            }
+
+                            if (count == itemLength) {
+                                add.push(locgovItem.locgovCode);
+                            } else {
+                                remove.push(locgovItem.locgovCode);
+                            }
+                        }
+
+                        let addLength = add.length;
+
+                        for (let i = 0; i < addLength; i++) {
+                            let locgovCode = add[i];
+                            let cnt = 0;
+
+                            let newSelectedLength = newSelected.length;
+                            for (let j = 0; j < newSelectedLength; j++) {
+                                let regLocgovCode = newSelected[j];
+                                if (locgovCode == regLocgovCode) {
+                                    cnt++;
+                                }
+                            }
+                            if (cnt == 0) {		// 자치구 추가
+                                newSelected.push(locgovCode);
+                            }
+                        }
+
+                        let removeIdxs = [];
+                        let removeLength = remove.length;
+
+                        for (let i = 0; i < removeLength; i++) {
+                            let locgovCode = remove[i];
+                            let newSelectedLength = newSelected.length;
+
+                            for (let j = 0; j < newSelectedLength; j++) {
+                                let regLocgovCode = newSelected[j];
+                                if (locgovCode == regLocgovCode) {
+                                    removeIdxs.push(j);
+                                }
+                            }
+                        }
+
+                        removeIdxs.sort(function (a, b) {		// 내림차순 정렬
+                            return b - a;
+                        });
+
+                        let removeIdxsLength = removeIdxs.length;
+
+                        for (let i = 0; i < removeIdxsLength; i++) {		// 자치구 삭제
+                            let deleteOrder = removeIdxs[i];
+                            newSelected.splice(deleteOrder, 1);
+                        }
+
+                        this.selected = newSelected;
+                        if (locgovItemCnt == newSelected.length) {
+                            this.$refs.selectAll.checked = true;
+                        } else {
+                            this.$refs.selectAll.checked = false;
+                        }
+
+                        this.checkItemList = [];
+                        let selectedLength = this.selected.length;
+                        for (let i = 0; i < selectedLength; i++) {
+                            let locgovCodeCartId = vm.selected[i];
+                            if (typeof locgovCodeCartId == "number") {
+                                vm.checkItemList.push(locgovCodeCartId);
+                            }
+                        }
+                        this.getSelectedSumPrice();
+                    },
+                    deep: true,
+                },
+            },
+            computed: {
+                selectAll: {
+                    get: function () {
+                        return this.list.items ? (this.buyItems.length === this.checkItemList.length && this.checkItemList.length > 0) : false;
+                    },
+                    set: function (value) {
+                        var selected = [];
+                        if (value) {
+                            let itemsLength = this.list.items.length;
+                            for (let i = 0; i < itemsLength; i++) {
+                                let data = vm.list.items[i];
+                                selected.push(data.cartId);
+                            }
+
+                            let displayBuyItemsLength = this.displayBuyItems.length;
+                            for (let i = 0; i < displayBuyItemsLength; i++) {
+                                let locgovItem = vm.displayBuyItems[i];
+                                selected.push(locgovItem.locgovCode);
+                            }
+                        }
+                        this.selected = selected;
+                    }
+                },
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init({ loginPage: true });
+                });
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>

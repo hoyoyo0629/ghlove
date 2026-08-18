@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>마이페이지 > 기부 > 기부포인트 상세 현황 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+
+    <link rel="stylesheet" href="/static/css/mypage-status.css">
+    <link rel="stylesheet" href="/static/css/research-box.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+
+
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        <a href="/mypage/index.html">마이페이지</a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        기부포인트 현황
+                    </span>
+                    <!-- <h2 class="page-title-txt">상세내역</h2> -->
+                    <h2 class="page-title-txt">기부포인트 현황</h2>
+                    <div class="user-grade">
+                        <span class="grade-bg">
+                            <span class="blue-txt">{{locgovNm.upperLocgovNm}} {{locgovNm.locgovNm}}</span>
+                    </div>
+
+                </div>
+
+                <div class="contents-wrap myDonation">
+                    <div class="s-contents mypageP">
+                        <div class="mypage-point">
+                            <div class="mypage-point-list">
+                                <label class="col3_label" for="">
+                                    <img class="icon-img" src="/static/images/icon/point_add.png"
+                                        alt="총 기부금액">
+                                    <span class="label-title"> 적립포인트</span>
+                                </label>
+                                <div class="m-field">
+                                    <input type="text" :value="formatNumber(result.cntrPointTotal)" readonly><span class="s_txt">P</span>
+                                </div>
+                            </div>
+                            <div class="mypage-point-list">
+                                <label class="col3_label" for="">
+                                    <img class="icon-img" src="/static/images/icon/point_minus.png"
+                                        alt="총 기부금액">
+                                    <span class="label-title"> 사용포인트</span>
+                                </label>
+                                <div class="m-field">
+                                    <input type="text" :value="formatNumber(result.usePointTotal)" readonly><span class="s_txt">P</span>
+                                </div>
+                            </div>
+                            <div class="mypage-point-list">
+                                <label class="col3_label" for="">
+                                    <img class="icon-img" src="/static/images/icon/cli-icon_my-amount-all.png"
+                                        alt="총 기부금액">
+                                    <span class="label-title"> 총 잔여포인트</span>
+                                </label>
+                                <div class="m-field">
+                                    <input type="text" :value="formatNumber(result.blcePointTotal)" readonly><span class="s_txt">P</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="s-contents table-wrapper pointD">
+                        <div class="table-container">
+
+                        <div class="table-result-body">
+                            <table>
+                                <tr class="result-title">
+                                    <th>No.</th>
+                                    <th>발생일자</th>
+                                    <th>기부액(실납부액)</th>
+                                    <th>적립포인트</th>
+                                    <th>사용포인트</th>
+                                    <th>잔여포인트</th>
+                                    <th>답례품 주문번호</th>
+                                </tr>
+                                <tr class="result-row" v-for="(data,i) in result.content">
+                                    <td class="idx">{{result.totalCnt - ((result.currentPage -1 ) * result.size) - i}}</td>
+                                    <td>{{data.cntrDe}}</td>
+                                    <td class="amount">{{formatNumber(data.cntrAmt)}}</td>
+                                    <td class="amount">{{formatNumber(data.cntrPoint)}}</td>
+                                    <td class="amount">{{formatNumber(data.cntrUsePoint)}}</td>
+                                    <td class="amount">{{formatNumber(data.cntrBlcePoint)}}</td>
+                                    <td><button type="button" class="moreView margin0" @click="goOrderInfo(data)" v-if="data.orderCode !=0">{{data.orderCode}}</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="table-overlap">
+                            <span>←&nbsp;-&nbsp;&nbsp; 화면을 좌우로 움직이세요 &nbsp;&nbsp;-&nbsp;→</span><br>
+                            <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                        </div>
+                        <pagination :current-page="result.currentPage" :total-pages="result.totalPages"
+                            @change="paging"></pagination>
+                    </div>
+                </div>
+                    <!-- 버튼그룹 -->
+                    <div class="btn-box">
+                        <button type="button" class="blueBtn u-confirm" @click="goToList()">목록<span>
+                                <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+
+            </section>
+
+
+
+
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+
+                'layout-mypage-lnb-ali': httpVueLoader('/components/layouts/mypage-lnb_ali.vue'),
+
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue') //pagination
+            },
+            data: {
+                // pagination
+                result: {
+                    // content: [],
+                    // totalPages: 0,
+                    // totalElements: 0,
+                    // displaySubCodeCount: 0
+                },
+                locgovNm : {
+                    upperLocgovNm : "",
+                    locgovNm : ""
+                },
+                param : {
+                    locgovCode: ""
+                },
+				page: {
+                    menuUrl: "/mypage/cntrPoint.html"
+                }
+            },
+            methods: {
+                // *************** ali-add methods
+
+                //모바일 가로스와이프 창 닫기
+                closeTableOverlap: function () {
+                    $(".table-overlap").css("display", "none");
+                },
+                closePopupLayer: function () {
+                    $(".black-bg").removeClass("show");
+                },
+                modalLayer: function (e) {
+                    $(".black-bg").addClass("show");
+                    // e.preventDefault();
+                },
+                goToList: function () {
+                    history.back();
+                },
+                submit : function(){
+                    var locgovCode = $s.core.getParameter('locgovCode');
+                    if(locgovCode == ''){
+                        location.href="/mypage/cntrPoint.html";
+                        return false;
+                    }
+                    vm.param.locgovCode = locgovCode;
+
+                    $s.api.getSubmit("/api/mypage/getCntrPointDetail", vm.param, function(response){
+                        vm.result = response;
+                        vm.locgovNm = response.locgovNm;
+                        //$(".lnb-bar_2dep li").eq(2).addClass("currentT");
+					});
+                },
+                paging(page){
+                    vm.param.page = page;
+                    vm.submit();
+                }
+                , goOrderInfo : function(data){
+//                     $s.api.getSubmit('/api/present/login', '', function (response) {
+//                     var param = '';
+//                     if (response.isSuccess) {
+//                     param = (response.data == null) ? '' : response.data;
+
+// 					var domain = "";
+// 					if (window.location.hostname.indexOf("ilovegohyang.go.kr") > -1) {
+// 						domain = 'https://shop.ilovegohyang.go.kr';
+// 					} else {
+// 						domain = 'https://gohyang01.bbiz.kr';
+// 					}
+
+// //					var child = window.open("https://gohyang01.bbiz.kr/" + data.orderCode + "&_tss_=" + param, 'presentPopup', '_blank');
+// 					var child = window.open(domain+"/kwa-sell_list_detail-" + data.orderCode + "?_tss_=" + param, 'presentPopup');
+//                     // var child = window.open('https://gohyang01.bbiz.kr?_tss_=' + param, 'presentPopup', '_blank');
+//                     // child.location.href="https://gohyang01.bbiz.kr/" + data.orderCode;
+//                     }
+
+
+//                 });
+
+                    $s.redirect('/mypage/orderDetail.html?orderCode=' + data.orderCode + '&orderSequence=0&flag=list')
+                }
+            },
+            computed: {
+
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                //     // 페이지 로딩 후 실행
+                    Saleson.init({loginPage:true});
+                    vm.submit();
+                });
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

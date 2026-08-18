@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>기부자의 ‘사랑’과 ‘응원’으로 김제시민 삶의 질 UP! : 고향사랑e음 고향소식</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+  </head>
+
+  <body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page hometown10">
+      <div id="wrap">
+
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <img src="/newsletter/static/images/vol001/detail_27.jpg" alt="치매 어르신 인공지능 돌봄인형 사진과 돌봄인형을 안고있는 어르신의 뒷모습 사진">
+              <!-- <div class="banner_link_btn">
+                <a href="#;">자세히 보기&nbsp;&nbsp;+</a>
+              </div> -->
+            </div>
+            <div class="tit_area">
+              <h4>전북특별자치도 김제시</h4>
+              <h3>
+                기부자의 ‘사랑’과 ‘응원’으로 <br/>
+                <span class="blue">김제시민 삶의 질 UP!</span>
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar"></div>
+          <section id="" class="detail_contents_area">
+            <ul class="deco-arrow blue-deco blue">
+              <li>
+                김제시는 고향사랑기부로 조성된 기금을 활용하여 2024년 사업으로 ‘청년 근로자 알뜰 교통비 지원사업’과 ‘치매 어르신 인공지능 돌봄인형 사업’을 추진중이다.
+              </li>
+              <li>
+                「청년근로자 교통비 지원사업」은 청년 근로자들의 경제적 부담을 완화하고 지역정착과 장기근속을 유도하기 위해 출퇴근 교통비로 월5만원을 김제사랑카드 포인트로 지급하는 사업이며,
+              </li>
+              <li>
+                「치매 어르신 인공지능 돌봄인형 사업」은 치매 어르신의 인지기능 저하와 사회적 고립 등을 예방하고자 인공지능이 탑재된 돌봄인형을 지원하여 인지, 건강 등의 비대면 돌봄 서비스를 제공하는 사업이다.
+              </li>
+              <li>
+                한편 김제시는 작년에 이어 올해도 2025년 기금사업아이디어 공모를 추진 하였으며 계속해서 기부자가 공감하고 시민에게 실질적으로 혜택을 줄 수 있는 사업을 발굴해 나갈 계획이다.
+              </li>
+            </ul>
+            <div class="table_wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>연번</th>
+                    <th>사업명<br/>(실무부서)</th>
+                    <th>사업기간</th>
+                    <th>소요예산<br/>(백만원)</th>
+                    <th>사업대상</th>
+                    <th>사업내용</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="ali-center">1</td>
+                    <td class="ali-center">
+                      청년근로자 알뜰 교통비 지원<br/>
+                      (투자유치과)
+                    </td>
+                    <td>
+                      ’24.1.&#126;11.
+                    </td>
+                    <td class="ali-center">
+                      99
+                    </td>
+                    <td class="ali-center">
+                      김제 중소제조기업에 재직 중이면서 김제 거주 청년 근로자
+                    </td>
+                    <td>
+                      매월 5만원 출퇴근 교통비 지급<br/>
+                      (김제사랑카드 포인트)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ali-center">2</td>
+                    <td class="ali-center">
+                      치매 어르신 인공지능 돌봄인형 지원<br/>
+                      (치매재활과)
+                    </td>
+                    <td>
+                      ’24.8.&#126;12.
+                    </td>
+                    <td class="ali-center">
+                      20
+                    </td>
+                    <td class="ali-center">
+                      김제 치매안심센터 등록 치매환자
+                    </td>
+                    <td>
+                      치매 어르신 인공지능 돌봄인형 지원 <br/>
+                      (복약 알람, GPS, 긴급호출, 뇌활동 놀이 기능 등 탑재)
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

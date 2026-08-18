@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>지자체선택(지도)-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+    <link rel="stylesheet" href="/static/css/honor_comu.css">
+    <!--페이지네이션-->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-not-arrow"></span>
+                        마이페이지
+                        <span class="txt-not-arrow"></span>
+                        명예의전당
+                    </span>
+                    <h2 class="page-title-txt">명예의 전당</h2>
+                </div>
+            </section>
+            <section id="contents" class="honor">
+                <div class="center">
+                    <div class="h_total" style="padding-top: 40px;">
+                        <!-- <div class="h_total-lv3"></div>
+                        <div class="h_total-lv2"></div>
+                        <div class="h_total-lv1"></div> -->
+                        <div class="honor_grade"  v-for="(item, index) in totalList">
+                            <div class="grade_wrap">
+                                <img :src="'/static/images/icon/honor_grade' + (index + 1) + '.png'" alt="" :class="'grade' + (index + 1)">
+                            </div>
+                            <div class="grade_standard"><span>{{item.label}} 명예 </span> <span class="t_count">{{item.levelCnt}} 건</span></div>
+                        </div>
+                    </div>
+
+                    <div class="h_card_wrap">
+                        <div class="h_card" v-for="(data,i) in honorList" :key="i"
+                            :class="{'honor0' : data.honorCntrbtrLevelCode == 0,'honor1' : data.honorCntrbtrLevelCode == 100, 'honor2' : data.honorCntrbtrLevelCode == 200, 'honor3' : data.honorCntrbtrLevelCode == 300}">
+                            <div class="h_year">{{data.stdrYear}}년</div>
+                            <div class="h_tit">{{data.label}} 기부자</div>
+                            <div class="h_loc">{{data.upperLocgovNm}} {{data.locgovNm}}</div>
+                        </div>
+                        <div class="h_card honor0">
+                            <div class="h_tit">명예기부자?</div>
+                            <div class="s-txt">고향사랑 기부 완료시 명예기부자로
+                                선정됩니다. 지자체별 설정 금액에 따라
+                                획득 가능한 명예기부자가 달라집니다.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-mypage-lnb-ali': httpVueLoader('/components/layouts/mypage-lnb_ali.vue'),
+
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue') //pagination
+            },
+            data: {
+                honorList: [],
+                totalList: [],
+                
+                page: {
+                    onsubmitType: "return false;",
+                    menuUrl: "/mypage/honorList.html"
+                },
+                isNoData: true
+
+
+            },
+            methods: {
+                init: function (index) {
+					
+					$s.api.postSubmit('/api/mypage/honorList', {}, function (response) {
+						vm.totalList = response.total;
+						vm.honorList = response.honorList;
+					})
+                }
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init();
+                    
+                    this.init();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

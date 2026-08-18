@@ -1,0 +1,1352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.catalog.CatalogMngMapper">
+
+	<!-- 소식지 버전 등록 -->
+	<insert id="insertCatalogMng" parameterType="saleson.shop.catalog.domain.CatalogMng">
+		/** saleson.shop.catalog.CatalogMngMapper.insertCatalogMng */
+		INSERT INTO G_CATALOG_MNG (
+			CATALOG_YEAR,
+			CATALOG_NO,
+			DISPLAY_YN,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID
+			)
+		VALUES (
+			#{catalogYearStr},
+			#{catalogNoStr},
+			#{displayYn},
+			#{userId},
+			CURRENT_TIMESTAMP,
+			#{userId}
+			)
+
+	</insert>
+
+	<!-- 소식지 중복체크 -->
+	<select id="isDuplicateCatalog" parameterType="saleson.shop.catalog.support.CatalogMngParam" resultType="int">
+	    SELECT COUNT(*) AS dupCnt
+	    FROM G_CATALOG_MNG
+	    WHERE CATALOG_YEAR = #{catalogYearStr}
+	    AND CATALOG_NO = #{catalogNoStr}
+	</select>
+
+	<!-- 소식지 버전 수정 -->
+	<update id="updateCatalogMng" parameterType="saleson.shop.catalog.domain.CatalogMng">
+		/** saleson.shop.catalog.CatalogMngMapper.updateCatalogMng */
+		UPDATE G_CATALOG_MNG SET
+			DISPLAY_YN = #{displayYn}
+			, LAST_UPDUSR_ID = #{userId}
+			, LAST_UPDT_PNTTM = SYS_DATETIME
+		WHERE 1=1
+		AND CATALOG_YEAR = #{catalogYearStr}
+		AND CATALOG_NO = #{catalogNoStr}
+
+	</update>
+
+	<!-- 소식지 버전 목록 조회 -->
+	<select id="selectCatalogMngList" parameterType="saleson.shop.catalog.support.CatalogMngParam" resultType="saleson.shop.catalog.domain.CatalogMng">
+		/** saleson.shop.catalog.CatalogMngMapper.selectCatalogMngList */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY CATALOG_YEAR, CATALOG_NO) AS ROW_NUMBER
+			, CATALOG_YEAR
+			, CATALOG_NO
+			, DISPLAY_YN
+			, FRST_REGIST_PNTTM
+			, LAST_UPDT_PNTTM
+		FROM G_CATALOG_MNG
+		WHERE 1=1
+		<if test="catalogYear > 0">
+		AND CATALOG_YEAR = #{catalogYear}
+		</if>
+		<if test="displayYn != null and displayYn != ''">
+		AND DISPLAY_YN = #{displayYn}
+		</if>
+		ORDER BY ROW_NUMBER DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 소식지 상세 페이지 조회 -->
+	<select id="selectCatalogMngDetail" parameterType="saleson.shop.catalog.support.CatalogMngParam" resultType="saleson.shop.catalog.domain.CatalogMng">
+		/** saleson.shop.catalog.CatalogMngMapper.selectCatalogMngList */
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY CATALOG_YEAR, CATALOG_NO) AS ROW_NUMBER
+			, CATALOG_YEAR
+			, CATALOG_NO
+			, DISPLAY_YN
+		FROM G_CATALOG_MNG
+		WHERE 1=1
+		<if test="catalogYear > 0">
+		AND CATALOG_YEAR = #{catalogYear}
+		</if>
+		<if test="displayYn != null and displayYn != ''">
+		AND DISPLAY_YN = #{displayYn}
+		</if>
+	</select>
+
+	<!-- 소식지 목록 카운트 조회 -->
+	<select id="selectCatalogMngListCnt" parameterType="saleson.shop.catalog.domain.CatalogMng"
+									  	 resultType="Integer">
+		SELECT 	COUNT(CATALOG_NO)
+		FROM 	G_CATALOG_MNG
+		WHERE 	1 = 1
+		<if test="catalogYear > 0">
+		AND CATALOG_YEAR = #{catalogYear}
+		</if>
+		<if test="displayYn != null and displayYn != ''">
+		AND DISPLAY_YN = #{displayYn}
+		</if>
+
+	</select>
+
+	<!-- 소식지 버전 등록된 년도 조회 -->
+	<select id="selectCatalogMngYearList" resultType="saleson.shop.catalog.domain.CatalogMng">
+		/** saleson.shop.catalog.CatalogMngMapper.selectCatalogMngYearList */
+		SELECT
+			CATALOG_YEAR
+			, CATALOG_NO
+		FROM G_CATALOG_MNG
+		GROUP BY CATALOG_YEAR
+		ORDER BY CATALOG_YEAR DESC
+
+	</select>
+
+	<!-- 소식지 버전 등록된 호수 조회 -->
+	<select id="selectCatalogMngNoList"  parameterType="String" resultType="java.util.HashMap">
+		/** saleson.shop.catalog.CatalogMngMapper.selectCatalogMngNoList */
+		SELECT
+			DISTINCT CATALOG_NO
+		FROM
+			G_CATALOG_MNG
+		WHERE
+			CATALOG_YEAR = #{catalogYear}
+		ORDER BY CATALOG_NO DESC
+	</select>
+
+	<!-- 지자체별 인기 답례품 등록 -->
+	<insert id="insertLocgovFavItemMng" parameterType="saleson.shop.catalog.domain.LocgovFavItemMng">
+		/** saleson.shop.catalog.CatalogMngMapper.insertLocgovFavItemMng */
+		MERGE INTO G_LOCGOV_FAV_ITEM_MNG
+		USING DB_ROOT
+		ON	(CATALOG_YEAR = #{catalogYear} AND CATALOG_NO = #{catalogNo} AND LOCGOV_CODE = #{locgovCode})
+		WHEN MATCHED THEN
+			UPDATE SET LAST_UPDUSR_ID = #{userId}
+					, LAST_UPDT_PNTTM = SYS_DATETIME
+					, DELETE_YN = 'N'
+					, ITEM_ID = #{itemId}
+		WHEN NOT MATCHED THEN
+			INSERT	(
+				LOCGOV_CODE
+				, CATALOG_YEAR
+				, CATALOG_NO
+				, DELETE_YN
+				, ITEM_ID
+				, FRST_REGISTER_ID
+				, LAST_UPDUSR_ID
+			)
+			VALUES	(
+				#{locgovCode}
+				, #{catalogYear}
+				, #{catalogNo}
+				, 'N'
+				, #{itemId}
+				, #{userId}
+				, #{userId}
+			)
+	</insert>
+
+
+	<!-- 지자체별 인기 답례품 수정 -->
+	<update id="updateLocgovFavItemMng" parameterType="saleson.shop.catalog.domain.LocgovFavItemMng">
+		/** saleson.shop.catalog.CatalogMngMapper.updateLocgovFavItemMng */
+		UPDATE G_LOCGOV_FAV_ITEM_MNG SET
+			LAST_UPDUSR_ID = #{userId}
+			, LAST_UPDT_PNTTM = SYS_DATETIME
+			<if test="deleteYn != null and deleteYn != ''">
+			, DELETE_YN = #{deleteYn}
+			</if>
+			<if test="itemId > 0">
+			, ITEM_ID = #{itemId}
+			</if>
+		WHERE 1=1
+		AND CATALOG_YEAR = #{catalogYear}
+		AND CATALOG_NO = #{catalogNo}
+		AND LOCGOV_CODE = #{locgovCode}
+
+	</update>
+
+	<!-- 지자체별 인기답례품 목록 조회 -->
+	<select id="selectLocgovFavItemMngList" parameterType="saleson.shop.catalog.support.LocgovFavItemMngParam" resultType="saleson.shop.catalog.domain.LocgovFavItemMng">
+		/** saleson.shop.catalog.CatalogMngMapper.selectLocgovFavItemMngList */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+			LFIM.LOCGOV_CODE
+			, LFIM.CATALOG_YEAR
+			, LFIM.CATALOG_NO
+			, LFIM.DELETE_YN
+			, LFIM.FRST_REGIST_PNTTM
+			, LFIM.LAST_UPDT_PNTTM
+			, L.UPPER_LOCGOV_NM || ' ' || L.LOCGOV_NM AS LOCGOV_NM
+			, CM.DISPLAY_YN
+			, I.ITEM_USER_CODE
+			, IFNULL(I.SALE_PRICE, 0) AS SALE_PRICE
+			, I.ITEM_NAME
+			, I.ITEM_ID
+			, I.ITEM_IMAGE
+			, I.DATA_STATUS_CODE
+			, I.DISPLAY_FLAG
+			, I.ITEM_USER_CODE
+			, I.SALE_PRICE
+			, S.COMPANY_NAME
+		FROM G_LOCGOV_FAV_ITEM_MNG LFIM
+			JOIN G_CATALOG_MNG CM ON LFIM.CATALOG_YEAR = CM.CATALOG_YEAR AND LFIM.CATALOG_NO = CM.CATALOG_NO
+			LEFT OUTER JOIN G_LOCGOV L ON LFIM.LOCGOV_CODE = L.LOCGOV_CODE
+			LEFT OUTER JOIN OP_ITEM I ON I.ITEM_ID = LFIM.ITEM_ID
+			LEFT OUTER JOIN OP_SELLER S ON S.SELLER_ID = I.SELLER_ID
+		WHERE 1=1
+		<choose>
+			<when test="locgovCode != null and locgovCode != ''">
+				AND LFIM.LOCGOV_CODE = #{locgovCode}
+			</when>
+			<when test="upperLocgovCode != null and upperLocgovCode != ''">
+				AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+			</when>
+			<when test="itemUserCodeListArr != null and itemUserCodeListArr != ''">
+				AND I.ITEM_USER_CODE NOT IN (
+				<foreach item="item" collection="itemUserCodeListArr" separator=",">
+					#{item}
+				</foreach>
+				)
+			</when>
+		</choose>
+		<if test="deleteYn != null and deleteYn != ''">
+			AND LFIM.DELETE_YN = #{deleteYn}
+		</if>
+		<if test="searchStartDate != null and searchStartDate != ''
+					and searchEndDate != null and searchEndDate != ''">
+			AND LFIM.FRST_REGIST_PNTTM BETWEEN CONCAT(#{searchStartDate}, '000000') AND CONCAT(#{searchEndDate}, '235959')
+		</if>
+		<if test="catalogYearNo != null and catalogYearNo != ''">
+			AND LFIM.CATALOG_YEAR = #{catalogYear}
+			AND LFIM.CATALOG_NO = #{catalogNo}
+		</if>
+		<choose>
+			<when test="conditionType == 'FRONT'">
+				ORDER BY RANDOM()
+			</when>
+			<otherwise>
+				ORDER BY LFIM.FRST_REGIST_PNTTM DESC
+			</otherwise>
+		</choose>
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 지자체별 인기답례품 목록 합계 조회 -->
+	<select id="selectLocgovFavItemMngCount" parameterType="saleson.shop.catalog.support.LocgovFavItemMngParam"
+										resultType="Integer">
+		/** saleson.shop.catalog.CatalogMngMapper.selectLocgovFavItemMngCount */
+		SELECT COUNT(*)
+		FROM
+		(
+			SELECT
+				LFIM.LOCGOV_CODE
+				, LFIM.CATALOG_YEAR
+				, LFIM.CATALOG_NO
+				, LFIM.DELETE_YN
+				, LFIM.FRST_REGIST_PNTTM
+				, LFIM.LAST_UPDT_PNTTM
+				, L.UPPER_LOCGOV_NM || '' || L.LOCGOV_NM AS LOCGOV_NM
+			FROM G_LOCGOV_FAV_ITEM_MNG LFIM
+				JOIN G_CATALOG_MNG CM ON LFIM.CATALOG_YEAR = CM.CATALOG_YEAR AND LFIM.CATALOG_NO = CM.CATALOG_NO
+				LEFT OUTER JOIN G_LOCGOV L ON LFIM.LOCGOV_CODE = L.LOCGOV_CODE
+			WHERE 1=1
+			<choose>
+				<when test="locgovCode != null and locgovCode != ''">
+					AND LFIM.LOCGOV_CODE = #{locgovCode}
+				</when>
+				<when test="upperLocgovCode != null and upperLocgovCode != ''">
+					AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+				</when>
+			</choose>
+			<if test="deleteYn != null and deleteYn != ''">
+				AND LFIM.DELETE_YN = #{deleteYn}ㄹ
+			</if>
+			<if test="searchStartDate != null and searchStartDate != ''
+						and searchEndDate != null and searchEndDate != ''">
+				AND LFIM.FRST_REGIST_PNTTM BETWEEN CONCAT(#{searchStartDate}, '000000') AND CONCAT(#{searchEndDate}, '235959')
+			</if>
+			<if test="catalogYear > 0 and catalogNo > 0">
+				AND LFIM.CATALOG_YEAR = #{catalogYear}
+				AND LFIM.CATALOG_NO = #{catalogNo}
+			</if>
+		)
+	</select>
+
+	<!-- 지자체별 인기답례품 조회 -->
+	<select id="selectLocgovFavItemMng" parameterType="saleson.shop.catalog.support.LocgovFavItemMngParam" resultType="saleson.shop.catalog.domain.LocgovFavItemMng">
+		/** saleson.shop.catalog.CatalogMngMapper.selectLocgovFavItemMng */
+		SELECT
+			LFIM.LOCGOV_CODE
+			, LFIM.CATALOG_YEAR
+			, LFIM.CATALOG_NO
+			, LFIM.DELETE_YN
+			, IFNULL(LFIM.ITEM_ID, 0) AS ITEM_ID
+			, LFIM.FRST_REGIST_PNTTM
+			, LFIM.LAST_UPDT_PNTTM
+			, L.UPPER_LOCGOV_NM || ' ' || L.LOCGOV_NM as LOCGOV_NM
+			, CM.DISPLAY_YN
+			, I.ITEM_USER_CODE
+			, IFNULL(I.SALE_PRICE, 0) AS SALE_PRICE
+			, I.ITEM_NAME
+			, I.ITEM_ID
+			, I.ITEM_IMAGE
+			, I.DATA_STATUS_CODE
+			, I.DISPLAY_FLAG
+			, I.ITEM_USER_CODE
+			, I.ITEM_CODE
+		FROM G_LOCGOV_FAV_ITEM_MNG LFIM
+			JOIN G_CATALOG_MNG CM ON LFIM.CATALOG_YEAR = CM.CATALOG_YEAR AND LFIM.CATALOG_NO = CM.CATALOG_NO
+			LEFT OUTER JOIN G_LOCGOV L ON LFIM.LOCGOV_CODE = L.LOCGOV_CODE
+			LEFT OUTER JOIN OP_ITEM I ON I.ITEM_ID = LFIM.ITEM_ID
+		WHERE 1=1
+			<choose>
+				<when test="locgovCode != null and locgovCode != ''">
+					AND LFIM.LOCGOV_CODE = #{locgovCode}
+				</when>
+				<when test="upperLocgovCode != null and upperLocgovCode != ''">
+					AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+				</when>
+			</choose>
+			AND LFIM.CATALOG_YEAR = #{catalogYear}
+			AND LFIM.CATALOG_NO = #{catalogNo}
+
+	</select>
+
+
+
+	<!-- 지자체별 주요답례품 조회 -->
+	<select id="selectNewRgstItemMng" parameterType="saleson.shop.catalog.support.CatalogMngParam" resultMap="saleson.shop.item.ItemMapper.ItemResult">
+	/** saleson.shop.catalog.CatalogMngMapper.selectNewRgstItemMng */
+			<include refid="CommonMapper.paginationHeader" />
+				SELECT
+					*
+				FROM (
+					SELECT
+						SUB_CATALOG_YEAR
+						, SEARCH_START_MONTH
+						, SEARCH_END_MONTH
+
+						, I.ITEM_ID
+						, I.SELLER_ID
+						, I.ITEM_CODE
+						, I.ITEM_USER_CODE
+						, I.ITEM_NAME
+						, I.ITEM_SUMMARY
+						, I.ITEM_DATA_TYPE
+						, I.ITEM_TYPE
+						, I.ITEM_NEW_FLAG
+						, I.ITEM_LABEL
+						, I.ITEM_TYPE1
+						, I.ITEM_TYPE2
+						, I.ITEM_TYPE3
+						, I.ITEM_TYPE4
+						, I.ITEM_TYPE5
+						, I.ITEM_TYPE6
+						, I.ITEM_TYPE7
+						, I.ITEM_TYPE8
+						, I.ITEM_TYPE9
+						, I.ITEM_TYPE10
+						, I.BRAND_ID
+						, I.BRAND
+						, I.SOLD_OUT
+						, I.STOCK_FLAG
+						, I.STOCK_QUANTITY
+						, I.NONMEMBER_ORDER_TYPE
+						, I.TAX_TYPE
+						, I.COMMISSION_TYPE
+						, I.COMMISSION_RATE
+						, I.PRICE_CRITERIA
+
+						, I.ITEM_PRICE
+						, I.COST_PRICE
+						, I.SUPPLY_PRICE
+						, I.SALE_PRICE
+						, I.SALE_PRICE_NONMEMBER_FLAG
+						, I.SALE_PRICE_NONMEMBER
+
+						, I.ADULT_ITEM_YN
+						, I.MOBILE_ITEM_YN
+
+						, I.SPOT_FLAG
+						, I.SPOT_DATE_TYPE
+						, I.SPOT_TYPE
+						, I.SPOT_APPLY_GROUP
+						, I.SPOT_DISCOUNT_AMOUNT
+						, I.SPOT_START_DATE
+						, I.SPOT_END_DATE
+						, I.SPOT_START_TIME
+						, I.SPOT_END_TIME
+						, I.SPOT_WEEK_DAY
+
+						, I.SELLER_DISCOUNT_FLAG
+						, I.SELLER_DISCOUNT_TYPE
+						, I.SELLER_DISCOUNT_AMOUNT
+						, I.SELLER_POINT_FLAG
+
+						, I.SET_DISCOUNT_TYPE
+						, I.SET_DISCOUNT_AMOUNT
+						, I.ITEM_IMAGE
+						, I.ITEM_OPTION_FLAG
+						, I.ITEM_OPTION_TYPE
+						, I.ITEM_OPTION_TITLE1
+						, I.ITEM_OPTION_TITLE2
+						, I.ITEM_OPTION_TITLE3
+						, I.DATA_STATUS_CODE
+						, I.DISPLAY_FLAG
+						, I.COUPON_USE_FLAG
+						, I.NAVER_SHOPPING_ITEM_NAME
+						, I.NAVER_SHOPPING_FLAG
+						, I.NAVER_PAY_FLAG
+
+						, I.PRIVATE_TYPE
+						, L.UPPER_LOCGOV_NM || ' ' || L.LOCGOV_NM AS LOCGOV_NM
+						, I.REPRESENTATIVE_ITEM_YN
+						, I.MINOR_ALLOW_FLAG
+						, I.ORIGIN_COUNTRY
+						, I.MANUFACTURER
+						, I.COLOR
+						, I.WEIGHT
+						, I.SALE_POINT
+
+						, I.STOCK_CODE
+						, I.STOCK_SCHEDULE_AUTO_FLAG
+						, I.STOCK_SCHEDULE_TYPE
+						, I.STOCK_SCHEDULE_DATE
+						, I.STOCK_SCHEDULE_TEXT
+						, I.ORDER_MIN_QUANTITY
+						, I.ORDER_MAX_QUANTITY
+						, I.SALE_QUANTITY
+
+						, I.ITEM_ADDITION_FLAG
+						, I.FREE_GIFT_FLAG
+						, I.FREE_GIFT_NAME
+						, I.ITEM_KEYWORD
+						, I.ITEM_NOTICE_CODE
+						, I.TEAM
+						, I.OPENTIME
+						, I.OTHER_FLAG
+						, I.RECOMMEND_FLAG
+						, I.RELATION_ITEM_DISPLAY_TYPE
+						, I.DELIVERY_COMPANY_ID
+						, I.DELIVERY_COMPANY_NAME
+						, I.DELIVERY_TYPE
+						, I.ITEM_RETURN_FLAG
+						, I.HITS
+
+						, I.MD_ID
+						, I.MD_NAME
+
+						, I.SHIPPING_TYPE
+						, I.SHIPPING
+						, I.SHIPPING_FREE_AMOUNT
+
+						, I.UPDATED_USER_ID
+						, I.UPDATED_DATE
+						, I.CREATED_USER_ID
+						, I.CREATED_DATE
+						, I.ERP_EXCEPTION_TYPE
+
+						, I.ITEM_SELLER_CODE
+						, (
+							CASE WHEN I.SOLD_OUT = '1' THEN
+								'Y'
+							WHEN I.ITEM_OPTION_FLAG = 'N' AND I.STOCK_FLAG = 'Y' AND I.STOCK_QUANTITY = 0 THEN
+								'Y'
+							WHEN I.ITEM_OPTION_FLAG = 'Y' AND I.ITEM_OPTION_TYPE = 'T' AND I.STOCK_FLAG = 'Y' AND I.STOCK_QUANTITY = 0 THEN
+								'Y'
+							WHEN I.ITEM_OPTION_FLAG = 'Y' AND IOST.ITEM_OPTION_SOLD_OUT_FLAG = 'Y' THEN
+								'Y'
+							ELSE
+								'N'
+							END) AS ITEM_SOLD_OUT_FLAG
+						, IFNULL(IOST.ITEM_OPTION_SOLD_OUT_FLAG, 'N') AS ITEM_OPTION_SOLD_OUT_FLAG
+						, IFNULL((SELECT COUNT(*) FROM OP_ITEM_REVIEW WHERE ITEM_ID = I.ITEM_ID AND DISPLAY_FLAG = 'Y'), 0) AS REVIEW_COUNT
+						, ROUND(IFNULL((SELECT SUM(SCORE) / COUNT(*) FROM OP_ITEM_REVIEW WHERE ITEM_ID = I.ITEM_ID AND DISPLAY_FLAG = 'Y'), 0),1) AS REVIEW_SCORE
+
+						, S.SELLER_NAME
+						, S.LOGIN_ID AS SELLER_LOGIN_ID
+						, S.COMPANY_NAME AS SELLER_COMPANY_NAME
+					    , S.COMMISSION_RATE AS SELLER_COMMISSION_RATE
+					FROM OP_ITEM I
+						INNER JOIN OP_ITEM_CATEGORY IC ON I.ITEM_ID = IC.ITEM_ID
+						INNER JOIN OP_CATEGORY C ON IC.CATEGORY_ID = C.CATEGORY_ID AND C.CATEGORY_FLAG = 'Y'
+						INNER JOIN OP_CATEGORY_GROUP G ON C.CATEGORY_GROUP_ID = G.CATEGORY_GROUP_ID AND G.CATEGORY_GROUP_FLAG = 'Y'
+						LEFT JOIN OP_ITEM_OPTION_SOLDOUT IOST ON I.ITEM_ID = IOST.ITEM_ID
+						LEFT OUTER JOIN OP_SELLER S ON I.SELLER_ID = S.SELLER_ID AND S.STATUS_CODE = '2'
+						LEFT OUTER JOIN G_LOCGOV L ON S.LOCGOV_CODE = L.LOCGOV_CODE
+						LEFT OUTER JOIN (
+							SELECT
+								SUB_CATALOG_YEAR
+								, CASE WHEN 1 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 3
+											THEN '01'
+										WHEN 4 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 6
+											THEN '04'
+										WHEN 7 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 9
+											THEN '07'
+										WHEN 10 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 12
+											THEN '10'
+										ELSE '99'
+										END AS SEARCH_START_MONTH
+								, CASE WHEN 1 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 3
+											THEN '03'
+										WHEN 4 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 6
+											THEN '06'
+										WHEN 7 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 9
+											THEN '09'
+										WHEN 10 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 12
+											THEN '12'
+										ELSE '99'
+										END AS SEARCH_END_MONTH
+							FROM (
+								SELECT
+									CAST(CATALOG_YEAR AS VARCHAR) AS SUB_CATALOG_YEAR
+									, MONTH(FRST_REGIST_PNTTM) AS CATALOG_MONTH
+								FROM G_CATALOG_MNG
+								WHERE 1=1
+								AND CATALOG_YEAR = #{catalogYear}
+								AND CATALOG_NO = #{catalogNo}
+								AND DISPLAY_YN = 'Y'
+							)
+						) SUB ON 1=1
+					WHERE 1=1
+						AND I.DATA_STATUS_CODE = '1'
+						AND I.DISPLAY_FLAG = 'Y'
+						AND I.ITEM_DATA_TYPE = '1'
+						AND I.ITEM_TYPE IN ('1', '3')
+						AND I.PRIVATE_TYPE IN ('000')
+					<choose>
+						<when test="locgovCode != null and locgovCode != ''">
+							AND L.LOCGOV_CODE = #{locgovCode}
+						</when>
+						<when test="upperLocgovCode != null and upperLocgovCode != ''">
+							AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+						</when>
+						<when test="itemUserCodeListArr != null and itemUserCodeListArr != ''">
+							AND I.ITEM_USER_CODE NOT IN (
+							<foreach item="item" collection="itemUserCodeListArr" separator=",">
+								#{item}
+							</foreach>
+							)
+						</when>
+					</choose>
+					GROUP BY I.ITEM_ID
+				) T_A
+				WHERE 1=1
+				AND T_A.CREATED_DATE BETWEEN CONCAT(SUB_CATALOG_YEAR, SEARCH_START_MONTH, '01000000') AND CONCAT(SUB_CATALOG_YEAR, SEARCH_END_MONTH, '99999999')
+				ORDER BY RANDOM()
+			<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+
+	<!-- 지자체별 주요답례품 조회 카운드 -->
+	<select id="selectNewRgstItemMngCount" parameterType="saleson.shop.catalog.support.CatalogMngParam" resultType="int">
+	/** saleson.shop.catalog.CatalogMngMapper.selectNewRgstItemMngCount */
+			SELECT
+				COUNT(*)
+			FROM (
+				SELECT
+					*
+				FROM (
+					SELECT
+						SUB_CATALOG_YEAR
+						, SEARCH_START_MONTH
+						, SEARCH_END_MONTH
+						, I.CREATED_DATE
+					FROM OP_ITEM I
+						INNER JOIN OP_ITEM_CATEGORY IC ON I.ITEM_ID = IC.ITEM_ID
+						INNER JOIN OP_CATEGORY C ON IC.CATEGORY_ID = C.CATEGORY_ID AND C.CATEGORY_FLAG = 'Y'
+						INNER JOIN OP_CATEGORY_GROUP G ON C.CATEGORY_GROUP_ID = G.CATEGORY_GROUP_ID AND G.CATEGORY_GROUP_FLAG = 'Y'
+						LEFT JOIN OP_ITEM_OPTION_SOLDOUT IOST ON I.ITEM_ID = IOST.ITEM_ID
+						LEFT OUTER JOIN OP_SELLER S ON I.SELLER_ID = S.SELLER_ID AND S.STATUS_CODE = '2'
+						LEFT OUTER JOIN G_LOCGOV L ON S.LOCGOV_CODE = L.LOCGOV_CODE
+						LEFT OUTER JOIN (
+							SELECT
+								SUB_CATALOG_YEAR
+								, CASE WHEN 1 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 3
+											THEN '01'
+										WHEN 4 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 6
+											THEN '04'
+										WHEN 7 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 9
+											THEN '07'
+										WHEN 10 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 12
+											THEN '10'
+										ELSE '99'
+										END AS SEARCH_START_MONTH
+								, CASE WHEN 1 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 3
+											THEN '03'
+										WHEN 4 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 6
+											THEN '06'
+										WHEN 7 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 9
+											THEN '09'
+										WHEN 10 <![CDATA[ <= ]]> CATALOG_MONTH AND CATALOG_MONTH <![CDATA[ <= ]]> 12
+											THEN '12'
+										ELSE '99'
+										END AS SEARCH_END_MONTH
+							FROM (
+								SELECT
+									CAST(CATALOG_YEAR AS VARCHAR) AS SUB_CATALOG_YEAR
+									, MONTH(FRST_REGIST_PNTTM) AS CATALOG_MONTH
+								FROM G_CATALOG_MNG
+								WHERE 1=1
+								AND CATALOG_YEAR = #{catalogYear}
+								AND CATALOG_NO = #{catalogNo}
+								AND DISPLAY_YN = 'Y'
+							)
+						) SUB ON 1=1
+					WHERE 1=1
+						AND I.DATA_STATUS_CODE = '1'
+						AND I.DISPLAY_FLAG = 'Y'
+						AND I.ITEM_DATA_TYPE = '1'
+						AND I.ITEM_TYPE IN ('1', '3')
+						AND I.PRIVATE_TYPE IN ('000')
+					<choose>
+						<when test="locgovCode != null and locgovCode != ''">
+							AND L.LOCGOV_CODE = #{locgovCode}
+						</when>
+						<when test="upperLocgovCode != null and upperLocgovCode != ''">
+							AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+						</when>
+					</choose>
+					GROUP BY I.ITEM_ID
+				) T_A
+				WHERE 1=1
+				AND T_A.CREATED_DATE BETWEEN CONCAT(SUB_CATALOG_YEAR, SEARCH_START_MONTH, '01000000') AND CONCAT(SUB_CATALOG_YEAR, SEARCH_END_MONTH, '99999999')
+			)
+	</select>
+
+
+	<!-- 지자체별 소식지 제철식품관 -->
+	<select id="selectSeasonCatalogItemMng" parameterType="saleson.shop.catalog.support.CatalogMngParam" resultMap="saleson.shop.item.ItemMapper.ItemResult">
+	/** saleson.shop.catalog.CatalogMngMapper.selectSeasonCatalogItemMng */
+			<include refid="CommonMapper.paginationHeader" />
+				SELECT
+					*
+				FROM (
+					SELECT
+						I.ITEM_ID
+						, CATALOG_MONTH
+						, SFI.SEASON_FOOD_MONTH
+						, I.SELLER_ID
+						, I.ITEM_CODE
+						, I.ITEM_USER_CODE
+						, I.ITEM_NAME
+						, I.ITEM_SUMMARY
+						, I.ITEM_DATA_TYPE
+						, I.ITEM_TYPE
+						, I.ITEM_NEW_FLAG
+						, I.ITEM_LABEL
+						, I.ITEM_TYPE1
+						, I.ITEM_TYPE2
+						, I.ITEM_TYPE3
+						, I.ITEM_TYPE4
+						, I.ITEM_TYPE5
+						, I.ITEM_TYPE6
+						, I.ITEM_TYPE7
+						, I.ITEM_TYPE8
+						, I.ITEM_TYPE9
+						, I.ITEM_TYPE10
+						, I.BRAND_ID
+						, I.BRAND
+						, I.SOLD_OUT
+						, I.STOCK_FLAG
+						, I.STOCK_QUANTITY
+						, I.NONMEMBER_ORDER_TYPE
+						, I.TAX_TYPE
+						, I.COMMISSION_TYPE
+						, I.COMMISSION_RATE
+						, I.PRICE_CRITERIA
+
+						, I.ITEM_PRICE
+						, I.COST_PRICE
+						, I.SUPPLY_PRICE
+						, I.SALE_PRICE
+						, I.SALE_PRICE_NONMEMBER_FLAG
+						, I.SALE_PRICE_NONMEMBER
+
+						, I.ADULT_ITEM_YN
+						, I.MOBILE_ITEM_YN
+
+						, I.SPOT_FLAG
+						, I.SPOT_DATE_TYPE
+						, I.SPOT_TYPE
+						, I.SPOT_APPLY_GROUP
+						, I.SPOT_DISCOUNT_AMOUNT
+						, I.SPOT_START_DATE
+						, I.SPOT_END_DATE
+						, I.SPOT_START_TIME
+						, I.SPOT_END_TIME
+						, I.SPOT_WEEK_DAY
+
+						, I.SELLER_DISCOUNT_FLAG
+						, I.SELLER_DISCOUNT_TYPE
+						, I.SELLER_DISCOUNT_AMOUNT
+						, I.SELLER_POINT_FLAG
+
+						, I.SET_DISCOUNT_TYPE
+						, I.SET_DISCOUNT_AMOUNT
+						, I.ITEM_IMAGE
+						, I.ITEM_OPTION_FLAG
+						, I.ITEM_OPTION_TYPE
+						, I.ITEM_OPTION_TITLE1
+						, I.ITEM_OPTION_TITLE2
+						, I.ITEM_OPTION_TITLE3
+						, I.DATA_STATUS_CODE
+						, I.DISPLAY_FLAG
+						, I.COUPON_USE_FLAG
+						, I.NAVER_SHOPPING_ITEM_NAME
+						, I.NAVER_SHOPPING_FLAG
+						, I.NAVER_PAY_FLAG
+
+						, I.PRIVATE_TYPE
+						, L.UPPER_LOCGOV_NM || ' ' || L.LOCGOV_NM AS LOCGOV_NM
+						, I.REPRESENTATIVE_ITEM_YN
+						, I.MINOR_ALLOW_FLAG
+						, I.ORIGIN_COUNTRY
+						, I.MANUFACTURER
+						, I.COLOR
+						, I.WEIGHT
+						, I.SALE_POINT
+
+						, I.STOCK_CODE
+						, I.STOCK_SCHEDULE_AUTO_FLAG
+						, I.STOCK_SCHEDULE_TYPE
+						, I.STOCK_SCHEDULE_DATE
+						, I.STOCK_SCHEDULE_TEXT
+						, I.ORDER_MIN_QUANTITY
+						, I.ORDER_MAX_QUANTITY
+						, I.SALE_QUANTITY
+
+						, I.ITEM_ADDITION_FLAG
+						, I.FREE_GIFT_FLAG
+						, I.FREE_GIFT_NAME
+						, I.ITEM_KEYWORD
+						, I.ITEM_NOTICE_CODE
+						, I.TEAM
+						, I.OPENTIME
+						, I.OTHER_FLAG
+						, I.RECOMMEND_FLAG
+						, I.RELATION_ITEM_DISPLAY_TYPE
+						, I.DELIVERY_COMPANY_ID
+						, I.DELIVERY_COMPANY_NAME
+						, I.DELIVERY_TYPE
+						, I.ITEM_RETURN_FLAG
+						, I.HITS
+
+						, I.MD_ID
+						, I.MD_NAME
+
+						, I.SHIPPING_TYPE
+						, I.SHIPPING
+						, I.SHIPPING_FREE_AMOUNT
+
+						, I.UPDATED_USER_ID
+						, I.UPDATED_DATE
+						, I.CREATED_USER_ID
+						, I.CREATED_DATE
+						, I.ERP_EXCEPTION_TYPE
+
+						, I.ITEM_SELLER_CODE
+						, (
+							CASE WHEN I.SOLD_OUT = '1' THEN
+								'Y'
+							WHEN I.ITEM_OPTION_FLAG = 'N' AND I.STOCK_FLAG = 'Y' AND I.STOCK_QUANTITY = 0 THEN
+								'Y'
+							WHEN I.ITEM_OPTION_FLAG = 'Y' AND I.ITEM_OPTION_TYPE = 'T' AND I.STOCK_FLAG = 'Y' AND I.STOCK_QUANTITY = 0 THEN
+								'Y'
+							WHEN I.ITEM_OPTION_FLAG = 'Y' AND IOST.ITEM_OPTION_SOLD_OUT_FLAG = 'Y' THEN
+								'Y'
+							ELSE
+								'N'
+							END) AS ITEM_SOLD_OUT_FLAG
+						, IFNULL(IOST.ITEM_OPTION_SOLD_OUT_FLAG, 'N') AS ITEM_OPTION_SOLD_OUT_FLAG
+						, IFNULL((SELECT COUNT(*) FROM OP_ITEM_REVIEW WHERE ITEM_ID = I.ITEM_ID AND DISPLAY_FLAG = 'Y'), 0) AS REVIEW_COUNT
+						, ROUND(IFNULL((SELECT SUM(SCORE) / COUNT(*) FROM OP_ITEM_REVIEW WHERE ITEM_ID = I.ITEM_ID AND DISPLAY_FLAG = 'Y'), 0),1) AS REVIEW_SCORE
+
+						, S.SELLER_NAME
+						, S.LOGIN_ID AS SELLER_LOGIN_ID
+						, S.COMPANY_NAME AS SELLER_COMPANY_NAME
+					    , S.COMMISSION_RATE AS SELLER_COMMISSION_RATE
+					FROM OP_ITEM I
+						JOIN G_SEASON_FOOD_ITEM SFI ON I.ITEM_ID = SFI.ITEM_ID
+						INNER JOIN OP_ITEM_CATEGORY IC ON I.ITEM_ID = IC.ITEM_ID
+						INNER JOIN OP_CATEGORY C ON IC.CATEGORY_ID = C.CATEGORY_ID AND C.CATEGORY_FLAG = 'Y'
+						INNER JOIN OP_CATEGORY_GROUP G ON C.CATEGORY_GROUP_ID = G.CATEGORY_GROUP_ID AND G.CATEGORY_GROUP_FLAG = 'Y'
+						LEFT JOIN OP_ITEM_OPTION_SOLDOUT IOST ON I.ITEM_ID = IOST.ITEM_ID
+						LEFT OUTER JOIN OP_SELLER S ON I.SELLER_ID = S.SELLER_ID AND S.STATUS_CODE = '2'
+						LEFT OUTER JOIN G_LOCGOV L ON S.LOCGOV_CODE = L.LOCGOV_CODE
+						LEFT OUTER JOIN (
+							SELECT
+								MONTH(FRST_REGIST_PNTTM) AS CATALOG_MONTH
+							FROM G_CATALOG_MNG
+							WHERE 1=1
+							AND CATALOG_YEAR = #{catalogYear}
+							AND CATALOG_NO = #{catalogNo}
+							AND DISPLAY_YN = 'Y'
+						) SUB ON 1=1
+					WHERE 1=1
+					AND I.DATA_STATUS_CODE = '1'
+					<choose>
+						<when test="locgovCode != null and locgovCode != ''">
+							AND L.LOCGOV_CODE = #{locgovCode}
+						</when>
+						<when test="upperLocgovCode != null and upperLocgovCode != ''">
+							AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+						</when>
+						<when test="itemUserCodeListArr != null and itemUserCodeListArr != ''">
+							AND I.ITEM_USER_CODE NOT IN (
+							<foreach item="item" collection="itemUserCodeListArr" separator=",">
+								#{item}
+							</foreach>
+							)
+						</when>
+					</choose>
+				) T_A
+				WHERE 1=1
+				AND CASE WHEN CATALOG_MONTH IN (1, 2, 3)
+							THEN SEASON_FOOD_MONTH IN (3, 4, 5)
+						WHEN CATALOG_MONTH IN (4, 5, 6)
+							THEN SEASON_FOOD_MONTH IN (6, 7, 8)
+						WHEN CATALOG_MONTH IN (7, 8, 9)
+							THEN SEASON_FOOD_MONTH IN (9, 10, 11)
+						WHEN CATALOG_MONTH IN (10, 11, 12)
+							THEN SEASON_FOOD_MONTH IN (12, 1, 2)
+						ELSE 0=1
+						END
+				GROUP BY T_A.ITEM_ID
+				ORDER BY RANDOM()
+			<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+
+	<!-- 지자체별 소식지 제철식품관 카운트 -->
+	<select id="selectSeasonCatalogItemMngCount" parameterType="saleson.shop.catalog.support.CatalogMngParam" resultType="int">
+	/** saleson.shop.catalog.CatalogMngMapper.selectSeasonCatalogItemMngCount */
+
+			SELECT
+				COUNT(*)
+			FROM (
+				SELECT
+					*
+				FROM (
+					SELECT
+						I.ITEM_ID
+						, CATALOG_MONTH
+						, SFI.SEASON_FOOD_MONTH
+					FROM OP_ITEM I
+						JOIN G_SEASON_FOOD_ITEM SFI ON I.ITEM_ID = SFI.ITEM_ID
+						INNER JOIN OP_ITEM_CATEGORY IC ON I.ITEM_ID = IC.ITEM_ID
+						INNER JOIN OP_CATEGORY C ON IC.CATEGORY_ID = C.CATEGORY_ID AND C.CATEGORY_FLAG = 'Y'
+						INNER JOIN OP_CATEGORY_GROUP G ON C.CATEGORY_GROUP_ID = G.CATEGORY_GROUP_ID AND G.CATEGORY_GROUP_FLAG = 'Y'
+						LEFT JOIN OP_ITEM_OPTION_SOLDOUT IOST ON I.ITEM_ID = IOST.ITEM_ID
+						LEFT OUTER JOIN OP_SELLER S ON I.SELLER_ID = S.SELLER_ID AND S.STATUS_CODE = '2'
+						LEFT OUTER JOIN G_LOCGOV L ON S.LOCGOV_CODE = L.LOCGOV_CODE
+						LEFT OUTER JOIN (
+							SELECT
+								MONTH(FRST_REGIST_PNTTM) AS CATALOG_MONTH
+							FROM G_CATALOG_MNG
+							WHERE 1=1
+							AND CATALOG_YEAR = #{catalogYear}
+							AND CATALOG_NO = #{catalogNo}
+							AND DISPLAY_YN = 'Y'
+						) SUB ON 1=1
+					WHERE 1=1
+					AND I.DATA_STATUS_CODE = '1'
+					<choose>
+						<when test="locgovCode != null and locgovCode != ''">
+							AND L.LOCGOV_CODE = #{locgovCode}
+						</when>
+						<when test="upperLocgovCode != null and upperLocgovCode != ''">
+							AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+						</when>
+					</choose>
+				) T_A
+				WHERE 1=1
+				AND CASE WHEN CATALOG_MONTH IN (1, 2, 3)
+							THEN SEASON_FOOD_MONTH IN (3, 4, 5)
+						WHEN CATALOG_MONTH IN (4, 5, 6)
+							THEN SEASON_FOOD_MONTH IN (6, 7, 8)
+						WHEN CATALOG_MONTH IN (7, 8, 9)
+							THEN SEASON_FOOD_MONTH IN (9, 10, 11)
+						WHEN CATALOG_MONTH IN (10, 11, 12)
+							THEN SEASON_FOOD_MONTH IN (12, 1, 2)
+						ELSE 0=1
+						END
+				GROUP BY T_A.ITEM_ID
+			)
+	</select>
+
+	<insert id="insertCardNews" parameterType="saleson.shop.catalog.domain.CatalogCardNews"  useGeneratedKeys="true" keyProperty="cardNewsId">
+		/** saleson.shop.catalog.CatalogMngMapper.insertCardNews */
+
+		INSERT INTO G_CATALOG_CARD_NEWS_MNG
+			(
+				CATALOG_YEAR
+				, CATALOG_NO
+				, CARD_NEWS_SUBJECT
+				, CARD_NEWS_CN
+				<if test="deleteYn != null and deleteYn != ''">
+					, DELETE_YN
+				</if>
+				, FRST_REGISTER_ID
+				, LAST_UPDUSR_ID
+			)
+			VALUES
+			(
+				#{catalogYear}
+				, #{catalogNo}
+				, #{cardNewsSubject}
+				, #{cardNewsCn}
+				<if test="deleteYn != null and deleteYn != ''">
+					, #{deleteYn}
+				</if>
+				, #{userId}
+				, #{userId}
+			)
+
+
+	</insert>
+
+	<update id="updateCardNews" parameterType="saleson.shop.catalog.domain.CatalogCardNews">
+		/** saleson.shop.catalog.CatalogMngMapper.updateCardNews */
+
+		UPDATE G_CATALOG_CARD_NEWS_MNG
+			SET LAST_UPDUSR_ID = #{userId}
+				, LAST_UPDT_PNTTM = SYS_DATETIME
+				, CATALOG_YEAR = #{catalogYear}
+				, CATALOG_NO = #{catalogNo}
+				, CARD_NEWS_SUBJECT = #{cardNewsSubject}
+				, CARD_NEWS_CN = #{cardNewsCn}
+				<if test="deleteYn != null and deleteYn != ''">
+					, DELETE_YN = #{deleteYn}
+				</if>
+		WHERE CARD_NEWS_ID = #{cardNewsId}
+
+	</update>
+
+
+	<select id="selectCardNewsList" parameterType="saleson.shop.catalog.support.CatalogCardNewsParam"
+									resultType="saleson.shop.catalog.domain.CatalogCardNews">
+		/** saleson.shop.catalog.CatalogMngMapper.selectCardNewsList */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', T_A.USER_NAME, '', 0) AS NAME
+		FROM (
+			SELECT
+				CCNM.CARD_NEWS_ID
+				<!-- , CONCAT(CCNM.CATALOG_YEAR, '-', CCNM.CATALOG_NO) AS CATALOG_YEAR_NO -->
+				, CCNM.CATALOG_YEAR
+				, CCNM.CATALOG_NO
+				, CCNM.CARD_NEWS_SUBJECT
+				, CCNM.CARD_NEWS_CN
+				, CCNM.DELETE_YN
+				, M.USER_NAME
+				, CCNM.FRST_REGIST_PNTTM
+			FROM G_CATALOG_CARD_NEWS_MNG CCNM
+				LEFT OUTER JOIN OP_MANAGER M ON CCNM.FRST_REGISTER_ID = M.USER_ID
+			WHERE 1=1
+				AND CCNM.DELETE_YN = 'N'
+			<if test="catalogYear > 0 and catalogNo > 0">
+				AND CCNM.CATALOG_YEAR = #{catalogYear}
+				AND CCNM.CATALOG_NO = #{catalogNo}
+			</if>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND CCNM.CARD_NEWS_SUBJECT LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="startDate != null and startDate != ''
+						and endDate != null and endDate != ''" >
+				AND CCNM.FRST_REGIST_PNTTM BETWEEN CONCAT(#{startDate}, '000000') AND CONCAT(#{endDate}, '235959')
+			</if>
+			ORDER BY CCNM.FRST_REGIST_PNTTM DESC
+		<include refid="CommonMapper.paginationFooter" />
+		) T_A
+
+	</select>
+
+
+	<select id="selectCardNewsListCnt" parameterType="saleson.shop.catalog.support.CatalogCardNewsParam"
+									resultType="Integer">
+		/** saleson.shop.catalog.CatalogMngMapper.selectCardNewsListCnt */
+
+		SELECT
+			COUNT(*)
+		FROM G_CATALOG_CARD_NEWS_MNG
+		WHERE 1=1
+			AND DELETE_YN = 'N'
+			<if test="catalogYear > 0 and catalogNo > 0">
+				AND CATALOG_YEAR = #{catalogYear}
+				AND CATALOG_NO = #{catalogNo}
+			</if>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND CARD_NEWS_SUBJECT LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="startDate != null and startDate != ''
+						and endDate != null and endDate != ''" >
+				AND FRST_REGIST_PNTTM BETWEEN CONCAT(#{startDate}, '000000') AND CONCAT(#{endDate}, '235959')
+			</if>
+
+	</select>
+
+
+	<select id="selectCardNewsDetail" parameterType="saleson.shop.catalog.support.CatalogCardNewsParam"
+									resultType="saleson.shop.catalog.domain.CatalogCardNews">
+		/** saleson.shop.catalog.CatalogMngMapper.selectCardNewsDetail */
+
+		SELECT
+			CARD_NEWS_ID
+			<!-- , CONCAT(CATALOG_YEAR, '-', CATALOG_NO) AS CATALOG_YEAR_NO -->
+			, CATALOG_YEAR
+			, CATALOG_NO
+			, CARD_NEWS_SUBJECT
+			, CARD_NEWS_CN
+			, DELETE_YN
+			, FRST_REGIST_PNTTM
+		FROM G_CATALOG_CARD_NEWS_MNG
+		WHERE 1=1
+			AND DELETE_YN = 'N'
+			AND CARD_NEWS_ID = #{cardNewsId}
+
+	</select>
+
+
+	<update id="updateCardNewsListDataByLabel" parameterType="saleson.shop.catalog.domain.CatalogCardNews">
+		/** saleson.shop.catalog.CatalogMngMapper.updateCardNewsListDataByLabel */
+		UPDATE G_CATALOG_CARD_NEWS_MNG
+			SET DELETE_YN = #{deleteYn}
+				, LAST_UPDUSR_ID = #{userId}
+				, LAST_UPDT_PNTTM = SYS_DATETIME
+		WHERE 1=1
+			AND CARD_NEWS_ID IN (
+			<foreach item="cardNewsId" collection="id" separator=",">
+				#{cardNewsId}
+			</foreach>
+			)
+	</update>
+
+
+	<select id="selectCardNewsImgDesc" parameterType="saleson.shop.catalog.support.CatalogCardNewsParam"
+										resultType="saleson.shop.catalog.domain.CatalogCardNewsImageExplain">
+	/** saleson.shop.catalog.CatalogMngMapper.selectCardNewsImgDesc */
+		SELECT
+			CARD_NEWS_ID
+			, IMG_DESC
+			, IMG_SEQ
+		FROM G_CATALOG_CARD_NEWS_IMG_DESC
+		WHERE CARD_NEWS_ID = #{cardNewsId}
+		ORDER BY IMG_SEQ
+
+	</select>
+
+
+	<delete id="deleteCardNewsImgDesc" parameterType="saleson.shop.catalog.domain.CatalogCardNews">
+	/** saleson.shop.catalog.CatalogMngMapper.deleteCardNewsImgDesc */
+		DELETE G_CATALOG_CARD_NEWS_IMG_DESC
+		WHERE CARD_NEWS_ID = #{cardNewsId}
+
+	</delete>
+
+
+
+	<insert id="insertCardNewsImgDesc" parameterType="saleson.shop.catalog.domain.CatalogCardNews">
+	/** saleson.shop.catalog.CatalogMngMapper.insertCardNewsImgDesc */
+		INSERT INTO G_CATALOG_CARD_NEWS_IMG_DESC
+		(
+			CARD_NEWS_ID
+			, IMG_DESC
+			, IMG_SEQ
+			, FRST_REGISTER_ID
+		)
+		VALUES
+		<foreach item="cardNewsImageExplain" collection="cardNewsImageExplains" separator=",">
+			(
+				#{cardNewsId}
+				, #{cardNewsImageExplain.imgDesc}
+				, #{cardNewsImageExplain.imgSeq}
+				, #{userId}
+			)
+		</foreach>
+
+	</insert>
+
+
+
+
+	<select id="selectCatalogContentMngList"  parameterType="saleson.shop.catalog.support.CatalogContentMngParam"
+													resultType="saleson.shop.catalog.domain.CatalogContentMng">
+			/* saleson.shop.catalog.CatalogMngMapper.selectCatalogContentMngList 소식지 컨텐츠 목록 조회 */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+			T_A.*
+			, ROWNUM AS `ROW_NUMBER`
+		FROM (
+			SELECT
+				CCM.CATALOG_CONTENT_ID
+				, CCM.CATALOG_YEAR
+				, CCM.CATALOG_NO
+				, CCM.CONTENT_TYPE
+				, CCM.CONTENT_SUB_TYPE
+				, CCM.CATALOG_CONTENT_SUBJECT
+				<if test="display == 'FRONT'">
+				, CCM.CATALOG_CONTENT_CN
+				</if>
+				, CCM.THUMBNAIL_IMG_PATH
+				, CCM.LOCGOV_CODE
+				, L.UPPER_LOCGOV_CODE
+				, L.UPPER_LOCGOV_NM
+				, L.LOCGOV_NM
+				, CCM.DISPLAY_YN
+				, CCM.BANNER_YN
+				, ROWNUM AS `ROW_NUMBER`
+				, CCM.FRST_REGIST_PNTTM
+			FROM G_CATALOG_CONTENT_MNG CCM
+				JOIN G_CATALOG_MNG CM ON CCM.CATALOG_YEAR = CM.CATALOG_YEAR AND CCM.CATALOG_NO = CM.CATALOG_NO
+				LEFT JOIN G_LOCGOV L ON L.LOCGOV_CODE = CCM.LOCGOV_CODE
+			WHERE 1=1
+			<if test="display == 'FRONT'">
+				AND CCM.DISPLAY_YN = 'Y'
+				AND CM.DISPLAY_YN = 'Y'
+			</if>
+			<choose>
+				<when test="locgovCode != null and locgovCode != ''">
+					AND CCM.LOCGOV_CODE = #{locgovCode}
+				</when>
+				<when test="upperLocgovCode != null and upperLocgovCode != ''">
+					AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+				</when>
+			</choose>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND CCM.CATALOG_CONTENT_SUBJECT LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="catalogYear != null and catalogYear != ''">
+				AND CCM.CATALOG_YEAR = #{catalogYear}
+			</if>
+			<if test="displayYn != null and displayYn != ''">
+				AND CCM.DISPLAY_YN = 'Y'
+			</if>
+			<if test="bannerYn != null and bannerYn != ''">
+				AND CCM.BANNER_YN = 'Y'
+			</if>
+			ORDER BY CCM.CATALOG_CONTENT_ID
+		) T_A
+		ORDER BY T_A.CATALOG_CONTENT_ID DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+
+
+	<select id="selectCatalogContentMngListCnt"  parameterType="saleson.shop.catalog.support.CatalogContentMngParam"
+													resultType="int">
+			/* saleson.shop.catalog.CatalogMngMapper.selectCatalogContentMngListCnt 소식지 컨텐츠 조회 카운트 */
+
+			SELECT
+				COUNT(*)
+			FROM G_CATALOG_CONTENT_MNG CCM
+				JOIN G_CATALOG_MNG CM ON CCM.CATALOG_YEAR = CM.CATALOG_YEAR AND CCM.CATALOG_NO = CM.CATALOG_NO
+				LEFT JOIN G_LOCGOV L ON L.LOCGOV_CODE = CCM.LOCGOV_CODE
+			WHERE 1=1
+			<if test="display == 'FRONT'">
+				AND CCM.DISPLAY_YN = 'Y'
+				AND CM.DISPLAY_YN = 'Y'
+			</if>
+			<choose>
+				<when test="locgovCode != null and locgovCode != ''">
+					AND CCM.LOCGOV_CODE = #{locgovCode}
+				</when>
+				<when test="upperLocgovCode != null and upperLocgovCode != ''">
+					AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+				</when>
+			</choose>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				AND CCM.CATALOG_CONTENT_SUBJECT LIKE CONCAT('%', #{searchKeyword}, '%')
+			</if>
+			<if test="catalogYear != null and catalogYear != ''">
+				AND CCM.CATALOG_YEAR = #{catalogYear}
+			</if>
+			<if test="displayYn != null and displayYn != ''">
+				AND CCM.DISPLAY_YN = 'Y'
+			</if>
+			<if test="bannerYn != null and bannerYn != ''">
+				AND CCM.BANNER_YN = 'Y'
+			</if>
+			ORDER BY CCM.CATALOG_CONTENT_ID DESC
+
+	</select>
+
+
+	<select id="selectCatalogContentMngDetail" parameterType="saleson.shop.catalog.support.CatalogContentMngParam"
+													resultType="saleson.shop.catalog.domain.CatalogContentMng">
+
+			/* saleson.shop.catalog.CatalogMngMapper.selectCatalogContentMngDetail 소식지 컨텐츠 상세 조회 */
+
+			SELECT
+				CCM.CATALOG_CONTENT_ID
+				, CCM.CATALOG_YEAR
+				, CCM.CATALOG_NO
+				, CCM.CONTENT_TYPE
+				, CCM.CONTENT_SUB_TYPE
+				, CCM.CATALOG_CONTENT_SUBJECT
+				, CCM.CATALOG_CONTENT_CN
+				, CCM.THUMBNAIL_IMG_PATH
+				, CCM.CATALOG_CONTENT_CN2
+				, CCM.THUMBNAIL_IMG_PATH2
+				, CCM.LOCGOV_CODE
+				, L.UPPER_LOCGOV_CODE
+				, L.UPPER_LOCGOV_NM
+				, L.LOCGOV_NM
+				, CCM.DISPLAY_YN
+				, CCM.BANNER_YN
+			FROM G_CATALOG_CONTENT_MNG CCM
+				JOIN G_CATALOG_MNG CM ON CCM.CATALOG_YEAR = CM.CATALOG_YEAR AND CCM.CATALOG_NO = CM.CATALOG_NO
+				LEFT JOIN G_LOCGOV L ON L.LOCGOV_CODE = CCM.LOCGOV_CODE
+			WHERE 1=1
+				AND CCM.CATALOG_CONTENT_ID = #{catalogContentId}
+			<if test="display == 'FRONT'">
+				AND CCM.DISPLAY_YN = 'Y'
+				AND CM.DISPLAY_YN = 'Y'
+			</if>
+
+	</select>
+
+
+
+	<insert id="insertCatalogContentMng" parameterType="saleson.shop.catalog.domain.CatalogContentMng"
+												useGeneratedKeys="true" keyProperty="catalogContentId">
+			/* saleson.shop.catalog.CatalogMngMapper.insertCatalogContentMng 소식지 컨텐츠 등록 */
+			INSERT INTO G_CATALOG_CONTENT_MNG
+				(
+					CATALOG_YEAR
+					, CATALOG_NO
+					, CONTENT_TYPE
+					, CONTENT_SUB_TYPE
+					, CATALOG_CONTENT_SUBJECT
+					, THUMBNAIL_IMG_PATH
+					, CATALOG_CONTENT_CN
+					, THUMBNAIL_IMG_PATH2
+					, CATALOG_CONTENT_CN2
+					, LOCGOV_CODE
+					, DISPLAY_YN
+					, BANNER_YN
+					, FRST_REGISTER_ID
+					, LAST_UPDUSR_ID
+				)
+				VALUES
+				(
+					#{catalogYear}
+					, #{catalogNo}
+					, #{contentType}
+					, #{contentSubType}
+					, #{catalogContentSubject}
+					, #{thumbnailImgPath}
+					, #{catalogContentCn}
+					, #{thumbnailImgPath2}
+					, #{catalogContentCn2}
+					, #{locgovCode}
+					, #{displayYn}
+					, #{bannerYn}
+					, #{userId}
+					, #{userId}
+				)
+
+	</insert>
+
+
+	<update id="updateCatalogContentMng" parameterType="saleson.shop.catalog.domain.CatalogContentMng">
+			/* saleson.shop.catalog.CatalogMngMapper.updateCatalogContentMng 소식지 컨텐츠 수정 */
+			UPDATE G_CATALOG_CONTENT_MNG
+			SET LAST_UPDUSR_ID = #{userId}
+				, LAST_UPDT_PNTTM = SYS_DATETIME
+				<if test="contentType != null and contentType != ''">
+				, CONTENT_TYPE = #{contentType}
+				</if>
+				<if test="contentSubType != null and contentSubType != ''">
+				, CONTENT_SUB_TYPE = #{contentSubType}
+				</if>
+				<if test="catalogContentSubject != null and catalogContentSubject != ''">
+				, CATALOG_CONTENT_SUBJECT = #{catalogContentSubject}
+				</if>
+				<if test="catalogContentCn != null and catalogContentCn != ''">
+				, CATALOG_CONTENT_CN = #{catalogContentCn}
+				</if>
+				<if test="thumbnailImgPath != null and thumbnailImgPath != ''">
+				, THUMBNAIL_IMG_PATH = #{thumbnailImgPath}
+				</if>
+				<if test="catalogContentCn2 != null and catalogContentCn2 != ''">
+				, CATALOG_CONTENT_CN2 = #{catalogContentCn2}
+				</if>
+				<if test="thumbnailImgPath2 != null and thumbnailImgPath2 != ''">
+				, THUMBNAIL_IMG_PATH2 = #{thumbnailImgPath2}
+				</if>
+				<if test="locgovCode != null and locgovCode != ''">
+				, LOCGOV_CODE = #{locgovCode}
+				</if>
+				<if test="displayYn != null and displayYn != ''">
+				, DISPLAY_YN = #{displayYn}
+				</if>
+				<if test="bannerYn != null and bannerYn != ''">
+				, BANNER_YN = #{bannerYn}
+				</if>
+			WHERE CATALOG_CONTENT_ID = #{catalogContentId}
+
+	</update>
+
+	<select id="selectCatalogContentImgDesc" parameterType="saleson.shop.catalog.support.CatalogContentMngParam"
+										resultType="saleson.shop.catalog.domain.CatalogContentImageExplain">
+	/** saleson.shop.catalog.CatalogMngMapper.selectCatalogContentImgDesc */
+		SELECT
+			CATALOG_CONTENT_ID
+			, IMG_DESC
+			, IMG_SEQ
+		FROM G_CATALOG_CONTENT_IMG_DESC
+		WHERE CATALOG_CONTENT_ID = #{catalogContentId}
+		ORDER BY IMG_SEQ
+
+	</select>
+
+
+	<delete id="deleteCatalogContentImgDesc" parameterType="saleson.shop.catalog.domain.CatalogContentMng">
+	/** saleson.shop.catalog.CatalogMngMapper.deleteCatalogContentImgDesc */
+		DELETE G_CATALOG_CONTENT_IMG_DESC
+		WHERE CATALOG_CONTENT_ID = #{catalogContentId}
+
+	</delete>
+
+
+
+	<insert id="insertCatalogContentImgDesc" parameterType="saleson.shop.catalog.domain.CatalogContentMng">
+	/** saleson.shop.catalog.CatalogMngMapper.insertCatalogContentImgDesc */
+		INSERT INTO G_CATALOG_CONTENT_IMG_DESC
+		(
+			CATALOG_CONTENT_ID
+			, IMG_DESC
+			, IMG_SEQ
+			, FRST_REGISTER_ID
+		)
+		VALUES
+		<foreach item="CatalogContentImageExplain" collection="catalogContentImageExplain" separator=",">
+			(
+				#{catalogContentId}
+				, #{catalogContentImageExplain.imgDesc}
+				, #{catalogContentImageExplain.imgSeq}
+				, #{userId}
+			)
+		</foreach>
+
+	</insert>
+
+
+
+
+</mapper>

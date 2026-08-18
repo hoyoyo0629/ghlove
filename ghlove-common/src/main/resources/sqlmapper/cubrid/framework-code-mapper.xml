@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onlinepowers.framework.repository.mapper.CodeMapper">
+	<resultMap id="codeInfoResultMap" type="com.onlinepowers.framework.repository.CodeInfo">
+		<id property="key.codeType"	column="CODE_TYPE" 	javaType="string" 	jdbcType="VARCHAR" />
+		<id property="key.id"		column="ID" 		javaType="string" 	jdbcType="VARCHAR" />
+		<id property="key.language"	column="LANGUAGE" 	javaType="string"	jdbcType="VARCHAR" />
+		<result property="label" 		column="LABEL" 		javaType="string" 	jdbcType="VARCHAR" />	
+		<result property="detail" 		column="DETAIL" 	javaType="string" 	jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getCodeInfo" parameterType="com.onlinepowers.framework.repository.I18nKey"
+		resultMap="codeInfoResultMap">
+		SELECT 
+			ID,
+			`LANGUAGE`,
+			LABEL,
+			DETAIL
+		FROM 
+			OP_COMMON_CODE
+		WHERE 
+			ID = #{id, javaType=string, jdbcType=VARCHAR}
+			AND `LANGUAGE` = #{language, javaType=string, jdbcType=VARCHAR}
+		ORDER BY ORDERING ASC
+  	</select>
+
+	<select id="getAllCodeInfos" parameterType="com.onlinepowers.framework.repository.I18nKey"
+		resultMap="codeInfoResultMap">
+		SELECT 
+			`LANGUAGE`,
+			CODE_TYPE, 
+			ID, 
+			LABEL,
+			DETAIL
+		FROM 
+			OP_COMMON_CODE
+		WHERE 
+			USE_YN = 'Y'
+		ORDER BY 
+			`LANGUAGE`, CODE_TYPE, ORDERING
+	</select>
+	<!-- LANGUAGE = #{language, javaType=string, jdbcType=VARCHAR} -->
+
+
+    <select id="getCount" resultType="Integer">
+        SELECT COUNT(*)
+        FROM
+            OP_COMMON_CODE
+
+    </select>
+
+
+	
+	<insert id="insertCommonCode" parameterType="com.onlinepowers.framework.repository.Code">
+		<selectKey keyProperty="ordering" resultType="int" order="BEFORE">
+			SELECT IFNULL(MAX(ORDERING), 0) + 1 FROM OP_COMMON_CODE
+			WHERE CODE_TYPE = #{codeType} AND `LANGUAGE` = #{language}
+		</selectKey>
+		INSERT INTO OP_COMMON_CODE (CODE_TYPE, `LANGUAGE`, ID, LABEL, DETAIL, ORDERING, USE_YN)
+		VALUES (#{codeType}, #{language}, #{id}, #{label}, #{detail}, #{ordering}, #{useFlag})
+	</insert>
+	
+	
+	<delete id="deleteCommonCode" parameterType="com.onlinepowers.framework.repository.Code">
+		DELETE FROM OP_COMMON_CODE
+		WHERE CODE_TYPE = #{codeType} AND `LANGUAGE` = #{language} AND ID = #{id}
+	</delete>
+	
+	
+	
+</mapper>

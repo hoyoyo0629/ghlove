@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css"
+        href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap statistics_web">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <!-- 상단 타이틀 영역 -->
+                    <div class="location">
+                        <a href="">통계</a> &gt; <a href="">관심 지자체</a> &gt; <a href="">상세</a>
+                    </div>
+                    <h3><span>관심 지자체</span></h3>
+                    <!-- // 상단 타이틀 영역 -->
+
+                    <div class="btn_all btn_right mb15">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-default btn-mini">목록</button>
+                        </div>
+                    </div>
+                    <div class="board_write mb30">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label col-md-2">년도</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <select id="" name="" title="기간" class="wd-150">
+                                                <option value="">2022</option>
+                                            </select>
+                                            <button type="button" class="btn btn-dark-gray btn-mini">검색</button>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mainArea loc_details mb30">
+                        <div class="list_box">
+                            <ul class="list">
+                                <li class="bg01 col-md-6">
+                                    <p class="tit">총 등록수 <span class="s-txt">(현재기준)</span></p>
+                                    <p class="txt">156,789</p>
+                                </li>
+                                <li class="bd02 col-md-6">
+                                    <p class="tit">년도별 등록수</p>
+                                    <p class="txt">123,456,789</p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="graph_wrap all">
+                            <div class="bd_gray mb15">
+                                <div class="graph">
+                                    <canvas></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

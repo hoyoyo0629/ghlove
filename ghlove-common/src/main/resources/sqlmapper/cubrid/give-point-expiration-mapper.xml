@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.givepointexpiration.GivePointExpirationMapper">
+
+	<select id="getCntrBlcePointList" resultType="saleson.shop.givepointexpiration.domain.GivePointExpirationTarget">
+		<![CDATA[
+		/* saleson.shop.givepointexpiration.GivePointExpirationMapper.getCntrBlcePointList */
+		SELECT
+				cntr_sn,
+				CNTR_POINT - (SELECT IFNULL(SUM(CNTR_USE_POINT),0) FROM G_CNTR_USE_POINT A WHERE A.CNTR_SN = GC.CNTR_SN) AS CNTR_BLCE_POINT,
+				user_id,
+				psitn_locgov_code,
+				cntr_locgov_code
+		FROM G_CNTR GC
+		WHERE IFNULL(cntr_blce_point,0) > 0
+		AND point_end_de < to_char(now(), 'yyyymmdd')
+		AND delete_at ='N'
+		]]>
+	</select>
+
+	<update id="updateCntrBlcePointDel" parameterType="saleson.shop.givepointexpiration.domain.GivePointExpirationTarget">
+		/* saleson.shop.givepointexpiration.GivePointExpirationMapper.updateCntrBlcePointDel */
+		UPDATE	G_CNTR
+		SET		CNTR_BLCE_POINT = 0,
+				LAST_UPDUSR_ID = 0,
+				LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />
+		WHERE	CNTR_SN IN
+				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+					#{item.cntrSn}
+				</foreach>
+	</update>
+
+	<insert id="insertCntrUsePoint" parameterType="saleson.shop.givepointexpiration.domain.GivePointExpirationTarget">
+		/* saleson.shop.givepointexpiration.GivePointExpirationMapper.insertCntrUsePoint */
+		INSERT INTO G_CNTR_USE_POINT (
+			CNTR_SN,
+			USE_SN,
+			POINT_USE_DE,
+			CNTR_USE_POINT,
+			USER_ID,
+			PSITN_LOCGOV_CODE,
+			CNTR_LOCGOV_CODE,
+			USE_SE_CODE,
+			USE_CN,
+			ORDER_CODE,
+			URL_ADRES,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		) VALUES
+		<foreach item="item" index="index" collection="list" open="" separator="," close="">
+			(
+			#{item.cntrSn},
+			(SELECT IFNULL(MAX(USE_SN), 0) + 1 FROM G_CNTR_USE_POINT WHERE CNTR_SN = #{item.cntrSn}),
+			<include refid="CommonMapper.date" />,
+			#{item.cntrBlcePoint},
+			#{item.userId},
+			#{item.psitnLocgovCode},
+			#{item.cntrLocgovCode},
+			#{item.useSeCode},
+			#{item.useCn},
+			'0',
+			NULL,
+			0,
+			<include refid="CommonMapper.datetime" />,
+			0,
+			<include refid="CommonMapper.datetime" />
+		)
+		</foreach>
+	</insert>
+
+	<select id="getGivePointExpirationMailInfoList" resultType="saleson.shop.givepointexpiration.domain.GivePointExpirationMail">
+		/* give-point-expiration-mapper.getGivePointExpirationMailInfoList (포인트 만료 메일 정보 목록) */
+		SELECT
+			A.USER_ID,
+			A.POINT,
+			A.POINT_END_DE,
+			crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME,
+			crypto_dec('normal', A.EMAIL, '', 0) AS EMAIL,
+			crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID,
+			A.STATUS_CODE
+		FROM
+		(
+			SELECT
+				A.USER_ID,
+				A.POINT,
+				DATE_FORMAT(DATE_SUB(A.POINT_END_DE, INTERVAL -1 DAY), '%Y년%m월%d일') AS POINT_END_DE,
+				CASE WHEN U.STATUS_CODE = 9 THEN U.USER_NAME ELSE S.USER_NAME END AS USER_NAME,
+				CASE WHEN U.STATUS_CODE = 9 THEN U.EMAIL ELSE S.EMAIL END AS EMAIL,
+				U.LOGIN_ID,
+				U.STATUS_CODE
+			FROM (
+					SELECT
+						USER_ID,
+						POINT_END_DE,
+						SUM(CNTR_BLCE_POINT) AS POINT
+					FROM  G_CNTR
+					WHERE IFNULL(CNTR_BLCE_POINT, 0) <![CDATA[>]]> 0
+						AND	IFNULL(POINT_END_DE, '') != ''
+						AND	DATE_FORMAT(DATE_SUB(POINT_END_DE, INTERVAL 90 DAY), '%Y%m%d') = DATE_FORMAT(now(), '%Y%m%d')
+						AND	STTEMNT_PAY_DE IS NOT NULL
+						AND	DELETE_AT = 'N'
+						AND	CNTR_STTUS_CODE = '200'
+					GROUP BY USER_ID, POINT_END_DE
+			) A
+			INNER JOIN OP_USER U ON U.USER_ID = A.USER_ID AND	U.STATUS_CODE IN (4, 9)
+			LEFT OUTER JOIN OP_USER_SLEEP S ON U.USER_ID = S.USER_ID
+		) A
+
+	</select>
+
+	<select id="getShopName" parameterType="Integer" resultType="String">
+		/* give-point-expiration-mapper.getShopName (상점명 조회) */
+		SELECT SHOP_NAME FROM OP_CONFIG WHERE SHOP_CONFIG_ID = #{shopConfigId}
+	</select>
+</mapper>

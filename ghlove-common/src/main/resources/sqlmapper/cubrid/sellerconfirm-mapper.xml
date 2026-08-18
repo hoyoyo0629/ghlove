@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.sellerconfirm.SellerconfirmMapper">
+
+	<resultMap id="sellerconfirmExpectedResult" type="saleson.shop.remittance.domain.RemittanceExpected" extends="saleson.seller.main.SellerMapper.SellerResult">
+		<result property="itemTotalCommissionBaseAmount" column="ITEM_TOTAL_COMMISSION_BASE_AMOUNT" />
+		<result property="itemTotalCommissionAmount" column="ITEM_TOTAL_COMMISSION_AMOUNT" />
+		<result property="itemTotalSupplyAmount" column="ITEM_TOTAL_SUPPLY_AMOUNT" />
+		<result property="itemTotalSellerDiscountAmount" column="ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT" />
+		<result property="itemTotalSellerPointAmount" column="ITEM_TOTAL_SELLER_POINT_AMOUNT" />
+		<result property="itemTotalSetDiscountAmount" column="ITEM_TOTAL_SET_DISCOUNT_AMOUNT" />
+		<result property="shippingTotalAmount" column="SHIPPING_TOTAL_AMOUNT" />
+		<result property="addPaymentTotalAmount" column="ADD_PAYMENT_TOTAL_AMOUNT" />
+		<result property="minusTotalAmount" column="MINUS_TOTAL_AMOUNT" />
+		<result property="remittanceExpectedDate" column="REMITTANCE_EXPECTED_DATE" />
+	</resultMap>
+	
+	<resultMap id="sellerconfirmConfirmResult" type="saleson.shop.remittance.domain.RemittanceConfirm" extends="saleson.seller.main.SellerMapper.SellerResult">
+		<result property="remittanceDate" column="REMITTANCE_DATE" />
+		<result property="confirmDate" column="CONFIRM_DATE" />
+		
+		<result property="itemTotalCommissionBaseAmount" column="ITEM_TOTAL_COMMISSION_BASE_AMOUNT" />
+		<result property="itemTotalCommissionAmount" column="ITEM_TOTAL_COMMISSION_AMOUNT" />
+		<result property="itemTotalSupplyAmount" column="ITEM_TOTAL_SUPPLY_AMOUNT" />
+		<result property="itemTotalSellerDiscountAmount" column="ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT" />
+		<result property="itemTotalSellerPointAmount" column="ITEM_TOTAL_SELLER_POINT_AMOUNT" />
+		<result property="itemTotalSetDiscountAmount" column="ITEM_TOTAL_SET_DISCOUNT_AMOUNT" />
+		<result property="shippingTotalAmount" column="SHIPPING_TOTAL_AMOUNT" />
+		<result property="addPaymentTotalAmount" column="ADD_PAYMENT_TOTAL_AMOUNT" />
+		
+		<result property="cancelItemTotalSupplyAmount" column="CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT" />
+		<result property="cancelShippingTotalAmount" column="CANCEL_SHIPPING_TOTAL_AMOUNT" />
+		
+		<result property="remittanceId" column="REMITTANCE_ID" />
+		<result property="finishingAmount" column="FINISHING_AMOUNT" />
+		<result property="fileCnt" column="FILE_CNT" />
+	</resultMap>
+	
+	<resultMap id="sellerconfirmConfirmDetailResult" type="saleson.shop.remittance.domain.RemittanceConfirmDetail">
+		<result property="orderCode" column="ORDER_CODE" />
+		<result property="productType" column="PRODUCT_TYPE" />
+		<result property="remittanceStatusCode" column="REMITTANCE_STATUS_CODE" />
+		<result property="remittanceDate" column="REMITTANCE_DATE" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="options" column="OPTIONS" />
+		<result property="commissionBasePrice" column="COMMISSION_BASE_PRICE" />
+		<result property="commissionPrice" column="COMMISSION_PRICE" />
+		<result property="commissionRate" column="COMMISSION_RATE" />
+		<result property="commissionType" column="COMMISSION_TYPE" />
+		<result property="sellerDiscountPrice" column="SELLER_DISCOUNT_PRICE" />
+		<result property="sellerDiscountDetail" column="SELLER_DISCOUNT_DETAIL" />
+		<result property="sellerPoint" column="SELLER_POINT" />
+		<result property="setItemFlag" column="SET_ITEM_FLAG" />
+		<result property="setDiscountPrice" column="SET_DISCOUNT_PRICE" />
+		<result property="salePrice" column="SALE_PRICE" />
+		<result property="supplyPrice" column="SUPPLY_PRICE" />
+		<result property="quantity" column="QUANTITY" />
+		<result property="remittanceId" column="REMITTANCE_ID" />
+		<result property="remittancePrice" column="REMITTANCE_PRICE" />
+		<result property="etcAmt" column="ETC_AMT" />
+		<result property="orderSequence" column="ORDER_SEQUENCE" />
+		<result property="itemSequence" column="ITEM_SEQUENCE" />
+	</resultMap>
+	
+	<resultMap id="sellerconfirmResult" type="saleson.shop.remittance.domain.Remittance" extends="saleson.seller.main.SellerMapper.SellerResult">
+		<id property="remittanceId" column="REMITTANCE_ID" />
+		<result property="confirmDate" column="CONFIRM_DATE" />
+		<result property="finishingDate" column="FINISHING_DATE" />
+		<result property="finishingAmount" column="FINISHING_AMOUNT" />
+		<result property="finishingManagerName" column="FINISHING_MANAGER_NAME" />
+		<result property="bankName" column="REMITTANCE_BANK_NAME" />
+		<result property="bankInName" column="REMITTANCE_BANK_IN_NAME" />
+		<result property="bankAccountNumber" column="REMITTANCE_BANK_ACCOUNT_NUMBER" />
+		<result property="createdDate" column="REMITTANCE_CREATED_DATE" />
+		<result property="salesAmount" column="SALES_AMOUNT" />
+		<result property="confirmDateSeller" column="CONFIRM_DATE_SELLER" />
+		<result property="paymentDate" column="PAYMENT_DATE" />
+		<result property="remittanceStatusCode" column="REMITTANCE_STATUS_CODE" />
+	</resultMap>
+	
+	<resultMap id="sellerconfirmDetailResult" type="saleson.shop.remittance.domain.RemittanceDetail">
+		<id property="remittanceDetailId" column="REMITTANCE_DETAIL_ID" />
+		<result property="remittanceId" column="REMITTANCE_ID" />
+		<result property="orderCode" column="ORDER_CODE" />
+		<result property="itemType" column="ITEM_TYPE" />
+		<result property="itemUserCode" column="ITEM_USER_CODE" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="options" column="OPTIONS" />
+		<result property="salePrice" column="SALE_PRICE" />
+		<result property="sellerDiscountPrice" column="SELLER_DISCOUNT_PRICE" />
+		<result property="sellerDiscountDetail" column="SELLER_DISCOUNT_DETAIL" />
+		<result property="sellerPoint" column="SELLER_POINT" />
+		<result property="setItemFlag" column="SET_ITEM_FLAG" />
+		<result property="setDiscountPrice" column="SET_DISCOUNT_PRICE" />
+		<result property="supplyPrice" column="SUPPLY_PRICE" />
+		<result property="quantity" column="QUANTITY" />
+		<result property="commissionBasePrice" column="COMMISSION_BASE_PRICE" />
+		<result property="commissionRate" column="COMMISSION_RATE" />
+		<result property="commissionPrice" column="COMMISSION_PRICE" />
+		<result property="commissionType" column="COMMISSION_TYPE" />
+		<result property="remittancePrice" column="REMITTANCE_PRICE" />
+		
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="buyerName" column="BUYER_NAME" />
+		<result property="payDate" column="PAY_DATE" />
+	</resultMap>
+	
+	<resultMap id="sellerconfirmCountResult" type="saleson.common.opmanager.count.OpmanagerCount">
+		<id property="id" column="ID"/>
+		<result property="label" column="LABEL"/>
+		<result property="count" column="COUNT"/>
+	</resultMap>
+	
+	<resultMap id="SellerConfirmOrderListResult" type="saleson.shop.order.domain.OrderList" extends="BaseSellerConfirmOrderItemResult">
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="mobile" column="MOBILE" />
+
+		<result property="buyerName" column="BUYER_NAME" />
+
+		<result property="receiveName" column="RECEIVE_NAME" />
+		<result property="receiveMobile" column="RECEIVE_MOBILE" />
+		<result property="receiveZipcode" column="RECEIVE_ZIPCODE" />
+		<result property="receiveNewZipcode" column="RECEIVE_NEW_ZIPCODE" />
+		<result property="receiveAddress" column="RECEIVE_ADDRESS" />
+		<result property="receiveAddressDetail" column="RECEIVE_ADDRESS_DETAIL" />
+        <result property="isPoint" column="IS_POINT" />
+		<result property="memo" column="MEMO" />
+	</resultMap>
+	
+	<resultMap id="BaseSellerConfirmOrderItemResult" type="saleson.shop.order.domain.OrderItem">
+		<id property="orderCode" column="ORDER_CODE" />
+		<id property="orderSequence" column="ORDER_SEQUENCE" />
+		<id property="itemSequence" column="ITEM_SEQUENCE" />
+		
+		<result property="itemCount" column="ITEM_COUNT" />
+		<result property="cancelCount" column="CANCEL_COUNT" />
+		
+		<result property="orderStatus" column="ORDER_STATUS" />
+		<result property="shippingSequence" column="SHIPPING_SEQUENCE" />
+		<result property="shippingInfoSequence" column="SHIPPING_INFO_SEQUENCE" />
+		
+		<result property="additionItemFlag" column="ADDITION_ITEM_FLAG" />
+		<result property="parentItemId" column="PARENT_ITEM_ID" />
+		<result property="parentItemSequence" column="PARENT_ITEM_SEQUENCE" />
+		
+		<result property="deviceType" column="DEVICE_TYPE" />
+		<result property="userId" column="USER_ID" />
+		<result property="guestFlag" column="GUEST_FLAG" />
+		<result property="sellerId" column="SELLER_ID" />
+		<result property="categoryTeamId" column="CATEGORY_TEAM_ID" />
+		<result property="categoryGroupId" column="CATEGORY_GROUP_ID" />
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="shipmentId" column="SHIPMENT_ID" />
+		<result property="couponUserId" column="COUPON_USER_ID" />
+		<result property="addCouponUserId" column="ADD_COUPON_USER_ID" />
+		<result property="itemId" column="ITEM_ID" />
+		<result property="itemCode" column="ITEM_CODE" />
+		<result property="itemUserCode" column="ITEM_USER_CODE" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="freeGiftName" column="FREE_GIFT_NAME" />
+		<result property="imageSrc" column="IMAGE_SRC" />
+		<result property="shippingReturn" column="SHIPPING_RETURN" />
+		
+		<result property="purchasePrice" column="PURCHASE_PRICE" />
+		<result property="costPrice" column="COST_PRICE" />
+		<result property="price" column="PRICE" />
+		<result property="optionPrice" column="OPTION_PRICE" />
+		<result property="salePrice" column="SALE_PRICE" />
+		
+		<result property="quantity" column="QUANTITY" />
+		<result property="claimQuantity" column="CLAIM_QUANTITY" />
+		<result property="orderQuantity" column="ORDER_QUANTITY" />
+		
+		<result property="couponDiscountPrice" column="COUPON_DISCOUNT_PRICE" />
+		<result property="spotSaleFlag" column="SPOT_SALE_FLAG" />
+		<result property="spotType" column="SPOT_TYPE" />
+		<result property="spotDiscountPrice" column="SPOT_DISCOUNT_PRICE" />
+		<result property="taxType" column="TAX_TYPE" />
+		<result property="commissionType" column="COMMISSION_TYPE" />
+		<result property="commissionRate" column="COMMISSION_RATE" />
+		
+		<result property="commissionBasePrice" column="COMMISSION_BASE_PRICE" />
+		<result property="commissionPrice" column="COMMISSION_PRICE" />
+		
+		<result property="supplyPrice" column="SUPPLY_PRICE" />
+		
+		<result property="sellerDiscountFlag" column="SELLER_DISCOUNT_FLAG" />
+		<result property="sellerDiscountType" column="SELLER_DISCOUNT_TYPE" />
+		<result property="sellerDiscountPrice" column="SELLER_DISCOUNT_PRICE" />
+		<result property="sellerDiscountDetail" column="SELLER_DISCOUNT_DETAIL" />
+		<result property="adminDiscountPrice" column="ADMIN_DISCOUNT_PRICE" />
+		<result property="adminDiscountDetail" column="ADMIN_DISCOUNT_DETAIL" />
+		
+		<result property="brand" column="BRAND" />
+		<result property="options" column="OPTIONS" />
+		
+		<result property="orderStatus" column="ORDER_STATUS" />
+		<result property="orderItemStatus" column="ORDER_ITEM_STATUS" />
+		<result property="deliveryCompanyId" column="DELIVERY_COMPANY_ID" />
+		<result property="deliveryCompanyName" column="DELIVERY_COMPANY_NAME" />
+		<result property="deliveryCompanyUrl" column="DELIVERY_COMPANY_URL" />
+		<result property="deliveryNumber" column="DELIVERY_NUMBER" />
+		
+		<result property="shipmentReturnType" column="SHIPMENT_RETURN_TYPE" />
+		
+		<result property="pointType" column="POINT_TYPE" />
+		<result property="pointConfigType" column="POINT_CONFIG_TYPE" />
+		<result property="point" column="POINT" />
+		<result property="pointLog" column="POINT_LOG" />
+		<result property="earnPoint" column="EARN_POINT" />
+		<result property="earnPointFlag" column="EARN_POINT_FLAG" />
+		
+		<result property="sellerPoint" column="SELLER_POINT" />
+		
+		<result property="payDate" column="PAY_DATE" />
+		<result property="shippingReadyDate" column="SHIPPING_READY_DATE" />
+		<result property="shippingDate" column="SHIPPING_DATE" />
+		<result property="shippingFinishDate" column="SHIPPING_FINISH_DATE" />
+		
+		<result property="cancelRequestDate" column="CANCEL_REQUEST_DATE" />
+		<result property="cancelRequestFinishDate" column="CANCEL_REQUEST_FINISH_DATE" />
+		
+		<result property="salesDate" column="SALES_DATE" />
+		<result property="salesCancelDate" column="SALES_CANCEL_DATE" />
+		
+		<result property="confirmDate" column="CONFIRM_DATE" />
+		<result property="returnRequestDate" column="RETURN_REQUEST_DATE" />
+		<result property="exchangeRequestDate" column="EXCHANGE_REQUEST_DATE" />
+		<result property="returnRequestFinishDate" column="RETURN_REQUEST_FINISH_DATE" />
+		<result property="exchangeRequestFinishDate" column="EXCHANGE_REQUEST_FINISH_DATE" />
+				
+		<result property="returnPointFlag" column="RETURN_POINT_FLAG" />
+		<result property="delayDay" column="DELAY_DAY" />
+		<result property="createdDate" column="CREATED_DATE" />
+
+		<result property="shipmentReturnId" column="SHIPMENT_RETURN_ID" />
+		<result property="cancelFlag" column="CANCEL_FLAG" />
+		<result property="refundStatus" column="REFUND_STATUS" />
+		<result property="itemReturnFlag" column="ITEM_RETURN_FLAG" />
+		<result property="sellerName" column="SELLER_NAME" />
+		<result property="isShippingView" column="IS_SHIPPING_VIEW" />
+		
+		<result property="deliveryType" column="DELIVERY_TYPE" />
+		<result property="shipmentGroupCode" column="SHIPMENT_GROUP_CODE" />
+		
+		<result property="remittanceId" column="REMITTANCE_ID" />
+		<result property="remittanceType" column="REMITTANCE_TYPE" />
+		<result property="remittanceDay" column="REMITTANCE_DAY" />
+		<result property="remittanceExpectedDate" column="REMITTANCE_EXPECTED_DATE" />
+		<result property="remittanceDate" column="REMITTANCE_DATE" />
+		<result property="remittanceStatusCode" column="REMITTANCE_STATUS_CODE" />
+		<result property="escrowStatus" column="ESCROW_STATUS" />
+		<result property="levelId" column="LEVEL_ID" />
+		<result property="levelName" column="LEVEL_NAME" />
+		<result property="userLevelDiscountRate" column="USER_LEVEL_DISCOUNT_RATE" />
+		<result property="userLevelDiscountPrice" column="USER_LEVEL_DISCOUNT_PRICE" />
+		<result property="approvalType" column="APPROVAL_TYPE" />
+
+		<result property="setItemFlag" column="SET_ITEM_FLAG" />
+		<result property="setDiscountType" column="SET_DISCOUNT_TYPE" />
+		<result property="setDiscountPrice" column="SET_DISCOUNT_PRICE" />
+		<result property="locgovNm" column="LOCGOV_NM" />
+		<result property="locgovCode" column="LOCGOV_CODE" />
+		<result property="mobileItemYn" column="MOBILE_ITEM_YN" />
+		<result property="cancelClaimStatus" column="CANCEL_CLAIM_STATUS" />
+		<result property="cancelRefusalReasonText" column="CANCEL_REFUSAL_REASON_TEXT" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="mobileNumber" column="MOBILE_NUMBER" />
+		<result property="etcAmt" column="ETC_AMT" />
+	</resultMap>
+	
+	<select id="getsellerconfirmConfirmCountByParam" parameterType="saleson.shop.sellerconfirm.support.SellerconfirmParam" resultType="Integer">
+		SELECT COUNT(1) FROM (
+							SELECT S.* 
+						       	,R.REMITTANCE_STATUS_CODE
+						       	,R.CONFIRM_DATE
+						       	,R.CONFIRM_DATE_SELLER 
+						       	,R.PAYMENT_DATE 
+						       	,R.FINISHING_DATE 
+						       	,R.FINISHING_AMOUNT
+						 		, (
+					          SELECT UPPER_LOCGOV_NM
+					                        || ' '
+					                        || LOCGOV_NM
+					          FROM   G_LOCGOV L
+					          WHERE  L.LOCGOV_CODE = S.LOCGOV_CODE
+					          ) AS LOCGOV_NM 
+					       	,RD.* 
+					       	,0 AS FILE_CNT
+							FROM (
+								                SELECT   REMITTANCE_ID ,
+								                         SUM(COMMISSION_BASE_PRICE * QUANTITY + ETC_AMT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT ,
+								                         SUM(COMMISSION_PRICE      * QUANTITY + ETC_AMT) AS ITEM_TOTAL_COMMISSION_AMOUNT ,
+								                         SUM(SUPPLY_PRICE          * QUANTITY + ETC_AMT) AS ITEM_TOTAL_SUPPLY_AMOUNT ,
+								                         SUM(SELLER_DISCOUNT_PRICE * QUANTITY)           AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT ,
+								                         SUM(SELLER_POINT          * QUANTITY)           AS ITEM_TOTAL_SELLER_POINT_AMOUNT ,
+								                         SUM(SET_DISCOUNT_PRICE    * QUANTITY)           AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT
+								                FROM     OP_REMITTANCE_DETAIL
+								                GROUP BY REMITTANCE_ID 
+							            ) RD
+							JOIN OP_REMITTANCE R
+							ON R.REMITTANCE_ID = RD.REMITTANCE_ID
+							JOIN OP_SELLER S
+							ON R.SELLER_ID = S.SELLER_ID
+							WHERE 1=1
+							AND   RD.REMITTANCE_ID  = R.REMITTANCE_ID 
+							AND   R.REMITTANCE_STATUS_CODE = '0'
+							ORDER BY S.SELLER_ID ASC
+						) T
+	</select>
+	
+	<select id="getsellerconfirmConfirmListByParam" parameterType="saleson.shop.sellerconfirm.support.SellerconfirmParam" resultMap="sellerconfirmConfirmResult">
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT S.* 
+       	,R.REMITTANCE_STATUS_CODE
+       	,R.CONFIRM_DATE
+       	,R.CONFIRM_DATE_SELLER 
+       	,R.PAYMENT_DATE 
+       	,R.FINISHING_DATE 
+       	,R.FINISHING_AMOUNT
+ 		, (
+          SELECT UPPER_LOCGOV_NM
+                        || ' '
+                        || LOCGOV_NM
+          FROM   G_LOCGOV L
+          WHERE  L.LOCGOV_CODE = S.LOCGOV_CODE
+          ) AS LOCGOV_NM 
+       	,RD.* 
+       	,0 AS FILE_CNT
+		FROM (
+			                SELECT   REMITTANCE_ID ,
+			                         SUM(COMMISSION_BASE_PRICE * QUANTITY + ETC_AMT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT ,
+			                         SUM(COMMISSION_PRICE      * QUANTITY + ETC_AMT) AS ITEM_TOTAL_COMMISSION_AMOUNT ,
+			                         SUM(SUPPLY_PRICE          * QUANTITY + ETC_AMT) AS ITEM_TOTAL_SUPPLY_AMOUNT ,
+			                         SUM(SELLER_DISCOUNT_PRICE * QUANTITY)           AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT ,
+			                         SUM(SELLER_POINT          * QUANTITY)           AS ITEM_TOTAL_SELLER_POINT_AMOUNT ,
+			                         SUM(SET_DISCOUNT_PRICE    * QUANTITY)           AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT
+			                FROM     OP_REMITTANCE_DETAIL
+			                GROUP BY REMITTANCE_ID 
+		            ) RD
+		JOIN OP_REMITTANCE R
+		ON R.REMITTANCE_ID = RD.REMITTANCE_ID
+		JOIN OP_SELLER S
+		ON R.SELLER_ID = S.SELLER_ID
+		WHERE 1=1
+		AND   RD.REMITTANCE_ID  = R.REMITTANCE_ID 
+		AND   R.REMITTANCE_STATUS_CODE = '0'
+		ORDER BY S.SELLER_ID ASC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+	
+	
+	<update id="updatesellerconfirmPayProcess" parameterType="saleson.shop.sellerconfirm.support.SellerconfirmParam">
+		UPDATE 
+			OP_REMITTANCE R
+			JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+		SET
+			REMITTANCE_STATUS_CODE = '5'
+			, PAYMENT_DATE = <include refid="CommonMapper.date" />
+		<where>
+			AND S.LOCGOV_CODE = #{locgovCode}
+			AND R.REMITTANCE_STATUS_CODE = '4'
+			AND R.REMITTANCE_ID = #{remittanceId}
+			
+		</where>
+	</update>
+	
+	<select id="getSellerBysellerconfirmInfo" parameterType="saleson.shop.sellerconfirm.support.SellerconfirmParam" resultType="saleson.shop.user.domain.SellerUser">
+	
+	SELECT
+		T_A.*
+		, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
+		, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		FROM (
+			SELECT 
+				S.COMPANY_NAME AS USER_NAME
+				, SU.MBER_CI AS MBER_CI_ENC
+				, S.PHONE_NUMBER AS PHONE_NUMBER_ENC
+				, SU.RECEIVE_SMS
+			FROM OP_REMITTANCE R
+				, OP_SELLER S
+				, OP_SELLER_USER SU
+			WHERE 1=1
+				AND R.REMITTANCE_ID = #{remittanceId}
+				AND S.SELLER_ID = R.SELLER_ID 
+				AND SU.LOGIN_ID = S.LOGIN_ID
+				AND S.LOCGOV_CODE = #{locgovCode}
+		) T_A
+		
+	</select>
+	
+	<!-- <select id="getAllSellerConfirmOrderCountByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultType="Integer">
+	SELECT COUNT(1) FROM (
+	    SELECT oih.*,
+	           IFNULL(CRYPTO_DEC('normal', oih.original_user_name, '', 0), '') AS user_name
+	    FROM (
+	        SELECT o.login_id,
+	               o.buyer_name,
+	               oih.*,
+	               osi.receive_name,
+	               (
+	                   SELECT upper_locgov_nm || ' ' || locgov_nm
+	                   FROM g_locgov
+	                   WHERE locgov_code = s.locgov_code
+	               ) AS locgov_nm,
+	               IFNULL(s.seller_name, '') AS seller_name,
+	               IFNULL(s.company_name, '') AS company_name,
+	               oih.user_id AS oih_user_id,
+	               IFNULL(u.user_name, '') AS original_user_name
+	        FROM op_order_item_hold oih
+	        LEFT JOIN op_order o
+	            ON oih.order_code = o.order_code
+	            AND oih.order_sequence = o.order_sequence
+	            AND o.data_status_code = '1'
+	        INNER JOIN op_order_shipping_info osi
+	            ON oih.order_code = osi.order_code
+	            AND oih.order_sequence = osi.order_sequence
+	            AND oih.shipping_info_sequence = osi.shipping_info_sequence
+	        LEFT JOIN op_seller s
+	            ON oih.seller_id = s.seller_id
+	        LEFT JOIN op_user u
+	            ON oih.user_id = u.user_id
+	        WHERE oih.filler10 = 'N'
+	    ) oih
+	    ORDER BY oih.order_code DESC,
+	             oih.order_sequence ASC,
+	             oih.shipping_info_sequence ASC,
+	             oih.item_sequence ASC
+	) result;
+	</select> op_order_item_hold 테이블 없음 -->
+	
+	<!-- 주문 내역 리스트 - 주문별 그룹 -->
+	<!-- <select id="getAllSellerConfirmOrderListByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultMap="SellerConfirmOrderListResult">
+		<include refid="CommonMapper.paginationHeader" />
+	    SELECT oih.*,
+	           IFNULL(CRYPTO_DEC('normal', oih.original_user_name, '', 0), '') AS user_name
+	    FROM (
+	        SELECT o.login_id,
+	               o.buyer_name,
+	               oih.*,
+	               osi.receive_name,
+	               (
+	                   SELECT upper_locgov_nm || ' ' || locgov_nm
+	                   FROM g_locgov
+	                   WHERE locgov_code = s.locgov_code
+	               ) AS locgov_nm,
+	               IFNULL(s.seller_name, '') AS seller_name,
+	               IFNULL(s.company_name, '') AS company_name,
+	               oih.user_id AS oih_user_id,
+	               IFNULL(u.user_name, '') AS original_user_name
+	        FROM op_order_item_hold oih
+	        LEFT JOIN op_order o
+	            ON oih.order_code = o.order_code
+	            AND oih.order_sequence = o.order_sequence
+	            AND o.data_status_code = '1'
+	        INNER JOIN op_order_shipping_info osi
+	            ON oih.order_code = osi.order_code
+	            AND oih.order_sequence = osi.order_sequence
+	            AND oih.shipping_info_sequence = osi.shipping_info_sequence
+	        LEFT JOIN op_seller s
+	            ON oih.seller_id = s.seller_id
+	        LEFT JOIN op_user u
+	            ON oih.user_id = u.user_id
+	        WHERE oih.filler10 = 'N'
+	    ) oih
+	    ORDER BY oih.order_code DESC,
+	             oih.order_sequence ASC,
+	             oih.shipping_info_sequence ASC,
+	             oih.item_sequence ASC
+		<include refid="CommonMapper.paginationFooter" />
+	</select> op_order_item_hold 테이블 없음-->
+	
+	
+	
+</mapper>

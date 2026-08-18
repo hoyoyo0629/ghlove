@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="고향사랑e음" />
+  <meta property="og:description"
+    content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+  <meta property="og:site_name" content="고향사랑e음" />
+  <meta property="og:image" content="/static/images/cli-logo.png" />
+  <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+  <meta itemprop="name" content=" 고향사랑e음" />
+  <meta itemprop="description"
+    content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+  <meta itemprop="image" content="/static/images/cli-logo.png" />
+  <link rel="icon" href="/static/favicon.ico" />
+  <title>고향사랑 고액기부자 명예의 전당 개설 : 고향사랑e음 우수사례소개</title>
+
+  <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+  <link rel="stylesheet" href="/static/css/common.css" />
+  <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+</head>
+
+<body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+  <div class="newsletter_detail_page ">
+    <div id="wrap">
+
+
+      <h2>우수사례소개</h2>
+
+      <div class="detail_cont_wrap">
+        <section class="main_banner_area">
+          <div class="newsletter_detail_page_banner" style="padding:0">
+            <div class="banner_img_wrap">
+              <div class="img_wrap"><img src="/newsletter/static/images/vol001/detail_36_1.jpg" alt="기부자 명예의 전당 상세페이지 스크린샷"></div>
+              <div class="img_wrap"><img src="/newsletter/static/images/vol001/detail_36_2.jpg" alt="기부자 명예의 전당 목록페이지 스크린샷"></div>
+            </div>
+            <div class="banner_link_btn">
+              <a href="https://www.bsnamgu.go.kr/board/list.namgu?boardId=BBS_0000340&menuCd=DOM_000000101002015001
+              " target="_blank" title="새창 열림">자세히 보기&nbsp;&nbsp;+</a>
+            </div>
+          </div>
+          <div class="tit_area">
+            <h4>부산광역시 남구</h4>
+            <h3>
+              고향사랑 고액기부자<br/><span class="blue">명예의 전당 개설</span>
+            </h3>
+          </div>
+        </section>
+        <div class="bar blue-bar"></div>
+        <section id="" class="detail_contents_area">
+          <ul class="deco-arrow blue-deco blue">
+            <li><!-- 수정 240827 -->
+              부산 남구는 고향사랑기부제 홍보와 기부자 예우를 위해 온라인 명예의 전당을 개설했다. 구 누리집( <a href="https://www.bsnamgu.go.kr/" class="url" target="_blank" title="새창 열림">www.bsnamgu.go.kr</a>) 남구소개의 ‘고향사랑기부제' 메뉴 속에 개설된 명예의
+              전당에는 300만원 이상 고액기부자 정보와 전달식 사진 등이 등록됐다.
+            </li>
+            <li>
+              남구는 고향사랑 고액기부자를 대상으로 현재 관내 공용주차장 등의 주차요금 면제와 축제 및 각종행사 초청, 연말표창 추천 등 다양한 예우 시책을 추진중에 있으며, 앞으로도 기부행렬에 참여해
+              주신 고액기부자에 대한 예우를 다 할 계획이다.
+            </li>
+          </ul>
+
+          <div class="bar blue-bar"></div>
+
+          <ul class="deco-circle blue-deco">
+            <li>
+              문 의 : 행정지원과 고향사랑기부제 담당자 (☏ <a href="tel:0516074124" class="tel">051-607-4124</a>)
+            </li>
+          </ul>
+        </section>
+      </div>
+      <a href="#top" class="goHome">
+        <img src="/newsletter/static/images/common/btn_goTop.png" alt="맨 위로가기 버튼">
+      </a>
+
+
+    </div>
+
+  </div>
+  </div>
+</body>
+</html>

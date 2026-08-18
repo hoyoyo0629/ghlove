@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 기부내역조회 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/joind-agf.css" />
+    <!-- 모달-->
+
+    <link rel="stylesheet" href="/static/css/mypage-status.css" />
+    <link rel="stylesheet" href="/static/css/notice-box.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- ETAX 모달 -->
+        <div class="black-bg etax"></div>
+        <!-- //ETAX 모달 -->
+
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"> <img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              <a href="/mypage/index.html">마이페이지</a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              기부내역 조회
+            </span>
+            <h2 class="page-title-txt">기부내역 조회</h2>
+            <p>해당 내역은 고향사랑 기부에만 한정된 내역입니다.</p>
+            <div class="user-grade point">
+              <span class="grade-bg">
+                <img class="icon-img" src="/static/images/icon/cli-icon_my-user-name.png" alt="" />
+                <span class="blue-txt">{{userName}} </span> 회원님
+              </span>
+            </div>
+            <p class="point-txt">기부 결제 후 연계 시스템 지연에 따라 <span class="font-weight-bold">최대 3일</span>까지 반영되지 않을 수 있으므로 참고 바랍니다.</p>
+          </div>
+        </section>
+
+        <section id="contents">
+          <div class="center">
+            <div class="contents-wrap myDonation">
+              <div class="s-contents mypageS">
+                <div class="mypage-top">
+                  <div class="mypage-top-list">
+                    <label class="search-title" for="totalAmt">
+                      <img class="icon-img" src="/static/images/icon/cli-icon_my-amount-all.png" alt="" />
+                      <span class="label-title"> 총 기부금액</span>
+                    </label>
+                    <span class="m-field">
+                      <input id="totalAmt" type="text" :value="formatNumber(result.totalCntrAmt)" readonly  /><span class="s_txt">원</span>
+                    </span>
+                    <span class="s_txt">(실 납부액 기준)</span>
+                  </div>
+                </div>
+                <div class="line"></div>
+                <div class="mypage-top">
+                  <label class="search-title">검색</label>
+                  <div class="selected-field">
+                    <div class="selected-field-line">
+                      <div class="selected-item date">
+                        <select title="검색년도" name="" id="searchYear" v-model="param.searchYear" @change="changeSearchYaer();">
+                          <option value="">년도</option>
+                          <option v-for="(data, i) in yearList" :value="data.key.id">{{data.label}}</option>
+                        </select>
+                        <ul class="radio-group">
+                          <!-- <li class="radio-list">
+	                                                <input type="radio" name="term" id="radioAll" checked><label
+	                                                    for="radioAll"> 전체</label>
+	                                            </li> -->
+                          <li class="radio-list" v-for="(data,i) in labelData">
+                            <input
+                              type="radio"
+                              name="term"
+                              :id="data.label"
+                              v-model="param.serachPeriod"
+                              :value="data.value"
+                              @change="changeSearchPeriod();"
+                            />
+                            <label :for="data.label">{{data.label}}</label>
+                          </li>
+                          <li class="radio-list">( 기부일자 기준으로 검색 )</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="selected-field-line city">
+                      <div class="selected-item">
+                        <select title="시·도 선택" name="" id="upperLocgovCode" v-model="param.upperLocgovCode" @change="getLocGov();">
+                          <option value="">시·도 선택</option>
+                          <option v-for="(data, i) in wdrList" :value="data.key.id">{{data.label}}</option>
+                        </select>
+                      </div>
+                      <div class="selected-item">
+                        <select title="시·군·구 선택" name="" id="locgovCode" v-model="param.locgovCode">
+                          <option value="">시·군·구 선택</option>
+                          <option v-for="(data, i) in locGovList" :value="data.locgovCode">{{data.locgovNm}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 버튼그룹 -->
+              <div class="btn-box many">
+                <button type="button" class="blueBtn cancellation" @click="resetData()">
+                  초기화<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+                </button>
+                <button type="button" class="blueBtn u-confirm" @click="getSearchList()">
+                  검색<span>
+                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" />
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="s-con">
+          <div class="center">
+            <div class="s-contents table-wrapper myDonation cntrList-table-wrapper">
+              <div class="table_top">
+                <div class="ttop tax_info">
+                  * 전자기부금영수증 발급이 필요하시면
+                  <a href="https://www.hometax.go.kr/" class="pointblue moreView"> 홈택스 &gt; 조회/발급 &gt; 전자기부금영수증 &gt; 메인화면</a>
+                  메뉴에서 신청이 가능합니다.
+                </div>
+              </div>
+              <div class="table-container">
+                <div class="table-result-body">
+                  <table>
+                    <caption>
+                      기부내역 - NO, 기부지자체(시도/시군구), 기부일자, 기부액, 기부포인트, 전자납부번호,납부일자, 특정사업기부 사업명, 기부처, 비고로 구성
+                    </caption>
+                    <thead>
+                    <tr class="result-title">
+                      <th scope="col" rowspan="2">No.</th>
+                      <th scope="col" colspan="2">기부지자체</th>
+                      <th scope="col" rowspan="2">기부액 (원)</th>
+                      <th scope="col" rowspan="2">기부일자</th>
+                      <th scope="col" rowspan="2">기부포인트 (P)</th>
+                      <th scope="col" rowspan="2">전자납부번호</th>
+                      <th scope="col" rowspan="2">납부일자</th>
+                      <th scope="col" rowspan="2">특정사업기부 사업명</th>
+                      <th scope="col" rowspan="2">기부처</th>
+                      <th scope="col" rowspan="2">비고</th>
+                    </tr>
+                    <tr class="result-title">
+                      <th scope="col">시 · 도</th>
+                      <th scope="col">시 · 군 · 구</th>
+                    </tr>
+                    </thead>
+
+					<tbody>
+                    <tr class="result-row" v-for="(data,i) in result.content" :key="i">
+                      <td class="idx">{{result.totalCnt - ((result.currentPage -1 ) * result.size) - i}}</td>
+                      <td class="">{{data.upperLocgovNm}}</td>
+                      <td class="">{{data.locgovNm}}</td>
+                      <td class="amount">{{formatNumber(data.cntrAmt)}}</td>
+                      <td class="">{{data.cntrDe}}</td>
+                      <td class="amount">
+                        <button type="button" @click="goToLocgovMall(data)" class="moreView pointRed" :title="data.locgovNm +' 답례품 몰로 이동'">
+                          {{formatNumber(data.cntrPoint)}}
+                        </button>
+                      </td>
+                      <td class="" v-if="data.sttemntPayDeCase==1">{{data.elctrnPayNo}}</td>
+                      <td class="" v-else-if="data.sttemntPayDe!=1">
+                        <button type="button" @click="checkLinkSttCd(data, 'pay', 0)" :class="{'moreView' : data.sttemntPayDe!=1}" title="새 창 열림">
+                          다시 기부하기
+                        </button>
+                      </td>
+                      <td class="" v-if="data.sttemntPayDeCase==1">{{data.sttemntPayDe}}</td>
+                      <td class="" v-else-if="data.sttemntPayDe!=1">
+                        <button type="button" @click="doGiro(data, 'check', 1)" :class="{'moreView' : data.sttemntPayDe!=1}">
+                          {{data.sttemntPayDe}}
+                        </button>
+                      </td>
+                      <td class="" v-if="data.prjSubject==''||data.prjSubject==null">자치단체 기부</td>
+                      <td class="" v-else-if="data.prjSubject!=''||data.prjSubject!=null">
+                        <span style="white-space: normal">{{data.prjSubject}}</span>
+                      </td>
+                      <td class="" v-if="data.detail==''||data.detail==null">고향사랑e음</td>
+                      <td class="" v-else-if="data.detail!=''||data.detail!=null">
+                        <span style="white-space: normal">{{data.detail}}</span>
+                      </td>
+                      <td class="">
+<!--                       	<span style="white-space: normal" v-if="data.detail">{{data.detail}}<br><br></span> -->
+                        <span v-if="data.sttemntPayDeCase == 1" v-on:click="goReceiptPrint(data.cntrSn)">
+                          <button type="button" class="moreView deepSubBlue" title="새 창 열림">
+                            영수증출력<img class="icon-img" src="/static/images/icon/btn-short_link.png" alt="영수증 출력하기" />
+                          </button>
+                        </span>
+                        <span v-else-if="!data.sttemntPayDeCase != 1">-</span>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <pagination :current-page="result.currentPage" :total-pages="result.totalPages" @change="paging"></pagination>
+                <div class="table-overlap">
+                  <span>←&nbsp;-&nbsp;&nbsp; 화면을 좌우로 움직이세요 &nbsp;&nbsp;-&nbsp;→</span><br />
+                  <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div class="mobile_section_bar"></div>
+        <div class="center">
+          <div class="notice-box">
+            <div class="notice-area">
+              <div class="notice-img">
+                <img src="/static/images/cli_notice.png" alt="" />
+              </div>
+              <div class="notice-area research-area" @submit.prevent>
+                <div class="notice-group">
+                  <div class="notice-title">
+                    고향사랑 기부금은 지방자치단체의
+                    <br />
+                    <strong>4가지 사업 목적</strong>으로만 사용됩니다.
+                  </div>
+                  <ul class="notice-list">
+                    <li><span class="l_num">1</span> <span class="l_txt">사회적 취약계층의 지원 및 청소년의 육성ㆍ보호</span></li>
+                    <li><span class="l_num">2</span> <span class="l_txt">지역 주민의 문화ㆍ예술ㆍ보건 등의 증진</span></li>
+                    <li><span class="l_num">3</span> <span class="l_txt">시민참여, 자원봉사 등 지역공동체 활성화 지원</span></li>
+                    <li><span class="l_num">4</span> <span class="l_txt">그 밖에 주민의 복리 증진에 필요한 사업의 추진</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <input type="hidden" id="giroPopResult" name="giroPopResult">-->
+
+            <!-- 금결원 연계시 팝업으로 보낼 Form submit
+            <form id="frmLink" name="frmLink">
+                <input type="hidden" id="ENC_DATA" name="ENC_DATA" />
+            </form> -->
+
+        <!-- 모바일 탑 & 도움말 버튼 -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="/modules/payment.js?v=202412020000"></script>
+    <script src="/modules/op.donation.js?v=20240402"></script>
+
+    <script type="text/babel">
+      var giroPopup;
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+        },
+        data: {
+          // 세액공제 예상금액 임시데이터, 개발필요
+          // locgovNm:'12,220,000',
+          labelData: [
+            { label: "전체", value: "All" },
+            { label: "오늘", value: "today" },
+            { label: "7일", value: "7day" },
+            { label: "1개월", value: "1month" },
+            { label: "3개월", value: "3month" },
+            { label: "6개월", value: "6month" },
+            { label: "1년", value: "1year" },
+          ],
+          result: {},
+          userName: "",
+          wdrList: "",
+          yearList: "",
+          locGovList: "",
+          param: {
+            //page : 1,
+            //itemsPerPage: 10,
+            serachPeriod: "",
+            upperLocgovCode: "",
+            locgovCode: "",
+            searchYear: "",
+          },
+          page: {
+            menuUrl: "/mypage/cntrList.html",
+          },
+          taxRedutionEstimate: "0",
+        },
+        methods: {
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          loadingMounted: function () {
+            // 로딩바 컴포넌트가 화면에 그려진 이후 호출되는 함수. 부모컴포넌트에서 바로 로딩바 호출시 그려지기 전에 호출하여 오류 발생하는 경우 있음
+            // 로딩바 컴포넌트가 화면에 그려진 이후 호출되는 함수. 부모컴포넌트에서 바로 로딩바 호출시 그려지기 전에 호출하여 오류 발생하는 경우 있음
+            vm.showLoading(true);
+            vm.getInitData();
+          },
+          // *************** ali-add methods
+          init: function () {
+            // page init
+            $(".lnb-bar_2dep li").eq(1).addClass("currentT").siblings("li").removeClass("currentT");
+            $(".lnb-bar_3dep").eq(1).show();
+          },
+          closePopupLayer: function () {
+            $(".black-bg").removeClass("show");
+          },
+          modalLayer: function (e) {
+            $(".black-bg").addClass("show");
+            // e.preventDefault();
+          },
+          paging: function (page) {
+            vm.param.page = page;
+            vm.submit();
+          },
+          closeTableOverlap: function () {
+            $(".table-overlap").css("display", "none");
+          },
+          submit: function () {
+            vm.showLoading(true);
+            $s.api.getSubmit("/api/mypage/getCntrList", vm.param, function (response) {
+              vm.result = response;
+              vm.showLoading(false);
+            });
+          },
+          getInitData: function () {
+            $s.api.getSubmit("/api/mypage/getCntrInitInfo", vm.param, function (response) {
+              vm.showLoading(false);
+              vm.result = response;
+              vm.userName = response.userName;
+              vm.yearList = response.yearList;
+              vm.wdrList = response.wdrList;
+              if (vm.result.totalCntrAmt > 100000) {
+                vm.taxRedutionEstimate = Math.floor((vm.result.totalCntrAmt - 100000) * 0.165 + 100000);
+              } else {
+                vm.taxRedutionEstimate = vm.result.totalCntrAmt;
+              }
+              //vm.taxRedutionEstimate = response.taxRedutionEstimate;
+              $(".lnb-bar_2dep li").eq(1).addClass("currentT");
+              $(".lnb-bar_3dep").eq(1).show();
+            });
+            vm.param.serachPeriod = vm.labelData[0].value;
+            //vm.showLoading(false);
+          },
+		  checkLinkSttCd: function (data, type, index) {
+			if (data.linkInsttCd == 'I0000047') {
+			  $s.confirm("고향사랑e음 시스템에서 납부를 진행하실 경우 답례품을 받으실 수 없습니다. 진행하시겠습니까?", function () {
+				$s.closeAlert();
+				// TODO 수정
+				setTimeout(function () {
+					vm.doGiro(data, type, index);
+				}, 500);
+			  });
+			} else {
+			  this.doGiro(data, type, index);
+			}
+		  },
+          doGiro: function (data, type, index) {
+            // 서울
+            if (data.cntrLocgovCode.substring(0, 2) == "11") {
+              var isContinue = false;
+              var params = {
+                jijacheCd: data.cntrLocgovCode, // 기부지자체 코드
+                enapbuNo: data.elctrnPayNo, // 전자납부번호
+                bookNo: data.mngNo, // 전문대장관리번호
+              };
+
+              /**
+               * 서울지자체 재납부
+               * STEP0   . 전자납부번호로 수납여부 조회
+               * STEP1   . 수납이 정상적으로 완료된 경우 수납 처리
+               * STEP0-1 . 수납이 되지 않은 경우 etax 결재 팝업 출력
+               * STEP0-2 . 팝업이 닫힌 경우 결재가 정상적으로 진행된지 알 수 없으므로 한번만 STEP0 호출
+               **/
+              donation.seoul
+                .etaxSunapConfirm(params)
+                .then(function (res) {
+                  if (res.RST_CD == "100" && res.ARR_RESULT[0].SUNAP_YN == "Y") {
+                    params.taxAmt = String(data.cntrAmt).replace(/[^\d]+/g, ""); // 기부금액
+                    params.sttemntPayDe = res.ARR_RESULT[0].SUNAP_DT; // 납부일자
+                    params.userCntrPoint = (data.cntrAmt * data.pointRate) / 100; // 포인트적립 금액
+                    params.presentType = "100"; // 포인트 적립여부
+
+                    return donation.sunapSuccess(params);
+                  } else if (index != 1) {
+                    // 수납확인이 되지 않은 경우 납부 팝업 오픈
+                    donation.seoul.etaxPopOpen(params.bookNo, params.enapbuNo, data.cntrAmt).then(function (res) {
+                      vm.doGiro(data, "check", 1);
+                    });
+                    isContinue = true;
+                    throw null;
+                  } else {
+                    throw "수납결과가 확인되지 않았습니다.";
+                  }
+                })
+                .then(function (res) {
+                  $s.alert("수납결과가 확인되었습니다.", function () {
+                    vm.submit();
+                    $s.closeAlert();
+                  });
+                })
+                .catch(function (msg) {
+                  if (msg) $s.alert(msg);
+                  return false;
+                })
+                .finally(function () {
+                  if (isContinue) return false;
+                });
+            } else {
+
+              /**
+               * 지방세외 재납부
+               * STEP0   . 전자납부번호로 수납여부 조회
+               * STEP1   . 수납이 정상적으로 완료된 경우 수납 처리
+               * STEP0-1 . 수납이 되지 않은 경우 금결원 지로 팝업을 통한 결제
+               * STEP0-2 . 결제가 완료되면 수납처리
+               **/
+
+               /*
+              var params = {
+                selectedRegionCd: data.cntrLocgovCode, // 기부지자체 코드
+                elctPayNo: data.elctrnPayNo, // 전자납부번호
+                userCntrPoint: (data.cntrAmt * data.pointRate) / 100, // 포인트
+                taxAmt: String(data.cntrAmt).replace(/[^\d]+/g, ""), // 기부금액
+                presentType: "100", // 포인트 제공 여부
+                mngNo: data.mngNo, // 전문대장관리번호
+              };
+
+              donation.contry
+                .contrySunapInfo(params)
+                .then(function (response) {
+                  // 수납이 되어있지 않다면 결제창 띄우기
+                  if (response == 0) {
+                    if (type == "pay") {
+                      return donation.myPageGiroPay(params).then(function (res) {
+                        return donation.sunapSuccess(res);
+                      });
+                    } else {
+                      throw "수납결과가 확인되지 않았습니다.";
+                    }
+
+                    // 수납 확인이 되었다면 납부 결과 업데이트
+                  } else {
+                    params.enapbuNo = data.elctrnPayNo;
+                    return donation.sunapSuccess(params);
+                  }
+                })
+                .then(function (res) {
+                  $s.alert("수납결과가 확인되었습니다.", function () {
+                    vm.submit();
+                    $s.closeAlert();
+                  });
+                })
+                .catch(function (msg) {
+                  $s.alert(msg);
+                  return false;
+                })
+                .finally(function () {
+                  $(".black-bg.etax").removeClass("show");
+                  $("#whitebg").hide();
+                });
+                */
+
+              var params = {
+                selectedRegionCd: data.cntrLocgovCode, // 기부지자체 코드
+                elctPayNo: data.elctrnPayNo, // 전자납부번호
+                userCntrPoint: (data.cntrAmt * data.pointRate) / 100, // 포인트
+                taxAmt: String(data.cntrAmt).replace(/[^\d]+/g, ""), // 기부금액
+                presentType: "100", // 포인트 제공 여부
+                mngNo: data.mngNo, // 전문대장관리번호
+                cntrSn: data.cntrSn
+              };
+
+              donation.contry
+                .localSunapConfirm(params)
+                .then(function (response) {
+                  // 수납이 되어있지 않다면 결제창 띄우기
+                  if (response.status != "SUCCESS"){
+                    if (type == "pay"){
+                      return donation.myPageGiroPay(params).then(function (res) {
+                        return donation.sunapSuccess(res);
+                      });
+                    } else {
+                      if(response.status == "ERROR"){
+                        let msg = response.errorMsg;
+                        throw '납부결과 확인이 원활하지않습니다./n 고객센터에 문의해주세요.';
+                      }
+                      else
+                      throw "납부결과가 존재하지 않았습니다.";
+                    }
+                  }else {
+                    params.enapbuNo = data.elctrnPayNo;
+                    return donation.sunapSuccess(params);
+                  }
+                })
+                .then(function (res) {
+                  $s.alert("수납결과가 확인되었습니다.", function () {
+                    vm.submit();
+                    $s.closeAlert();
+                  });
+                }).catch(function (msg) {
+                  $s.alert(msg);
+                  return false;
+                })
+                .finally(function () {
+                  $(".black-bg.etax").removeClass("show");
+                  $("#whitebg").hide();
+                });
+            }
+          },
+          goHometax: function () {
+            window.open("https://www.hometax.go.kr/", "hometax", "_blank", "noopener");
+          },
+          goReceiptPrint: function (cntrSn) {
+            if ($s.isMobile()) {
+              $s.alert("영수증 출력은 PC에서 확인 부탁드립니다.");
+              return false;
+            } else {
+              var pop = window.open("/mypage/receiptPrint.html?cntrSn=" + cntrSn, "receipt", "_blank", "toolbar=no,location=no");
+            }
+          },
+          goToLocgovMall: function (data) {
+            location.href = "/goods/searchGoods.html?type=L&locgov=" + data.locgovCode;
+            /*
+                    $s.api.getSubmit('/api/present/login', '', function (response) {
+                    var param = '';
+                    if (response.isSuccess) {
+                        param = (response.data == null) ? '' : response.data;
+
+						var domain = "";
+						if (window.location.hostname.indexOf("ilovegohyang.go.kr") > -1) {
+							domain = 'https://shop.ilovegohyang.go.kr';
+						} else {
+							domain = 'https://gohyang01.bbiz.kr';
+						}
+
+                        var child = window.open(domain+'/kwa-home?SCH_goods_category_serial=~'+data.locgovCode+'&_tss_=' + param, 'presentPopup', 'noopener');
+                        // var child = window.open('https://gohyang01.bbiz.kr?_tss_=' + param, 'presentPopup', '_blank');
+                        // child.location.href='https://gohyang01.bbiz.kr/kwa-home?SCH_goods_category_serial=~'+data.locgovCode;
+                        }
+                    });*/
+          },
+          resetData: function () {
+            vm.param.searchYear = "";
+            vm.param.upperLocgovCode = "";
+            vm.param.locgovCode = "";
+            vm.param.serachPeriod = vm.labelData[0].value;
+          },
+          getLocGov: function () {
+            $s.api.postSubmit("/api/mypage/getLocGov", vm.param, function (response) {
+              vm.locGovList = response.locGovList;
+            });
+            vm.param.locgovCode = "";
+          },
+          getSearchList: function () {
+            vm.param.page = 1;
+            vm.submit();
+          },
+          changeSearchYaer: function () {
+            vm.param.serachPeriod = vm.labelData[0].value;
+          },
+          changeSearchPeriod: function () {
+            vm.param.searchYear = "";
+          }
+        },
+        computed: {},
+        mounted: function () {
+          this.$nextTick(function () {
+            // 페이지 로딩 후 실행
+            Saleson.init({ loginPage: true });
+            //vm.paging(1);
+            //vm.getInitData();
+
+            var uri = window.location.search.substring(1);
+            var params = new URLSearchParams(uri);
+            var userAgent = navigator.userAgent.toLowerCase();
+            var userPlatform = navigator.platform.toLowerCase();
+            if (params.get("mYn") === "Y") {
+              var popURL = "/donation/wetaxInfo_m.html";
+              var winInfo = window.open(popURL, "PopupWetaxInfoM", "width=390,height=390,noopener");
+
+              var timer = setInterval(function () {
+                if (winInfo.closed) {
+                  // console.log("################ weTax 결재창 닫힘");
+                  clearInterval(timer);
+                  location.href = "wetax-app://www.wetax.go.kr/napbu";
+
+                  setTimeout(function () {
+                    if (userAgent.match(/android/)) {
+                      location.href = "market://details?id=kr.go.wetax.android";
+                    } else if (userAgent.match(/iphone|ipad|ipod/)) {
+                      location.href = "https://itunes.apple.com/kr/app/seumateu-witaegseu/id888585740?mt=8";
+                    }
+                  }, 500);
+                }
+              }, 1000);
+            }
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

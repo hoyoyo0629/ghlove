@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="Expires" content="-1">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Cache-Control" content="No-Cache">
+        <link rel="icon" href="/static/favicon.ico" />
+        <title>주문 대행 > 로그인 | 고향사랑e음</title>
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="/static/css/swiper.min.css" />
+        <link rel="stylesheet" href="/static/css/common.css" />
+        <link rel="stylesheet" href="/static/css/layout.css" />
+        <link rel="stylesheet" href="/static/css/popup.css" />
+        <link rel="stylesheet" href="/static/css/main.css" />
+
+        <link rel="stylesheet" href="/static/css/event.css" />
+
+        <!-- ali custom Style -->
+        <link rel="stylesheet" href="/static/css/default_ali.css" />
+        <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+        <!-- ali Section Style :: 이건 꼭 쓰세요:) -->
+        <link rel="stylesheet" href="/static/css/login-total.css" />
+        <link rel="stylesheet" href="/static/css/joind-agf.css" />
+        <link rel="stylesheet" href="/static/css/change-pw.css" />
+        <!--새 비밀번호 확인-->
+        <link rel="stylesheet" href="/static/css/authentication-modal.css" />
+
+        <!-- UI/UX 신규추가 -->
+    		<link rel="stylesheet" href="/static/css/new.css" />
+    		<script src="/static/js/swiper-bundle.min.js"></script>
+    		<!-- <script defer src="/static/js/ui-script.js"></script> -->
+    </head>
+
+    <body>
+        <div id="saleson" v-cloak>
+            <div id="wrap">
+
+                <!-- 본인인증 -->
+                <layout-auth ref="mobileAuth"></layout-auth>
+
+                <div id="contents">
+                    <!-- 아이디 로그인 -->
+                    <section class="login-total center">
+                        <!-- 아이디 로그인 -->
+                        <div class="login-box general">
+
+                            <div class="login-title-box">
+                                <img src="/static/images/icon/cli-icon-bullet.png" alt="" />
+                                <h2 class="login-title">주문대행 <strong>로그인</strong></h2>
+                            </div>
+
+                            <form action="/"
+                                  name=""
+                                  id="login-genaral"
+                                  @submit.prevent="submit"
+                                  @keydown="enterInput($event)">
+                                <div class="login-field-group">
+                                    <span class="login-field-items">
+                                        <input type="text"
+                                               placeholder="관리자 아이디"
+                                               id="id"
+                                               v-model="loginRequest.loginId"
+                                               title="아이디를 입력하세요." />
+                                    </span>
+                                    <span class="login-field-items">
+                                        <input type="password"
+                                               placeholder="관리자 비밀번호"
+                                               id="pw"
+                                               v-model="loginRequest.password"
+                                               title="비밀번호를 입력하세요." />
+                                    </span>
+                                    <span class="login-field-items">
+                                        <input type="text"
+                                               placeholder="기부자 전화번호"
+                                               id="cntrbtrMobile"
+                                               v-model="loginRequest.cntrbtrMobile"
+                                               title="기부자 전화번호를 입력하세요." />
+                                    </span>
+                                </div>
+                                <div class="login-field-group">
+                                    <button id="loginBtn"
+                                            class="login"
+                                            type="button"
+                                            @click="submitBefore">
+                                        로그인
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </section>
+
+                </div>
+                <!-- footer component -->
+                <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted" :export-mode="exportMode"></layout-footer-ali>
+            </div>
+            <!--//#wrap-->
+        </div>
+        <!--//#saleson-->
+        <!-- JavaScript -->
+        <script src="/static/js/jquery-3.4.1.min.js"></script>
+        <script src="/static/js/swiper.min.js"></script>
+        <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+        <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+        <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.popupoverlay.js"></script>
+        <script src="/static/js/jquery.waypoints.min.js"></script>
+        <script src="/static/js/jquery.counterup.min.js"></script>
+        <script src="/static/js/common.js"></script>
+        <script src="/static/js/header.js"></script>
+        <script src="/static/js/footer.js"></script>
+        <script src="/static/js/main.js"></script>
+
+        <script src="/static/js/jquery.cookie.js"></script>
+
+        <!-- SNS 계정 연동 -->
+        <script src="/modules/crypto-js.min.js"></script>
+        <script src="/modules/hmac-sha256.min.js"></script>
+        <script src="/modules/enc-base64.min.js"></script>
+
+        <script src="/modules/babel.min.js"></script>
+        <script src="/modules/es6-promise.min.js"></script>
+        <script src="/modules/es6-promise.auto.min.js"></script>
+        <script src="/modules/axios.js"></script>
+        <script src="/modules/vue.js"></script>
+        <script src="/modules/httpVueLoader.js"></script>
+        <script src="/modules/op.config.js"></script>
+        <script src="/modules/op.saleson.js"></script>
+        <script src="/modules/op.common.js"></script>
+        <script type="text/babel" src="/modules/op.vue.js"></script>
+        <script src="/modules/op.wcslog.js"></script>
+
+        <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+        <script type="text/javascript"
+                src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js"
+                charset="utf-8"></script>
+        <script src="/static/js/sns.js"></script>
+        <!-- 접속자대기 -->
+        <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+        <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+        <!-- 금융인증서 관련 js-->
+        <script src="/static/js/financ.js"></script>
+
+        <!-- 암호화 모듈 -->
+        <script src="/modules/jsencrypt.min.js"></script>
+
+        <script>
+
+            function receiveMsg(event) {
+                var jsonData;
+                if (event && event.data) {
+                    if (typeof event.data == 'string') {
+                        jsonData = JSON.parse(event.data);
+                    } else {
+                        jsonData = event.data;
+                    }
+                } else {
+                    $s.alert(
+                        "본인 인증에 실패했습니다."
+                    );
+                    return;
+                }
+
+                if (jsonData.mberCi && jsonData.cellNo) {
+                    vm.checkAuth(jsonData);
+                }
+            }
+
+            window.addEventListener("message", receiveMsg, false);
+        </script>
+
+        <script type="text/babel">
+            // Vue.use(NetFunnel);
+            Vue.use(VueAwesomeSwiper);
+            var vm = new Vue({
+                el: "#saleson",
+                components: {
+                    "layout-footer-ali": httpVueLoader(
+                        "/components/layouts/footer_ali.vue"
+                    ),
+                    "layout-auth": httpVueLoader("/components/layouts/auth/auth.vue"),
+                },
+                data: {
+                    user:"",
+                    loginRequest: {
+                        loginType: "ROLE_USER",
+                        loginId: "",
+                        password: "",
+                        financ: "",
+                    },
+                    birthday: "",
+                    publicKey: "",
+                    exportMode: true,
+                },
+
+                methods: {
+                    enterInput: function (e) {
+                        if (e.keyCode === 13 || e.keyCode === 32) {
+                        vm.submitBefore();
+                        }
+                    },
+                    submitBefore: function () {
+                        if (!vm.loginRequest.loginId) {
+                            $s.alert("아이디를 입력해 주세요", "id");
+                            return false;
+                        }
+
+                        if (!vm.loginRequest.password) {
+                            $s.alert("비밀번호를 입력해 주세요", "pw");
+                            return false;
+                        }
+
+                        if (!vm.loginRequest.cntrbtrMobile) {
+                            $s.alert("기부자 전화번호를 입력해 주세요", "cntrbtrMobile");
+                            return false;
+                        }
+
+
+                        if ($s.config.isUseNetFunnel) {
+                            NetFunnel_Action({ action_id: "login" }, function (ev, ret) {
+                                vm.submit();
+                            });
+                        } else {
+                            vm.submit();
+                        }
+
+                    },
+                    submit: function () {
+                        if (!this.publicKey) {
+                            $s.api.getOrderAgencyPublicKey(function (response) {
+                                if (response.result.rstCd == 'SUCCESS') {
+                                    vm.publicKey = response.result.publicKey;
+                                    vm.submit();
+                                } else {
+                                    $s.alert(response.result.rstMsg);
+                                }
+                            });
+                            return;
+                        }
+                        let params = {};
+                        let crypt = new JSEncrypt();
+                        crypt.setPrivateKey(this.publicKey);
+                        params.loginId = crypt.encrypt(this.loginRequest.loginId);
+                        params.password = crypt.encrypt(this.loginRequest.password);
+                        params.cntrbtrMobile = crypt.encrypt(this.loginRequest.cntrbtrMobile);
+
+                        $s.api.checkAgencyLoginInfo(params, function (response) {
+                            if (response.result.rstCd == 'SUCCESS') {
+                                vm.openMobileAuth();
+                            } else {
+                                if (response.result.rstCd == "KEY_EXPIRED") {
+                                    vm.publicKey = response.result.publicKey;
+                                    vm.submit();
+                                } else {
+                                    $s.alert(response.result.rstMsg);
+                                }
+                            }
+                        });
+                    },
+                    showLoading: function (isLoading) {
+                        this.$refs.layoutFooter.showLoading(isLoading);
+                    },
+                    checkAuth: function (data) {
+                        var params = {};
+
+                        let crypt = new JSEncrypt();
+                        crypt.setPrivateKey(this.publicKey);
+                        params.loginId = crypt.encrypt(this.loginRequest.loginId);
+                        params.password = crypt.encrypt(this.loginRequest.password);
+                        params.mberCi = crypt.encrypt(data.mberCi);
+                        params.cntrbtrMobile = crypt.encrypt(data.cellNo);
+
+
+                        $s.api.saveAgencyCntrbtrInfo(params, function (response) {
+                            if (response.result.rstCd == 'SUCCESS') {
+                                $s.redirect('/admin/order-agency/cntr-list.html');
+                            } else {
+                                if (response && response.result && response.result.rstMsg) {
+                                    $s.alert(response.result.rstMsg);
+                                } else {
+                                    $s.alert("잠시 후 시도해 주세요.");
+                                }
+                            }
+                        });
+                    },
+                    openMobileAuth: function () {
+                        this.$refs.mobileAuth.mobileAuth();
+                    },
+                    getQueryStr: function (paramKey) {
+                        return new URLSearchParams(location.search).get(paramKey);
+                        //return location.search;
+                    },
+                    loadingMounted: function () {
+                        if ($s.isLogin()) {
+                            // 로그인 되어있는 경우 로그아웃 처리
+                            $s.cleanToken();
+                            sessionStorage.removeItem($s.const.SALESON_ID);
+                            localStorage.setItem("storage-remove", "1");
+                            localStorage.removeItem("storage-remove");
+                            this.showLoading(true);
+                            $s.api.salesOnLogout(
+                                function () {
+                                    vm.showLoading(false);
+                                    $s.debug("SalesOn Logout");
+                                    $s.redirect("/admin/order-agency/login.html");
+                                },
+                                function (error) {
+                                    vm.showLoading(false);
+                                    $s.debug("Fail SalesOn Logout");
+                                    $s.redirect("/admin/order-agency/login.html");
+                                }
+                            );
+                        } else {
+                            $s.api.getOrderAgencyPublicKey(function (response) {
+                                if (response.result.rstCd == 'SUCCESS') {
+                                    vm.publicKey = response.result.publicKey;
+                                } else {
+                                    $s.alert(response.result.rstMsg);
+                                }
+                            });
+                        }
+                    },
+                },
+                computed: {
+
+                },
+                mounted: function () {
+                    this.$nextTick(function () {
+                        Saleson.init({isAgency: true});
+						window.onpageshow = function (event) {			// 뒤로가기로 화면 진입시 버전 다시 세팅
+							if (event.persisted || (window.performance && window.performance.navigation.type == 2)) {
+								vm.loadingMounted();
+							}
+						};
+                    });
+                },
+            });
+            window.app = vm;
+        </script>
+
+    </body>
+</html>

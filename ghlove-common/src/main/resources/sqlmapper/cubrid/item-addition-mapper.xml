@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.item.ItemAdditionMapper">
+	<resultMap id="ItemAdditionResult" type="saleson.shop.item.domain.ItemAddition">
+		<result property="itemAdditionId" column="ITEM_ADDITION_ID" />
+		<result property="itemId" column="ITEM_ID" />
+		<result property="additionItemName" column="ADDITION_ITEM_NAME" />
+		<result property="additionSalePrice" column="ADDITION_SALE_PRICE" />
+		<result property="additionStockFlag" column="ADDITION_STOCK_FLAG" />
+		<result property="additionStockQuantity" column="ADDITION_STOCK_QUANTITY" />
+		<result property="additionStockCode" column="ADDITION_STOCK_CODE" />
+		<result property="additionTaxType" column="ADDITION_TAX_TYPE" />
+		<result property="additionWeight" column="ADDITION_WEIGHT" />
+		<result property="additionDisplayFlag" column="ADDITION_DISPLAY_FLAG" />
+		<result property="createdDate" column="CREATED_DATE" />
+	</resultMap>
+
+	<!-- 상품 ID로 추가구성 상품목록 조회. -->
+	<select id="getItemAdditionListByItemId" parameterType="int" resultMap="ItemAdditionResult" >
+		SELECT 
+			ITEM_ADDITION_ID, 
+			ITEM_ID, 
+			ADDITION_ITEM_NAME, 
+			ADDITION_SALE_PRICE, 
+			ADDITION_STOCK_FLAG, 
+			ADDITION_STOCK_QUANTITY, 
+			ADDITION_STOCK_CODE, 
+			ADDITION_TAX_TYPE, 
+			ADDITION_WEIGHT, 
+			ADDITION_DISPLAY_FLAG, 
+			CREATED_DATE
+		FROM 
+			OP_ITEM_ADDITION 
+		WHERE
+			ITEM_ID = #{value}
+	</select>
+
+	<!-- 추가구성 상품ID로 추가구성 상품 조회 -->
+	<select id="getItemAdditionById" parameterType="int" resultMap="ItemAdditionResult" >
+		SELECT 
+			ITEM_ADDITION_ID, 
+			ITEM_ID, 
+			ADDITION_ITEM_NAME, 
+			ADDITION_SALE_PRICE, 
+			ADDITION_STOCK_FLAG, 
+			ADDITION_STOCK_QUANTITY, 
+			ADDITION_STOCK_CODE, 
+			ADDITION_TAX_TYPE, 
+			ADDITION_WEIGHT, 
+			ADDITION_DISPLAY_FLAG, 
+			CREATED_DATE
+		FROM OP_ITEM_ADDITION 
+ 		WHERE ITEM_ADDITION_ID = #{value}
+	</select>
+
+	<!-- 추가구성상품 등록. -->
+	<insert id="insertItemAddition" parameterType="saleson.shop.item.domain.ItemAddition">
+		INSERT INTO OP_ITEM_ADDITION (ITEM_ADDITION_ID, ITEM_ID, ADDITION_ITEM_NAME, ADDITION_SALE_PRICE, ADDITION_STOCK_FLAG, ADDITION_STOCK_QUANTITY, ADDITION_STOCK_CODE, ADDITION_TAX_TYPE, ADDITION_WEIGHT, ADDITION_DISPLAY_FLAG, CREATED_DATE)
+		VALUES (#{itemAdditionId}, #{itemId}, #{additionItemName}, #{additionSalePrice}, #{additionStockFlag}, #{additionStockQuantity}, #{additionStockCode}, #{additionTaxType}, #{additionWeight}, #{additionDisplayFlag}, <include refid="CommonMapper.datetime"/>)
+	</insert>
+
+	<!-- 추가구성상품 수정. -->
+	<update id="updateItemAddition" parameterType="saleson.shop.item.domain.ItemAddition">
+		UPDATE OP_ITEM_ADDITION SET
+			ITEM_ID = #{itemId}, 
+			ADDITION_ITEM_NAME = #{additionItemName}, 
+			ADDITION_SALE_PRICE = #{additionSalePrice}, 
+			ADDITION_STOCK_FLAG = #{additionStockFlag}, 
+			ADDITION_STOCK_QUANTITY = #{additionStockQuantity}, 
+			ADDITION_STOCK_CODE = #{additionStockCode}, 
+			ADDITION_TAX_TYPE = #{additionTaxType}, 
+			ADDITION_WEIGHT = #{additionWeight}, 
+			ADDITION_DISPLAY_FLAG = #{additionDisplayFlag}, 
+			CREATED_DATE = #{createdDate}
+		WHERE ITEM_ADDITION_ID = #{itemAdditionId}
+	</update>
+
+	<!-- 추가구성상품 삭제 (itemAdditionId) -->
+	<delete id="deleteItemAdditionById" parameterType="int">
+		DELETE FROM OP_ITEM_ADDITION 
+		WHERE ITEM_ADDITION_ID = #{value}
+	</delete>	
+	
+	<!-- 추가구성상품 삭제 (itemId) -->
+	<delete id="deleteItemAdditionByItemId" parameterType="int">
+		DELETE FROM OP_ITEM_ADDITION 
+		WHERE ITEM_ID = #{value}
+	</delete>	
+</mapper>

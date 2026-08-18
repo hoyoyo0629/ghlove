@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>고향사랑기부제안내-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+
+    <link rel="stylesheet" href="/static/css/donation_guge.css">
+    <link rel="stylesheet" href="/static/css/research-box.css">
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-donation-lnb-ali :menu-url="page.menuUrl"></layout-donation-lnb-ali>
+
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-not-arrow"></span>
+                        기부안내
+                        <span class="txt-not-arrow"></span>
+                        고향사랑기부제안내
+                    </span>
+                    <h2 class="page-title-txt">고향사랑기부제 안내</h2>
+                </div>
+            </section>
+            <section id="contents">
+                <div class="">
+                    <div class="center">
+                        <div class="s-contents d-guide first">
+                            <img src="/static/images/cli-prj_donation_guide01.png" class="dt-info"
+                                alt="
+                                	고향과 함께, 사랑을 같이, 기부로 나눔
+                                	고향사랑기부제란?
+                                	개인이 고향(지자체에) 기부하고
+                                	지자체는 이를 모아서 주민 복리에 사용하는 제도
+                                	지방재정을 확충하고, 지역특산품 등을 답례품으로 제공하여 지역경제 활성화
+                                	기부자는 고향을 돕는 자부심과 세액공제, 답례품 혜택을 동시에!
+                                	기부자 : 개인(법인 불가능)
+                                	기부처 : 지방자치단체
+                                	주민등록상 거주지(기초 + 광역)를 제외한 모든 지자체에 기부 가능
+                                	기부금액 한도 : 개인당 연간 500만원
+                                	2025년 1월 1일부터 연간 2000만원
+                                	주요 혜택
+                                	기부금에 대한 세액공제 혜택 제공 : 10만원까지는 전액, 10만원 초과 금액은 16.5%
+                                	100만원 기부시 24만8천원 공제
+                                	(10만원 + 초과분 90만원의 16.5%인 14만8천원)
+                                	기부자 본인에게 한하고, 이월공제 미적용
+                                	개인의 결정세액에 따라 공제금액은 달라질 수 있음
+                                	답례품 제공 : 기부액의 30% 한도 제공
+                                	답례품목 제외 : 현금, 귀금속, 유가증권 등
+                                	
+                                	콕콕! 집어서 기부하면 고향이 쑥쑥!
+                                	지정기부란?
+                                	기부자가 미리 정해진 자치단체의 사업 중에서 본인의 기부금이 사용되기를 원하는 사업을 지정하여 하는 기부(고향사랑기부금법 제 8조의 2)
+                                	일반기부는 해당 지역에, 지정기부는 사업에 기부한다는 점에서 구분
+                                	
+                                	온오프라인에서 자유롭게 고향사랑기부
+                                	온라인기부 : 고향사랑e음 사이트(https://ilovegohyang.go.kr)
+                                	진행 순서 : 회원가입, 기부지자체/사업 선택, 기부하기, 답례품선택 및 배송조회
+                                	오프라인기부 : 전국 농협은힝, 농축협(약 5900여개) 대면 접수 창구
+                                	진행 순서 : 회원가입, 고향사랑 기부금 기탁서 작성, 기부하기, 납입완료 명세서 출력
+                                	
+                                	연말정산 간소화 서비스
+                                	기부자는 연말정산 간소화 서비스 자동 반영
+                                	고향사랑 기부영수증(확인용)은 국세청 홈택스에서 발급 가능
+                                ">
+
+                            <img src="/static/images/cli-m_prj_donation_guide01_1.png" class="m-info" style="width: 100%;"
+                                alt="
+                                	고향과 함께, 사랑을 같이, 기부로 나눔
+                                	고향사랑기부제란?
+                                	개인이 고향(지자체에) 기부하고
+                                	지자체는 이를 모아서 주민 복리에 사용하는 제도
+                                	지방재정을 확충하고, 지역특산품 등을 답례품으로 제공하여 지역경제 활성화
+                                	기부자는 고향을 돕는 자부심과 세액공제, 답례품 혜택을 동시에!
+                                	기부자 : 개인(법인 불가능)
+                                	기부처 : 지방자치단체
+                                	주민등록상 거주지(기초 + 광역)를 제외한 모든 지자체에 기부 가능
+                                	기부금액 한도 : 개인당 연간 500만원
+                                	2025년 1월 1일부터 연간 2000만원
+                                	주요 혜택
+                                	기부금에 대한 세액공제 혜택 제공 : 10만원까지는 전액, 10만원 초과 금액은 16.5%
+                                	100만원 기부시 24만8천원 공제
+                                	(10만원 + 초과분 90만원의 16.5%인 14만8천원)
+                                	기부자 본인에게 한하고, 이월공제 미적용
+                                	개인의 결정세액에 따라 공제금액은 달라질 수 있음
+                                	답례품 제공 : 기부액의 30% 한도 제공
+                                	답례품목 제외 : 현금, 귀금속, 유가증권 등
+                                	
+                                	콕콕! 집어서 기부하면 고향이 쑥쑥!
+                                	지정기부란?
+                                	기부자가 미리 정해진 자치단체의 사업 중에서 본인의 기부금이 사용되기를 원하는 사업을 지정하여 하는 기부(고향사랑기부금법 제 8조의 2)
+                                	일반기부는 해당 지역에, 지정기부는 사업에 기부한다는 점에서 구분
+                                ">
+                            <br><br>
+                            <img src="/static/images/cli-m_prj_donation_guide01_2.png" class="m-info"
+                            	 style="width: calc(100% + 40px); margin-left: -20px; margin-right: -20px;max-width: 390px;"
+                                alt="
+                                	온오프라인에서 자유롭게 고향사랑기부
+                                	온라인기부 : 고향사랑e음 사이트(https://ilovegohyang.go.kr)
+                                	진행 순서 : 회원가입, 기부지자체/사업 선택, 기부하기, 답례품선택 및 배송조회
+                                	오프라인기부 : 전국 농협은힝, 농축협(약 5900여개) 대면 접수 창구
+                                	진행 순서 : 회원가입, 고향사랑 기부금 기탁서 작성, 기부하기, 납입완료 명세서 출력
+                                	
+                                	연말정산 간소화 서비스
+                                	기부자는 연말정산 간소화 서비스 자동 반영
+                                	고향사랑 기부영수증(확인용)은 국세청 홈택스에서 발급 가능
+                                ">
+                        </div>
+                    </div>
+                </div>
+                <div class="contents-wrap" style="border-top:none;">
+                    <div class="center">
+                        <div class="s-contents d-guide">
+                            <img src="/static/images/icon/cli-icon-bullet.png" alt="">
+                            <h3 class="guide-title">고향사랑 답례품 안내</h3>
+                            <div class="donation-gift-box">
+                                <img src="/static/images/cli-donation_gift01.png"
+                                    alt="답례품 구매 방법은 기부할 지자체에 기부하기가 완료되면, 해당 지자체의 기부 포인트가 생성되고, 해당 지자체의 답례품 구매가 가능합니다. 기부한 지자체 이외 지역에서는 해당 포인트로 답례품을 구매할 수 없습니다."
+                                    class="dt-info">
+                                <img src="/static/images/cli-donation_gift02.png"
+                                    alt="기부 포인트란 고향사랑 기부 완료 시 해당 지자체의 기부 포인트가 생성됩니다. 기부 포인트는 지자체에서 설정한 비율에 따라 생성되며 (최대 30%) 기부 포인트는 기부한 지자체별로 누적됩니다. 본인의 기부 포인트는 본인만 사용 가능하며 양도는 불가합니다. 고향사랑 답례품 구매는 고향사랑 기부 포인트로만 가능합니다. 기부 포인트는 회원 탈퇴 시 소멸합니다. 미사용 포인트에 한해서 유효기간 5년 만료 시 자동 삭제됩니다."
+                                    class="dt-info">
+
+                                <img src="/static/images/cli-donation_gift_m.png" style="width: 100%;"
+                                    alt="답례품 구매 방법은 기부할 지자체에 기부하기가 완료되면, 해당 지자체의 기부 포인트가 생성되고, 해당 지자체의 답례품 구매가 가능합니다. 기부한 지자체 이외 지역에서는 해당 포인트로 답례품을 구매할 수 없습니다. 기부 포인트란 고향사랑 기부 완료 시 해당 지자체의 기부 포인트가 생성됩니다. 기부 포인트는 지자체에서 설정한 비율에 따라 생성되며 (최대 30%) 기부 포인트는 기부한 지자체별로 누적됩니다. 본인의 기부 포인트는 본인만 사용 가능하며 양도는 불가합니다. 고향사랑 답례품 구매는 고향사랑 기부 포인트로만 가능합니다. 기부 포인트는 회원 탈퇴 시 소멸합니다. 미사용 포인트에 한해서 유효기간 5년 만료 시 자동 삭제됩니다."
+                                    class="m-info">
+                            </div>
+                        </div>
+
+                        <!-- 콘텐츠 만족도 -->
+                        <layout-content-stsfdg></layout-content-stsfdg>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- topBtn component -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                //'layout-donation-lnb-ali': httpVueLoader('/components/layouts/donation_info-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+                'layout-content-stsfdg': httpVueLoader('/components/layouts/content-stsfdg/stsfdg.vue')
+            },
+            data: {
+                userName: "",
+                userGrade: "",
+                selectedSurvey: "01",
+                result: {},
+                page: {
+                    menuUrl: "/donation/guide1.html"
+                },
+            },
+            methods: {
+                // init: function () { // page init
+                //     $(".lnb-bar_2dep li").eq(1).addClass("currentT").siblings("li").removeClass("currentT");
+                //     $(".lnb-bar_3dep").eq(0).show();
+                //     $(".lnb-bar_3dep:eq(0) li:eq(0) a").addClass("currentP");
+                // },
+                radioChange: function (e) { // radio button checked value
+                    vm.selectedSurvey = e.target.value;
+                },
+                goToSurvey: function () { // 현재 페이지 만족도
+                    console.log("############### current radio checked value : " + vm.selectedSurvey);
+                    var message = "";
+                    if (vm.selectedSurvey != null && vm.selectedSurvey != "") {
+                        message = "만족도 평가를 등록하였습니다. 감사합니다.";
+                    } else {
+                        message = "만족도 평가 항목을 선택해 주세요";
+                    }
+
+                    $s.alert(message, function () {
+                        location.reload();
+                    });
+                }
+
+            },
+            computed: {
+
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    Saleson.init();
+                    //setTimeout(() => this.init(), 100);
+                });
+
+            }
+        });
+    </script>
+
+</body>
+
+</html>

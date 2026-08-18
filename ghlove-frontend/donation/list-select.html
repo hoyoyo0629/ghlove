@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <META http-equiv="Expires" content="-1">
+	<META http-equiv="Pragma" content="no-cache">
+	<META http-equiv="Cache-Control" content="No-Cache">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>안내사항 > 기금사업 소개 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/donation_liemt.css">
+    <link rel="stylesheet" href="/static/css/donation_selmt.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css">
+    <link rel="stylesheet" href="/static/css/research-box.css">
+    <link rel="stylesheet" href="/static/css/goods_card.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-donation-lnb-ali :menu-url="page.menuUrl"></layout-donation-lnb-ali>
+
+            <section class="center donation_steps">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        안내사항
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        기금사업 소개
+                    </span>
+                    <h2 class="page-title-txt">기금사업 소개</h2>
+                </div>
+            </section>
+            <section id="contents">
+                <div class="contents-wrap">
+                    <div class="center">
+                        <div class="s-contents list-wrapper">
+                            <div class="list-select-area">
+                                <div class="list-select-header">
+                                    <div class="list-title"><strong>시·도</strong>를 선택해 주세요.</div>
+                                    <div class="list-select">
+                                        <label for="selectArea">지역선택</label>
+                                        <select id="selectArea" v-model="selectedUpperLocgovCode">
+                                            <option value="">시·도 선택</option>
+                                            <option v-for="data in sidoList" :value="data.sidoCode">{{data.sidoName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="list-select-body" id="listBody">
+                                    <ul class="list-select-group">
+                                        <li tabindex="0" class="list-items" v-for="data in cityList"
+                                            :value="data.cityCode" @click="listTargetOn($event)"
+                                            @keydown="listTargetEnter($event)">{{ data.cityName }}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="list-select-body" id="emptyBody">
+                                    <img src="/static/images/cli-list-select.png" alt="시도를 선택해 주세요" style="max-width: 72%;margin-top:5rem;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 이미지를 주석처리 하면서 UI 틀어짐 수정 -->
+                <div class="mobile_section_bar" v-show="this.selectedSigunguCode"></div>
+                <div class="contents-wrap">
+                    <div class="center">
+                        <div class="s-contents map-info" id="listContent">
+                            <div class="tab-container" id="tabCon">
+                                <div class="tab_tit">
+                                    <ul class="tab-menu">
+                                        <li><a href="#method1" :class="tabType === 'tab1' ? 'active' : ''"
+                                                data-toggle="tab" @click="tabTypeSelect('tab1')">지자체정보</a></li>
+                                        <li><a href="#donaLocNotice" :class="tabType === 'tab2' ? 'active' : ''"
+                                                data-toggle="tab" @click="tabTypeSelect('tab2')">기금사업 소개</a></li>
+                                        <!-- 고객 요청 : 답례품 클릭 시 해당 지자체몰로 즉시 이동되도록 변경 -->
+                                        <li><a href="#" :class="tabType === 'tab3' ? 'active' : ''"
+                                                data-toggle="tab" @click="tabTypeSelect('tab3');this.$goods.goSearchGoods({type:'L', locgov: result.locgovCode})">답례품</a></li>
+                                        <li><a href="#locNotice" :class="tabType === 'tab4' ? 'active' : ''"
+                                                data-toggle="tab" @click="tabTypeSelect('tab4')">지자체공지사항</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="tab-content">
+                                    <div id="method1"
+                                        :class="tabType === 'tab1' ? 'tab-pane fade show active' : 'tab-pane fade'"
+                                        tabindex="0">
+                                        <div class="info-wrap">
+                                            <div class="city-Info">
+                                                <h3 class="seletedLoc">{{result.upperLocgovNm}} {{result.locgovNm}}</h3>
+                                                <table>
+                                                    <caption class="ir_txt">선택 지자체 상세정보</caption>
+                                                    <tr>
+                                                        <th>예산</th>
+                                                        <td>{{result.locgovBudgetAmt | emptyReplace | comma}} (단위:백만원)
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>인구수</th>
+                                                        <td>{{result.locgovPopltnCo | emptyReplace | comma}} 명</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>기부 담당자</th>
+                                                        <td>{{result.chargerPsitnDept}}-{{result.chargerNm}} (
+                                                            {{result.chargerCttpc}} )</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>홈페이지</th>
+                                                        <td>{{result.locgovHmpg}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>포인트지급률</th>
+                                                        <td>{{result.pointRate}}%</td>
+                                                    </tr>
+                                                </table>
+                                                <!-- <div class="city-Info-title honor">
+                                                    <img src="/static/images/icon/cli-icon_bullet-c.png" alt="">
+                                                    <span>명예회원 선정기준</span>
+                                                </div>
+                                                <div class="city_honor">
+                                                    <div class="honor_grade"
+                                                        v-for="(item, index) in honorList.slice().reverse()">
+                                                        <div class="grade_wrap">
+                                                            <img v-bind:src="'/static/images/icon/honor_grade' + (index + 1) + '.png'"
+                                                                alt="" v-bind:class="'grade' + (index + 1)">
+                                                            <span>{{item.label}}</span>
+                                                        </div>
+                                                        <div class="grade_standard"
+                                                            v-html="amtModify(result['stdr' + (honorList.length - index) + 'levelAmt'])">
+                                                        </div>
+                                                    </div>
+                                                </div>-->
+                                            </div>
+                                            <div class="city-Info">
+                                                <div class="city-Info-title">
+                                                    <img src="/static/images/icon/cli-icon_bullet-c.png" alt="">
+                                                    <span>지자체 소개 내용</span>
+                                                </div>
+                                                <div class="city-Info-txt">
+                                                    <p v-html="result.locgovIntrcnCn"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="donaLocNotice"
+                                        :class="tabType === 'tab2' ? 'tab-pane fade show active' : 'tab-pane fade'">
+                                        <!-- <template v-if="hideTabCon"> -->
+
+                                        <div class="city-notice" tabindex="1" v-show="!isDonationDetail">
+                                            <h3 class="seletedLoc">{{result.upperLocgovNm}} {{result.locgovNm}}</h3>
+                                            <table>
+                                            	<caption>기금사업 소개 – 기금사업, 등록일로 구성</caption>
+                                            	<thead>
+	                                                <tr>
+	                                                    <th scope="row" class="tb_tit">기금사업</th>
+	                                                    <th scope="row" class="tb_dat">등록일</th>
+	                                                </tr>
+                                                </thead>
+                                                <tbody>
+	                                                <tr class="cursor" tabindex="0" v-show="!isNoDataDonation"
+	                                                    v-for="(data, index) in donationNoticeResult.noticeList" :key="index"
+	                                                    @click="goToDonationDetails(index)" @keydown="tabToDonationDetails($event, index)"
+	                                                    v-bind:id="'donationNotice' + index">
+	                                                    <td class="tb_tit">{{ unescapeHtml(data.subject) }}</td>
+	                                                    <td class="tb_dat">{{ data.createdDate }}</td>
+	                                                </tr>
+	                                                <tr class="list-none" v-show="isNoDataDonation">
+	                                                    <td colspan="3">기금사업을 준비중입니다.</td>
+	                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <pagination :current-page="donationNoticeResult.currentPage"
+                                                :total-pages="donationNoticeResult.totalPages" @change="getLocGovDonationNotice"
+                                                v-show="!isNoDataDonation">
+                                            </pagination>
+                                        </div>
+
+                                        <div class="city-notice_details" v-show="isDonationDetail">
+                                            <table class="notice_details">
+                                            	<caption class="sr-only">기금사업 목록</caption>
+                                                <tr>
+                                                    <th v-html="unescapeHtml(donationDetailResult.subject)"></th>
+                                                </tr>
+                                                <tr>
+                                                    <td>등록일 {{ donationDetailResult.createdDate }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td v-html="unescapeHtml(donationDetailResult.content)"></td>
+                                                </tr>
+                                            </table>
+                                            <div class="btn-box">
+                                                <button type="button" class="blueBtn u-confirm"
+                                                    @click="donationNoticeDetailReset()">
+                                                    목록
+                                                    <span>
+                                                        <img src="/static/images/icon/cli-icon_btn-hover-arrow.png"
+                                                            alt="">
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- </template> -->
+                                    </div>
+                                    <!-- 고객 요청에 의해 답례품 보여주지 않고 지자체몰로 즉시 이동되도록 변경 -->
+<!--                                     <div id="locMall" -->
+<!--                                         :class="tabType === 'tab3' ? 'tab-pane fade show active' : 'tab-pane fade'"> -->
+<!--                                         <section class="loc_header"> -->
+<!--                                             <div class="center"> -->
+<!--                                                 <div class="loc_name_area"> -->
+<!--                                                     <img src="/static/images/goods/loc_mall-header.png" alt=""> -->
+<!--                                                     <h3>{{result.upperLocgovNm}} {{result.locgovNm}}</h3> -->
+<!--                                                     <p>답례품 몰</p> -->
+<!--                                                 </div> -->
+<!--                                             </div> -->
+<!--                                         </section> -->
+<!--                                         답례품 카드 -->
+<!--                                         <div class="section all_goods"> -->
+<!--                                             <ul class="goods-list-group"> -->
+<!--                                                 <li class="goods-list-items" v-for="(val,i) in goodsCard" :key="i"> -->
+<!--                                                     <div  class="list_inner"> -->
+<!--                                                         <span class="img_frame"> -->
+<!--                                                         	<a @click.prevent="jumpToDetails(val)" tabindex="0" @keydown="jumpToDetailsE($event,val)"  :role="val.itemName + ' 상세페이지 이동'"> -->
+<!--                                                             <img class="item_img" v-bind:src="itemImage(val.itemImage)" -->
+<!--                                                                 :alt="val.itemName" -->
+<!--                                                                 @error="this.$goodsItem.errorImage($event)"> -->
+<!--                                                             </a> -->
+<!--                                                             <img src="/static/images/goods/goods_sold-out.png" alt="품절" -->
+<!--                                                                 v-show="!(val.adultItemYn === 'Y' && adultYn === 'N') && val.itemSoldOutFlag === 'Y'"> -->
+<!--                                                             <img src="/static/images/goods/goods_19.png" alt="19세구매가능" -->
+<!--                                                                 v-show="val.adultItemYn === 'Y' && adultYn === 'N'"> -->
+<!--                                                             <button type="button" class="icon-md-img hidden_txt" -->
+<!--                                                                 :class="val.wishlistFlag ? 'on' : ''" -->
+<!--                                                                 @keydown="keydownDetails($event)" -->
+<!--                                                                 @click.prevent="this.$goodsItem.addToWishList($event)" -->
+<!--                                                                 v-bind:id="val.itemId" -->
+<!--                                                                 :aria-label="val.wishlistFlag ? '관심 답례품 등록 상태, 해제하기' : '관심 답례품 해제 상태, 등록하기'">관심답례품</button> -->
+<!--                                                             <button type="button" class="cart hidden_txt" aria-label="장바구니에 추가" -->
+<!--                                                                 @keydown="keydownDetails($event)" -->
+<!--                                                                 @click.stop="this.$goodsItem.addToCart(val.itemId, val.adultItemYn, adultYn)" -->
+<!--                                                                 v-if="this.$goodsItem.isShowCartIcon(val)">장바구니</button> -->
+<!--                                                         </span> -->
+<!--                                                         <button type="button" class="do_btn" -->
+<!--                                                             @click.stop="this.$goodsItem.getLocGovInfo(val.locgovCode)"> -->
+<!--                                                             <span class="btn_icon"></span> -->
+<!--                                                             <span class="btn_txt">{{ val.locgovNm }} 기부</span> -->
+<!--                                                             <span class="btn_arrow"></span> -->
+<!--                                                         </button> -->
+<!--                                                         <span class="card_title" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }">{{val.itemName}}</span> -->
+<!--                                                         <span class="deepBlue" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }"><span class="pointSize">{{ formatNumber(val.salePrice)}}</span> P</span> -->
+
+<!--                                                         <span class="tag_box" v-if="val.itemNewFlag == 'Y'">신규</span> -->
+<!--                                                     </div> -->
+<!--                                                 </li> -->
+<!--                                             </ul> -->
+<!--                                             <div class="btn-box moreBtn"> -->
+<!--                                                 <button class="formBtn more" type="button" -->
+<!--                                                     @click.prevent="this.$goods.goSearchGoods({type:'L', locgov: result.locgovCode})">답례품몰로 -->
+<!--                                                     이동하기</button> -->
+<!--                                             </div> -->
+<!--                                         </div> -->
+<!--                                     </div> -->
+
+                                    <div id="locNotice"
+                                    :class="tabType === 'tab4' ? 'tab-pane fade show active' : 'tab-pane fade'">
+                                    <!-- <template v-if="hideTabCon"> -->
+
+                                    <div class="city-notice" tabindex="1" v-show="!isDetail">
+                                        <h3 class="seletedLoc">{{result.upperLocgovNm}} {{result.locgovNm}}</h3>
+                                        <table>
+                                        	<caption>지자체 공지사항 – 지자체 공지사항, 등록일로 구성</caption>
+                                        	<thead>
+	                                            <tr>
+	                                                <th scope="row" class="tb_tit">지자체 공지사항</th>
+	                                                <th scope="row" class="tb_dat">등록일</th>
+	                                            </tr>
+                                            </thead>
+                                            <tbody>
+	                                            <tr class="cursor" tabindex="0" v-if="!isNoData"
+	                                                v-for="(data, index) in noticeResult.noticeList" :key="index"
+	                                                @click="goToDetails(index)" @keydown="tabToDetails($event, index)"
+	                                                v-bind:id="'notice' + index">
+	                                                <td class="tb_tit">{{ unescapeHtml(data.subject) }}</td>
+	                                                <td class="tb_dat">{{ data.createdDate }}</td>
+	                                            </tr>
+	                                            <tr class="list-none" v-if="isNoData">
+	                                                <td colspan="3">게시글이 존재하지 않습니다.</td>
+	                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <pagination :current-page="noticeResult.currentPage"
+                                            :total-pages="noticeResult.totalPages" @change="getLocGovNotice()"
+                                            v-if="!isNoData">
+                                        </pagination>
+                                    </div>
+
+                                    <div class="city-notice_details" v-show="isDetail">
+                                        <table class="notice_details">
+                                        <caption class="sr-only">기금사업 목록</caption>
+                                            <tr>
+                                                <th v-html="unescapeHtml(detailResult.subject)"></th>
+                                            </tr>
+                                            <tr>
+                                                <td>등록일 {{ detailResult.createdDate }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td v-html="unescapeHtml(detailResult.content)"></td>
+                                            </tr>
+                                        </table>
+                                        <div class="btn-box">
+                                            <button type="button" class="blueBtn u-confirm"
+                                                @click="noticeDetailReset()">
+                                                목록
+                                                <span>
+                                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png"
+                                                        alt="">
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- </template> -->
+                                </div>
+
+                                </div>
+
+                                <!-- 관심지자체등록 버튼 -->
+                                <div class="btn-box tab-btn" v-if="isBtn">
+                                    <button type="button" class="formBtn intrst" @click="goToIntrstLocgov()">
+                                        <span class="icon_area"
+                                            v-bind:class="{active : result && result.intrstCnt > 0}"></span>
+                                        <span class="btn_txt"> 관심 지자체 등록</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 고객 요청 : 해당 이미지 삭제 -->
+<!--                     <div class="center"> -->
+<!--                         <div class="s-contents map-info" id="emptyContent"> -->
+<!--                             <img class="d-img map-procedure" src="/static/images/pc_map-procedure.png" -->
+<!--                                 alt="1.기부 지자체 선택하기 - 2.주소지 확인·정보 입력 하기 - 3.기부하기 - 4.지역 답례품몰에서 답례품 선택하기 ※자신의 주소지 지자체에는 기부하실 수 없습니다."> -->
+<!--                             <img class="m-img map-procedure" src="/static/images/m_map-procedure.png" -->
+<!--                                 alt="1.기부 지자체 선택하기 - 2.주소지 확인·정보 입력 하기 - 3.기부하기 - 4.지역 답례품몰에서 답례품 선택하기 ※자신의 주소지 지자체에는 기부하실 수 없습니다."> -->
+<!--                         </div> -->
+                        <!-- [250828] 고객 요청에 의하여 안내사항에 있는 6개 화면 설문조사 삭제 처리 -->
+                        <!-- 콘텐츠 만족도 -->
+												<!-- <layout-content-stsfdg></layout-content-stsfdg> -->
+<!--                     </div> -->
+                </div>
+            </section>
+
+
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+    <script src="/modules/goods.item.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-subsearch-ali': httpVueLoader('/components/layouts/subsearch_ali.vue'),
+                //'layout-donation-lnb-ali': httpVueLoader('/components/layouts/donation-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+                'layout-content-stsfdg': httpVueLoader('/components/layouts/content-stsfdg/stsfdg.vue')
+
+            },
+            data: {
+                param: {
+                    page: 1,
+                    itemsPerPage: 10,
+                    sidoCode: "",
+                    locgovCode: '',
+                    where: 'SUBJECT',
+                    query: '',
+                    orderBy: '',
+                    sort: ''
+                },
+                sidoList: {},
+                cityList: {},
+                tabType: '',
+                selectedSurvey: "01",
+                result: {},
+                honorList: [],
+                locgovNm: '',
+                locgovBudgetAmt: '',
+                isNoData: true,
+                isNoDataDonation: true,
+                isBtn: false,
+                isDetail: false,
+                isDonationDetail: false,
+                noticeResult: {
+                    totalPages: 0,
+                    currentPage: 0,
+                    noticeList: [],
+                    noticeCount: 0
+                },
+                donationNoticeResult: {
+                    totalPages: 0,
+                    currentPage: 0,
+                    noticeList: [],
+                    noticeCount: 0
+                },
+                detailResult: {
+                    createdDate: '',
+                    userName: '',
+                    subject: '',
+                    content: '',
+                    focusId: ''
+                },
+                donationDetailResult: {
+                    createdDate: '',
+                    userName: '',
+                    subject: '',
+                    content: '',
+                    focusId: ''
+                },
+                page: {
+                    menuUrl: "/donation/list-select.html"
+                },
+                adultYn: 'N',
+                goodsCard: [],
+                selectedSigunguCode: '',
+                selectedUpperLocgovCode: '',
+                initLocgovCode: ''
+            },
+            filters: {
+                comma(val) {
+                    return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
+                emptyReplace(val) {
+                    return String(val).replace(null, "0");
+                }
+            },
+            methods: {
+                // *************** ali-add methods
+                /*init: function () { // page init
+
+                    $(".lnb-bar_2dep li").eq(2).addClass("currentT").siblings("li").removeClass("currentT");
+                    $(".lnb-bar_3dep").eq(1).show();
+                    $(".lnb-bar_3dep:eq(1) li:eq(1) a").addClass("currentP");
+
+                },*/
+                radioChange: function (e) { // radio button checked value
+                    vm.selectedSurvey = e.target.value;
+                },
+                goToSurvey: function () { // 현재 페이지 만족도
+                    var message = "";
+                    if (vm.selectedSurvey != null && vm.selectedSurvey != "") {
+                        message = "만족도 평가를 등록하였습니다. 감사합니다.";
+                    } else {
+                        message = "만족도 평가 항목을 선택해 주세요";
+                    }
+
+                    $s.alert(message, function () {
+                        location.reload();
+                    });
+                },
+
+                submit: function () {
+
+                    $s.api.getSido(vm.param,
+                        function (response) {
+                            vm.sidoList = response.resultList.sidoList;
+                            if (Common.getParameter('locgovCode') != '') {
+								var locgovCode = Common.getParameter('locgovCode');
+								var upperLocgovCode = locgovCode.slice(0, 2) + "000";
+								vm.selectedUpperLocgovCode = upperLocgovCode;
+								vm.initLocgovCode = locgovCode;
+							}
+                            // $(".lnb-bar_2dep li").eq(2).addClass("currentT").siblings("li").removeClass("currentT");
+                            // $(".lnb-bar_3dep").eq(1).show();
+                            // $(".lnb-bar_3dep:eq(1) li:eq(1) a").addClass("currentP");
+                        }
+                    )
+                },
+
+                modalLayer: function (e) {
+                    $(".black-bg").addClass("show");
+                    // e.preventDefault();
+                },
+                paging: function (page) {
+                    vm.param.page = page;
+                    vm.submit();
+                },
+                // 지역 선택시 시군구 list
+                sidoChange: function (upperLocgovCode) {
+                    $('#emptyContent').show();
+                    $('#listContent').hide();
+                    $(".list-items").removeClass("on");
+
+                    vm.isBtn = false;
+
+                    vm.param.sidoeCode = upperLocgovCode;
+                    if (vm.param.sidoeCode != "") {
+                        $('#emptyBody').hide();
+                        $('#listBody').show();
+                        // $('#emptyContent').hide();
+                        // $('#listContent').show();
+
+                        var params = {
+                            'sidoCode': vm.param.sidoeCode
+                        }
+                        $s.api.getSiGunGu(params,
+                            function (response) {
+                                vm.cityList = response.resultList.cityList;
+                                if (vm.initLocgovCode != '') {
+
+									for (var i in vm.cityList) {
+										if (vm.initLocgovCode == vm.cityList[i].cityCode){
+
+											$("#listBody ul li").ready(function () {
+												$("#listBody ul li").eq(i).trigger('click');
+											});
+											vm.initLocgovCode = '';
+											break;
+										}
+									}
+
+								}
+                            }
+                        )
+
+                    } else {
+                        $('#emptyBody').show();
+                        $('#listBody').hide();
+                        $('#emptyContent').show();
+                        $('#listContent').hide();
+                    }
+                },
+                // 시군구 리스트 하이라이트
+                listTargetOn: function (e) {
+                    $(e.target).addClass("on").siblings(".list-items").removeClass("on");
+
+                    $('#emptyContent').hide();
+                    $('#listContent').show();
+
+                    $('#tabCon').show();
+
+                    vm.isBtn = true;
+                    this.isDonationDetail = false;
+                    this.isDetail = false;
+
+                    this.tabTypeSelect('tab2');
+
+                    this.selectedSigunguCode = e.target.value;
+                    this.getLocGovInfo(this.selectedSigunguCode); // 지자체 정보
+                    this.getLocGovNotice(); // 지자체 공지사항
+
+
+
+                    // 추가
+                    this.getLocGovDonationNotice();   // 기금사업 소개
+                },
+                listTargetEnter: function (e) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        $(e.target).addClass("on").siblings(".list-items").removeClass("on");
+                        $('#emptyContent').hide();
+                        $('#listContent').show();
+                        $('#tabCon').show();
+                        $('.map-info .tab-container ul.tab-menu li:first-child a').focus();
+                        vm.isBtn = true;
+                        this.isDonationDetail = false;
+                        this.isDetail = false;
+
+                        this.tabTypeSelect('tab2');
+
+                        this.selectedSigunguCode = e.target.value;
+                        this.getLocGovInfo(this.selectedSigunguCode); // 지자체 정보
+                        this.getLocGovNotice(); // 지자체 공지사항
+
+                        // 추가
+                        this.getLocGovDonationNotice();   // 기금사업 소개
+
+                        // $(".tab-menu>li:first-child a").focus();
+                        this.$nextTick(function () {
+
+                            this.$refs.giveBtn.focus();
+                            e.preventDefault();
+                        });
+                    }
+                },
+                // tab 선택
+                tabTypeSelect: function (tabType) {
+                    this.tabType = tabType;
+                    //if (tabType === 'tab3') {
+                        //this.getItemList(this.result.locgovCode);
+                    //}
+                },
+                // 답례품몰 이동
+                goToPresent: function () {
+                    var url = "&SCH_goods_category_serial=~" + $s.donation.getData($s.donation.const.LOCGOV_CODE);
+
+                    $s.api.getSubmit('/api/present/login', '', function (response) {
+                        var param = '';
+                        if (response.isSuccess) {
+                            param = (response.data == null) ? '' : response.data;
+                            //                            window.open('https://gohyang01.bbiz.kr?_tss_=' + param + url, 'presentPopup', '_blank');
+
+                            var domain = "";
+                            if (window.location.hostname.indexOf("ilovegohyang.go.kr") > -1) {
+                                domain = 'https://shop.ilovegohyang.go.kr';
+                            } else {
+                                domain = 'https://gohyang01.bbiz.kr';
+                            }
+
+                            if ($s.config.isUseNetFunnel) {
+                                NetFunnel_Action({ action_id: 'shop' }, function (ev, ret) {
+                                    window.open(domain + '?_tss_=' + param + url, 'presentPopup', 'noopener');
+                                });
+                            } else {
+                                window.open(domain + '?_tss_=' + param + url, 'presentPopup', 'noopener');
+                            }
+
+
+                        }
+                    });
+
+                },
+                // 지자체 정보
+                getLocGovInfo: function (cityCode) {
+                    var params = {
+                        'cityCode': cityCode
+                    }
+
+                    $s.api.postSubmit('/api/ngdonation/locGovInfo', params, function (response) {
+                        vm.result = response.result.locGovInfo;
+                        vm.honorList = response.honorList;
+
+                        if (vm.result != null && vm.result != "") {
+                            $s.donation.setData($s.donation.const.LOCGOV_CODE, vm.result.locgovCode);
+                            $s.donation.setData($s.donation.const.LOCGOV_NM, vm.result.locgovNm);
+                            $s.donation.setData($s.donation.const.UPPER_LOCGOV_CODE, vm.result.upperLocgovCode);
+                            $s.donation.setData($s.donation.const.UPPER_LOCGOV_NM, vm.result.upperLocgovNm);
+                            $s.donation.setData($s.donation.const.POINT_RATE, vm.result.pointRate);
+                        }
+                    });
+                },
+                // 지자체 공지사항
+                getLocGovNotice: function (page) {
+                    vm.param.locgovCode = this.selectedSigunguCode;
+                    vm.noticeResult.noticeList = [];
+                    if (!page) {
+                        page = 1;
+                    }
+                    vm.noticeResult.currentPage = page;
+
+                    $s.api.getNotice(vm.param,
+                        function (response) {
+                            vm.noticeResult.totalPages = response.totalPages;
+                            vm.noticeResult.currentPage = response.currentPage;
+                            vm.noticeResult.noticeCount = response.totalCount;
+                            vm.noticeResult.noticeList = response.content;
+                            vm.isNoData = !response.totalCount;
+                        }
+                    );
+                },
+                // 지자체 기금사업소개
+                getLocGovDonationNotice: function (page) {
+                    vm.param.locgovCode = this.selectedSigunguCode;
+                    vm.donationNoticeResult.totalPages = 0;
+                    if (!page) {
+                        page = 1;
+                    }
+                    vm.donationNoticeResult.currentPage = page;
+                    vm.donationNoticeResult.noticeCount = 0;
+                    vm.donationNoticeResult.noticeList = [];
+
+                    $s.api.getDonationNotice(vm.param,
+                        function (response) {
+                            vm.donationNoticeResult.totalPages = response.totalPages;
+                            vm.donationNoticeResult.currentPage = response.currentPage;
+                            vm.donationNoticeResult.noticeCount = response.totalCount;
+                            vm.donationNoticeResult.noticeList = response.content;
+                            vm.isNoDataDonation = (response.totalCount == 0);
+                        }
+                    );
+                },
+                // 지자체 공지사항 상세 팝업
+                noticeModalLayer: function (idx) {
+                    $(".black-bg").addClass("show");
+                    vm.detailResult.createdDate = vm.noticeResult.noticeList[idx].createdDate;
+                    vm.detailResult.userName = vm.noticeResult.noticeList[idx].userName;
+                    vm.detailResult.subject = vm.noticeResult.noticeList[idx].subject;
+                    vm.detailResult.content = vm.noticeResult.noticeList[idx].content;
+                    // e.preventDefault();
+                },
+                // 지자체 공지사항 상세 팝업 닫기
+                closeNoticeLayer: function () {
+                    $(".black-bg").removeClass("show");
+                },
+                // 지자체 공지사항 상세
+                slideNoticeBody: function (index, noticeId) {
+                    var obj = $(".notice-body").eq(index);
+                    $(obj).slideToggle(0, function () {
+                        if ($(obj).css("display") == "block") {
+                            vm.addHits(noticeId);
+                        }
+                    });
+                },
+                addHits: function (noticeId) {
+                    $s.api.updateNoticeHits({ "noticeId": noticeId },
+                        function (response) { }
+                    );
+                },
+                // 관심지자체 등록
+                goToIntrstLocgov: function () {
+                    Saleson.init({ loginPage: true });
+
+                    var params = {
+                        'cityCode': $s.donation.getData($s.donation.const.LOCGOV_CODE)
+                    }
+                    $s.api.postSubmit('/api/ngdonation/getIntrstLocgov', params,
+                        function (response) {
+                            var cnt = response.result.intrstLocgovCnt;
+                            if (cnt > 0) {
+                                $s.alert("이미 관심 지자체에 등록된 지자체입니다.");
+                            } else {
+                                $s.api.postSubmit('/api/ngdonation/setIntrstLocgov', params,
+                                    function (response) {
+                                        if (response.status === "OK") {
+                                            $s.alert("관심 지자체 등록 되었습니다.");
+                                            vm.result.intrstCnt = 1;
+                                        }
+                                    }, function (error) {
+                                        $s.alert(error.response.data.message);
+                                    });
+                            }
+                        }, function (error) {
+                            $s.alert(error.response.data.message);
+                        });
+                },
+                // 기부하기 page
+                goToDonation: function (flag) {
+
+                    if (vm.result.lmttBgnDe != null && vm.result.lmttBgnDe != '') {
+                        $s.alert("선택하신 지자체는\n" + vm.result.violtResnCn + "으로\n" + vm.result.lmttBgnDe + "부터 " + vm.result.lmttEndDe + "일까지 \n기부가 불가능합니다.");
+                    } else {
+                        //location.href = "/donation/donation.html?locgovCode=" + vm.result.locgovCode;
+						$s.donation.goDonationPage("?locgovCode=" + vm.result.locgovCode);
+                    }
+
+                    return false;
+
+
+                    /*var params = {
+                        'cityCode': $s.donation.getData($s.donation.const.LOCGOV_CODE)
+                    }
+                    $s.api.postSubmit('/api/donation/getLocGovLmtt', params, function (response) {
+
+                        if (response.data) {
+                            $s.alert("선택하신 지자체는\n" + response.data.violtResnCn + "으로\n" + response.data.lmttBgnDe + "부터 " + response.data.lmttEndDe + "일까지 \n기부가 불가능합니다.");
+                        } else {
+                            //location.href = "/donation/donation.html?flag=" + flag;
+							$s.donation.goDonationPage("?flag=" + flag);
+                        }
+
+                    });
+                    return false;*/
+                },
+                tabToDetails(e, index) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        this.goToDetails(index);
+                    }
+                },
+                goToDetails(index) {
+                    vm.detailResult.createdDate = vm.noticeResult.noticeList[index].createdDate;
+                    vm.detailResult.userName = vm.noticeResult.noticeList[index].userName;
+                    vm.detailResult.subject = vm.noticeResult.noticeList[index].subject;
+                    vm.detailResult.content = vm.noticeResult.noticeList[index].content;
+                    vm.detailResult.focusId = 'notice' + index;
+                    vm.isDetail = true;
+                },
+                tabToDonationDetails(e, index) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        this.goToDonationDetails(index);
+                    }
+                },
+                goToDonationDetails(index) {
+                    vm.donationDetailResult.createdDate = vm.donationNoticeResult.noticeList[index].createdDate;
+                    vm.donationDetailResult.userName = vm.donationNoticeResult.noticeList[index].userName;
+                    vm.donationDetailResult.subject = vm.donationNoticeResult.noticeList[index].subject;
+                    vm.donationDetailResult.content = vm.donationNoticeResult.noticeList[index].content;
+                    vm.donationDetailResult.focusId = 'donationNotice' + index;
+                    vm.isDonationDetail = true;
+                    try {
+                        let param = {noticeId: vm.donationNoticeResult.noticeList[index].noticeId};
+                        $s.api.updateNoticeHits(param,
+                            function (response) {
+
+                            }
+                        );
+                    } catch (e) {
+                        let errBln = true;
+                    }
+                },
+                noticeDetailReset() {
+                    let focusId = vm.detailResult.focusId;
+                    vm.detailResult = {
+                        createdDate: '',
+                        userName: '',
+                        subject: '',
+                        content: ''
+                    };
+                    vm.isDetail = false;
+                    setTimeout(function() {
+                        $("#" + focusId).focus();
+                    }, 10);
+                },
+                donationNoticeDetailReset() {
+                    let focusId = vm.donationDetailResult.focusId;
+                    vm.donationDetailResult = {
+                        createdDate: '',
+                        userName: '',
+                        subject: '',
+                        content: '',
+                        focusId: ''
+                    };
+                    vm.isDonationDetail = false;
+                    setTimeout(function() {
+                        $("#" + focusId).focus();
+                    }, 10);
+                },
+                amtModify(amt) {
+
+                    if (amt > 10000) {
+                        return Math.floor(amt / 10000) + "만원 이상";
+                    } else {
+                        return amt + "원 이상";
+                    }
+
+                },
+                getItemList: function (locgov) {
+                    let param = {
+                        'page': 1
+                        , 'categoryCode': 'ALL'
+                        , 'itemsPerPage': $goods.const.ITEMS_PER_GOODS
+                        , 'searchGbn': 'L'
+                        , 'locgov': locgov
+                    };
+                    vm.goodsCard = [];
+                    $s.api.getItemsNew(param, function (response) {
+                        let content = response.content;
+                        if (content) {
+                            try {
+                                let size = content.length;
+                                if (size == 0) {
+                                    vm.adultYn = 'N';
+                                    //$s.alert('검색결과가 없습니다.');
+                                    return;
+                                }
+                                // vm.adultYn = response.adultYn;       // 19세 상품 모두 보여주는 걸로 변경되어 수정
+                                vm.adultYn = 'Y';
+                                for (let i = 0; i < size; i++) {
+                                    let itemInfo = content[i];
+                                    vm.goodsCard.push(itemInfo);
+                                }
+                            } catch (e) {
+
+                                $s.alert('잠시 후 다시 시도해주세요.');
+                            }
+                        } else {
+                            $s.alert('검색결과가 없습니다.');
+                        }
+                    },
+                        function (error) {
+                            $s.api.handleApiExeption(error);
+                        });
+                },
+                jumpToDetails: function (v) {
+                    if (v.adultItemYn === 'Y' && this.adultYn === 'N')
+                        return;
+
+                    $s.redirect("/items/details.html?code=" + v.itemUserCode);
+                },
+                jumpToDetailsE(e, v) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        this.jumpToDetails(v);
+                    }
+                },
+                keydownDetails(e) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        if ($(e.target).parents().is(".list_inner")) {
+                            e.stopPropagation();
+                        }
+                    }
+                },
+            },
+
+            computed: {
+            },
+			watch: {
+				selectedUpperLocgovCode: function (newUpperLocgovCode) {
+					vm.selectedLocgovCode = '';
+					// 광역지자체 재 선택 시 mobile_section_bar 가려지도록 지자체 코드 초기화
+					vm.selectedSigunguCode = '';
+					if (newUpperLocgovCode != '') {
+						vm.sidoChange(newUpperLocgovCode);
+					}
+				},
+			},
+            mounted: function () {
+                this.$nextTick(function () {
+                    $("#donationLnb ").addClass("on").siblings(".list-items").removeClass("on");
+
+                    $('#emptyBody').show();
+                    $('#listBody').hide();
+                    $('#emptyContent').show();
+                    $('#listContent').hide();
+                    $('#tabCon').hide();
+                    Saleson.init();
+
+                    //setTimeout(() => this.init(), 100);
+
+                    vm.submit();
+                    initializeListEvent();
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

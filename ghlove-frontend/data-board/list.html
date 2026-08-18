@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>고객센터 > 자료실 목록 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+    <link rel="stylesheet" href="/static/css/event.css" />
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/ct_nov.css" />
+    <link rel="stylesheet" href="/static/css/research-box.css" />
+    <!--페이지네이션-->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-customer-lnb-ali :menu-url="page.menuUrl"></layout-customer-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              고객센터
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              자료실
+            </span>
+            <h2 class="page-title-txt">자료실</h2>
+          </div>
+        </section>
+        <section id="contents">
+          <div class="contents-wrap">
+            <div class="s-contents list-wrapper center">
+              <div class="list-select-area">
+                <header name="customerSearch" class="list-search-header">
+                  <div class="list-count-box">전체 글 : {{ formatNumber(result.databoardCount) }} 건</div>
+                  <form class="search-select" :onsubmit="page.onsubmitType">
+                    <label class="sr-only" for="category">검색구분</label>
+                    <span class="form-item">
+                      <select v-model="param.where" aria-label="구분" id="category">
+                        <option value="SUBJECT">제목</option>
+                        <option value="ORG_FILE_NAME">파일명</option>
+                      </select>
+                    </span>
+                    <label class="sr-only" for="search">검색</label>
+                    <span class="form-item search-field">
+                      <input type="search" v-model="tempQuery" @keyup.enter="search()" aria-label="검색" placeholder="검색 키워드" id="search" />
+                      <button type="button" class="button search" @click="search()" aria-label="조회"></button>
+                    </span>
+                    <div class="m-field">
+                      <label class="sr-only" for="ordering">정렬순서</label>
+                      <span class="form-item">
+                        <select v-model="selectedOrderBy" aria-label="정렬순서" id="ordering">
+                          <option v-for="(data, index) in orderByList" :value="data.value">{{ data.text }}</option>
+                        </select>
+                      </span>
+                      <label class="sr-only" for="page">정렬순서</label>
+                      <span class="form-item">
+                        <select v-model="param.itemsPerPage" aria-label="목록수" id="page">
+                          <option v-for="(data, index) in itemPerPageList" :value="data">{{ data }}개</option>
+                        </select>
+                      </span>
+                    </div>
+                  </form>
+                </header>
+
+                <!-- 웹접근성 주석
+                            <div class="table-container">
+                                <div class="list-search-body data">
+                                    <div class="data-list-wrap">
+                                        <div class="list-title">
+                                            <div class="date-col"><strong>No.</strong></div>
+                                            <div class="date-col"><strong>파일유형</strong></div>
+                                            <div class="date-col"><strong>제목</strong></div>
+                                            <div class="date-col"><strong>등록일</strong></div>
+                                            <div class="date-col view"><strong>조회수</strong></div>
+                                        </div>
+                                        <ul class="list-search-group" v-if="!isNoData">
+                                            <li class="list-items" v-for="(data, index) in result.databoardList" :key="index">
+                                                <a :href="'/data-board/detail.html?dataId=' + data.dataId" class="notice-header" style="padding: 24px 24px;">
+                                                    <div class="date-col">{{ (result.databoardCount - index) -
+                                                        ((result.currentPage - 1) * param.itemsPerPage) }}</div>
+
+                                                    <div class="date-col">{{ data.fileTy }}</div>
+                                                    <div class="date-col notice-header-txt">
+                                                        <span class="notice-icon" v-show="data.noticeFlag == 'Y'">추천</span>
+                                                        <div class="notice_txt">{{ unescapeHtml(data.subject) }}</div>
+                                                    </div>
+                                                    <div class="date-col">{{ data.createdDate }}</div>
+                                                    <div class="date-col">{{ data.hits }}</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="list-none" v-if="isNoData">
+                                            <img src="/static/images/icon/non-list.png" alt="게시물이 없음">
+                                            "자료실 정보가 존재하지 않습니다."
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-overlap">
+                                    <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br>
+                                    <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                                </div>
+                                -->
+                <!-- 수정 241028 -->
+                <div class="table-container">
+                  <div class="list-notice-body w3c_v_2410">
+                    <!-- 접근성 적용 클래스명 : w3c_v_2410 -->
+                    <table>
+                      <caption>
+                        자료실 - 파일유형, 제목, 등록일,조회수로 구성
+                      </caption>
+                      <thead class="list-notice-title">
+                        <tr class="items_wrap">
+                          <th class="date-col view" scope="col">No</th>
+                          <th class="date-col view" scope="col">파일유형</th>
+                          <th class="date-col title" scope="col">제목</th>
+                          <th class="date-col date" scope="col">등록일</th>
+                          <th class="date-col view" scope="col">조회수</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list-notice-group data-board" v-if="!isNoData">
+                        <tr v-for="(data, index) in result.databoardList" :key="index">
+                          <td>
+                            <div class="date-col view_c">{{ (result.databoardCount - index) - ((result.currentPage - 1) * param.itemsPerPage) }}</div>
+                          </td>
+                          <td>
+                            <div class="date-col view_c">{{ data.fileTy }}</div>
+                          </td>
+                          <td>
+                            <a :href="'/data-board/detail.html?dataId=' + data.dataId" class="list-items">
+                              <div class="notice_tit">
+                                <span class="data-board-icon" v-show="data.noticeFlag == 'Y'">추천</span>
+                                <div class="notice_txt">{{ unescapeHtml(data.subject) }}</div>
+                              </div>
+                            </a>
+                          </td>
+                          <td>
+                            <div class="date-col date">{{ data.createdDate }}</div>
+                          </td>
+                          <td>
+                            <div class="date-col view_c">
+                              <img src="/static/images/icon/cli-icon_pw-show.png" alt="조회수" class="board_icon" />
+                              {{ data.hits }}
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="list-none" v-if="isNoData">
+                      <img src="/static/images/icon/non-list.png" alt="게시물이 없음" />
+                      "공지사항이 존재하지 않습니다."
+                    </div>
+                    <div class="table-overlap">
+                      <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br />
+                      <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                    </div>
+                  </div>
+                  <pagination :current-page="result.currentPage" :total-pages="result.totalPages" @change="paging" v-if="!isNoData"> </pagination>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+
+    <div id="whitebg" v-show="isLoading">
+      <img src="/static/images/loading.gif" alt="통신 중" />
+    </div>
+
+    <style>
+      #whitebg {
+        background-color: rgba(255, 255, 255, 0.8);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 3999;
+      }
+      #whitebg img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //"layout-customer-lnb-ali": httpVueLoader("/components/layouts/customer-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"),
+        },
+
+        data: {
+          // ali data
+          result: {
+            totalPages: 0,
+            currentPage: 0,
+            databoardList: [],
+            databoardCount: 0,
+          },
+          param: {
+            page: 1,
+            itemsPerPage: 10,
+            where: "SUBJECT",
+            query: "",
+            orderBy: "",
+            sort: "",
+          },
+          page: {
+            onsubmitType: "return false;",
+            menuUrl: "/data-board/list.html",
+          },
+          isNoData: true,
+          tempQuery: "",
+          selectedOrderBy: "CREATED_DATE__DESC",
+          orderByList: [
+            { value: "CREATED_DATE__DESC", text: "최신순" },
+            { value: "CREATED_DATE__ASC", text: "오래된순" },
+            { value: "HITS__DESC", text: "조회수순" },
+          ],
+          itemPerPageList: [10, 20, 30, 50],
+        },
+        methods: {
+          submit: function () {
+            $("#whitebg").show();
+            $s.api.getDataboard(vm.param, function (response) {
+              $("#whitebg").hide();
+              vm.result.totalPages = response.totalPages;
+              vm.result.currentPage = response.currentPage;
+              vm.result.databoardCount = response.totalCount;
+              vm.result.databoardList = response.content;
+              vm.isNoData = !response.totalCount;
+            });
+            $("#whitebg").hide();
+          },
+          paging: function (page) {
+            vm.param.page = page;
+            vm.submit();
+          },
+          search: function () {
+            vm.param.query = vm.tempQuery;
+            vm.paging(1);
+          },
+          // *************** ali-add methods
+          goToMain: function () {
+            location.href = "UI_P02010.html";
+          },
+          goToDetailP: function (dataId) {
+            location.href = "/data-board/detail.html?dataId=" + dataId;
+          },
+          closePopupLayer: function () {
+            $(".black-bg").removeClass("show");
+          },
+          modalLayer: function (e) {
+            $(".black-bg").addClass("show");
+          },
+          closeTableOverlap: function () {
+            $(".table-overlap").css("display", "none");
+          },
+          slideNoticeBody: function (index) {
+            var obj = $(".notice-body").eq(index);
+            $(obj).slideToggle();
+          },
+        },
+        watch: {
+          "param.itemsPerPage": function () {
+            vm.paging(1);
+          },
+          selectedOrderBy: function (newVal, oldVal) {
+            if (newVal && newVal.indexOf("__") > -1) {
+              var orderInfo = newVal.split("__");
+              if (orderInfo && orderInfo.length == 2) {
+                vm.param.orderBy = orderInfo[0];
+                vm.param.sort = orderInfo[1];
+                vm.paging(1);
+              }
+            }
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init();
+            vm.paging(1);
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.pointcheck.PointCheckMapper">
+
+    <resultMap id="PointCheckResult" type="saleson.shop.pointcheck.domain.PointCheck">
+        <result property="orderCode" 		column="ORDER_CODE" /><!-- 주문 번호 -->
+        <result property="orderAmt" 		column="ORDER_AMT" /><!-- 결제금액 -->
+        <result property="orderAmtCancel" 		column="ORDER_AMT_CANCEL" /><!-- 취소금액 -->
+        <result property="orderAmt0" 		column="ORDER_AMT_0" /><!-- 입금대기금액 -->
+        <result property="remittanceAmt" 		column="REMITTANCE_AMT" /><!-- 정산금액 -->
+        <result property="cntrUsePoint" 		column="CNTR_USE_POINT" /><!-- 사용완료 포인트 -->
+        <result property="matchYn" 		column="MATCH_YN" /><!-- 정합여부 -->
+        <result property="holdCnt" 		column="HOLD_CNT" /><!-- 미정주문건수 -->
+        <result property="createdDate" 		column="CREATED_DATE" /><!-- 주문일자 -->
+        <result property="orderStatusDesc" 		column="ORDER_STATUS_DESC" /><!-- 주문상태 -->
+    </resultMap>
+
+<select id="getPointCheckListCount" parameterType="saleson.shop.pointcheck.support.PointCheckParam" resultType="Integer">
+SELECT COUNT(*) + 1
+FROM(
+		SELECT 	 T_B.ORDER_CODE
+				,T_B.ORDER_AMT
+				,T_B.ORDER_AMT_CANCEL
+				,T_B.ORDER_AMT_0
+				,T_B.REMITTANCE_AMT
+				,T_B.CNTR_USE_POINT
+				,T_B.MATCH_YN
+				,T_B.HOLD_CNT
+				,T_B.CREATED_DATE
+		FROM(
+			SELECT    T_A.ORDER_CODE																										ORDER_CODE
+					, MAX(T_A.ORDER_AMT)                																					ORDER_AMT
+					, MAX(T_A.ORDER_AMT_CANCEL)         																					ORDER_AMT_CANCEL
+					, MAX(T_A.ORDER_AMT_0)																									ORDER_AMT_0
+					, MAX(T_A.REMITTANCE_AMT) 																								REMITTANCE_AMT
+					, MAX(T_A.CNTR_USE_POINT) 																								CNTR_USE_POINT
+					, CASE WHEN SUM(T_A.ORDER_AMT - T_A.ORDER_AMT_0 - T_A.ORDER_AMT_CANCEL) = SUM(T_A.CNTR_USE_POINT) THEN 'Y' ELSE 'N' END MATCH_YN
+					, MAX(T_A.CREATED_DATE)                                                                                        			CREATED_DATE
+					, MAX(T_A.HOLD_CNT) 																									HOLD_CNT 
+			FROM ( 
+				SELECT  
+				        ORDER_CODE                                                                                                      ORDER_CODE 
+				      , SUM(CAST( SALE_PRICE * QUANTITY + ETC_AMT AS BIGINT))                                                           ORDER_AMT
+				      , SUM(CASE WHEN ORDER_STATUS IN ('65', '75') THEN CAST( SALE_PRICE * QUANTITY + ETC_AMT AS BIGINT) ELSE 0 END) AS ORDER_AMT_CANCEL
+				      , SUM(CASE WHEN ORDER_STATUS = '0'  THEN CAST( SALE_PRICE * QUANTITY + ETC_AMT AS BIGINT) ELSE 0 END) AS          ORDER_AMT_0
+				      , 0                                                                                                               REMITTANCE_AMT
+				      , 0                                                                                                               CNTR_USE_POINT
+				      , MAX(CREATED_DATE)                                                                                               CREATED_DATE
+				      , SUM(HOLD_CNT)																									HOLD_CNT
+				FROM (
+						SELECT ORDER_CODE, ORDER_STATUS, SALE_PRICE , QUANTITY , ETC_AMT , CREATED_DATE , 0 HOLD_CNT
+						FROM   OP_ORDER_ITEM 
+						WHERE 1=1
+						AND   ORDER_CODE LIKE 'AB%'
+						<if test='query != null and query != ""'>
+							AND  ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+						</if>
+						UNION ALL
+						SELECT ORDER_CODE, ORDER_STATUS, SALE_PRICE , QUANTITY , ETC_AMT , CREATED_DATE , 1 HOLD_CNT
+						FROM   OP_ORDER_ITEM_HOLD H
+						WHERE 1 = 1
+						<if test='query != null and query != ""'>
+							AND  ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+						</if>
+						AND   NOT EXISTS (SELECT 1 
+						                  FROM OP_ORDER_ITEM OI 
+						                  WHERE 1=1
+						                  AND   OI.ORDER_CODE = H.ORDER_CODE 
+						                  AND   OI.ORDER_SEQUENCE = H.ORDER_SEQUENCE 
+						                  AND   OI.ITEM_SEQUENCE = H.ITEM_SEQUENCE 
+						                  )
+					) OI
+				WHERE 1=1
+				GROUP BY ORDER_CODE 
+				UNION ALL 
+				SELECT      
+					ORDER_CODE
+					, 0                                                                                                               ORDER_AMT
+					, 0                                                                                                               ORDER_AMT_0
+					, 0                                                                                                               ORDER_AMT_CANCEL
+					, SUM(CAST( RD.SALE_PRICE * RD.QUANTITY  + RD.ETC_AMT  AS BIGINT))  										      REMITTANCE_AMT
+					, 0                                                                                                               CNTR_USE_POINT
+					, NULL                                                                                                            CREATED_DATE
+					, 0                                                                                                               HOLD_CNT
+				FROM OP_REMITTANCE_DETAIL RD
+				WHERE 1=1
+				AND   ORDER_CODE LIKE 'AB%'
+				<if test='query != null and query != ""'>
+					AND  ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+				</if>
+				GROUP BY ORDER_CODE 
+				UNION ALL
+				SELECT  ORDER_CODE 
+						, 0                                                                                                               ORDER_AMT
+						, 0                                                                                                               ORDER_AMT_0
+						, 0                                                                                                               ORDER_AMT_CANCEL
+						, 0                                                                                                               REMITTANCE_AMT
+						, SUM(CASE WHEN USE_SE_CODE = '1' THEN CAST( CNTR_USE_POINT AS BIGINT) ELSE 0 END) 								  CNTR_USE_POINT
+						, NULL                                                                                                            CREATED_DATE
+						, 0                                                                                                               HOLD_CNT
+				FROM G_CNTR_USE_POINT
+				WHERE 1=1
+				AND   ORDER_CODE LIKE 'AB%'
+				<if test='query != null and query != ""'>
+					AND  ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+				</if>
+				GROUP BY ORDER_CODE
+				) T_A
+			WHERE 1=1
+			GROUP BY ORDER_CODE
+			<!-- HAVING MAX(CREATED_DATE) BETWEEN NVL(#{searchStartDate}, TO_CHAR(SYS_DATE, 'YYYYMMDD') ) || '000000' AND  NVL(#{searchEndDate}, TO_CHAR(SYS_DATE, 'YYYYMMDD') ) || '235959' -->
+			) T_B
+		where 1=1
+		<if test='matchYnType != null and matchYnType != ""'>
+			and T_B.match_yn = #{matchYnType}
+		</if>
+		<!-- and T_B.created_date BETWEEN NVL(#{searchStartDate}, TO_CHAR(SYSDATE, 'YYYYMMDD') || '000000') AND NVL(#{searchEndDate}, TO_CHAR(SYSDATE, 'YYYYMMDD') || '235959') -->
+		and T_B.created_date BETWEEN NVL(#{searchStartDate}, CONCAT(TO_CHAR(SYSDATE, 'YYYY'), '0101') || '000000') AND NVL(#{searchEndDate}, TO_CHAR(SYSDATE, 'YYYYMMDD') || '235959')
+)
+</select>
+    
+    
+<select id="getPointCheckList" parameterType="saleson.shop.pointcheck.support.PointCheckParam" resultMap="PointCheckResult">
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT CASE WHEN T_COPY.TP = 1 THEN T_C.ORDER_CODE ELSE '합계' end        							ORDER_CODE
+			     , case when T_COPY.TP = 1 THEN MAX(T_C.ORDER_STATUS_DESC) end       							ORDER_STATUS_DESC
+			     , case when T_COPY.TP = 1 THEN max(T_C.locgov_nm) end 			      							locgov_nm
+			     , TO_CHAR(SUM(T_C.ORDER_AMT), '999,999,999,999')                    							ORDER_AMT
+			     , TO_CHAR(SUM(T_C.ORDER_AMT_CANCEL), '999,999,999,999')                                        ORDER_AMT_CANCEL
+			     , TO_CHAR(SUM(T_C.ORDER_AMT_0) , '999,999,999,999')                                            ORDER_AMT_0
+			     , TO_CHAR(SUM(CNTR_USE_POINT), '999,999,999,999') 												CNTR_USE_POINT
+			     , TO_CHAR(SUM(T_C.REMITTANCE_AMT) , '999,999,999,999')                                         REMITTANCE_AMT
+			     , CASE WHEN T_COPY.TP = 1 THEN MAX(T_C.CREATED_DATE)  end           							CREATED_DATE
+			     , CASE WHEN T_COPY.TP = 1 THEN 
+			     								<!-- MAX(T_C.MATCH_YN) --> 
+			     								CASE WHEN MAX(T_C.MATCH_YN) = 'Y'
+													THEN '금액일치'
+													ELSE '금액불일치'
+												END
+		            ELSE  TO_CHAR(SUM(T_C.ORDER_AMT) - SUM(T_C.ORDER_AMT_CANCEL) - 
+		                          SUM(T_C.ORDER_AMT_0) - SUM(T_C.CNTR_USE_POINT)
+		                          , '999,999,999,999')                           
+			       END                                                               							MATCH_YN
+			     , TO_CHAR(SUM(T_C.HOLD_CNT), '999,999,999,999')                                                HOLD_CNT
+			FROM (	 
+					SELECT 	 T_B.ORDER_CODE
+							,T_B.ORDER_STATUS_DESC          /*  주문상태 (추가됨) */
+							,lgov.upper_locgov_nm || ' ' || lgov.locgov_nm                                      locgov_nm
+							,T_B.ORDER_AMT
+							,T_B.ORDER_AMT_CANCEL
+							,T_B.ORDER_AMT_0
+							,T_B.REMITTANCE_AMT
+							,T_B.CNTR_USE_POINT
+							,T_B.MATCH_YN
+							,T_B.HOLD_CNT
+							,T_B.CREATED_DATE
+					FROM(
+							SELECT    T_A.ORDER_CODE 																	  						          				ORDER_CODE
+									, MAX(T_A.locgov_code)																												locgov_code
+									, MAX(T_A.ORDER_STATUS_DESC) 														  					              			 	ORDER_STATUS_DESC
+									, cast(sum(T_A.ORDER_AMT) as bigint)     																							ORDER_AMT
+									, cast(sum(T_A.ORDER_AMT_CANCEL) as bigint)     																					ORDER_AMT_CANCEL
+									, cast(sum(T_A.ORDER_AMT_0) as bigint)																								ORDER_AMT_0
+									, cast(sum(T_A.REMITTANCE_AMT) as bigint) 																							REMITTANCE_AMT
+									, cast(sum(T_A.CNTR_USE_POINT) as bigint) 																							CNTR_USE_POINT
+									, MAX(T_A.CREATED_DATE)															 	 					                			CREATED_DATE
+									<!-- , case WHEN SUM(T_A.ORDER_AMT - T_A.ORDER_AMT_0 - T_A.ORDER_AMT_CANCEL) = SUM(T_A.CNTR_USE_POINT) THEN '금액일치' ELSE '금액불일치' end 	MATCH_YN -->
+									, case WHEN SUM(T_A.ORDER_AMT - T_A.ORDER_AMT_0 - T_A.ORDER_AMT_CANCEL) = SUM(T_A.CNTR_USE_POINT) THEN 'Y' ELSE 'N' end 	MATCH_YN
+									, sum(T_A.HOLD_CNT) 																												HOLD_CNT
+							FROM ( 
+									SELECT  
+											ORDER_CODE                                                                                                      ORDER_CODE 
+										  , MAX(locgov_code)                																				locgov_code
+										  , SUM(CAST( SALE_PRICE * QUANTITY + ETC_AMT AS BIGINT))                                                           ORDER_AMT
+										  , SUM(CASE WHEN ORDER_STATUS IN ('65', '75') THEN CAST( SALE_PRICE * QUANTITY + ETC_AMT AS BIGINT) ELSE 0 END) AS ORDER_AMT_CANCEL
+										  , SUM(CASE WHEN ORDER_STATUS = '0'  THEN CAST( SALE_PRICE * QUANTITY + ETC_AMT AS BIGINT) ELSE 0 END) AS          ORDER_AMT_0
+										  , 0                                                                                                               REMITTANCE_AMT
+										  , 0                                                                                                               CNTR_USE_POINT
+										  , MAX(CREATED_DATE)                                                                                               CREATED_DATE
+										  , SUM(HOLD_CNT)																									HOLD_CNT
+										  , group_concat(CASE when ORDER_STATUS = '0'  then '결제대기'
+															  when ORDER_STATUS = '10' then '결제완료'
+															  when ORDER_STATUS = '20' then '배송준비중'
+															  when ORDER_STATUS = '30' then '배송중'
+															  when ORDER_STATUS = '35' then '배송완료'
+															  when ORDER_STATUS = '40' then '구매확정'
+															  when ORDER_STATUS = '50' then '교환처리중'
+															  when ORDER_STATUS = '55' then '교환배송중'
+															  when ORDER_STATUS = '58' then '교환배송완료'
+															  when ORDER_STATUS = '59' then '교환거절'
+															  when ORDER_STATUS = '60' then '반품처리중'
+															  when ORDER_STATUS = '65' then '반품완료'
+															  when ORDER_STATUS = '69' then '반품거절'
+															  when ORDER_STATUS = '70' then '취소처리중'
+															  when ORDER_STATUS = '75' then '취소완료'							  	                  
+														 end
+											SEPARATOR '+')                                                                                                 ORDER_STATUS_DESC
+									FROM (  /* OP_ORDER_ITEM , OP_ORDER_ITEM_HOLD 조회  */
+											SELECT ORDER_CODE, ORDER_STATUS, SALE_PRICE , QUANTITY , ETC_AMT , CREATED_DATE , 0 HOLD_CNT , locgov_code 
+											FROM   OP_ORDER_ITEM OI
+											WHERE 1=1
+											AND   ORDER_CODE LIKE 'AB%'
+											UNION ALL
+											SELECT ORDER_CODE, ORDER_STATUS, SALE_PRICE , QUANTITY , ETC_AMT , CREATED_DATE , 1 HOLD_CNT , locgov_code 
+											FROM   OP_ORDER_ITEM_HOLD H
+											WHERE 1 = 1
+											<if test='query != null and query != ""'>
+												AND  ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+											</if>										
+											AND   NOT EXISTS (SELECT 1 
+															  FROM OP_ORDER_ITEM OI 
+															  WHERE 1=1
+															  AND   OI.ORDER_CODE = H.ORDER_CODE 
+															  AND   OI.ORDER_SEQUENCE = H.ORDER_SEQUENCE 
+															  AND   OI.ITEM_SEQUENCE = H.ITEM_SEQUENCE 
+															  )
+										) OI
+									WHERE 1=1
+									GROUP BY ORDER_CODE 
+									UNION ALL 
+									SELECT  /* OP_REMITTANCE_DETAIL 조회  */    
+										  ORDER_CODE
+	   								    , NULL				  																							  locgov_code
+										, 0                                                                                                               ORDER_AMT
+										, 0                                                                                                               ORDER_AMT_0
+										, 0                                                                                                               ORDER_AMT_CANCEL
+										, SUM(CAST( RD.SALE_PRICE * RD.QUANTITY  + RD.ETC_AMT  AS BIGINT))  										      REMITTANCE_AMT
+										, 0                                                                                                               CNTR_USE_POINT
+										, NULL                                                                                                            CREATED_DATE
+										, 0                                                                                                               HOLD_CNT
+										, NULL                                                                                                            ORDER_STATUS_DESC
+									FROM OP_REMITTANCE_DETAIL RD
+									WHERE 1=1
+									AND   ORDER_CODE LIKE 'AB%'
+									GROUP BY ORDER_CODE 
+									UNION ALL
+									SELECT  /* G_CNTR_USE_POINT 조회  */    
+											  ORDER_CODE 
+	   								        , NULL				  																							  locgov_code
+											, 0                                                                                                               ORDER_AMT
+											, 0                                                                                                               ORDER_AMT_0
+											, 0                                                                                                               ORDER_AMT_CANCEL
+											, 0                                                                                                               REMITTANCE_AMT
+											, SUM(CASE WHEN USE_SE_CODE = '1' THEN CAST( CNTR_USE_POINT AS BIGINT) ELSE 0 END) 								  CNTR_USE_POINT
+											, NULL                                                                                                            CREATED_DATE
+											, 0                                                                                                               HOLD_CNT
+											, NULL                                                                                                            ORDER_STATUS_DESC
+									FROM G_CNTR_USE_POINT
+									WHERE 1=1
+									AND   ORDER_CODE LIKE 'AB%'
+									<if test='query != null and query != ""'>
+										AND  ORDER_CODE LIKE CONCAT('%', #{query}, '%')
+									</if>
+									GROUP BY ORDER_CODE
+								) T_A
+							WHERE 1=1
+							group by T_A.order_code
+						) T_B
+						, g_locgov lgov 
+					where 1=1
+					and T_B.locgov_code = lgov.locgov_code
+					<if test='matchYnType != null and matchYnType != ""'>
+						and T_B.match_yn = #{matchYnType}
+					</if>
+					and T_B.created_date BETWEEN NVL(#{searchStartDate}, CONCAT(TO_CHAR(SYSDATE, 'YYYY'), '0101') || '000000') AND NVL(#{searchEndDate}, TO_CHAR(SYSDATE, 'YYYYMMDD') || '235959')
+				) T_C 	
+			  , ( select 1 TP UNION ALL 
+			      select 2 TP 
+			    ) T_COPY
+	 		where 1=1
+	 		GROUP BY  CASE WHEN T_COPY.TP = 1 THEN T_C.ORDER_CODE ELSE '합계' end 
+	 		ORDER BY  CASE WHEN T_COPY.TP = 1 THEN T_C.ORDER_CODE ELSE '합계' end desc
+		<include refid="CommonMapper.paginationFooter" />
+    </select>
+</mapper>

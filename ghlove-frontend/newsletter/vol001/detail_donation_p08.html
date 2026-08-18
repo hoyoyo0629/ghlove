@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>제2회 고향사랑의 날 기념식과 박람회 : 고향사랑e음 기부제 소식</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <style>
+      .table_img_wrap{display:flex;justify-content:space-between;gap:3%;}
+      table{width:60%;}
+      .newsletter_detail_page .detail_contents_area table{margin-top:0;border:none;}
+      .newsletter_detail_page .detail_contents_area table td, .newsletter_detail_page .detail_contents_area table th{border:none;}
+      .newsletter_detail_page .detail_contents_area table tr{border-bottom:1px dashed #999;}
+      .newsletter_detail_page .detail_contents_area table thead tr{border-bottom:none;}
+      .newsletter_detail_page .detail_contents_area table thead tr th{border-top-left-radius:7px;border-top-right-radius:7px;}
+      .newsletter_detail_page .detail_contents_area .img_wrap{margin:0;}
+      .newsletter_detail_page .detail_contents_area .img_wrap:first-child{padding-top:0;}
+      .newsletter_detail_page .detail_contents_area .imgw_1{width:100%;overflow:hidden;}
+      .newsletter_detail_page .detail_contents_area .imgw_1 img{display:block;}
+
+      @media screen and (max-width: 768px) {
+        .newsletter_detail_page .detail_contents_area .imgw_1{width:initial;}
+        .newsletter_detail_page .detail_contents_area .imgw_2{max-width:40%;}
+      }
+
+
+      /* 240830 일정 내용 이미지에서 css 로 변경*/
+      .newsletter_detail_page .detail_contents_area .imgw_1{
+        display: flex; gap:3%;
+        align-items: flex-start;
+      }
+      .newsletter_detail_page .detail_contents_area .imgw_1 img.img_l{width:40%;}
+      .newsletter_detail_page .detail_contents_area .imgw_1 img.img_r{width:55%;float:right;margin-top:0.5%;}
+      .newsletter_detail_page .detail_contents_area .imgw_2{width:35%;}
+      .orange_list {
+        width: 55%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .orange_list li{
+        border:2px solid #feae00;
+        border-radius: 5px;;
+        padding: 0 !important;
+        display: flex;
+      }
+      .orange_list li .title{
+        background-color: #feae00;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22.8%;
+      }
+      .orange_list li p{
+        color: #261716;
+        width: calc(100% - 22.8%);
+        padding: 10px 10px;
+      }
+      .orange_list li:first-of-type p{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        line-height: 1.2;
+      }
+      .orange_list li:first-of-type p em{
+        display: block;
+        margin-top: 1rem;
+      }
+      .orange_list li p em{
+        font-size: 70%;
+        line-height: 1;
+      }
+
+      @media screen and (max-width: 768px) {
+        .orange_list li:first-of-type p em{
+          margin-top: 0.4rem;
+        }
+        .orange_list li:nth-of-type(2) p{
+          line-height: 1.9;
+        }
+      }
+    </style>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+</head>
+
+<body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page donation01">
+      <div id="wrap">
+
+
+        <h2>기부제 소식</h2>
+        <div class="detail_cont_wrap ">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" >
+              <video style="max-width: 100%; width:100%; margin-bottom:-0.5%;" autoplay muted loop src="/newsletter/static/images/vol001/detail_1.mp4" ></video>
+              <div class="banner_link_btn">
+                <a href="https://ilovegohyangday.kr/event" target="_blank" title="새창 열림">자세히 보기&nbsp;&nbsp;+</a>
+              </div>
+            </div>
+            <div class="tit_area">
+              <h4>행정안전부</h4>
+              <h3>제2회 고향사랑의 날 기념식과 박람회 </h3>
+            </div>
+          </section>
+          <div class="bar mint-bar"></div>
+          <section id="" class="detail_contents_area">
+            <p style="text-align: center; font-weight: 600;">
+              <span class="mint" style="font-weight: 600;">고향은 사랑을 싣고</span> <br/><br/>
+              2024년 9월 4일, <br/>
+              전국의 고향이 사랑과 선물을 가득 싣고 <br/>
+              여러분을 만나러 갑니다!
+            </p>
+            <br/>
+            <p>
+              <!-- 240830 본문 어미 수정 -->
+              매년 9월 4일, 고향사랑의 날은 고향의 가치와 소중함을 알리기 위해 대국민 공모로 정한 국가 기념일 입니다. 제2회 고향사랑의 날 기념식과 박람회는 2024년 9월 4일부터 7일까지 경주화백컨벤션센터에서 고향사랑의 날을 기념해 열립니다. 이번 행사에서는 전국 150여 개 지자체가 참여합니다. 고향사랑과 관련된 다양한 전시와 지자체 우수사례 경진대회, 토론회 등 부대행사가 함께 진행됩니다. 전국의 고향에서 사랑을 가득담아 준비한 재미있는 이벤트도 체험하고, 각양각색의 고향사랑기부 답례품도 풍성하게 받아 갈 수 있습니다. 함께해주세요.
+            </p>
+            <br/>
+            <div class="img_wrap imgw_1">
+              <img src="/newsletter/static/images/vol001/detail_p9_01.jpg" class="img_l" alt="경주에서 만나요!">
+              <ul class="orange_list">
+                <li>
+                  <span class="title">일시</span>
+                  <p>
+                    2024. 9. 4. (수) ~ 9. 7. (토) 11:00 ~ 18:00
+                    <em>* 9. 7. (토)는 16:00 까지</em>
+                    <em>* 기념식 : 2024. 9. 4.(수) 16:00 </em>
+                  </p>
+                </li>
+                <li><span class="title">장소</span> <p>경주화백 컨벤션 센터 <em>(HICO)</em> </p></li>
+                <li><span class="title">주최</span> <p>행정안전부</p></li>
+              </ul>
+              <!-- <img src="/static/img/detail_p9_02.jpg" class="img_r" alt="하단 참조"> -->
+            </div>
+
+            <br/>
+
+            <div class="table_img_wrap">
+              <div class="img_wrap imgw_2">
+                <img src="/newsletter/static/images/vol001/detail_1_1.jpg" class="img_l" alt="제2회 고향사랑의날 홍보용 이미지">
+                <div class="blind">
+                  매년 9월 4일은 고향사랑의 날입니다.
+                  고향은 사랑을 싣고
+                  제2회 고향사랑의 날
+                  기념식 2024.9.4.수 16:00 경주화백컨벤션센터 3층 컨벤션홀
+                  박람회 2024.9.4.수~9.7.토 11:00~18:00
+                  행정안전부, 경상북도, 경주시
+                </div>
+              </div>
+
+              <!-- 테이블 -->
+              <table>
+                <caption>고향사랑의 날 행사내용</caption>
+                <colgroup>
+                  <col width="10%" />
+                  <col width="" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th colspan="2" style="background:#ff7e00;color:#fff;">행사내용</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="ali-center" style="background:#ffaf00;color:#fff;">1</td>
+                    <td>
+                      1. 제 2회 고향사랑의날 기념식
+                      <ul>
+                        <li>- 유공자 포상, 기념 공연</li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ali-center" style="background:#ffaf00;color:#fff;">2</td>
+                    <td>
+                      2. 제 2회 고향사랑의날 박람회
+                      <ul>
+                        <li>- 고향사랑 관련 주제관 전시</li>
+                        <li>- 전국 150여 개 지자체 참여 부스 및 이벤트</li>
+                        <li>- 지자체 우수사례 경진대회, 토론회, 현장이벤트 등 부대행사</li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- // 테이블 -->
+            </div>
+
+            <br/>
+
+            <div class="video_wrap">
+              <iframe width="560" height="437" src="https://www.youtube.com/embed/bdmaEYZANFQ?si=P4fqA7CDWTEt8QV1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="고향사랑의날 홍보영상"></iframe>
+            </div>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+
+    </div>
+  </div>
+  </body>
+</html>

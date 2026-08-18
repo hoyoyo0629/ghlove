@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ko">
+
+<head id="saleson-head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>지역이벤트-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+    <link rel="stylesheet" href="/static/css/evt_card.css">
+
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <layout-header-ali  ref="layoutHeader"></layout-header-ali>
+        <layout-header :menu-url="menuUrl"></layout-header>
+
+        <section class="loc_evt page-title-box" id="contents">
+            <div class="center">
+                <h2 class="page-title-txt">지역 이벤트</h2>
+                <p>지자체별 이벤트진행 현황을 확인하실 수 있습니다.</p>
+                <div class="loc_select_area">
+                    <select title="시·도 선택" name="upperLocgovCode" id="upperLocgovCode" v-model="sidoCode" @change="changeSidoEvent">
+                        <option v-for="(sido, index) in sidoList" :value="sido.sidoCode" :key="index">
+                            {{sido.sidoName}}
+                        </option>
+                    </select>
+                    <select title="시·군·구 선택" name="locgovCodeSet" id="locgovCodeSet" v-model="sigunguCode">
+                        <option v-for="(sigungu, index) in sigunguList" :value="sigungu.cityCode" :key="index">
+                            {{sigungu.cityName}}
+                        </option>
+                    </select>
+                    <div class="submit_btns">
+                        <button type="button" class="formBtn" @click="searchEvent(1)" id="eventSearchBtn">검색</button>
+                        <button type="button" class="formBtn reset_img" @click="initData" id="eventInitBtn">
+                            <img src="/static/images/icon/loc_reset.png" alt="초기화" class="icon-img">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contents new_contents">
+            <div class="container">
+                <!-- 답례품 카드 -->
+                <div class="section all_evt">
+                    <div class="main_con_top" v-show="eventList.length !== 0">
+                        <div class="amount_goods">전체 {{totalSerchCnt}}건</div>
+                    </div>
+
+                    <ul class="goods-evt-group">
+                        <li class="evt-list-items" v-for="(v,i,arr) in eventList" :key="i"
+                            @click="jumpToDetails(v.featuredUrl)" @keydown="keydownToDetails($event,v.featuredUrl)"
+                            tabindex="0" :role="v.featuredName + ' 이벤트 상세정보 페이지 이동'">
+                            <div class="list_inner">
+                                <span class="img_frame">
+                                    <img class="item_img" :src="itemImage(v.featuredListImageSrc)" :alt="v.featuredName"
+                                        @error="errorImage">
+                                </span>
+                                <span class="cardTxt card_evt-du">{{`${itemDateFormat(v.startDate)} ~
+                                    ${itemDateFormat(v.endDate)}`}}</span>
+                                <span class="cardTxt card_title">{{v.featuredName}}</span>
+                                <span class="cardTxt pointGray">{{v.featuredHost}}</span>
+                                <span
+                                    class="cardTxt pointGray"
+                                    v-show="v.featuredPhoneNo1 && v.featuredPhoneNo2 && v.featuredPhoneNo3"
+                                    >{{`${v.featuredPhoneNo1}-${v.featuredPhoneNo2}-${v.featuredPhoneNo3}`}}</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <pagination :current-page="currentPage" :total-pages="totalPage" @change="searchEvent"
+                        v-if="eventList.length > 0"></pagination>
+
+                </div>
+                <div class="list-none" v-show="eventList.length === 0">
+                    <img src="/static/images/icon/cli-icon_no-location.png" alt="지자체를 선택해주세요">
+                </div>
+            </div>
+        </section>
+
+        <layout-fixed-btn></layout-fixed-btn>
+        <layout-tabbar-ali></layout-tabbar-ali>
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/event.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/goods.item.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script type="text/babel">
+        // Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header': httpVueLoader('/components/layouts/header_g.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-tabbar-ali': httpVueLoader('/components/layouts/m_tabbar_g.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+            },
+            data: {
+                totalSerchCnt: 0,
+                eventList: [],
+                sidoList: [],
+                sigunguList: [],
+                sidoCode: '',
+                sigunguCode: '',
+                menuUrl: location.pathname,
+                currentPage: 0,
+                totalPage: 0,
+            },
+            methods: {
+                jumpToDetails(featuredUrl) {
+                    // location.href='/_pub/event/UI_P07110200.html'
+                    if (featuredUrl.indexOf('http') > -1) {
+                        $s.redirect(featuredUrl);
+                    } else {
+                        $s.redirect('/featured/eventDetail.html?pages=' + featuredUrl.replace(/\/pages\//g, ''));
+                    }
+                },
+                keydownToDetails(e, featuredUrl) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        vm.jumpToDetails(featuredUrl);
+                    }
+                },
+                
+                searchEvent(page, focusId, isInit) {
+                    /*
+                    if (!this.sidoCode) {
+                        $s.alert("시·도를 선택하세요.");
+                        return;
+                    }
+
+                    if (!this.sigunguCode) {
+                        $s.alert("시·군·구를 선택하세요.");
+                        return;
+                    }*/
+                    if (!focusId) {
+                        focusId = "eventSearchBtn";
+                    }
+
+                    let params = {
+                        page,
+                        itemsPerPage: 8,
+                        upperLocgovCode: this.sidoCode,
+                        locgovCode: this.sigunguCode
+                    };
+
+                    this.showLoading(true);
+                    $s.api.getEvent(params, function (response) {
+                        vm.showLoading(false);
+                        vm.eventList = response.content;
+                        vm.currentPage = response.currentPage;
+                        vm.totalPage = response.totalPages;
+                        vm.totalSerchCnt = response.totalElements;
+                        if (vm.totalPage == 0) {
+                            if (isInit) {
+                                //$s.alert("검색결과가 없습니다.", "header");
+                            } else {
+                                $s.alert("검색결과가 없습니다.", focusId);
+                            }
+                        }
+                    }, function (error) {
+                        vm.showLoading(false);
+                        $s.error(error);
+                    });
+                },
+                loadSido() {
+                    return $goods.getCommonRegionCode();
+                },
+                changeSidoEvent() {
+                    this.sigunguCode = '';
+                    return new Promise((resolve, reject) => {
+                        $goodsItem.loadSiGungu(this.sidoCode).then((res) => {
+                            this.sigunguList = res;
+                            resolve(this.sigunguList);
+                        }).catch((e) => {
+                            reject(e);
+                        });
+                    });
+                },
+                initData() {
+                    this.eventList = [];
+                    this.sigunguList = [{ cityCode: '', cityName: '시·군·구 선택' }];
+                    this.sidoCode = '';
+                    this.sigunguCode = '';
+                    this.currentPage = 1;
+                    this.totalPage = 0;
+                    this.searchEvent(1, "eventInitBtn");
+                },
+                itemDateFormat(val) {
+                    return $goodsItem.dateFormat(val);
+                },
+                getImageSrc(featured) {
+                    var imageSrc = Saleson.config.noImage;
+                    try {
+                        if (Saleson.isMobile()) {
+                            imageSrc = featured.featuredImageMobileSrc;
+                        } else {
+                            imageSrc = featured.featuredImageSrc;
+                        }
+
+                        if (typeof imageSrc != 'undefined' && imageSrc != null && imageSrc != "") {
+                            imageSrc = this.itemImage(imageSrc);
+                        }
+                    } catch (e) { console.log(e); }
+                    return imageSrc;
+                },
+                showLoading(isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+                },
+                loadingMounted: function() {
+                    this.searchEvent(1, "header", true);
+                },
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init();
+                    this.loadSido().then((res) => {
+                        this.sidoList = res;
+                    });
+                    this.sigunguList = [{ cityCode: '', cityName: '시·군·구 선택' }];
+                    // vm.getEvent();
+                });
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

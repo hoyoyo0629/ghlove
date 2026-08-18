@@ -1,0 +1,108 @@
+server:
+  port: 9080
+
+spring:
+  application.name: ghlove-api
+  thymeleaf:
+    cache: false
+    check-template-location: true
+    prefix: classpath:templates/
+    suffix: .html
+
+saleson:
+  root: "c:/workspace/ghlove"
+  #root: "c:/workspace/ghlove"
+
+  # 서비스 VIEW MODE (api/jsp)
+  view.type: api
+
+  
+# SCI      
+sci:
+  phone:
+    id: SXTE003
+    srvNo: '003001'
+    key: 24370679A475F4AF82BD353BA0635BC0
+    url: https://192.168.239.25:4141/servlet/StoS
+  token:
+    url: https://192.168.239.25:4141/authentication/api/v1.0/common/crypto/token
+    access: 7e86c205-0da8-46f6-98e7-3637c3e93821
+    client: ff17d8cb-6e4a-4249-9da4-082fd44819a3
+      
+# Logging Level
+logging:
+  level:
+    saleson: DEBUG
+    jdbc:
+      sqltiming: DEBUG
+      resultsettable: DEBUG
+
+#######################
+# TotalSearch Engine
+#######################
+totalsearch-server:
+  engine-url: 192.168.100.248:7577
+  ksf-url: 192.168.100.248:7614
+        
+magicline:
+  prop-path: ${saleson.root}/magicline/config/magicline.properties
+    
+ems:
+  host: http://192.168.100.250:8380/api/sendMail.do
+  send:
+    username: 고향사랑e음
+    email: webmatser@ilovegohyang.go.kr
+    
+#######################
+# simapleAuth
+#######################
+simepleAuth:
+  jsonpath: ${saleson.root}/simpleauth
+  
+# Outside Connection
+outconn:
+  # administration net
+  admin-addressinfo-url: http://123.213.1.217:4141/api/mopas/rsgstadresinfo
+  # juso search api
+  juso-api:
+    url: http://www.juso.go.kr/addrlink/addrLinkApiJsonp.do
+    key: U01TX0FVVEgyMDIyMTEyNTE0MTUzMTExMzI1OTc=
+  # korea receipt api
+  korea-api:
+    loginIp: 152.99.104.11
+    loginUrl: https://116.67.103.158/jwtLoginAction.do
+    actionUrl: https://116.67.103.158/jwtAction.do?actionId=ATESFACA001C11
+    key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/RzW8TWg9hB7T1BWFSrwAASoNt/tBjTYWojvo3gB5MRjx+TI+tI7BqmhhxjAPv3mDNjBgeCW/J5UsCdYOt/dDyYyGiXjHSTE+JsX6Z1i3soDJJzwGnYLbRpbAb9mUi75T0Imwa4P4TLMHFzjw7r57MvJd26RKJnJe0IPGBK0CcQIDAQAB
+    id : ilovegohyang
+    password : rhgid\#rlqn
+  # seoul buga regist
+  seoul-buga-url: http://123.213.1.217:4141/api/seoul/epaymentno
+  # seoul sunap search
+  seoul-sunap-url: http://123.213.1.217:4142/api/etax/getSunapStatus
+  # contry(now) buga regist
+  contry-now-buga-url: http://123.213.1.217:4141/api/curgnr/epaymentno
+  # contry(now) sunap search
+  contry-now-sunap-url: http://123.213.1.217:4142/api/curgnr/receipt
+  # giro
+  giro-url: https://test.giro.or.kr/epay/hometown/index.do
+  # AES256 key
+  #giro-aes256-key: rhgidtkfkdrmarufdnjswlfhdusrP!@#
+  giro-aes256-key: rmarufdnjswlfhskqqnxptmxm_123!@#
+  # AES256 iv
+  #giro-aes256-iv: rhgidtkfkdrmaruf
+  giro-aes256-iv: rmarufdnjswlfhsk
+
+
+######금융인증서#######
+fincert:
+  url: https://t-certapi.yeskey.or.kr/oauth/2.0/api/token
+  ucpidUrl: https://t-certapi.yeskey.or.kr/v1/ucpid/ucpid-info
+  client-id: dba3f9f8-0ada-4661-91f2-18e53681d255
+  client-secret: 87b70351-7d6a-42f4-96cf-b8c9d39c1770
+  scope: ucpid
+  grant-type: client_credentials
+  server-id: server_ilovegohyang
+  cp-code: Y30000001301
+  
+next :
+  buga-request-url: https://192.168.84.56:4145/api/nextgnr/send

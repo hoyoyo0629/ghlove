@@ -1,0 +1,130 @@
+.mapWrap { max-width:768px; display:flex; gap:20px; /* padding:20px auto 40px; */}
+.mapWrap .area { flex:1; }
+.mapWrap .area .image { position:relative; width:305px; margin:0 auto;  }
+.mapWrap .area .image span { cursor:pointer; font-size:12px; font-weight:bold; }
+.mapWrap .area .image .active span { color:#fff; background:#2379cc; padding:3px; border-radius:100%; }
+
+.mapWrap .area .image .text { /* 서울 */
+ position:absolute;
+ top:80px;
+ left:70px;
+ width:40px;
+}
+.mapWrap .area .image .text1 { /* 인천 */
+ position:absolute;
+ top:80px;
+ left:25px;
+ width:40px;
+}
+.mapWrap .area .image .text2 { /* 경기도 */
+ position:absolute;
+ top:115px;
+ left:85px;
+ width:45px;
+}
+.mapWrap .area .image .text3 { /* 강원도 */
+ position:absolute;
+ top:80px;
+ left:160px;
+ width:60px;
+}
+.mapWrap .area .image .text4 { /* 충청남도 */
+ position:absolute;
+ top:170px;
+ left:50px;
+ width:60px;
+}
+.mapWrap .area .image .text5 { /* 충청북도 */
+ position:absolute;
+ top:150px;
+ left:120px;
+ width:60px;
+}
+.mapWrap .area .image .text6 { /* 세종 */
+ position:absolute;
+ top:190px;
+ left:100px;
+ width:40px;
+}
+.mapWrap .area .image .text7 { /* 대전 */
+ position:absolute;
+ top:220px;
+ left:110px;
+ width:40px;
+}
+.mapWrap .area .image .text8 { /* 경상북도 */
+ position:absolute;
+ top:170px;
+ left:195px;
+ width:60px;
+}
+.mapWrap .area .image .text9 { /* 전라북도 */
+ position:absolute;
+ top:260px;
+ left:71px;
+ width:60px;
+}
+.mapWrap .area .image .text10 { /* 대구 */
+ position:absolute;
+ top:235px;
+ left:190px;
+ width:40px;
+}
+.mapWrap .area .image .text11 { /* 울산 */
+ position:absolute;
+ top:260px;
+ left:240px;
+ width:40px;
+}
+.mapWrap .area .image .text12 { /* 광주 - 전남광주통합특별시로 변경 */
+ position:absolute;
+ top: 327px;
+ left: 41px;
+ width: 91px;
+ /* top:300px;
+ left:60px;
+ width:40px; */
+}
+.mapWrap .area .image .text13 { /* 전라남도 */
+ position:absolute;
+ top:345px;
+ left:48px;
+ width:60px;
+}
+.mapWrap .area .image .text14 { /* 제주도 */
+ position:absolute;
+ top:415px;
+ left:30px;
+ width:60px;
+}
+.mapWrap .area .image .text15 { /* 부산 */
+ position:absolute;
+ top:300px;
+ left:220px;
+ width:40px;
+}
+.mapWrap .area .image .text16 { /* 경상남도 */
+ position:absolute;
+ top:300px;
+ left:150px;
+ width:60px;
+}
+
+	.mapWrap .addr { /*width:50%;*/
+		width: 210px;
+	}
+.mapWrap .addr .text_area { display:none; }
+.mapWrap .addr .text_area.active { display:block; }
+.mapWrap .addr .addrTit { font-size:20px; font-weight:500; }
+.mapWrap .addr .addrBox { margin:20px 0 0;  }
+.mapWrap .addr .addrBox .addrList { display:flex; flex-wrap:wrap; gap:0; }
+.mapWrap .addr .addrBox .addrList li { display:flex; align-items:center; justify-content:center; width:33.3%; height:40px; border:1px solid #ddd; text-align:center; margin-top:-1px; margin-left:-1px; }
+.mapWrap .addr .addrBox .addrList li a { display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
+.mapWrap .addr .addrBox .addrList li:hover { background:#f8f8f8; }
+.mapWrap .addr .addrBox .addrList li:hover a { text-decoration:underline; color:#000; }
+
+@media screen and (max-width:768px) {
+	.mapWrap { max-width:768px; display:block; gap:20px; margin:0 auto; padding:15px 15px 60px 15px; }
+	.mapWrap .area { width:100%; margin:0 auto; }
+	.mapWrap .addr { width:100%; margin:30px auto 0; }
+}

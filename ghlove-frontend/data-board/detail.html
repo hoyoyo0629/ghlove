@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>고객센터 > 자료실 상세 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/event.css">
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/data_v.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <!-- <layout-subsearch-ali></layout-subsearch-ali> -->
+            <layout-customer-lnb-ali :menu-url="page.menuUrl"></layout-customer-lnb-ali>
+
+
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        고객센터
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        자료실
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        자료실 보기
+                    </span>
+                    <h2 class="page-title-txt">자료실 보기</h2>
+                </div>
+            </section>
+            <section id="contents">
+                <div class="contents-wrap">
+                    <div class="center">
+                        <div class="s-contents list-page-wrapper">
+                            <div class="list-page-area">
+                                <div class="list-page-body">
+                                    <div class="page-title">
+                                        {{ unescapeHtml(result.subject) }}
+                                    </div>
+                                    <div class="page-info">
+                                        <div class="page-info-list">
+                                            <div class="writer">관리자</div>
+                                            <div class="date-created">{{ result.createdDate }}</div>
+                                            <div class="views">조회 {{ result.hits }}</div>
+                                        </div>
+                                        <button type="button" class="share-con" @click="clip"><img
+                                                src="/static/images/icon/cli-icon_share-con.png" alt="">URL 복사</button>
+                                    </div>
+                                    <div class="page-contents" v-html="appendCdnDomain(result.content)"></div>
+                                    <div class="page-file-list">
+                                        <div class="file-list-label"><img
+                                                src="/static/images/icon/cli-icon_file-list.png" alt="첨부자료"> 첨부자료</div>
+                                        <div class="file-list-title">
+                                            <span v-for="(data, index) in result.fileList">
+                                                <a href="javascript:void(0);" class="downloadFn"
+                                                    @click="fileDownload(data.dataFileId, data.orgFileName);">{{
+                                                    data.orgFileName }}</a><br />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 버튼그룹 -->
+                        <div class="btn-box">
+                            <button type="button" class="blueBtn u-confirm" @click="goToList()">
+                                목록<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt=""></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+
+                //'layout-customer-lnb-ali': httpVueLoader('/components/layouts/customer-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue') //pagination
+            },
+            data: {
+                result: {
+                    subject: '',
+                    userName: '',
+                    createdDate: '',
+                    hits: 0,
+                    content: '',
+                    fileList: []
+                },
+                param: {
+                    dataId: 0
+                },
+                page: {
+                    menuUrl: "/data-board/list.html"
+                }
+            },
+            methods: {
+                init: function () {
+                    var dataId = $s.core.getParameter('dataId');
+                    history.replaceState({}, null, location.pathname + '?dataId=' + dataId);
+                    vm.param.dataId = dataId;
+                    vm.submit();
+                },
+                submit: function () {
+                    $s.api.getDataboardDetail(vm.param,
+                        function (response) {
+                            if (!response || !response.detail || !response.detail.dataId) {
+                                vm.goToList();
+                                return false;
+                            }
+
+                            vm.result.subject = response.detail.subject;
+                            vm.result.userName = response.detail.userName;
+                            vm.result.createdDate = response.detail.createdDate;
+                            vm.result.hits = response.detail.hits;
+                            vm.result.content = response.detail.content;
+                            vm.result.fileList = response.fileList;
+                        }
+                    );
+                },
+                clip: function () {
+                    var textarea = document.createElement("textarea");
+                    document.body.appendChild(textarea);
+                    textarea.value = window.document.location.href;
+                    textarea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textarea);
+                    $s.alert("URL이 복사되었습니다.");
+                },
+                fileDownload: function (dataFileId, orgFileName) {
+                    $s.api.getDataboardFileDownload({ "dataFileId": dataFileId },
+                        function (response) {
+                            const link = document.createElement("a");
+                            link.href = window.URL.createObjectURL(new Blob([response]));
+                            link.setAttribute("download", orgFileName);
+                            link.style.cssText = "display:none";
+                            document.body.appendChild(link);
+                            link.click();
+                            link.remove();
+                        },
+                        function (response) {
+                            $s.alert("첨부자료를 다운로드 할 수 없습니다.");
+                        }
+                    );
+                },
+                // *************** ali-add methods
+                goToMain: function () {
+                    location.href = "UI_P02010.html"
+                },
+                goToList: function () {
+                    location.href = "/data-board/list.html"
+                },
+                closePopupLayer: function () {
+                    $(".black-bg").removeClass("show");
+                },
+                modalLayer: function (e) {
+                    $(".black-bg").addClass("show");
+                },
+                slideNoticeBody: function (index) {
+                    var obj = $(".notice-body").eq(index);
+                    $(obj).slideToggle();
+                },
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init();
+                    vm.init();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

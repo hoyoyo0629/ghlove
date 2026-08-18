@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 상단  -->
+        <div id="header">
+            <div class="header_wrap">
+                <h1><a href="javascript:;"><img src="../../content/opmanager/images/img_logo.png" alt="고향사랑기부제" /></a></h1>
+            </div>
+        </div>
+
+        <!-- 내용 -->
+        <div id="container" class="login">
+
+            <div class="login_cont">
+                <div class="login_tit mt-70">관리자 권한 요청</div>
+                <div class="login_sub_tit">최초 1회 로그인시 관리자 권한 요청페이지를 작성하셔야 합니다.<br>승인 후 정상적으로 이용이 가능합니다.</div>
+
+                <div class="form-wrap">
+                    <div class="board_write">
+                        <table class="board_write_table">
+                            <colgroup>
+                                <col style="width: 220px;" />
+                            </colgroup>
+                            <tr>
+                                <td class="label">아이디</td>
+                                <td>
+                                    <div>
+                                        <p class="txt">ghdrlfehd1</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">이름</td>
+                                <td>
+                                    <div>
+                                        <p class="txt">홍길동</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">생년월일</td>
+                                <td>
+                                    <div>
+                                        <p class="txt">1981-05-05</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">휴대폰</td>
+                                <td>
+                                    <div>
+                                        <p class="txt">010-1234-5678</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">이메일 주소</td>
+                                <td>
+                                    <div>
+                                        <p class="txt">gilsegseg@naver.com</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- 220922 EMAIL 수신동의 삭제 -->
+                            <!-- // 220922 EMAIL 수신동의 삭제 -->
+                            <tr>
+                                <td class="label">소속 구분</td>
+                                <td>
+                                    <div class="flex_box gap-12">
+                                        <div class="input-form">
+                                            <input id="rdo02-1" name="rdo02" checked="checked" type="radio"><label
+                                                for="rdo02-1">지자체</label>
+                                        </div>
+                                        <div class="input-form">
+                                            <input id="rdo02-2" name="rdo02" type="radio"><label
+                                                for="rdo02-2">오프라인</label>
+                                        </div>
+                                        <div class="input-form">
+                                            <input id="rdo02-3" name="rdo02" type="radio"><label
+                                                for="rdo02-3">행정안전부</label>
+                                        </div>
+                                        <div class="input-form">
+                                            <input id="rdo02-4" name="rdo02" type="radio"><label
+                                                for="rdo02-4">시스템</label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- 지자체 case -->
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>소속 지자체</td>
+                                <td>
+                                    <div>
+                                        <div class="flex_box gap-08">
+                                            <select id="" name="" class="wd-150">
+                                                <option value="">- 시도 선택 -</option>
+                                            </select>
+                                            <select id="" name="" class="wd-150">
+                                                <option value="">- 시군구 -</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- // 지자체 case -->
+                            <!-- 오프라인 case -->
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>소속 은행</td>
+                                <td>
+                                    <div>
+                                        <div class="flex_box gap-08">
+                                            <select id="" name="" class="wd-150">
+                                                <option value="">농협은행</option>
+                                            </select>
+                                            <input id="" name="" class="optional wd-150" title="지점명" type="text" value=""
+                                                placeholder="지점명">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- // 오프라인 case -->
+                            <tr>
+                                <td class="label">
+                                    <span class="required_mark">*</span>소속 부서
+                                </td>
+                                <td>
+                                    <div>
+                                        <input id="" name="" class="optional wd-150" title="소속 부서" type="text" value=""
+                                            placeholder="부서명">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">직위</td>
+                                <td>
+                                    <div>
+                                        <input id="" name="" class="optional wd-150" title="직위" type="text" value=""
+                                            placeholder="직위">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- 220922 문구 삭제 -->
+                        <!-- // 220922 문구 삭제 -->
+                    </div>
+                </div>
+
+                <div class="button_wrap">
+                    <button type="button" class="btn btn-dark-gray btn-large"><span>관리자 권한 요청하기</span></button>
+                    <button type="button" class="btn btn-default btn-mid h-large"><span>취소</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단  -->
+        <div id="footer">
+            <div class="footer_wrap">
+                <span class="copy">COPYRIGHT (C) 고향사랑 ALL RIGHTS RESERVED. 고향사랑 ERSION : 0.00.0 T : <a class="txt"
+                        href="tel:02-0000-1100">02-0000-1100</a> F : <a class="txt"
+                        href="tel:02-1111-3322">02-1111-3322</a> E : <a class="txt"
+                        href="mailto:help@고향사랑.com">help@고향사랑.com</a></span>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

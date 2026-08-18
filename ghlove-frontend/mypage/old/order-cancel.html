@@ -1,0 +1,1350 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="../../../../favicon.ico">
+    <title>지역정보개발원-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/mypage.css">
+</head>
+<body>
+<div id="saleson" v-cloak>
+    <layout-header></layout-header>
+
+    <section class="contents order_list_contents">
+        <div class="tit_wrap">
+            <h2 id="dropdown" class="tit tit_dropdown" data-toggle="dropdown" v-text="param.title">{{param.title}}</h2>
+            <div class="dropdown_inner">
+                <div class="dropdown-menu" aria-labelledby="dropdown">
+                    <a href="#" :class="[param.statusType === 'cancel-process' ? 'active' : '', 'dropdown-item']" @click.prevent="getOrderList('cancel-process')">취소신청 조회</a> <!-- 해당페이지에 class="active"추가하여 활성화 -->
+                    <a href="#" :class="[param.statusType === 'return-process' ? 'active' : '', 'dropdown-item']" @click.prevent="getOrderList('return-process')">반품신청 조회</a>
+                    <a href="#" :class="[param.statusType === 'exchange-process' ? 'active' : '', 'dropdown-item']" @click.prevent="getOrderList('exchange-process')">교환신청 조회</a>
+                </div>
+            </div>
+        </div>
+        <div class="order_deli_wrap">
+            <div class="container">
+                <form class="needs-validation" @submit.prevent="paging(1)">
+                    <div class="order_deli_top">
+                        <div class="row">
+                            <div class="col-12 col-md-4 search_input">
+                                <input type="text" class="form-control box" placeholder="시작날짜" title="검색날짜 입력" name="startDate" v-model="param.searchStartDate">
+                                <span>~</span>
+                                <input type="text" class="form-control box" placeholder="종료날짜" title="검색날짜 입력" name="endDate" v-model="param.searchEndDate">
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <select class="custom-select box searchDate">
+                                    <option value="">조회 기간을 설정하세요.</option>
+                                    <option value="week-1">1주일</option>
+                                    <option value="month-1">1개월</option>
+                                    <option value="month-3">3개월</option>
+                                    <option value="month-6">6개월</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="search_area">
+                            <input type="text" class="form-control line" placeholder="검색어를 입력하세요" title="검색어를 입력하세요" v-model="param.query">
+                            <button type="submit" class="btn btn_m line btn_primary">조회</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="order_deli_container" v-if="order.result.content != null && order.result.content.length > 0">
+                    <div class="order_deli_list" v-for="data in order.result.content" :id="data.orderCode">
+                        <div class="list_top">
+                            <a href="javascript:void(0)" @click="viewDetails('/mypage/order-detail.html?orderCode=' + data.orderCode + '&orderSequence=' + data.orderSequence, 'paging', 'order-cancel')" class="link_detail">
+                                {{data.orderCode}}
+                            </a>
+                            <p class="date">{{dateFormat(data.createdDate)}}</p>
+                        </div>
+                        <div class="item_list basic">
+                            <div class="list_area" v-for="item in data.items">
+                                <div class="list_tit">
+                                    <p class="cancel">{{item.orderStatusLabel}}</p>
+                                </div>
+                                <div class="img_area">
+                                    <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + item.itemUserCode, 'paging', 'order-cancel')">
+                                        <img :src="itemImage(item.imageSrc)" :alt="unescapeHtml(item.imageName)">
+                                    </a>
+                                </div>
+                                <div class="txt_area">
+                                    <p class="brand">{{unescapeHtml(item.brand)}}</p>
+                                    <p class="title">{{unescapeHtml(item.itemName)}}</p>
+                                    <p class="option" v-if="item.options != ''" v-html="unescapeHtml(item.options)"></p>
+                                    <p class="option" v-if="item.freeGiftItemText != ''">
+                                        사은품 : {{unescapeHtml(item.freeGiftItemText)}}
+                                    </p>
+                                    <div class="sale_area">
+                                        <p class="price"><span>{{formatNumber(item.itemAmount)}}</span> / <span>{{item.quantity}}</span>개</p>
+                                    </div>
+                                </div>
+                                <div class="btn_right" v-if="item.orderStatus === '0'">
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" @click="orderCancel(data.orderCode, data.orderSequence, item.itemSequence)">주문취소</button>
+                                </div>
+                                <div class="btn_right" v-if="item.orderStatus === '10' || item.orderStatus === '20'">
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_cancel" @click="getOrderCancelPop(data.orderCode, data.orderSequence, item.itemSequence)">주문취소</button>
+                                </div>
+                                <div class="btn_purchase_area" v-if="item.orderStatus === '30' || item.orderStatus === '35' || item.orderStatus === '55' || item.orderStatus === '59' || item.orderStatus === '69'">
+                                    <button type="button" class="btn btn_sm btn_primary" @click="confirm(data.orderCode, data.orderSequence, item.itemSequence)">구매확정</button>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" v-if="item.deliveryCompanyUrl != ''">배송조회</button>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_exchange" @click="getExchangePop(data.orderCode, data.orderSequence, item.itemSequence)">교환신청</button>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_return" @click="getReturnPop(data.orderCode, data.orderSequence, item.itemSequence)">반품신청</button>
+                                </div>
+                                <div class="btn_purchase_area" v-if="item.orderStatus === '40'">
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_exchange" @click="getExchangePop(data.orderCode, data.orderSequence, item.itemSequence)">교환신청</button>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_return" @click="getReturnPop(data.orderCode, data.orderSequence, item.itemSequence)">반품신청</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="common_none" v-else>
+                    <p>조회 된 신청정보가 없습니다.</p>
+                </div>
+                <pagination :current-page="order.result.currentPage" :total-pages="order.result.totalPages" @change="paging"></pagination>
+            </div>
+        </div>
+
+        <div>
+            <!-- 취소신청 레이어 -->
+            <div class="modal fade modal_full pop_appli_cancel">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal_tit">취소신청</h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="apply_wrap">
+                                <div class="cart_top">
+                                    <div class="check_area">
+                                        <input type="checkbox" id="a1" @click="checkAll()">
+                                        <label for="a1">전체선택</label>
+                                    </div>
+                                </div>
+                                <div class="item_list check" v-for="data in cancelInfo.result.claimApply.order.orderShippingInfos">
+                                    <div class="list_area" v-for="item in data.orderItems" v-if="item.claimApplyFlag === 'Y'">
+                                        <div class="check_area">
+                                            <input type="hidden" v-model="cancelInfo.param.orderCode">
+                                            <input type="hidden" v-model="cancelInfo.param.orderSequence">
+                                            <input type="hidden" v-model="cancelInfo.param.claimType">
+                                            <input type="checkbox" :id="item.claimApplyItemKey"
+                                                   :data-item-sequence="item.itemSequence"
+                                                   :data-parent-item-sequence="item.parentItemSequence"
+                                                   :data-addition-item-flag="item.additionItemFlag"
+                                                   title="선택" :value="item.claimApplyItemKey" @click="cancelRefundCheck($event, item.claimApplyItemKey)">
+                                            <label :for="item.claimApplyItemKey"></label>
+                                        </div>
+                                        <div class="img_area">
+                                            <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + item.itemUserCode, 'paging', 'order-cancel')">
+                                                <img :src="itemImage(item.imageSrc)" :alt="unescapeHtml(item.itemName)">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="brand">{{unescapeHtml(item.brand)}}</p>
+                                            <p class="title">{{unescapeHtml(item.itemName)}}</p>
+                                            <p class="option" v-if="item.options != ''" v-html="unescapeHtml(item.options)"></p>
+                                            <p class="option" v-if="item.freeGiftItemText != ''">
+                                                사은품 : {{unescapeHtml(item.freeGiftItemText)}}
+                                            </p>
+                                            <div class="price_area">
+                                                <div class="sale_area">
+                                                    <p class="price"><span>{{formatNumber(item.saleAmount)}}</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn_right" v-if="item.additionItemFlag == 'N'">
+                                            <select class="custom-select box_s" :id="'applyQuantity_'+item.claimApplyItemKey">
+                                                <option disabled value="">선택</option>
+                                                <option :value="data" v-for="data in (item.quantity-item.claimQuantity)">{{data}}개</option>
+                                            </select>
+                                        </div>
+                                        <div class="btn_right txt_area" v-else>
+                                            <select class="custom-select box_s" :id="'applyQuantity_'+item.claimApplyItemKey">
+                                                <option :value="item.quantity-item.claimQuantity">{{item.quantity-item.claimQuantity}}개</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area">
+                                    <div class="form_wrap_line">
+                                        <div class="form-group">
+                                            <select class="custom-select line" v-model="cancelInfo.param.claimReasonText">
+                                                <option disabled value="">선택</option>
+                                                <option :value="cancelData.label" v-for="cancelData in cancelInfo.result.claimReasons">{{cancelData.label}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control line" placeholder="취소사유를 입력해주세요" title="취소사유를 입력해주세요" v-model="cancelInfo.param.claimReasonDetail">
+                                        </div>
+                                        <div class="info_dot">
+                                            <p>위 상품은 배송을 준비한다는 판매자의 연락이 있었으며, 현재 상품이 발송되었을 수 있습니다.</p>
+                                            <p>이미 상품이 발송된 것으로 확인되면 취소 요청이 자동으로 철회되며, 이 경우 상품을 받으신 후 반품신청을 하실 수 있습니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area" id="refundInfo" style="display: none;">
+                                    <div id="refundBank" style="display: none;">
+                                        <h4 class="apply_tit">환불계좌 정보입력</h4>
+                                        <div class="form_wrap_line">
+                                            <div class="form-group phone_area">
+                                                <div class="row no-gutters">
+                                                    <div class="col-4 col-md-3">
+                                                        <select class="custom-select line" v-model="cancelInfo.param.returnBankName">
+                                                            <option disabled value="">선택</option>
+                                                            <option :value="data.key" v-for="data in common.banks">{{data.label}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-8 col-md-9">
+                                                        <input type="text" class="form-control line" placeholder="예금주를 입력하세요" title="예금주를 입력하세요" v-model="cancelInfo.param.returnBankInName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="number" class="form-control line" placeholder="계좌번호를 정확히 입력해주세요" title="계좌번호를 정확히 입력해주세요" v-model="cancelInfo.param.returnVirtualNo">
+                                            </div>
+                                            <div class="info_dot">
+                                                <p>통장입금의 경우 택배가 판매자에게 도착한 후 2 ~ 3일 이내에 환불 신청하신 계좌로 입금됩니다.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="radio_area refund" v-if="cancelInfo.refundResult.orderRefundApiInfo.totalReturnAmount > 0 && cancelInfo.refundResult.orderRefundApiInfo.isAutoCancel == true">
+                                        <input type="radio" name="claimRefundType" value="1" v-model="cancelInfo.param.claimRefundType" checked id="claimRefundType1">
+                                        <label for="claimRefundType1">환불하기</label>
+                                    </div>
+                                    <div class="radio_area refund" v-else>
+                                        <input type="radio" name="claimRefundType" value="2" v-model="cancelInfo.param.claimRefundType" checked id="claimRefundType2">
+                                        <label  for="claimRefundType2">신청하기</label>
+                                    </div>
+                                    <div class="apply_total">
+                                        <dl>
+                                            <dt>배송비</dt>
+                                            <dd><strong>{{formatNumber(cancelInfo.refundResult.orderRefundApiInfo.totalAddShippingAmount)}}</strong> 원</dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>상품금액</dt>
+                                            <dd><strong>{{formatNumber(cancelInfo.refundResult.orderRefundApiInfo.totalItemReturnAmount)}}</strong> 원</dd>
+                                        </dl>
+                                        <dl class="total_area">
+                                            <dt>총 환불금액</dt>
+                                            <dd><strong>{{formatNumber(cancelInfo.refundResult.orderRefundApiInfo.totalReturnAmount)}}</strong> 원</dd>
+                                        </dl>
+                                    </div>
+                                    <div class="row no-gutters btn-group">
+                                        <div class="col col-xl-4">
+                                            <button type="button" class="btn btn_lg btn_default" data-dismiss="modal">취소</button>
+                                        </div>
+                                        <div class="col col-xl-4">
+                                            <button type="button" class="btn btn_lg btn_primary" @click="cancelProcess()">신청</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="modal_close" data-dismiss="modal">
+                            <span class="screen_out">취소신청 닫기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 교환신청 레이어 -->
+            <div class="modal fade modal_full pop_appli_exchange">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal_tit">교환신청</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form @submit.prevent="exchangeProcess">
+                                <div class="apply_wrap">
+                                    <input type="hidden" :value="exchange.result.exchangeApply.shipmentReturnId" id="exchangeShipmentReturnId">
+                                    <div class="item_list basic">
+                                        <div class="list_area">
+                                            <div class="img_area">
+                                                <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + exchange.result.exchangeApply.orderItem.itemUserCode, 'paging', 'order-cancel')">
+                                                    <img :src="itemImage(exchange.result.exchangeApply.orderItem.imageSrc)" :alt="unescapeHtml(exchange.result.exchangeApply.orderItem.itemName)">
+                                                </a>
+                                            </div>
+                                            <div class="txt_area">
+                                                <p class="brand">{{unescapeHtml(exchange.result.exchangeApply.orderItem.brand)}}</p>
+                                                <p class="title">{{unescapeHtml(exchange.result.exchangeApply.orderItem.itemName)}}</p>
+                                                <p class="option" v-if="exchange.result.exchangeApply.orderItem.options != ''" v-html="unescapeHtml(exchange.result.exchangeApply.orderItem.options)"></p>
+                                                <p class="option" v-if="exchange.result.exchangeApply.orderItem.freeGiftItemText != ''">
+                                                    사은품 : {{unescapeHtml(exchange.result.exchangeApply.orderItem.freeGiftItemText)}}
+                                                </p>
+                                                <div class="price_area">
+                                                    <div class="sale_area">
+                                                        <p class="price"><span>{{exchange.result.exchangeApply.orderItem.saleAmount}}</span>원</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btn_right">
+                                                <select class="custom-select box_s" v-model="exchange.param.applyQuantity">
+                                                    <option disabled value="">선택</option>
+                                                    <option :value="data" v-for="data in exchange.result.exchangeApply.orderItem.quantity">
+                                                        {{data}}개
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="apply_area">
+                                        <div class="form_wrap_line">
+                                            <div class="form-group">
+                                                <select class="custom-select line" v-model="exchange.param.claimReason" @change="claimChange($event)">
+                                                    <option disabled value="">교환사유를 선택해주세요.</option>
+                                                    <option :value="exchangeData.detail" v-for="exchangeData in exchange.result.claimReasons">{{exchangeData.label}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control line" placeholder="교환사유를 입력해주세요" title="교환사유를 입력해주세요" v-model="exchange.param.claimReasonDetail">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="apply_area">
+                                        <h4 class="apply_tit">반송 송장 정보</h4>
+                                        <div class="form_wrap_line">
+                                            <div class="form-group">
+                                                <div class="radio_area">
+                                                    <input type="radio" id="return_invoice1" name="return_invoice" v-model="exchange.param.exchangeShippingAskType" value="1">
+                                                    <label for="return_invoice1">지정택배사 이용</label>
+                                                </div>
+                                                <div class="radio_area">
+                                                    <input type="radio" id="return_invoice2" name="return_invoice" v-model="exchange.param.exchangeShippingAskType" value="2">
+                                                    <label for="return_invoice2">직접발송</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group phone_area">
+                                                <div class="row no-gutters">
+                                                    <div class="col-4 col-md-3">
+                                                        <select class="custom-select line" v-model="exchange.param.deliveryCompanyName">
+                                                            <option disabled value="">선택</option>
+                                                            <option :value="data.deliveryCompanyName" v-for="data in exchange.result.deliveryCompanyList">{{data.deliveryCompanyName}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-8 col-md-9">
+                                                        <input type="number" class="form-control line" placeholder="송장번호를 입력하세요" title="송장번호를 입력하세요" v-model="exchange.param.exchangeShippingNumber">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="apply_area">
+                                        <h4 class="apply_tit">반송지 정보</h4>
+                                        <div class="form_wrap_line">
+                                            <div class="form-group address_area">
+                                                <input type="text" class="form-control line" placeholder="이름" title="이름" value="김민석" v-model="exchange.result.exchangeApply.exchangeReceiveName" readonly>
+                                            </div>
+                                            <div class="form-group address_area">
+                                                <input type="text" class="form-control line" placeholder="우편번호 찾기" title="우편번호 찾기" :value="unescapeHtml(exchange.param.addressInfo)" readonly>
+                                                <button type="button" class="btn_address" @click="exchangeOpenDaumPostcode()">
+                                                    <img class="img-fluid" src="/static/images/icon/btn_address.png" alt="주소찾기">
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control line" placeholder="상세주소" title="상세주소" v-model="exchange.result.exchangeApply.exchangeReceiveAddress2">
+                                            </div>
+                                            <div class="form-group phone_area">
+                                                <div class="row no-gutters">
+                                                    <div class="col-4 col-md-3">
+                                                        <select class="custom-select line" v-model="exchange.param.mobile1">
+                                                            <option disabled value="">선택</option>
+                                                            <option value="010">010</option>
+                                                            <option value="011">011</option>
+                                                            <option value="017">017</option>
+                                                            <option value="019">019</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-8 col-md-9">
+                                                        <input type="number" class="form-control line" placeholder="'-'없이 숫자만 입력" title="'-'없이 숫자만 입력" v-model="exchange.param.mobile2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row no-gutters btn-group">
+                                            <div class="col col-xl-4">
+                                                <button type="button" class="btn btn_lg btn_default" data-dismiss="modal">취소</button>
+                                            </div>
+                                            <div class="col col-xl-4">
+                                                <button type="submit" class="btn btn_lg btn_primary">신청</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <button type="button" class="modal_close" data-dismiss="modal">
+                            <span class="screen_out">교환신청 닫기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 반품신청 레이어 -->
+            <div class="modal fade modal_full pop_appli_return">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal_tit">반품신청</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form @submit.prevent="returnProcess">
+                                <div class="apply_wrap">
+                                    <input type="hidden" :value="returnInfo.result.returnApply.shipmentReturnId" id="shipmentReturnId">
+                                    <div class="item_list basic">
+                                        <div class="list_area">
+                                            <div class="img_area">
+                                                <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + returnInfo.result.returnApply.orderItem.itemUserCode, 'paging', 'order-cancel')">
+                                                    <img :src="itemImage(returnInfo.result.returnApply.orderItem.imageSrc)" :alt="unescapeHtml(returnInfo.result.returnApply.orderItem.itemName)">
+                                                </a>
+                                            </div>
+                                            <div class="txt_area">
+                                                <p class="brand">{{unescapeHtml(returnInfo.result.returnApply.orderItem.brand)}}</p>
+                                                <p class="title">{{unescapeHtml(returnInfo.result.returnApply.orderItem.itemName)}}</p>
+                                                <p class="option" v-if="returnInfo.result.returnApply.orderItem.options != ''" v-html="unescapeHtml(returnInfo.result.returnApply.orderItem.options)"></p>
+                                                <p class="option" v-if="returnInfo.result.returnApply.orderItem.freeGiftItemText != ''">
+                                                    사은품 : {{unescapeHtml(returnInfo.result.returnApply.orderItem.freeGiftItemText)}}
+                                                </p>
+                                                <div class="price_area">
+                                                    <div class="sale_area">
+                                                        <p class="price"><span>{{formatNumber(returnInfo.result.returnApply.orderItem.saleAmount)}}</span>원</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btn_right">
+                                                <select class="custom-select box_s" v-model="returnInfo.param.applyQuantity">
+                                                    <option disabled value="">선택</option>
+                                                    <option :value="data" v-for="data in returnInfo.result.returnApply.orderItem.quantity">
+                                                        {{data}}개
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="apply_area">
+                                        <div class="form_wrap_line">
+                                            <div class="form-group">
+                                                <select class="custom-select line" v-model="returnInfo.param.claimReason" @change="claimChange($event)">
+                                                    <option disabled value="">선택</option>
+                                                    <option :value="returnData.detail" v-for="returnData in returnInfo.result.claimReasons">{{returnData.label}}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control line" placeholder="반품사유를 입력해주세요" title="반품사유를 입력해주세요" v-model="returnInfo.param.claimReasonDetail">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="apply_area">
+                                        <h4 class="apply_tit">반송 송장 정보</h4>
+                                        <div class="form_wrap_line">
+                                            <div class="form-group">
+                                                <div class="radio_area">
+                                                    <input type="radio" id="return_invoice2-1" v-model="returnInfo.param.returnShippingAskType" value="1">
+                                                    <label for="return_invoice2-1">지정택배사 이용</label>
+                                                </div>
+                                                <div class="radio_area">
+                                                    <input type="radio" id="return_invoice2-2" v-model="returnInfo.param.returnShippingAskType" value="2">
+                                                    <label for="return_invoice2-2">직접발송</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group phone_area">
+                                                <div class="row no-gutters">
+                                                    <div class="col-4 col-md-3">
+                                                        <select class="custom-select line" v-model="returnInfo.param.deliveryCompanyName">
+                                                            <option disabled value="">선택</option>
+                                                            <option :value="data.deliveryCompanyName" v-for="data in returnInfo.result.deliveryCompanyList">{{data.deliveryCompanyName}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-8 col-md-9">
+                                                        <input type="number" class="form-control line" placeholder="송장번호를 입력하세요" title="송장번호를 입력하세요" v-model="returnInfo.param.returnShippingNumber">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="apply_area">
+                                        <h4 class="apply_tit">반송지 정보</h4>
+                                        <div class="form_wrap_line">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control line" placeholder="이름" title="이름" v-model="returnInfo.result.returnApply.returnReserveName" readonly>
+                                            </div>
+                                            <div class="form-group address_area">
+                                                <input type="text" class="form-control line" placeholder="우편번호 찾기" title="우편번호 찾기" :value="unescapeHtml(returnInfo.param.addressInfo)" readonly>
+                                                <button type="button" class="btn_address" @click="returnOpenDaumPostcode()">
+                                                    <img class="img-fluid" src="/static/images/icon/btn_address.png" alt="주소찾기">
+                                                </button>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control line" placeholder="상세주소" title="상세주소" v-model="returnInfo.result.returnApply.returnReserveAddress2">
+                                            </div>
+                                            <div class="form-group phone_area">
+                                                <div class="row no-gutters">
+                                                    <div class="col-4 col-md-3">
+                                                        <select class="custom-select line" v-model="returnInfo.param.mobile1">
+                                                            <option disabled value="">선택</option>
+                                                            <option value="010">010</option>
+                                                            <option value="011">011</option>
+                                                            <option value="017">017</option>
+                                                            <option value="019">019</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-8 col-md-9">
+                                                        <input type="number" class="form-control line" placeholder="'-'없이 숫자만 입력" title="'-'없이 숫자만 입력" v-model="returnInfo.param.mobile2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="apply_area">
+                                        <h4 class="apply_tit">환불계좌 정보입력</h4>
+                                        <div class="form_wrap_line">
+                                            <div class="form-group phone_area">
+                                                <div class="row no-gutters">
+                                                    <div class="col-4 col-md-3">
+                                                        <select class="custom-select line" v-model="returnInfo.param.returnBankName">
+                                                            <option disabled value="">선택</option>
+                                                            <option :value="data.key" v-for="data in common.banks">{{data.label}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-8 col-md-9">
+                                                        <input type="text" class="form-control line" placeholder="예금주를 입력하세요" title="예금주를 입력하세요" v-model="returnInfo.param.returnBankInName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="number" class="form-control line" placeholder="계좌번호를 정확히 입력해주세요" title="계좌번호를 정확히 입력해주세요" v-model="returnInfo.param.returnVirtualNo">
+                                            </div>
+                                            <div class="info_dot">
+                                                <p>부분취소가 불가능한 결제방식(카드)의 경우 위에 입력하신 계좌로 취소금액을 입금해드립니다.</p>
+                                                <p>통장입금의 경우 택배가 판매자에게 도착한 후 2 ~ 3일 이내에 환불 신청하신 계좌로 입금됩니다.</p>
+                                            </div>
+                                        </div>
+                                        <div class="row no-gutters btn-group">
+                                            <div class="col col-xl-4">
+                                                <button type="button" class="btn btn_lg btn_default" data-dismiss="modal">취소</button>
+                                            </div>
+                                            <div class="col col-xl-4">
+                                                <button type="submit" class="btn btn_lg btn_primary">신청</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <button type="button" class="modal_close" data-dismiss="modal">
+                            <span class="screen_out">반품신청 닫기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 적용상품보기 레이어 -->
+            <div class="modal fade modal_full pop_appli_product">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal_tit">적용상품 보기</h3>
+                        </div>
+                        <div class="modal-body">
+                            <p class="coupon_guide">쿠폰으로 구입 가능한 제품 <strong>1,000</strong>개 입니다.</p>
+                            <div class="item_list thumb">
+                                <div class="row">
+                                    <div class="col-6 col-md-4 list_area">
+                                        <div class="img_area">
+                                            <a href="#">
+                                                <img src="/static/images/thumb.png" alt="item thumbnail_01">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="title">레이지선데이 원피스_어피치 자켓 웅앵웅앵웅앵웅앵웅앵웅앵</p>
+                                            <div class="price_area">
+                                                <p class="before"><span>299,000</span>원</p>
+                                                <div class="sale_area">
+                                                    <p class="price"><span>123,000</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4 list_area">
+                                        <div class="img_area">
+                                            <a href="#">
+                                                <img src="/static/images/thumb.png" alt="item thumbnail_01">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="title">레이지선데이 원피스_어피치 자켓 웅앵웅앵웅앵웅앵웅앵웅앵</p>
+                                            <div class="price_area">
+                                                <p class="before"><span>299,000</span>원</p>
+                                                <div class="sale_area">
+                                                    <p class="price"><span>123,000</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4 list_area">
+                                        <div class="img_area">
+                                            <a href="#">
+                                                <img src="/static/images/thumb.png" alt="item thumbnail_01">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="title">레이지선데이 원피스_어피치 자켓 웅앵웅앵웅앵웅앵웅앵웅앵</p>
+                                            <div class="price_area">
+                                                <p class="before"><span>299,000</span>원</p>
+                                                <div class="sale_area">
+                                                    <p class="price"><span>123,000</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4 list_area">
+                                        <div class="img_area">
+                                            <a href="#">
+                                                <img src="/static/images/thumb.png" alt="item thumbnail_01">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="title">레이지선데이 원피스_어피치 자켓 웅앵웅앵웅앵웅앵웅앵웅앵</p>
+                                            <div class="price_area">
+                                                <p class="before"><span>299,000</span>원</p>
+                                                <div class="sale_area">
+                                                    <p class="price"><span>123,000</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4 list_area">
+                                        <div class="img_area">
+                                            <a href="#">
+                                                <img src="/static/images/thumb.png" alt="item thumbnail_01">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="title">레이지선데이 원피스_어피치 자켓 웅앵웅앵웅앵웅앵웅앵웅앵</p>
+                                            <div class="price_area">
+                                                <p class="before"><span>299,000</span>원</p>
+                                                <div class="sale_area">
+                                                    <p class="price"><span>123,000</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4 list_area">
+                                        <div class="img_area">
+                                            <a href="#">
+                                                <img src="/static/images/thumb.png" alt="item thumbnail_01">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="title">레이지선데이 원피스_어피치 자켓 웅앵웅앵웅앵웅앵웅앵웅앵</p>
+                                            <div class="price_area">
+                                                <p class="before"><span>299,000</span>원</p>
+                                                <div class="sale_area">
+                                                    <p class="price"><span>123,000</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a href="" class="page-link">
+                                        <span class="sr-only">이전페이지로</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"><a href="" class="page-link">1</a></li>
+                                <li class="page-item active">
+                                    <a href="" class="page-link">2 <span class="sr-only">(현재페이지)</span></a>
+                                </li>
+                                <li class="page-item"><a href="" class="page-link">3</a></li>
+                                <li class="page-item">
+                                    <a href="" class="page-link">
+                                        <span class="sr-only">다음페이지로</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <button type="button" class="modal_close" data-dismiss="modal">
+                            <span class="screen_out">적용상품 닫기</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <layout-footer></layout-footer>
+
+    <layout-address></layout-address>
+</div>
+
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+
+
+<script src="/modules/babel.min.js"></script>
+<script src="/modules/es6-promise.min.js"></script>
+<script src="/modules/es6-promise.auto.min.js"></script>
+<script src="/modules/axios.js"></script>
+<script src="/modules/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+<script type="text/javascript">
+    var daumApiUrl = 'http://dmaps.daum.net/map_js_init/postcode.v2.js';
+    if (window.location.protocol == 'https:') {
+        daumApiUrl = 'https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js';
+    }
+    document.write('<script src="'+ daumApiUrl +'">' + '</' + 'script>');
+</script>
+<script type="text/babel">
+    Vue.use(VueAwesomeSwiper);
+    var vm = new Vue({
+        el: '#saleson',
+        components: {
+            'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+            'layout-header': httpVueLoader('/components/layouts/header.vue'),
+            'pagination': httpVueLoader('/components/ui/pagination.vue'),
+            'layout-address': httpVueLoader('/components/ui/daum/address-layer.vue')
+        },
+        data: {
+            param: {
+                page: 1,
+                searchStartDate: '',
+                searchEndDate: '',
+                query: '',
+                statusType: 'cancel-process'
+            },
+            order : {
+                result : {},
+                param : {}
+            },
+            returnInfo : {
+                result : {
+                    deliveryCompanyList : [],
+                    claimReasons : [],
+                    returnApply : {
+                        orderItem : {},
+                        returnReserveName : "",
+                        returnReservePhone : "",
+                        returnReserveMobile : "",
+                        returnReserveSido : "",
+                        returnReserveSigungu : "",
+                        returnReserveEupmyeondong : "",
+                        returnReserveZipcode : "",
+                        returnReserveAddress : "",
+                        returnReserveAddress2 : "",
+                        returnBankName : "",
+                        returnBankInName : "",
+                        returnVirtualNo : ""
+                    }
+                },
+                param : {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    page: 1,
+                    itemsPerPage: 10,
+                    returnShippingAskType : "",
+                    shipmentReturnId : "",
+                    applyQuantity : "",
+                    returnReserveName : "",
+                    returnReservePhone : "",
+                    returnReserveMobile : "",
+                    returnReserveZipcode : "",
+                    returnReserveAddress : "",
+                    returnReserveAddress2 : "",
+                    returnShippingCompanyName : "",
+                    returnShippingNumber : "",
+                    deliveryCompanyName : "",
+                    claimReason : "",
+                    claimReasonText : "",
+                    claimReasonDetail : "",
+                    returnBankName : "",
+                    returnBankInName: "",
+                    returnVirtualNo : "",
+                    addressInfo : "",
+                    mobile1 : "",
+                    mobile2 : ""
+                }
+            },
+            exchange : {
+                result : {
+                    deliveryCompanyList : [],
+                    claimReasons : [],
+                    exchangeApply : {
+                        exchangeReceiveName : "",
+                        exchangeReceivePhone : "",
+                        exchangeReceiveMobile : "",
+                        exchangeReceiveZipcode : "",
+                        exchangeReceiveAddress : "",
+                        exchangeReceiveAddress2 : "",
+                        orderItem : {}
+                    }
+                },
+                param : {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    page: 1,
+                    itemsPerPage: 10,
+                    returnShippingAskType : "",
+                    shipmentReturnId : "",
+                    applyQuantity : "",
+                    returnReserveName : "",
+                    returnReservePhone : "",
+                    returnReserveMobile : "",
+                    returnReserveZipcode : "",
+                    returnReserveAddress : "",
+                    returnReserveAddress2 : "",
+                    returnShippingCompanyName : "",
+                    returnShippingNumber : "",
+                    deliveryCompanyName : "",
+                    claimReason : "",
+                    claimReasonText : "",
+                    claimReasonDetail : "",
+                    returnBankName : "",
+                    returnBankInName: "",
+                    returnVirtualNo : "",
+                    addressInfo : "",
+                    mobile1 : "",
+                    mobile2 : "",
+                    exchangeShippingAskType : "",
+                    exchangeShippingNumber : ""
+                }
+            },
+            cancelInfo : {
+                result : {
+                    userClickItemStatus : "",
+                    claimReasons : [],
+                    claimApply : {
+                        order : {
+                            orderShippingInfos : []
+                        }
+                    }
+                },
+                refundResult : {
+                    partCancel : "0",
+                    orderPgData : {},
+                    orderRefundApiInfo : {}
+                },
+                param : {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    applyQuantity : 0,
+                    claimReasonText : "",
+                    claimRefundType : "",
+                    claimType : "",
+                    returnBankName : ""
+                }
+            },
+            common : {
+                banks : []
+            }
+        },
+        methods: {
+            paging: function (page) {
+                vm.param.page = page;
+                vm.getOrderList(vm.param.statusType);
+            },
+
+            getOrderList : function(statusType){
+                if ($("input[name='startDate']").val() != '') {
+                    vm.param.searchStartDate = $("input[name='startDate']").val();
+                }
+                if ($("input[name='endDate']").val() != '') {
+                    vm.param.searchEndDate = $("input[name='endDate']").val();
+                }
+
+                vm.param.statusType = statusType;
+                if(statusType == "cancel-process"){
+                    vm.param.title = "취소신청 조회";
+                } else if(statusType == "return-process"){
+                    vm.param.title = "반품신청 조회";
+                } else {
+                    vm.param.title = "교환신청 조회";
+                }
+                $s.api.getOrderList(vm.param,
+                    function (response) {
+                        vm.order.result = response;
+                    }
+                );
+            },
+
+            confirm : function(orderCode, orderSequence, itemSequence){
+                vm.param.orderCode = orderCode;
+                vm.param.orderSequence = orderSequence;
+                vm.param.itemSequence = itemSequence;
+
+                $s.confirm("해당 상품을 구매확정 하시겠습니까?", function(){
+                    $s.api.confirmPurchase(vm.param,
+                        function (response) {
+                            if(response.status === "OK"){
+                                $s.alert("구매확정되었습니다.", function(){
+                                    location.reload();
+                                });
+                            } else {
+                                $s.alert(response);
+                            }
+                        }
+                    );
+                });
+            },
+
+            orderCancel : function(orderCode, orderSequence, itemSequence){
+                vm.param.orderCode = orderCode;
+                vm.param.orderSequence = orderSequence;
+                vm.param.itemSequence = itemSequence;
+
+                $s.confirm("주문취소 하시겠습니까?", function(){
+                    $s.api.orderCancel(vm.param,
+                        function (response) {
+                            if(response.status === "OK"){
+                                $s.alert("주문취소되었습니다.", function(){
+                                    location.reload();
+                                });
+                            } else {
+                                $s.alert(response);
+                            }
+                        }
+                    );
+                });
+            },
+
+            // 주문취소 팝 정보 - 기본
+            getOrderCancelPop : function(orderCode, orderSequence, itemSequence){
+                vm.popReset();
+                vm.cancelInfo.param.orderCode = orderCode;
+                vm.cancelInfo.param.orderSequence = orderSequence;
+                vm.cancelInfo.param.itemSequence = itemSequence;
+                $s.api.getCancelPop(vm.cancelInfo.param,
+                    function (response) {
+                        vm.cancelInfo.result = response.cancelApplyInfo;
+                    }
+                );
+            },
+
+            // 반품신청 팝 정보
+            getReturnPop : function(orderCode, orderSequence, itemSequence){
+                vm.popReset();
+                vm.returnInfo.param.orderCode = orderCode;
+                vm.returnInfo.param.orderSequence = orderSequence;
+                vm.returnInfo.param.itemSequence = itemSequence;
+                $s.api.getReturnPop(vm.returnInfo.param,
+                    function (response) {
+                        vm.returnInfo.result = response.returnInfo;
+                        vm.returnInfo.param.addressInfo = "[" + vm.returnInfo.result.returnApply.returnReserveZipcode + "] " + vm.returnInfo.result.returnApply.returnReserveAddress;
+                    }
+                );
+            },
+
+            // 반품신청
+            returnProcess : function(){
+                vm.returnInfo.param.shipmentReturnId = $("#returnShipmentReturnId").val();
+                vm.returnInfo.param.returnReserveMobile = vm.returnInfo.param.mobile1+vm.returnInfo.param.mobile2;
+                vm.returnInfo.param.returnReserveName = vm.returnInfo.result.returnApply.returnReserveName;
+
+                if(vm.returnInfo.param.returnReserveZipcode === "" || vm.returnInfo.param.returnReserveZipcode == undefined){
+                    vm.returnInfo.param.returnReserveZipcode = vm.returnInfo.result.returnApply.returnReserveZipcode;
+                    vm.returnInfo.param.returnReserveAddress = vm.returnInfo.result.returnApply.returnReserveAddress;
+                    vm.returnInfo.param.returnReserveAddress2 = vm.returnInfo.result.returnApply.returnReserveAddress2;
+                    vm.returnInfo.param.returnReserveSido = vm.returnInfo.result.returnApply.returnReserveSido;
+                    vm.returnInfo.param.returnReserveSigungu = vm.returnInfo.result.returnApply.returnReserveSigungu;
+                    vm.returnInfo.param.returnReserveEupmyeondong = vm.returnInfo.result.returnApply.returnReserveEupmyeondong;
+                }
+
+                if (vm.returnInfo.param.applyQuantity === "" || vm.returnInfo.param.applyQuantity == undefined) {
+                    $s.alert("수량을 선택하세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.claimReason === "" || vm.returnInfo.param.claimReason == undefined) {
+                    $s.alert("반품사유를 선택하세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.returnShippingAskType != "1" &&
+                    (vm.returnInfo.param.returnShippingAskType === "" || vm.returnInfo.param.returnShippingAskType == undefined ||
+                        vm.returnInfo.param.deliveryCompanyName === "" || vm.returnInfo.param.deliveryCompanyName == undefined)) {
+                    $s.alert("반송 송장 정보를 입력해주세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.returnShippingAskType != "1"
+                    && (vm.returnInfo.param.returnShippingNumber === "" || vm.returnInfo.param.returnShippingNumber == undefined)) {
+                    $s.alert("송장번호를 입력하세요.");
+                    return false;
+                }
+                if(vm.returnInfo.param.returnReserveZipcode === "" || vm.returnInfo.param.returnReserveZipcode == undefined){
+                    vm.returnInfo.param.returnReserveZipcode = vm.returnInfo.result.returnApply.returnReserveZipcode;
+                    vm.returnInfo.param.returnReserveAddress = vm.unescapeHtml(vm.returnInfo.result.returnApply.returnReserveAddress);
+                }
+                if (vm.returnInfo.param.returnReserveZipcode === "" || vm.returnInfo.param.returnReserveZipcode == undefined ||
+                    vm.returnInfo.param.returnReserveAddress === "" || vm.returnInfo.param.returnReserveAddress == undefined) {
+                    $s.alert("반송지 정보를 입력해주세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.returnReserveMobile === "" || vm.returnInfo.param.returnReserveMobile == undefined) {
+                    $s.alert("연락처를 입력해주세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.returnBankName === "" || vm.returnInfo.param.returnBankName == undefined ||
+                    vm.returnInfo.param.returnBankInName === "" || vm.returnInfo.param.returnBankInName == undefined ||
+                    vm.returnInfo.param.returnVirtualNo === "" || vm.returnInfo.param.returnVirtualNo == undefined) {
+                    $s.alert("환불계좌 정보를 입력해주세요.");
+                    return false;
+                }
+
+                $s.api.returnProcess(vm.returnInfo.param,
+                    function (response) {
+                        if(response.status === "OK"){
+                            $s.alert("반품신청 되었습니다.", function(){
+                                location.reload();
+                            });
+                        }
+                    }
+                );
+            },
+
+            // 교환신청 팝 정보
+            getExchangePop : function(orderCode, orderSequence, itemSequence){
+                vm.popReset();
+                vm.exchange.param.orderCode = orderCode;
+                vm.exchange.param.orderSequence = orderSequence;
+                vm.exchange.param.itemSequence = itemSequence;
+                $s.api.getExchangePop(vm.exchange.param,
+                    function (response) {
+                        vm.exchange.result = response.exchangeInfo;
+                        vm.exchange.param.addressInfo = "[" + vm.exchange.result.exchangeApply.exchangeReceiveZipcode + "] " + vm.exchange.result.exchangeApply.exchangeReceiveAddress;
+                    }
+                );
+            },
+
+            // 교환신청
+            exchangeProcess : function(){
+                vm.exchange.param.shipmentReturnId = $("#exchangeShipmentReturnId").val();
+                vm.exchange.param.exchangeReceiveMobile = vm.exchange.param.mobile1+vm.exchange.param.mobile2;
+                vm.exchange.param.exchangeReceivePhone = vm.exchange.param.exchangeReceiveMobile;
+                vm.exchange.param.exchangeReceiveName = vm.exchange.result.exchangeApply.exchangeReceiveName;
+
+                if(vm.exchange.param.exchangeReceiveZipcode === "" || vm.exchange.param.exchangeReceiveZipcode == undefined){
+                    vm.exchange.param.exchangeReceiveZipcode = vm.exchange.result.exchangeApply.exchangeReceiveZipcode;
+                    vm.exchange.param.exchangeReceiveAddress = vm.exchange.result.exchangeApply.exchangeReceiveAddress;
+                    vm.exchange.param.exchangeReceiveAddress2 = vm.exchange.result.exchangeApply.exchangeReceiveAddress2;
+                    vm.exchange.param.exchangeReceiveSido = vm.exchange.result.exchangeApply.exchangeReceiveSido;
+                    vm.exchange.param.exchangeReceiveSigungu = vm.exchange.result.exchangeApply.exchangeReceiveSigungu;
+                    vm.exchange.param.exchangeReceiveEupmyeondong = vm.exchange.result.exchangeApply.exchangeReceiveEupmyeondong;
+                }
+
+                // validation
+                // 수량을 선택해주세요
+                if (vm.exchange.param.applyQuantity === "" || vm.exchange.param.applyQuantity == undefined) {
+                    $s.alert("수량을 선택하세요.");
+                    return false;
+                }
+                if (vm.exchange.param.claimReason === "" || vm.exchange.param.claimReason == undefined) {
+                    $s.alert("교환사유를 선택해주세요.");
+                    return false;
+                }
+                if (vm.exchange.param.exchangeShippingAskType === "" || vm.exchange.param.exchangeShippingAskType == undefined ||
+                    vm.exchange.param.deliveryCompanyName === "" || vm.exchange.param.deliveryCompanyName == undefined) {
+                    $s.alert("반송 송장 정보를 입력해주세요.");
+                    return false;
+                }
+                if (vm.exchange.param.exchangeShippingAskType != "1"
+                    && (vm.exchange.param.exchangeShippingNumber === "" || vm.exchange.param.exchangeShippingNumber == undefined)) {
+                    $s.alert("송장번호를 입력하세요.");
+                    return false;
+                }
+                if (vm.exchange.param.exchangeReceiveName === "" || vm.exchange.param.exchangeReceiveName == undefined ||
+                    vm.exchange.param.exchangeReceiveZipcode === "" || vm.exchange.param.exchangeReceiveZipcode == undefined ||
+                    vm.exchange.param.exchangeReceiveAddress === "" || vm.exchange.param.exchangeReceiveAddress == undefined) {
+                    $s.alert("반송지 정보를 입력해주세요.");
+                    return false;
+                }
+                if (vm.exchange.param.exchangeReceiveMobile === "" || vm.exchange.param.exchangeReceiveMobile == undefined) {
+                    $s.alert("연락처를 입력해주세요.");
+                    return false;
+                }
+                $s.api.exchangeProcess(vm.exchange.param,
+                    function (response) {
+                        if(response.status === "OK"){
+                            $s.alert("교환신청 되었습니다.", function(){
+                                location.reload();
+                            });
+                        }
+                    }
+                );
+            },
+
+            claimChange : function(e){
+                vm.param.claimReasonText = e.target[e.target.value].innerText;
+            },
+
+            // 취소신청-선택상세
+            cancelRefundCheck : function(e, claimApplyItemKey){
+                if($("input[type='checkbox']:checked").length > 0){
+                    var id = new Array();
+                    vm.cancelInfo.param.claimApplyItemMap = {};
+                    $.each($("input[type='checkbox']:checked"), function(e){
+                        id.push(this.value);
+                        vm.cancelInfo.param.claimApplyItemMap[this.value] = {
+                            orderCode : vm.cancelInfo.param.orderCode,
+                            orderSequence : vm.cancelInfo.param.orderSequence,
+                            applyQuantity : $("#applyQuantity_"+this.value).val(),
+                            itemSequence : this.getAttribute("data-item-sequence")
+                        };
+                    });
+                    vm.cancelInfo.param.claimReason = "2";
+                    vm.cancelInfo.param.id = id;
+
+                    $s.api.getRefundAmount(vm.cancelInfo.param,
+                        function (response) {
+                            vm.cancelInfo.refundResult = response.refundInfo;
+                            var orai = vm.cancelInfo.refundResult.orderRefundApiInfo;
+                            $("#refundInfo").show();
+                            if(orai.isAutoCancel == false || orai.isWriteBankInfo == true){
+                                $("#refundBank").show();
+                            } else {
+                                $("#refundBank").hide();
+                            }
+                        }
+                    );
+                } else {
+                    $("#refundInfo").hide();
+                }
+            },
+
+            checkAll : function(){
+                if($("input[type='checkbox']:checked").val()=="on"){
+                    $("input[type='checkbox']").prop("checked", true);
+                    vm.cancelRefundCheck();
+                } else {
+                    $("input[type='checkbox']").prop("checked", false);
+                    $("#refundInfo").hide();
+                }
+            },
+
+            // 취소신청
+            cancelProcess : function(){
+                var a = vm.cancelInfo.refundResult.orderRefundApiInfo;
+                if(a.totalReturnAmount > 0 && a.isAutoCancel == true){
+                    vm.cancelInfo.param.claimRefundType = 1;
+                } else {
+                    vm.cancelInfo.param.claimRefundType = 2;
+                }
+                vm.cancelInfo.param.claimType = vm.cancelInfo.result.claimApply.claimType;
+
+                if (vm.cancelInfo.param.applyQuantity === "" || vm.cancelInfo.param.applyQuantity == undefined) {
+                    $s.alert("수량을 선택해주세요.");
+                    return false;
+                }
+                if (vm.cancelInfo.param.claimReasonText === "" || vm.cancelInfo.param.claimReasonText == undefined) {
+                    $s.alert("취소사유를 선택해주세요.");
+                    return false;
+                }
+                if (vm.cancelInfo.param.claimReasonDetail === "" || vm.cancelInfo.param.claimReasonDetail == undefined) {
+                    $s.alert("취소사유를 입력해주세요.");
+                    return false;
+                }
+                var orai = vm.cancelInfo.refundResult.orderRefundApiInfo;
+                if(orai.isAutoCancel == false || orai.isWriteBankInfo == true){
+                    if (vm.cancelInfo.param.returnBankName === "" || vm.cancelInfo.param.returnBankName == undefined ||
+                        vm.cancelInfo.param.returnBankInName === "" || vm.cancelInfo.param.returnBankInName == undefined ||
+                        vm.cancelInfo.param.returnVirtualNo === "" || vm.cancelInfo.param.returnVirtualNo == undefined) {
+                        $s.alert("환불계좌 정보를 입력해주세요.");
+                        return false;
+                    }
+                }
+                if($("input[name='claimRefundType']:checked").length == 0){
+                    $s.alert("환불정보를 체크해주세요.");
+                    return false;
+                }
+
+                $s.api.cancelProcess(vm.cancelInfo.param,
+                    function (response) {
+                        if(response.status === "OK"){
+                            $s.alert("취소신청 되었습니다.", function(){
+                                location.reload();
+                            });
+                        }
+                    }, function (error) {
+                        $s.alert(error.response.data.message);
+                    }
+                );
+            },
+
+            // 반품신청 주소찾기
+            returnOpenDaumPostcode : function(){
+                var child = Vue.child("layout-address");
+                if (child != null) {
+                    child.openDaumAddress(function(response) {
+                        vm.returnInfo.param.returnReserveZipcode = response.zipcode;
+                        vm.returnInfo.param.returnReserveZipcode = response.newZipcode;
+                        vm.returnInfo.param.returnReserveAddress = response.jibunAddress;
+                        vm.returnInfo.param.returnReserveSido = response.sido;
+                        vm.returnInfo.param.returnReserveSigungu = response.sigungu;
+                        vm.returnInfo.param.returnReserveEupmyeondong = response.eupmyeondong;
+                        vm.returnInfo.param.addressInfo = "[" + response.newZipcode + "] " + response.jibunAddress;
+                    });
+                }
+            },
+
+            // 교환신청 주소찾기
+            exchangeOpenDaumPostcode : function(){
+                var child = Vue.child("layout-address");
+                if (child != null) {
+                    child.openDaumAddress(function(response) {
+                        vm.exchange.param.exchangeReceiveZipcode = response.newZipcode;
+                        vm.exchange.param.exchangeReceiveAddress = response.jibunAddress;
+                        vm.exchange.param.exchangeReceiveSido = response.sido;
+                        vm.exchange.param.exchangeReceiveSigungu = response.sigungu;
+                        vm.exchange.param.exchangeReceiveEupmyeondong = response.eupmyeondong;
+                        vm.exchange.param.addressInfo = "[" + response.newZipcode + "] " + response.jibunAddress;
+
+                    });
+                }
+            },
+
+            // 초기화
+            popReset : function(){
+                vm.cancelInfo.param = {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    applyQuantity : 0,
+                    claimReasonText : "",
+                    claimRefundType : "",
+                    claimType : "",
+                    returnBankName : ""
+                };
+
+                vm.exchange.param = {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    page: 1,
+                    itemsPerPage: 10,
+                    returnShippingAskType : "",
+                    shipmentReturnId : "",
+                    applyQuantity : "",
+                    returnReserveName : "",
+                    returnReservePhone : "",
+                    returnReserveMobile : "",
+                    returnReserveZipcode : "",
+                    returnReserveAddress : "",
+                    returnReserveAddress2 : "",
+                    returnShippingCompanyName : "",
+                    returnShippingNumber : "",
+                    deliveryCompanyName : "",
+                    claimReason : "",
+                    claimReasonText : "",
+                    claimReasonDetail : "",
+                    returnBankName : "",
+                    returnBankInName: "",
+                    returnVirtualNo : "",
+                    addressInfo : "",
+                    mobile1 : "",
+                    mobile2 : "",
+                    exchangeShippingAskType : "",
+                    exchangeShippingNumber : ""
+                };
+
+                vm.returnInfo.param = {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    page: 1,
+                    itemsPerPage: 10,
+                    returnShippingAskType : "",
+                    shipmentReturnId : "",
+                    applyQuantity : "",
+                    returnReserveName : "",
+                    returnReservePhone : "",
+                    returnReserveMobile : "",
+                    returnReserveZipcode : "",
+                    returnReserveAddress : "",
+                    returnReserveAddress2 : "",
+                    returnShippingCompanyName : "",
+                    returnShippingNumber : "",
+                    deliveryCompanyName : "",
+                    claimReason : "",
+                    claimReasonText : "",
+                    claimReasonDetail : "",
+                    returnBankName : "",
+                    returnBankInName: "",
+                    returnVirtualNo : "",
+                    addressInfo : "",
+                    mobile1 : "",
+                    mobile2 : ""
+                };
+                if($("input[type='checkbox']:checked.op-key").length > 0){
+                    $("input[type='checkbox']").prop("checked", false);
+                    $("#refundInfo").hide();
+                }
+            },
+
+            popCommonBank : function(){
+                $s.api.getBankInfo(function(response){
+                    vm.common.banks = response.list;
+                });
+            },
+
+            popEvent : function(){
+                vm.popCommonBank();
+
+                Saleson.DateEvent.set('.searchDate');
+
+                $("input[name='return_invoice']").change(function(e){
+                    if(e.target.value === "1"){
+                        $(".return_invoice_group").hide();
+                    } else {
+                        $(".return_invoice_group").show();
+                    }
+                });
+
+                $("input[name='return_ex_invoice']").change(function(e){
+                    if(e.target.value === "1"){
+                        $(".return_ex_invoice_group").hide();
+                    } else {
+                        $(".return_ex_invoice_group").show();
+                    }
+                });
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+
+                Saleson.init({loginPage:true, guestLoginPage:true});
+                vm.getHistory("paging", "order-cancel");
+
+                vm.getOrderList(vm.param.statusType);
+                vm.popEvent();
+            });
+        }
+    });
+</script>
+</body>
+</html>

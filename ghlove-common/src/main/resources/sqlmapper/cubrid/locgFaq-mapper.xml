@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.community.locgfaq.LocgFaqMapper">
+	<resultMap id="locgFaqBoardResult" type="saleson.shop.community.doamin.LocgfaqDto">
+		<result property="id" column="ID" />
+		<result property="subject" column="SUBJECT" />
+		<result property="content" column="CONTENT" />
+		<result property="adminId" column="ADMIN_ID" />
+		<result property="updatedBy" column="UPDATED_BY" />
+		<result property="faqType" column="FAQ_TYPE" />
+		<result property="faqTypeName" column="FAQ_TYPE_NAME" />
+		<result property="useYn" column="USE_YN" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="hits" column="HITS" />
+	</resultMap>
+	<select id="getlocFaqBoardCount" parameterType="saleson.shop.community.doamin.LocgfaqDto" resultType="Integer">
+		select count(*)
+		from op_community_locgovfaq		
+		<where>	 	
+			<if test="query != null and query !=''">
+				<if test="where == 'SUBJECT'">
+					AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+				</if>
+			</if>	
+			<if test="faqTypeName != null and faqTypeName !=''">
+				AND faq_type = <![CDATA[#{faqTypeName}]]>
+			</if>	
+		</where>		
+		order by created_date DESC, updated_date DESC
+	</select>
+	
+	<select id="listLocgBoard" parameterType="saleson.shop.community.doamin.LocgfaqDto" resultMap="locgFaqBoardResult">
+	<include refid="CommonMapper.paginationHeader" />
+		select *
+		from op_community_locgovfaq
+		<where>	 	
+			<if test="query != null and query !=''">
+				<if test="where == 'SUBJECT'">
+					AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+				</if>
+			</if>	
+			<if test="faqTypeName!= null and faqTypeName !=''">
+				AND faq_type = <![CDATA[#{faqTypeName}]]>
+			</if>	
+		</where>					
+		order by created_date DESC, updated_date DESC
+	<include refid="CommonMapper.paginationFooter" />	
+	</select>
+	
+	<insert id="insertLocgBoard"  parameterType="saleson.shop.community.doamin.LocgfaqDto">
+		insert into op_community_locgovfaq(ID,admin_id,subject,content,faq_type,hits)
+		values(#{id},#{adminId},#{subject},#{content},#{faqType},0)
+	</insert>
+	
+	<select id="deatilLocgBoard" parameterType="saleson.shop.community.doamin.LocgfaqDto" resultMap="locgFaqBoardResult">
+		select *
+		from op_community_locgovfaq
+		where id = #{id}
+	</select>
+	
+	<update id="updateLocgBoard"  parameterType="saleson.shop.community.doamin.CommunityDto" >
+		update op_community_locgovfaq
+		set subject = #{subject},
+		content = #{content},
+		updated_by = #{adminId}		
+		where id = #{id} 
+		
+		
+	</update>
+	
+	<delete id="deleteLocgBoard"  parameterType="saleson.shop.community.doamin.CommunityDto" >
+		delete from op_community_locgovfaq
+		where id = #{id}
+	</delete>
+	
+	<delete id="databoardListDelete" parameterType="Integer" >
+		DELETE from op_community_locgovfaq
+		WHERE ID = #{value}
+	</delete>
+	
+		<update id="addHitCount" parameterType="Integer">
+		UPDATE op_community_locgovfaq
+		SET HITS = HITS + 1
+		WHERE ID = #{id}
+	</update>
+	
+</mapper>	

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:v-on="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="../../content/images/common/favicon.ico" />
+    <title>답례품 상세 | 고향사랑e음</title>
+    <link rel="stylesheet" href="../../content/modules/front/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="../../content/opmanager/css/swiper.min.css" />
+    <link rel="stylesheet" href="../../content/opmanager/css/front/common.css" />
+    <link rel="stylesheet" href="../../content/opmanager/css/front/default_ali.css" />
+    <link rel="stylesheet" href="../../content/opmanager/css/front/item.css" />
+  </head>
+
+  <body>
+    <div id="saleson" class="items_detail_wrap">
+      <!-- 아이템 브레드크럼 -->
+      <section class="page-title-box mall center">
+        <span class="ali_breadcrumb">
+          <a href="/" v-if="!exportMode"><img class="icon-img" src="../../content/opmanager/images/items/cli-icon_home.png" alt="홈으로" /></a>
+          <span class="txt-arrow"></span>
+          <a href="#">답례품</a>
+          <span class="txt-arrow"></span>
+          <a href="#">지역상품권</a>
+          <span class="txt-arrow"></span>
+          <a href="#">기타 생활용품점</a>
+        </span>
+      </section>
+
+      <section class="center" id="contents">
+        <div class="goods_view_top">
+          <div class="goods_img">
+            <div class="target_img">
+              <!-- 상품 이미지 -->
+              <div class="swiper-container" id="mainSwiper">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide"><img src="../../content/opmanager/images/honors/thumb.png" /></div>
+                  <div class="swiper-slide"><img src="../../content/opmanager/images/honors/thumb.png" /></div>
+                  <div class="swiper-slide"><img src="../../content/opmanager/images/honors/thumb.png" /></div>
+                  <div class="swiper-slide"><img src="../../content/opmanager/images/honors/thumb.png" /></div>
+                  <div class="swiper-slide"><img src="../../content/opmanager/images/honors/thumb.png" /></div>
+                  <div class="swiper-slide"><img src="../../content/opmanager/images/honors/thumb.png" /></div>
+                  <div class="swiper-slide"><img src="../../content/opmanager/images/honors/thumb.png" /></div>
+                  <div class="swiper-slide"><img src="../../content/opmanager/images/honors/thumb.png" /></div>
+                </div>
+                <div class="swiper-button-prev pc main-button-prev"><span class="screen_out">이전 답례품 이미지 보기</span></div>
+                <div class="swiper-button-next pc main-button-next"><span class="screen_out">다음 답례품 이미지 보기</span></div>
+                <div class="swiper-pagination"></div>
+              </div>
+              <!-- //상품 이미지 -->
+              <!-- 품절일때 -->
+              <img class="sold_out" src="../../content/opmanager/images/items/goods_sold-out.png" alt="품절" style="display: none" />
+              <!-- //품절일때 -->
+            </div>
+
+            <!-- 상품 이미지 썸네일 -->
+            <div class="thumb_box">
+              <button type="button" class="swiper-button-prev thumb-button-prev">
+                <img src="../../content/opmanager/images/items/thumb_arrow-prev.png" alt="이전 답례품 이미지 보기" />
+              </button>
+              <div class="swiper-container thumb_area d-lg-block" id="mainThumbSwiper">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <button type="button" class="cursor swiper_img"><img src="../../content/opmanager/images/honors/thumb.png" /></button>
+                  </div>
+                  <div class="swiper-slide">
+                    <button type="button" class="cursor swiper_img"><img src="../../content/opmanager/images/honors/thumb.png" /></button>
+                  </div>
+                  <div class="swiper-slide">
+                    <button type="button" class="cursor swiper_img"><img src="../../content/opmanager/images/honors/thumb.png" /></button>
+                  </div>
+                  <div class="swiper-slide">
+                    <button type="button" class="cursor swiper_img"><img src="../../content/opmanager/images/honors/thumb.png" /></button>
+                  </div>
+                  <div class="swiper-slide">
+                    <button type="button" class="cursor swiper_img"><img src="../../content/opmanager/images/honors/thumb.png" /></button>
+                  </div>
+                  <div class="swiper-slide">
+                    <button type="button" class="cursor swiper_img"><img src="../../content/opmanager/images/honors/thumb.png" /></button>
+                  </div>
+                  <div class="swiper-slide">
+                    <button type="button" class="cursor swiper_img"><img src="../../content/opmanager/images/honors/thumb.png" /></button>
+                  </div>
+                  <div class="swiper-slide">
+                    <button type="button" class="cursor swiper_img"><img src="../../content/opmanager/images/honors/thumb.png" /></button>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="swiper-button-next thumb-button-next">
+                <img src="../../content/opmanager/images/items/thumb_arrow-next.png" alt="다음 답례품 이미지 보기" />
+              </button>
+            </div>
+            <!-- //상품 이미지 썸네일 -->
+          </div>
+          <!-- //아이템 이미지 -->
+
+          <!-- 아이템 정보 -->
+          <div class="goods_info">
+            <div class="info_row">
+              <div class="brand_mall d_area"><img src="../../content/opmanager/images/items/d-area.png" alt="" />강원특별자치도 영월군</div>
+              <div class="badge-wrap" style="padding-bottom: 15px">
+                <span class="flag-icon bgBlue">신규</span>
+              </div>
+            </div>
+
+            <div>
+              <!-- 답례품명, 설명, 판매금액 -->
+              <div class="info_box">
+                <div class="info_title">
+                  <h2>시험합격 골드카드세트</h2>
+                  <p class="s-txt"><span>중요한 시헙을 앞둔 수능생이나 진급을 바라는 분들을 위한 특별한 상품. 민화 어변성룡도를 순박금 위에 그려넣은 황금 카드과 민화 대표적인 이미지를 활용한 자석 책갈피 세트</span></p>
+                </div>
+                <div class="info_title" style="font-size: x-large; color: #5a5a5a">원산지 : 한국,중국OEM</div>
+                <div class="present_price"><strong>30,000</strong> P</div>
+              </div>
+
+              <!-- 답례품명, 설명, 판매금액 -->
+              <div class="info_row rev_donation_wrap">
+                <div class="item_grade">
+                  <div class="grade">
+                    <div class="rating_star">
+                      <span class="on"></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                    <p class="num"><b>0</b></p>
+                  </div>
+                  <div class="item_grade txt">
+                    <a href="#nav-review">
+                      <span>후기 0개 보기</span>
+                      <img src="../../content/opmanager/images/items/btn_do-arrow.png" alt="" />
+                    </a>
+                  </div>
+                </div>
+
+                <button class="formBtn donation" type="button" @click="donationInit" id="donationBtn" v-if="!exportMode">
+                  <img src="../../content/opmanager/images/items/cli-icon_btn-donation2.png" alt="" />
+                  <span class=""> 기부하기 </span>
+                </button>
+              </div>
+
+              <div class="line"></div>
+
+              <div class="info_row etc">
+                <div class="shop_info">
+                  <div class="title_col">
+                    <p>판매자</p>
+                  </div>
+                  <div class="para_col">
+                    <p class="txt">조선민화박물관</p>
+                  </div>
+                </div>
+                <div class="shop_info">
+                  <div class="title_col">
+                    <p>배송</p>
+                  </div>
+                  <div class="para_col">
+                    <p class="txt">
+                      배송방법 :
+                      <span style="display: none"> 모바일</span>
+                      <span> 택배 (한진택배)</span>
+                    </p>
+                    <p class="txt">배송비 : 무료</p>
+                  </div>
+                </div>
+              </div>
+              <!-- 옵션 선택 & 선택옵션 확인 -->
+
+              <!-- 옵션이 없을때 -->
+              <div class="info_row opt_box pt_t0" style="display: none">
+                <div class="option_list">
+                  <ul class="list_in">
+                    <li class="optSelect">
+                      <div class="op_tit">
+                        <span>시험합격 골드카드세트</span>
+                      </div>
+                      <div class="option_wrap">
+                        <div class="amt_box">
+                          <button type="button" class="btn_minus" id="minusInput1">
+                            <img src="../../content/opmanager/images/items/amt_btn_minus.png" alt="수량 감소 버튼" />
+                          </button>
+                          <input type="text" title="수량 직접 입력" class="number" value="1" id="quantityInput1" />
+                          <button type="button" class="btn_plus" @click="plus(index, 'plusInput1')" id="plusInput1">
+                            <img src="../../content/opmanager/images/items/amt_btn_add.png" alt="수량 증가 버튼" />
+                          </button>
+                        </div>
+                        <div class="op_price"><strong>30,000</strong> P</div>
+                      </div>
+                      <div class="max_order">
+                        <span class="s-txt">최대 주문 수량 : 999</span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- 판매가, 구매 여부 확인 -->
+                <div class="info_row sell_con">
+                  <div class="purchase_ck">
+                    <span class="purchase_ck-y">
+                      <img src="../../content/opmanager/images/items/btn_buy-y.png" alt="" />
+                      <span class="btn_title pointblue">주문가능</span>
+                    </span>
+                    <span class="purchase_ck-n" style="display: none">
+                      <img src="../../content/opmanager/images/items/btn_buy-n.png" alt="" />
+                      <span class="btn_title pointRed">포인트 부족</span>
+                    </span>
+                  </div>
+                  <!-- <p  v-if="item.salePrice > item.presentPrice"> -->
+                  <div class="total_price">
+                    <p class="txt">총 답례품 포인트</p>
+                    <span class="price">
+                      <strong>30,000 P</strong>
+                    </span>
+                  </div>
+                </div>
+                <!-- //판매가, 구매 여부 확인 -->
+              </div>
+
+              <!-- 옵션이 있을 때 -->
+              <!-- 선택형 / 조합형 -->
+              <div class="info_row opt_box">
+                <!-- 옵션선택 : 토글사용 -->
+                <!-- 선택형 -->
+                <div class="opt_select_area">
+                  <div class="dropdown dropdown_box">
+                    <button type="button" class="c-select box dropdown-toggle" data-toggle="dropdown">
+                      <span>선택</span>
+                    </button>
+                    <div class="dropdown-menu option_wrap">
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">삼겹살 550g+삼겹살 550g(1.1Kg)</span>
+                      </button>
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">목살650g+목살650g(1.3Kg)</span>
+                      </button>
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">삼겹살550g+목살650g(1.2Kg)</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 조합형 -->
+                <div class="opt_select_area" style="display: none">
+                  <div class="dropdown dropdown_box">
+                    <button type="button" class="c-select box dropdown-toggle" data-toggle="dropdown" name="selectOption1">
+                      <span>선택 1</span>
+                    </button>
+                    <div class="dropdown-menu option_wrap">
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">삼겹살 550g+삼겹살 550g(1.1Kg)</span>
+                      </button>
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">목살650g+목살650g(1.3Kg)</span>
+                      </button>
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">삼겹살550g+목살650g(1.2Kg)</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_box">
+                    <button type="button" class="c-select box dropdown-toggle" data-toggle="dropdown" id="selectOption2">
+                      <span>선택 2</span>
+                    </button>
+                    <div class="dropdown-menu option_wrap">
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">삼겹살 550g+삼겹살 550g(1.1Kg)</span>
+                      </button>
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">목살650g+목살650g(1.3Kg)</span>
+                      </button>
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">삼겹살550g+목살650g(1.2Kg)</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_box">
+                    <button type="button" class="c-select box dropdown-toggle" data-toggle="dropdown" id="selectOption3">
+                      <span>선택 3</span>
+                    </button>
+                    <div class="dropdown-menu option_wrap">
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">삼겹살 550g+삼겹살 550g(1.1Kg)</span>
+                      </button>
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">목살650g+목살650g(1.3Kg)</span>
+                      </button>
+                      <button type="button" name="selectOption1" class="c-select">
+                        <span class="txt">삼겹살550g+목살650g(1.2Kg)</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 옵션 선택 결과 리스트 -->
+                <div class="option_list">
+                  <ul class="list_in">
+                    <li class="optSelect" v-for="(optionInfo, index) in itemOptionInfo.addOptionList">
+                      <div class="op_tit">
+                        <span>중량: 삼겹살 550g+삼겹살 550g(1.1Kg)</span>
+                      </div>
+                      <button type="button" class="opt_del">
+                        <img src="../../content/opmanager/images/items/option_delete.png" alt="옵션삭제" />
+                      </button>
+                      <div class="option_wrap">
+                        <div class="amt_box">
+                          <button type="button" class="btn_minus">
+                            <img src="../../content/opmanager/images/items/amt_btn_minus.png" alt="수량 감소 버튼" />
+                          </button>
+                          <input type="text" title="수량 직접 입력" id="quantityInput0" class="number" value="1" />
+                          <button type="button" class="btn_plus">
+                            <img src="../../content/opmanager/images/items/amt_btn_add.png" alt="수량 증가 버튼" />
+                          </button>
+                        </div>
+                        <div class="op_price"><strong>30,000</strong> P</div>
+                      </div>
+                      <div class="max_order">
+                        <span class="s-txt">최대 주문 수량 : 100 </span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <!-- //옵션 선택 결과 리스트 -->
+
+                <!-- 판매가, 구매 여부 확인 -->
+                <div class="info_row sell_con">
+                  <div class="purchase_ck">
+                    <span class="purchase_ck-y">
+                      <img src="../../content/opmanager/images/items/btn_buy-y.png" alt="" />
+                      <span class="btn_title pointblue">주문가능</span>
+                    </span>
+                    <span class="purchase_ck-n selectOpt" style="display: none">
+                      <img src="../../content/opmanager/images/items/donation-warning.png" alt="" />
+                      <span class="btn_title deepGray">옵션을 선택하세요</span>
+                    </span>
+                    <span class="purchase_ck-n" style="display: none">
+                      <img src="../../content/opmanager/images/items/btn_buy-n.png" alt="" />
+                      <span class="btn_title pointRed">포인트부족</span>
+                    </span>
+                  </div>
+                  <!-- <p  v-if="item.salePrice > item.presentPrice"> -->
+                  <div class="total_price">
+                    <p class="txt">총 답례품 포인트</p>
+                    <span class="price">
+                      <strong>30,000 P</strong>
+                    </span>
+                  </div>
+                </div>
+                <!-- //판매가, 구매 여부 확인 -->
+              </div>
+
+              <div class="info_row warning">
+                <img class="icon-img" src="../../content/opmanager/images/items/donation-warning.png" alt="주의" />
+                <span class="s-txt">해당 답례품은 반품/교환이 불가능합니다.</span>
+              </div>
+            </div>
+
+            <!-- 장바구니,구매버튼,찜 -->
+            <div class="buyBtn_box detop">
+              <div class="btn_wrap">
+                <button class="buyBtn addToCart" type="button" id="addToCartBtn1">장바구니</button>
+                <button class="buyBtn buyOrder" type="button" id="buyOrderBtn1">바로선택</button>
+                <button class="wishBtn addToWishList hidden_txt" id="addToWishBtn1" aria-label="관심 답례품 등록하기">관심답례품</button>
+              </div>
+            </div>
+            <!-- //장바구니,구매버튼,찜 -->
+            <!--// 아이템 정보 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 답례품정보, 답례품후기, 답례품Q&A, 배송/반품/교환, 답례품고시 탭 -->
+      <section>
+        <!-- 탭 -->
+        <div class="item_tab" id="item_tab_wrap">
+          <ul class="nav nav-tabs nav-justified center">
+            <li class="nav-item">
+              <a href="#nav-detail" class="nav-link active">
+                <span class="txt">답례품정보</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#nav-review" class="nav-link">
+                <span class="txt">답례품후기</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#nav-qna" class="nav-link">
+                <span class="txt">답례품Q&amp;A</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#nav-buyer" class="nav-link">
+                <span class="txt">배송/반품/교환</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#nav-notice" class="nav-link">
+                <span class="txt">상품고시</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- //탭 -->
+        <div class="center tab_container">
+          <div class="tab-content item_view">
+            <!-- 답례품정보(관리자->답례품상세설명) -->
+            <div id="nav-detail" class="tab-pane show active">
+              <div class="item_detail">
+                <!-- 답례품정보 내용 -->
+
+                <!-- //답례품정보 내용 -->
+              </div>
+              <!--// 답례품정보 item_detail E-->
+            </div>
+            <div id="nav-review" class="tab-pane">
+              <div class="item_review">
+                <div class="total_top">
+                  <p class="total">답례품후기<span class="pointblue">0</span></p>
+                </div>
+                <div class="list_wrap review_list">
+                  <ul></ul>
+                </div>
+              </div>
+            </div>
+            <div id="nav-qna" class="tab-pane">
+              <div class="item_qna">
+                <div class="total_top">
+                  <p class="total">답례품 Q&A<span class="pointblue">0</span></p>
+                  <!-- <button type="button" class="formBtn only" id="qnaWriteBtn">Q&A 작성</button> -->
+                </div>
+                <div class="list_wrap">
+                  <ul></ul>
+                </div>
+              </div>
+            </div>
+            <div id="nav-buyer" class="tab-pane">
+              <div class="buyer_wrap">
+                <div class="total_top">
+                  <p class="total">배송/반품/교환</p>
+                </div>
+                <div class="buyer_area">
+                  <div class="info_row m_col">
+                    <span class="ta_title">답례품 제공자 정보</span>
+                    <span class="ta_data">
+                      <ul>
+                        <li><span class="data_title">상호 : </span> <span class="data_con"> {{seller.companyName}} </span></li>
+                        <li v-show="seller.telephoneNumber">
+                          <span class="data_title">대표번호 : </span>
+                          <span class="data_con"> {{seller.telephoneNumber}}</span>
+                        </li>
+                        <li v-show="!seller.telephoneNumber">
+                          <span class="data_title">대표번호 : </span>
+                          <span class="data_con"> {{seller.phoneNumber}}</span>
+                        </li>
+                        <li><span class="data_title">사업자 등록번호 : </span> <span class="data_con">{{seller.businessNumber}}</span></li>
+                        <li>
+                          <span class="data_title">사업장 소재지 : </span>
+                          <span class="data_con">{{seller.businessLocation}} {{seller.addressDetail}}</span>
+                        </li>
+                      </ul>
+                    </span>
+                  </div>
+
+                  <div class="info_row m_col">
+                    <span class="ta_title">배송안내</span>
+                    <span class="ta_data">
+                      <ul>
+                        <li><span class="data_title">배송비용 : </span> <span class="data_con">무료배송</span></li>
+                        <li><span class="data_title">배송기간 : </span> <span class="data_con">2~7일 예상(식품의 경우 지연 발생 시 1주~2주 소요)</span></li>
+                        <li>모든 상품은 답례품 제공업체에서 배송됩니다.</li>
+                      </ul>
+                    </span>
+                  </div>
+
+                  <div class="info_row m_col">
+                    <span class="ta_title">교환/반품/취소 시 유의 사항</span>
+                    <span class="ta_data">
+                      <ul class="warn">
+                        <li>
+                          <span
+                            >주문 결제후 마이페이지 주문내역에서 교환/반품/취소가 가능합니다.<br />
+                            결제 완료/배송준비중 상태의경우 취소 신청이 가능합니다. <br />
+                            배송중/배송완료 상태에서만 교환/반품 신청이 가능합니다.
+                          </span>
+                        </li>
+                        <li>
+                          <span class="point">■ </span>
+                          <span>
+                            교환 및 반품이 불가능한 경우<br />
+                            - 고객님의 책임있는 사유로 제품이 훼손된 경우<br />
+                            - 포장 개방으로 포장이 훼손되어 제품의 가치가 상실된 경우 (단 제품의 내용확인을 위해 제품을 개봉한 경우는 제외)<br />
+                            - 고객님의 사용 또는 일부 소비로 인하여 제품의 가치가 현저히 감소한 경우<br />
+                            - 시간의 경과로 인하여 재판매가 곤란한 정도로 제품의 가치가 현저히 감소한 경우<br />
+                          </span>
+                        </li>
+                        <li>수령 7일 이후 전화문의 또는 사이트 신청 없이 반품한 경우 고객님께 다시 반송됨을 양해바라며, 환불/교환은 불가합니다.<br />사용 중 발생한 하자의 교환/환불/수리 등은 ‘공정거래위원회 소비자분쟁해결기준’에 준하여 처리됩니다.</li>
+                      </ul>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="nav-notice" class="tab-pane">
+              <div class="notice_wrap">
+                <div class="total_top">
+                  <p class="total">상품고시</p>
+                </div>
+                <div class="buyer_area">
+                  <div class="info_row m_col">
+                    <span class="ta_title">A/S 책임자와 전화번호</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">모델명</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">재질</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">구성품</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">크기</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">출시년월</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">제조사</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">제조국</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">식품위생법에 따른 수입신고를 필함 문구</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                  <div class="info_row m_col">
+                    <span class="ta_title">품질보증기준</span>
+                    <span class="ta_data">상세정보 별도표기</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../content/modules/jquery/jquery-3.4.1.min.js"></script>
+    <script src="../../content/modules/swiper.min.js"></script>
+    <script src="../../content/modules/front/bootstrap/vendor/popper.min.js"></script>
+    <script src="../../content/modules/front/bootstrap/bootstrap.min.js"></script>
+
+    <script>
+      //썸네일 Swiper
+      var galleryThumbs = new Swiper("#mainThumbSwiper", {
+        spaceBetween: 8,
+        slidesPerView: 5.5,
+        touchRatio: 0.2,
+        slidToClickedSlide: true,
+        navigation: {
+          nextEl: ".thumb-button-next",
+          prevEl: ".thumb-button-prev",
+        },
+      });
+      //메인 이미지 Swiper
+      var galleryTop = new Swiper("#mainSwiper", {
+        spaceBetween: 15,
+        slidToClickedSlide: true,
+        navigation: {
+          nextEl: ".main-button-next",
+          prevEl: ".main-button-prev",
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        thumbs: {
+          swiper: galleryThumbs,
+        },
+      });
+
+      //탭
+      window.onscroll = function () {
+        myFunction();
+      };
+      var itemTab = document.getElementById("item_tab_wrap");
+      var sticky = itemTab.offsetTop - 30;
+      function myFunction() {
+        if (window.pageYOffset >= sticky) {
+          itemTab.classList.add("sticky");
+        } else {
+          itemTab.classList.remove("sticky");
+        }
+      }
+      $(".nav-item a").click(function () {
+        $(this).addClass("active").parent().siblings().children("a").removeClass("active");
+      });
+    </script>
+  </body>
+</html>

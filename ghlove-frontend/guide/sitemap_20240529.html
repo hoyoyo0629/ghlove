@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>고객센터 > 사이트맵 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/event.css">
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+    
+    <link rel="stylesheet" href="/static/css/sitemap2.css">
+</head>
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-customer-lnb-ali :menu-url="page.menuUrl"></layout-customer-lnb-ali>
+
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-not-arrow"></span>고객센터
+                        <span class="txt-not-arrow"></span>사이트맵
+                    </span>
+                    <h2 class="page-title-txt">사이트맵</h2>
+                </div>
+            </section>
+            <section id="contents" class="sitemap">
+                <div class="sitemap-wrap center">
+                    <div class="sNavi sitemap_main">
+                        <ul class="all-main-menu">
+                            <li class="lv1">
+                                <button type="button">기부하기</button>
+                                <ul class="all-sub-menu">
+                                    <li class="lv2"><!-- <a href="/donation/donation.html"> --><a href="javascript:void(0);" onclick="javascript:$s.donation.goDonationPage();">기부하기</a></li>
+                                    <li class="lv2"><a href="/donation/list-select.html">기금사업 소개</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="all-main-menu">
+                            <li class="lv1">
+                                <button type="button">기부안내</button>
+                                <ul class="all-sub-menu">
+                                    <li class="lv2"><a href="/donation/guide1.html">고향사랑기부제 안내</a></li>
+                                    <li class="lv2"><a href="/donation/guide2.html">온라인 기부절차안내</a></li>
+                                    <li class="lv2"><a href="/donation/guide5.html">오프라인 기부절차안내</a></li>
+                                    <li class="lv2"><a href="/donation/guide3.html">연말정산 간편서비스 안내</a></li>
+                                    <!-- <li class="lv2"><a href="/donation/guide4.html">종합소득세 확정신고 서비스 안내</a></li> -->
+                                    <li class="lv2"><a href="/donation/guide6.html">고향사랑 기부시 유의사항</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="all-main-menu">
+                            <li class="lv1">
+                                <button type="button">답례품</button>
+                                <ul class="all-sub-menu">
+                                    <li class="lv2"><a href="/goods/index.html">답례품몰</a></li>
+                                    <!--<li class="lv2"><a href="/featured/eventList.html">지역 이벤트</a></li>-->
+                                    <li class="lv2"><a href="/event/seasonList.html">제철식품관</a></li>
+                                    <!--<li class="lv2"><a href="/event/specialityList.html">특산물관</a></li>-->
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="all-main-menu">
+                            <li class="lv1">
+                                <button type="button">고객센터</button>
+                                <ul class="all-sub-menu">
+                                    <li class="lv2"><a href="/notice/list.html">공지사항</a></li>
+                                    <li class="lv2"><a href="/data-board/list.html">자료실</a></li>
+                                    <li class="lv2"><a href="/qna/qna-open.html">Q＆A</a></li>
+                                    <li class="lv2"><a href="/faq/list.html">FAQ</a></li>
+                                    <!--<li class="lv2"><a href="/guide/help.html">도움말</a></li>-->
+                                    <li class="lv2"><a href="/guide/sitemap.html">사이트맵</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="sNavi sitemap_top">
+                        <ul class="all-main-menu">
+                            <li class="lv1">
+                                <button type="button">마이페이지</button>
+                                <ul class="all-sub-menu">
+                                    <li class="lv2">
+                                        <a href="/mypage/index.html">마이페이지</a>
+                                    </li>
+                                    <li class="lv2">
+                                        <a href="/mypage/cntrList.html">기부</a>
+                                        <ul class="all-sub-sub-menu">
+                                            <li class="lv3"><a href="/mypage/cntrList.html">기부내역 현황</a></li>
+                                            <li class="lv3"><a href="/mypage/cntrPoint.html">기부포인트 현황</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="lv2">
+                                        <a href="/mypage/orderList.html">답례품</a>
+                                        <ul class="all-sub-sub-menu">
+                                            <li class="lv3"><a href="/mypage/orderList.html">주문조회</a></li>
+                                            <li class="lv3"><a href="/mypage/orderCancel.html">취소반품교환</a></li>
+                                            <li class="lv3"><a href="/mypage/review.html">답례품후기</a></li>
+                                            <li class="lv3"><a href="/mypage/inquiryItem.html">답례품Q＆A</a></li>
+                                            <li class="lv3"><a href="/mypage/review.html">배송지 관리</a></li>
+                                            <li class="lv3"><a href="/cart/index.html">장바구니</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="lv2">
+                                        <a href="/mypage/intrstLocGov.html">관심정보</a>
+                                        <ul class="all-sub-sub-menu">
+                                            <li class="lv3"><a href="/mypage/intrstLocGov.html">관심지자체</a></li>
+                                            <li class="lv3"><a href="/mypage/favorItem.html">관심답례품</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="lv2">
+                                        <a href="/users/modify.html">회원정보수정</a>
+                                        <ul class="all-sub-sub-menu">
+                                            <!-- <li class="lv3"><a href="/users/modify.html">회원정보수정</a></li> -->
+                                            <li class="lv3"><a href="/users/secede.html">회원탈퇴</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="lv2">
+                                        <a href="/mypage/inquiry.html">1:1문의</a>
+                                    </li>
+                                    <li class="lv2">
+                                        <a href="/mypage/honorList.html">명예의 전당</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="all-main-menu">
+                            <li class="lv1">
+                                <button type="button">로그인</button>
+                                <ul class="all-sub-menu">
+                                    <li class="lv2"><a href="/users/join.html">회원가입</a></li>
+                                    <li class="lv2"><a href="/users/login.html">로그인</a>
+                                        <ul class="all-sub-sub-menu">
+                                            <li class="lv3"><a href="/users/login.html?tab=1">아이디 로그인</a></li>
+                                            <li class="lv3"><a href="/users/login.html?tab=2">간편/금융 인증 로그인</a></li>
+                                            <li class="lv3"><a href="/users/login.html?tab=3">디지털원패스 로그인</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="lv2"><a href="/users/find-idpw.html">아이디 / 비밀번호 찾기</a>
+                                        <ul class="all-sub-sub-menu">
+                                            <li class="lv3"><a href="/users/find-idpw.html?tab=id">아이디 찾기</a></li>
+                                            <li class="lv3"><a href="/users/find-idpw.html?tab=password">비밀번호 찾기</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="lv2"><a href="/policy/auth.html">이용약관</a></li>
+                                    <li class="lv2"><a href="/policy/privacy.html">개인정보처리방침</a></li>
+                                    <li class="lv2"><a href="/policy/copyright.html">저작권정책</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                //'layout-customer-lnb-ali': httpVueLoader('/components/layouts/customer-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+            },
+            data: {
+                page: {
+                    menuUrl: '/guide/sitemap.html'
+                }
+            },
+            methods: {
+                openPresentPage: function (type) {
+					
+					if (type == 'sbag') {
+						location.href = '/cart/index.html';
+					} else {
+						location.href = '/goods/index.html';
+					}
+	
+					/*
+                    $s.api.getSubmit('/api/present/login', '', function (response) {
+                        var param = '';
+
+						var domain = "";
+						if (window.location.hostname.indexOf("ilovegohyang.go.kr") > -1) {
+							domain = 'https://shop.ilovegohyang.go.kr';
+						} else {
+							domain = 'https://gohyang01.bbiz.kr';
+						}
+
+                        if (response.isSuccess) {
+                            param = (response.data == null) ? '' : response.data;
+//                            domain = (type == 'sbag') ? 'https://gohyang01.bbiz.kr/kwa-ABS_sbag_l' : domain;
+                            domain = (type == 'sbag') ? domain+'/kwa-ABS_sbag_l' : domain;
+
+							if($s.config.isUseNetFunnel) {
+	          					NetFunnel_Action({action_id:'shop'}, function(ev,ret) {
+	        	  					window.open(domain+'?_tss_=' + param, 'presentPopup');
+	          					});
+          					} else {
+        	 	 				window.open(domain+'?_tss_=' + param, 'presentPopup');
+          					}
+
+
+                        }
+                    }); */
+                },
+                // *************** ali-add methods
+                goToMain: function () {
+                    location.href = "UI_P02010.html"
+                },
+                closePopupLayer: function () {
+                    $(".black-bg").removeClass("show");
+                },
+                modalLayer: function (e) {
+                    $(".black-bg").addClass("show");
+                }
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

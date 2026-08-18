@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <!-- 상단 타이틀 영역 -->
+                    <div class="location">
+                        <a href="">정산관리</a> &gt; <a href="">결제/정산내역</a> &gt; <a href="">정산예정 내역</a>
+                    </div>
+                    <h3><span>정산확정 내역</span></h3>
+                    <!-- // 상단 타이틀 영역 -->
+
+                    <!-- 조회 영역 -->
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">기간검색</td>
+                                    <td>
+                                        <div>
+                                            <span class="datepicker">
+                                                <input id="searchStartDate" name="searchStartDate" title="" class="datepicker hasDatepicker" type="text" value="" maxlength="8" autocomplete="off">
+                                                <button type="button" class="ui-datepicker-trigger">
+                                                    <span class="icon_calendar">날짜 선택</span>
+                                                </button>
+                                            </span>
+                                            <span class="wave">~</span>
+                                            <span class="datepicker">
+                                                <input id="searchEndDate" name="searchEndDate" title="" class="datepicker hasDatepicker" type="text" value="" maxlength="8" autocomplete="off">
+                                                <button type="button" class="ui-datepicker-trigger">
+                                                    <span class="icon_calendar">날짜 선택</span>
+                                                </button>
+                                            </span>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">키워드 검색</td>
+                                    <td>
+                                        <div class="flex_box gap-08">
+                                            <select id="" name="" title="키워드 검색" class="wd-200">
+                                                <option value="">입금확상품번호인대기</option>
+                                            </select>
+                                            <input id="" name="" title="키워드 검색" class="input_txt required _filter full" type="text" value="">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="btn_all btn_right">
+                            <div class="flex_box gap-08">
+                                <button type="button" class="btn btn-dark-gray btn-mini">초기화</button>
+                                <button type="button" class="btn btn-dark-gray btn-mini">검색</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- // 조회 영역 -->
+
+                    <!-- 결과 영역 -->
+                    <div class="count_title mt-40">
+                        <h5>총 545,423건</h5>
+                        <span>
+                            <select id="" name="" title="화면출력수">
+                                <option value="10" selected="selected">10개 출력</option>
+                                <option value="20">20개 출력</option>
+                                <option value="50">50개 출력</option>
+                                <option value="100">100개 출력</option>
+                            </select>
+                        </span>
+                    </div>
+
+                    <div class="board_list">
+                        <table class="board_list_table">
+                            <colgroup>
+                                <col style="width:50px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                                <col style="width:300px;">
+                                <col style="width:150px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">No.</th>
+                                    <th scope="col">결제일</th>
+                                    <th scope="col">주문번호</th>
+                                    <th scope="col">상품번호</th>
+                                    <th scope="col">상품명</th>
+                                    <th scope="col">옵션명</th>
+                                    <th scope="col">주문자명</th>
+                                    <th scope="col">판매금액</th>
+                                    <th scope="col">배송비</th>
+                                    <th scope="col">결제금액</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>20220505</div>
+                                    </td>
+                                    <td>
+                                        <div>123456789</div>
+                                    </td>
+                                    <td>
+                                        <div>898985254</div>
+                                    </td>
+                                    <td>
+                                        <div>사과</div>
+                                    </td>
+                                    <td>
+                                        <div>1KG 1박스</div>
+                                    </td>
+                                    <td>
+                                        <div><a href="">홍길동</a></div>
+                                    </td>
+                                    <td>
+                                        <div>45,000</div>
+                                    </td>
+                                    <td>
+                                        <div>5,000</div>
+                                    </td>
+                                    <td>
+                                        <div>50.000</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- 하단 버튼 -->
+                        <div class="btn_all btn_right">
+                            <div class="flex_box gap-08">
+                                <button type="button" class="btn btn-dark-gray btn-mini">정산확인</button>
+                            </div>
+                        </div>
+                        <!-- // 하단 버튼 -->
+                    </div>
+                    <!-- // 결과 영역 -->
+
+                    <div>
+                        <ul class="list-bullet point">
+                            <li>
+                                정산기간 ( 매월 1일 ~ 매월 말일 기준 )
+                            </li>
+                            <li>
+                                정산예정일 : 익월 10일(답례품 담당자 확인시작일: 확인 기간 - 10일 ~ 15일)
+                            </li>
+                            <li>
+                                정산확정일 : 익월 15일( 정산지급 기간 : 15일 ~ 20일 )
+                            </li>
+                            <li>
+                                정산지급일 : 익월 20일( 정산지급 완료 기준 정산 마감내역에 노출 )
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

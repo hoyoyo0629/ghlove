@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.notice.SysNoticeSellerMapper">
+
+	<resultMap id="NoticeResult" type="saleson.shop.notice.domain.SysNoticeSellerDto">
+		<result property="noticeId" column="NOTICE_ID" />
+		<result property="subject" column="SUBJECT" />
+		<result property="content" column="CONTENT" />
+		<result property="hits" column="HITS" />
+		<result property="atchFileSz" column="ATCH_FILE_SZ" />
+		<result property="boardCode" column="BOARD_CODE" />
+		<result property="subCategory" column="SUB_CATEGORY" />
+		<result property="noticeFlag" column="NOTICE_FLAG" />
+		<result property="displayFlag" column="DISPLAY_FLAG" />
+		<result property="locgovCode" column="LOCGOV_CODE" />
+		<result property="locgovNm" column="LOCGOV_NM" />
+		<result property="newFlag" column="NEW_FLAG" />
+		<result property="frstCrtId" column="FRST_CRT_ID" />
+		<result property="frstCrtDt" column="FRST_CRT_DT" />
+		<result property="lastMdfcnId" column="LAST_MDFCN_ID" />
+		<result property="lastMdfcnDt" column="LAST_MDFCN_DT" />
+		<result property="useYn" column="USE_YN" />
+		<result property="attachedFileCnt" column="ATTACHED_FILE_CNT" />
+		<collection property="sysNoticeSellerFileList" resultMap="SysNoticeSellerFileDto"></collection>
+	</resultMap>
+
+
+	<resultMap id="SysNoticeSellerFileDto" type="saleson.shop.notice.domain.SysNoticeSellerFileDto">
+		<result property="fileId" column="FILE_ID" />
+		<result property="cmntId" column="FILE_CMNT_ID" />
+		<result property="orgnlAtchFileNm" column="ORGNL_ATCH_FILE_NM" />
+		<result property="atchFileNm" column="ATCH_FILE_NM" />
+		<result property="atchFileExtnNm" column="ATCH_FILE_EXTN_NM" />
+		<result property="atchFileSz" column="ATCH_FILE_SZ" />
+		<result property="atchFileSeq" column="ATCH_FILE_SEQ" />
+		<result property="atchFilePathNm" column="ATCH_FILE_PATH_NM" />
+		<result property="frstCrtId" column="FILE_FRST_CRT_ID" />
+		<result property="frstCrtDt" column="FILE_FRST_CRT_DT" />
+
+	</resultMap>
+	<select id="getNoticeCount" parameterType="saleson.shop.notice.domain.SysNoticeSellerDto" resultType="Integer" >
+			/* saleson.shop.notice.SysNoticeSellerMapper.getNoticeCount */
+			SELECT COUNT(*)
+			FROM OP_SYS_NOTICE_SELLER N
+			<where>
+				<if test="subCategory != null and subCategory != ''">
+					AND SUB_CATEGORY = #{subCategory}
+				</if>
+				<if test="query != null and query != ''">
+					<if test="where == 'SUBJECT'">
+						AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+					</if>
+					<if test="where == 'CONTENT'">
+						AND CONTENT LIKE CONCAT('%', #{query}, '%')
+					</if>
+				</if>
+				<if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+			    	AND DATE_FORMAT(frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+			    </if>
+				<if test="locgovCode != null and locgovCode != ''">
+					AND N.LOCGOV_CODE = #{locgovCode}
+				</if>
+
+				<!-- 기금사업 소개 제외 후 조회 추가 -->
+				<choose>
+					<when test='boardCode != null and boardCode != ""'>
+						AND BOARD_CODE = #{boardCode}
+					</when>
+					<otherwise>
+						AND BOARD_CODE IS NULL
+					</otherwise>
+				</choose>
+				<!-- 기금사업 소개 제외 후 조회 추가 -->
+				AND USE_YN = 'Y'
+			</where>
+	</select>
+
+	<select id="getNoticeList" parameterType="saleson.shop.notice.domain.SysNoticeSellerDto" resultType="saleson.shop.notice.domain.SysNoticeSellerDto" >
+		<include refid="CommonMapper.paginationHeader" />
+			/* saleson.shop.notice.SysNoticeSellerMapper.getNoticeList */
+
+			SELECT
+				N.notice_id,
+				N.subject,
+				N.content,
+				N.hits,
+				N.board_code,
+				N.sub_category,
+				N.notice_flag,
+				N.frst_crt_id,
+				N.frst_crt_dt,
+				N.last_mdfcn_id,
+				N.last_mdfcn_dt,
+				CASE
+					WHEN ADDDATE(N.frst_crt_dt, INTERVAL 3 DAY) >= <include refid="CommonMapper.datetime"/> THEN 'Y'
+					ELSE 'N'
+					END
+				AS new_flag,
+				N.display_flag,
+				N.use_yn,
+				N.locgov_code,
+				(SELECT count(*) from OP_SYS_NOTICE_SELLER_FILE WHERE use_yn = 'Y' and notice_id = N.notice_id) as attached_file_cnt
+			FROM OP_SYS_NOTICE_SELLER N
+			<where>
+				<if test="subCategory != null and subCategory != ''">
+					AND SUB_CATEGORY = #{subCategory}
+				</if>
+				 <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+			    	AND DATE_FORMAT(frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+			    </if>
+				<if test="query != null and query != ''">
+					<if test="where == 'SUBJECT'">
+						AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+					</if>
+					<if test="where == 'CONTENT'">
+						AND CONTENT LIKE CONCAT('%', #{query}, '%')
+					</if>
+				</if>
+				<if test="locgovCode != null and locgovCode != ''">
+					AND N.LOCGOV_CODE = #{locgovCode}
+				</if>
+
+				<!-- 기금사업 소개 제외 후 조회 추가 -->
+				<choose>
+					<when test='boardCode != null and boardCode != ""'>
+						AND BOARD_CODE = #{boardCode}
+					</when>
+					<otherwise>
+						AND BOARD_CODE IS NULL
+					</otherwise>
+				</choose>
+				<!-- 기금사업 소개 제외 후 조회 추가 -->
+				AND USE_YN = 'Y'
+			</where>
+		ORDER BY notice_flag DESC, frst_crt_dt DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getNotice" parameterType="Integer" resultMap="NoticeResult" >
+		/* saleson.shop.notice.SysNoticeSellerMapper.getNotice */
+		SELECT
+			NOTICE_ID
+			, SUBJECT
+			, CONTENT
+			, HITS
+			, (SELECT ATCH_FILE_SZ  FROM OP_SYS_NOTICE_SELLER_FILE WHERE NOTICE_ID = A.NOTICE_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
+			, BOARD_CODE
+			, SUB_CATEGORY
+			, NOTICE_FLAG
+			, LOCGOV_CODE
+			, USE_YN
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+			, LAST_MDFCN_ID
+			, LAST_MDFCN_DT
+			, DISPLAY_FLAG
+			, LOCGOV_NM
+		FROM
+		(
+			SELECT
+				N.NOTICE_ID
+				, N.SUBJECT
+				, N.CONTENT
+				, N.HITS
+				, N.BOARD_CODE
+				, N.SUB_CATEGORY
+				, N.NOTICE_FLAG
+				, N.LOCGOV_CODE
+				, L.LOCGOV_NM
+				, N.USE_YN
+			--	, M.USER_NAME
+				, N.FRST_CRT_ID
+				, N.FRST_CRT_DT
+				, N.LAST_MDFCN_ID
+				, N.LAST_MDFCN_DT
+				, N.DISPLAY_FLAG
+			FROM OP_SYS_NOTICE_SELLER N
+			-- LEFT JOIN OP_MANAGER M ON N.FRST_CRT_ID  = M.USER_ID
+			LEFT JOIN
+				G_LOCGOV L ON N.LOCGOV_CODE  = L.LOCGOV_CODE
+	 		WHERE NOTICE_ID = #{noticeId}
+	 			AND N.USE_YN = 'Y'
+		) A
+	</select>
+
+		<select id="getSysNoticeSellerFileList" parameterType="Integer" resultType="saleson.shop.notice.domain.SysNoticeSellerFileDto">
+		/**cmnty-mapper.getFaqBbsfileList */
+		SELECT
+			FILE_ID
+			, NOTICE_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			OP_SYS_NOTICE_SELLER_FILE
+		WHERE
+			NOTICE_ID = #{noticeId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<select id="getSysNoticeSellerFileDetail" parameterType="long" resultType="saleson.shop.notice.domain.SysNoticeSellerFileDto">
+		/**cmnty-mapper.getSysNoticeSellerFileDetail */
+		SELECT
+			FILE_ID
+			,  NOTICE_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			OP_SYS_NOTICE_SELLER_FILE
+		WHERE
+			FILE_ID = #{fileId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<insert id="insertNotice" parameterType="saleson.shop.notice.domain.SysNoticeSellerDto" useGeneratedKeys="true" keyProperty="noticeId">
+		/* saleson.shop.notice.SysNoticeSellerMapper.insertNotice */
+		INSERT INTO
+			OP_SYS_NOTICE_SELLER
+			(
+				SUBJECT
+				, CONTENT
+				, HITS
+				, BOARD_CODE
+				, SUB_CATEGORY
+				, NOTICE_FLAG
+				, DISPLAY_FLAG
+				, LOCGOV_CODE
+				, USE_YN
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+			 	#{subject}
+			 	, #{content}
+			 	, 0
+			 	, #{boardCode}
+			 	, #{subCategory}
+			 	, #{noticeFlag}
+			 	, #{displayFlag}
+			 	, #{locgovCode}
+			 	, 'Y'
+			 	, #{frstCrtId}
+			 	, NOW()
+			 )
+	</insert>
+
+	<insert id="insertSysNoticeSellerFile" parameterType="saleson.shop.notice.domain.SysNoticeSellerFileDto">
+		INSERT INTO
+			OP_SYS_NOTICE_SELLER_FILE
+			(
+				NOTICE_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{noticeId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM OP_SYS_NOTICE_SELLER_FILE WHERE NOTICE_ID = #{noticeId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<update id="deleteNoticeFileByFileId" parameterType="saleson.shop.notice.domain.SysNoticeSellerFileDto">
+		/**cmnty-mapper.deleteNoticeFileByFileId */
+		UPDATE
+			OP_SYS_NOTICE_SELLER_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<update id="deleteNoticeFileByNoticeId" parameterType="saleson.shop.notice.domain.SysNoticeSellerFileDto">
+		/**cmnty-mapper.deleteNoticeFileByNoticeId */
+		UPDATE
+			OP_SYS_NOTICE_SELLER_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			NOTICE_ID = #{noticeId}
+	</update>
+
+
+
+	<update id="updateNotice" parameterType="saleson.shop.notice.domain.SysNoticeSellerDto">
+		/* saleson.shop.notice.SysNoticeSellerMapper.updateNotice */
+		UPDATE
+			OP_SYS_NOTICE_SELLER
+		SET
+			SUBJECT = #{subject}
+			, CONTENT = #{content}
+			, NOTICE_FLAG = #{noticeFlag}
+			, DISPLAY_FLAG = #{displayFlag}
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE NOTICE_ID = #{noticeId}
+	</update>
+
+	<update id="addHitCount" parameterType="Integer">
+		/* saleson.shop.notice.SysNoticeSellerMapper.addHitCount */
+		UPDATE OP_SYS_NOTICE_SELLER
+		SET HITS = HITS + 1
+		WHERE NOTICE_ID = #{noticeId}
+	</update>
+
+	<delete id="deleteNotice" parameterType="saleson.shop.notice.domain.SysNoticeSellerDto" >
+		/* saleson.shop.notice.SysNoticeSellerMapper.deleteNotice */
+		UPDATE
+			OP_SYS_NOTICE_SELLER
+		SET USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE NOTICE_ID = #{noticeId}
+	</delete>
+
+
+
+	<sql id="whereFrontNotice">
+		<where>
+			AND USE_YN = 'Y'
+			AND DISPLAY_FLAG = 'Y'
+			<if test="boardCode != null and boardCode != ''">
+				AND BOARD_CODE = #{boardCode}
+			</if>
+			<if test="subCategory != null and subCategory != ''">
+				AND SUB_CATEGORY = #{subCategory}
+			</if>
+			<if test="locgovCode != null and locgovCode != ''">
+				AND LOCGOV_CODE = #{locgovCode}
+			</if>
+			<if test="query != null and query != ''">
+				<if test="where == 'SUBJECT'">
+					AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+				</if>
+			</if>
+		</where>
+	</sql>
+
+	<select id="getFrontNoticeListCount" parameterType="saleson.shop.notice.domain.SysNoticeSellerDto" resultType="int" >
+			/* saleson.shop.notice.SysNoticeSellerMapper.getFrontNoticeListCount */
+			SELECT
+			    COUNT(*)
+			FROM OP_SYS_NOTICE_SELLER
+			<include refid="whereFrontNotice"/>
+
+	</select>
+
+	<select id="getFrontNoticeList" parameterType="saleson.shop.notice.support.NoticeParam" resultMap="NoticeResult" >
+		<include refid="CommonMapper.paginationHeader" />
+			/* saleson.shop.notice.SysNoticeSellerMapper.getFrontNoticeList */
+			SELECT
+				N.notice_id,
+				N.subject,
+				N.content,
+				N.hits,
+				N.board_code,
+				N.sub_category,
+				N.notice_flag,
+				N.frst_crt_id,
+				N.frst_crt_dt,
+				N.last_mdfcn_id,
+				N.last_mdfcn_dt,
+				CASE
+					WHEN ADDDATE(N.frst_crt_dt, INTERVAL 3 DAY) >= <include refid="CommonMapper.datetime"/> THEN 'Y'
+					ELSE 'N'
+					END
+				AS new_flag,
+				N.display_flag,
+				N.use_yn,
+				N.locgov_code,
+				(SELECT count(*) from OP_SYS_NOTICE_SELLER_FILE WHERE use_yn = 'Y' and notice_id = N.notice_id) as attached_file_cnt
+			FROM OP_SYS_NOTICE_SELLER N
+			<include refid="whereFrontNotice"/>
+			ORDER BY IFNULL(notice_flag, 'N') DESC
+				, CASE WHEN IFNULL(notice_flag, 'N') = 'Y' THEN notice_id ELSE 0 END DESC
+				, frst_crt_dt DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+
+
+	<select id="getFrontNotice" parameterType="Integer" resultMap="NoticeResult" >
+		/* saleson.shop.notice.SysNoticeSellerMapper.getFrontNotice */
+		SELECT
+			NOTICE_ID
+			, SUBJECT
+			, CONTENT
+			, HITS
+			, (SELECT ATCH_FILE_SZ  FROM OP_SYS_NOTICE_SELLER_FILE WHERE NOTICE_ID = A.NOTICE_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
+			, BOARD_CODE
+			, SUB_CATEGORY
+			, NOTICE_FLAG
+			, LOCGOV_CODE
+			, USE_YN
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+			, LAST_MDFCN_ID
+			, LAST_MDFCN_DT
+			, DISPLAY_FLAG
+			, LOCGOV_NM
+		FROM
+		(
+			SELECT
+				N.NOTICE_ID
+				, N.SUBJECT
+				, N.CONTENT
+				, N.HITS
+				, N.BOARD_CODE
+				, N.SUB_CATEGORY
+				, N.NOTICE_FLAG
+				, N.LOCGOV_CODE
+				, L.LOCGOV_NM
+				, N.USE_YN
+			--	, M.USER_NAME
+				, N.FRST_CRT_ID
+				, N.FRST_CRT_DT
+				, N.LAST_MDFCN_ID
+				, N.LAST_MDFCN_DT
+				, N.DISPLAY_FLAG
+			FROM OP_SYS_NOTICE_SELLER N
+			-- LEFT JOIN OP_MANAGER M ON N.FRST_CRT_ID  = M.USER_ID
+			LEFT JOIN
+				G_LOCGOV L ON N.LOCGOV_CODE  = L.LOCGOV_CODE
+	 		WHERE NOTICE_ID = #{noticeId}
+	 			AND N.USE_YN = 'Y'
+	 			AND N.DISPLAY_FLAG = 'Y'
+		) A
+	</select>
+
+</mapper>

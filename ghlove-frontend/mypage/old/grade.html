@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="../../../../favicon.ico">
+        <title>지역정보개발원-고향사랑e음</title>
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="/static/css/swiper.min.css">
+        <link rel="stylesheet" href="/static/css/common.css">
+        <link rel="stylesheet" href="/static/css/layout.css">
+        <link rel="stylesheet" href="/static/css/popup.css">
+        <link rel="stylesheet" href="/static/css/mypage.css">
+
+    </head>
+    <body>
+        <div id="saleson" v-cloak>
+            <layout-header></layout-header>
+
+            <section class="contents grade_contents">
+                <div class="tit_wrap">
+                    <h2 class="tit">나의 등급/혜택</h2>
+                </div>
+                <div class="grade_wrap">
+                    <div class="container">
+                        <div class="grade_top" v-cloak>
+                            <dl>
+                                <dt>나의 회원등급</dt>
+                                <dd v-cloak>{{result.userLevel}}</dd>
+                            </dl>
+                        </div>
+                        <div class="grade_container">
+                            <h3 class="grade_tit">세일즈온 등급 혜택</h3>
+                            <div class="grade_conts">
+                                <div class="row no-gutters">
+                                    <div v-for="data in result.userLevelList" class="col-12 col-lg-6 conts_area" v-cloak>
+                                        <div class="tit_area">
+                                            <h4 class="sub_tit">{{data.levelName}}</h4>
+                                            <p class="info">{{data.levelName}}</p>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="standard">등업일로부터 {{formatNumber(data.referencePeriod)}}개월 기준</p>
+                                            <p class="amount">구매금액 {{formatNumber(data.priceEnd)}}원 미만</p>
+                                            <dl>
+                                                <dt>적립혜택</dt>
+                                                <dd>{{formatNumber(data.pointRate)}}%</dd>
+                                                <dt>구매시할인</dt>
+                                                <dd>{{formatNumber(data.discountRate)}}%</dd>
+                                                <dt>배송쿠폰</dt>
+                                                <dd>{{formatNumber(data.shippingCouponCount)}}장</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6">
+                                        <p class="info_tit">회원 등급 선정 기준 및 혜택 이용안내</p>
+                                        <div class="info_dot">
+                                            <p>회원등급은 등급산정일로부터 6개월간의 구매확정 된 구매실적을 기준으로 산정됩니다.</p>
+                                            <p>구매실적은 쿠폰, 포인트 등을 할인적용한 후의 최종 결제 금액을 기준으로 산정됩니다.</p>
+                                            <p>적립은 '상품 적립', '등급 별 추가 적립'순으로 적립됩니다.</p>
+                                            <p>쿠폰은 등급 변경 후 매월 1일 00:00 시에 적립됩니다.</p>
+                                            <p>회원 등급, 쿠폰, 포인트 이용에 대한 궁금하신 사항은 고객센터의 FAQ를 참고해 주시기 바랍니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <layout-footer></layout-footer>
+        </div>
+
+
+        <!-- JavaScript -->
+        <script src="/static/js/jquery-3.4.1.min.js"></script>
+        <script src="/static/js/swiper.min.js"></script>
+        <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+        <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+        <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.popupoverlay.js"></script>
+        <script src="/static/js/jquery.waypoints.min.js"></script>
+        <script src="/static/js/jquery.counterup.min.js"></script>
+        <script src="/static/js/common.js"></script>
+        <script src="/static/js/header.js"></script>
+        <script src="/static/js/footer.js"></script>
+
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="/modules/es6-promise.min.js"></script>
+        <script src="/modules/es6-promise.auto.min.js"></script>
+        <script src="/modules/axios.js"></script>
+        <script src="/modules/vue.js"></script>
+        <script src="/modules/httpVueLoader.js"></script>
+        <script src="/modules/op.config.js"></script>
+        <script src="/modules/op.saleson.js"></script>
+        <script type="text/babel" src="/modules/op.vue.js"></script>
+        <script type="text/babel">
+
+            Vue.use(VueAwesomeSwiper);
+            var vm = new Vue({
+                el: '#saleson',
+                components: {
+                    'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+                    'layout-header': httpVueLoader('/components/layouts/header.vue'),
+                },
+                data: {
+                    result: {}
+                },
+                methods: {
+                    submit: function () {
+                        $s.api.getGrade(
+                            function (response) {
+                                vm.result = response.result;
+                            }
+                        );
+                    }
+                },
+                mounted: function() {
+                    this.$nextTick(function () {
+
+                        Saleson.init();
+
+                        // 페이지 로딩 후 실행
+                        vm.submit();
+                    });
+                }
+            });
+        </script>
+
+    </body>
+</html>

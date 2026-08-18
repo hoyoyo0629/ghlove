@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>가을 밥상 위 밥도둑 ‘돌산갓김치’ : 고향사랑e음 고향소식</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+  </head>
+
+  <body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page hometown10">
+      <div id="wrap">
+
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <div class="banner_img_wrap">
+                <div class="img_wrap">
+                  <img src="/newsletter/static/images/vol001/detail_24_1.png" alt="갓김치 사진">
+                </div>
+                <div class="img_wrap">
+                  <img src="/newsletter/static/images/vol001/detail_24_2.png" alt="밭에서 일하는 사람들 사진">
+                </div>
+              </div>
+              <div class="banner_link_btn">
+                <a href="/items/details-main.html?code=G2002001042
+                " target="_blank" title="새창 열림">자세히 보기&nbsp;&nbsp;+</a>
+              </div>
+            </div>
+            <div class="tit_area">
+              <h4>전라남도 여수시</h4>
+              <h3>
+                가을 밥상 위 밥도둑 <br/>
+                <span class="blue">‘돌산갓김치’</span>
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar"></div>
+          <section id="" class="detail_contents_area">
+            <p>
+              갓은 겨자에서 파생된 식물이다. ‘갓’을 한자로 개(芥)라고 하는데, ‘갓의 씨앗’을 뜻하는 한자어 개자(芥子)가 이름이 달라져 ‘겨자’가 되었다. 갓이 겨잣과 식물이라는 것을 알고 나면 그 맛의 유사함에 절로 고개가 끄덕여진다.<br/>
+              <br/>
+              코가 시큰해지는 알싸함이 특징인 ‘갓’ 중 가장 지명도가 높은 상품은 여수시 돌산읍에서 생산하는 ‘돌산갓’이다. 갓의 고장답게 여수시 답례품 중 가장 인기 품목은 ‘돌산갓김치’이다. 일반적인 갓김치와 물김치, 갓피클 등 3종류가 있어 기부자가 식성에 맞게 골라 먹는 재미를 갖췄다.<br/>
+              <br/>
+              &lt;본초강목&gt;에서 갓은 ‘가슴을 이롭게 하고 식욕을 돋운다’라고 표현한다. 무더위가 물러가고 어느덧 선선한 가을이 찾아왔다. 여름 동안 잃었던 입맛을 여수의 자랑거리 ‘갓김치’와 함께 되찾기를 추천한다.
+
+            </p>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

@@ -1,0 +1,820 @@
+{
+    "service_info": {
+        "code": 200,
+        "data": {
+            "service_1": {
+                "action_list": {
+                    "gibu": {
+                        "id": "gibu",
+                        "name": "6 \uae30\ubd80",
+                        "stat": {
+                            "avg": {
+                                "alive_notice": 0.0,
+                                "block": 0.0,
+                                "bypass": 0.0,
+                                "chk_enter": 0.0,
+                                "chk_enter_succ": 0.799715,
+                                "chk_enter_wrong_server": 0.0,
+                                "complete": 0.0,
+                                "complete_succ": 0.0,
+                                "complete_tout": 0.549804,
+                                "complete_wrong_server": 0.0,
+                                "invalid_key": 0.0,
+                                "new_key": 0.0,
+                                "new_key_chk_enter": 0.799715,
+                                "process_tm": 0.0,
+                                "process_tm_trend": 0.0,
+                                "process_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "total_tps": 0.799715,
+                                "wait_tm": 0.0,
+                                "wait_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "wait_user": 199.0
+                            },
+                            "runtime": {
+                                "atid": 882492,
+                                "current": 882413,
+                                "etimeout": 20,
+                                "ic_access_mode": 0,
+                                "real_run_size": 100,
+                                "svr_cnt": 1,
+                                "used_size": 19
+                            },
+                            "total": {
+                                "alive_notice": 0,
+                                "block": 0,
+                                "bypass": 0,
+                                "chk_enter": 0,
+                                "chk_enter_succ": 882413,
+                                "chk_enter_wrong_server": 0,
+                                "complete": 4962,
+                                "complete_succ": 1709,
+                                "complete_tout": 880685,
+                                "complete_wrong_server": 0,
+                                "invalid_key": 13,
+                                "new_key": 0,
+                                "new_key_chk_enter": 882413
+                            },
+                            "uptime": 1764056387,
+                            "xview": {
+                                "data": [
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "interval": 1,
+                                "uptime": 1764056387
+                            }
+                        }
+                    },
+                    "index": {
+                        "id": "index",
+                        "name": "1 \uba54\uc778\ud654\uba74",
+                        "stat": {
+                            "avg": {
+                                "alive_notice": 0.0,
+                                "block": 0.0,
+                                "bypass": 0.0,
+                                "chk_enter": 0.0,
+                                "chk_enter_succ": 0.849698,
+                                "chk_enter_wrong_server": 0.0,
+                                "complete": 0.149947,
+                                "complete_succ": 0.049982,
+                                "complete_tout": 0.799715,
+                                "complete_wrong_server": 0.0,
+                                "invalid_key": 0.0,
+                                "new_key": 0.0,
+                                "new_key_chk_enter": 0.849698,
+                                "process_tm": 5.0,
+                                "process_tm_trend": 0.0,
+                                "process_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "total_tps": 0.999644,
+                                "wait_tm": 0.0,
+                                "wait_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "wait_user": 50312.0
+                            },
+                            "runtime": {
+                                "atid": 1754097,
+                                "current": 1753989,
+                                "etimeout": 20,
+                                "ic_access_mode": 0,
+                                "real_run_size": 130,
+                                "svr_cnt": 1,
+                                "used_size": 20
+                            },
+                            "total": {
+                                "alive_notice": 0,
+                                "block": 0,
+                                "bypass": 0,
+                                "chk_enter": 148992,
+                                "chk_enter_succ": 1752482,
+                                "chk_enter_wrong_server": 0,
+                                "complete": 155261,
+                                "complete_succ": 37680,
+                                "complete_tout": 1714745,
+                                "complete_wrong_server": 0,
+                                "invalid_key": 962,
+                                "new_key": 0,
+                                "new_key_chk_enter": 1753989
+                            },
+                            "uptime": 1764056387,
+                            "xview": {
+                                "data": [
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "interval": 1,
+                                "uptime": 1764056387
+                            }
+                        }
+                    },
+                    "joinin": {
+                        "id": "joinin",
+                        "name": "2 \ud68c\uc6d0\uac00\uc785",
+                        "stat": {
+                            "avg": {
+                                "alive_notice": 0.0,
+                                "block": 0.0,
+                                "bypass": 0.0,
+                                "chk_enter": 0.0,
+                                "chk_enter_succ": 0.0,
+                                "chk_enter_wrong_server": 0.0,
+                                "complete": 0.0,
+                                "complete_succ": 0.0,
+                                "complete_tout": 0.0,
+                                "complete_wrong_server": 0.0,
+                                "invalid_key": 0.0,
+                                "new_key": 0.0,
+                                "new_key_chk_enter": 0.0,
+                                "process_tm": 0.0,
+                                "process_tm_trend": 0.0,
+                                "process_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "total_tps": 0.0,
+                                "wait_tm": 0.0,
+                                "wait_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "wait_user": 0.0
+                            },
+                            "runtime": {
+                                "atid": 100,
+                                "current": 0,
+                                "etimeout": 20,
+                                "ic_access_mode": 0,
+                                "real_run_size": 100,
+                                "svr_cnt": 1,
+                                "used_size": 0
+                            },
+                            "total": {
+                                "alive_notice": 0,
+                                "block": 0,
+                                "bypass": 0,
+                                "chk_enter": 0,
+                                "chk_enter_succ": 0,
+                                "chk_enter_wrong_server": 0,
+                                "complete": 0,
+                                "complete_succ": 0,
+                                "complete_tout": 0,
+                                "complete_wrong_server": 0,
+                                "invalid_key": 0,
+                                "new_key": 0,
+                                "new_key_chk_enter": 0
+                            },
+                            "uptime": 1764056387,
+                            "xview": {
+                                "data": [
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "interval": 1,
+                                "uptime": 1764056387
+                            }
+                        }
+                    },
+                    "login": {
+                        "id": "login",
+                        "name": "3 \ub85c\uadf8\uc778",
+                        "stat": {
+                            "avg": {
+                                "alive_notice": 0.0,
+                                "block": 0.0,
+                                "bypass": 0.0,
+                                "chk_enter": 0.0,
+                                "chk_enter_succ": 0.249911,
+                                "chk_enter_wrong_server": 0.0,
+                                "complete": 0.249911,
+                                "complete_succ": 0.249911,
+                                "complete_tout": 0.0,
+                                "complete_wrong_server": 0.0,
+                                "invalid_key": 0.0,
+                                "new_key": 0.0,
+                                "new_key_chk_enter": 0.249911,
+                                "process_tm": 0.0,
+                                "process_tm_trend": 0.0,
+                                "process_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "total_tps": 0.499822,
+                                "wait_tm": 0.0,
+                                "wait_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "wait_user": 0.0
+                            },
+                            "runtime": {
+                                "atid": 346614,
+                                "current": 346515,
+                                "etimeout": 20,
+                                "ic_access_mode": 0,
+                                "real_run_size": 100,
+                                "svr_cnt": 1,
+                                "used_size": 0
+                            },
+                            "total": {
+                                "alive_notice": 0,
+                                "block": 0,
+                                "bypass": 0,
+                                "chk_enter": 0,
+                                "chk_enter_succ": 346515,
+                                "chk_enter_wrong_server": 0,
+                                "complete": 309281,
+                                "complete_succ": 281389,
+                                "complete_tout": 65126,
+                                "complete_wrong_server": 0,
+                                "invalid_key": 3,
+                                "new_key": 0,
+                                "new_key_chk_enter": 346515
+                            },
+                            "uptime": 1764056386,
+                            "xview": {
+                                "data": [
+                                    1,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "interval": 1,
+                                "uptime": 1764056386
+                            }
+                        }
+                    },
+                    "op_login": {
+                        "id": "op_login",
+                        "name": "8 \uad00\ub9ac\uc790 \ub85c\uadf8\uc778",
+                        "stat": {
+                            "avg": {
+                                "alive_notice": 0.0,
+                                "block": 0.0,
+                                "bypass": 0.0,
+                                "chk_enter": 0.0,
+                                "chk_enter_succ": 0.0,
+                                "chk_enter_wrong_server": 0.0,
+                                "complete": 0.0,
+                                "complete_succ": 0.0,
+                                "complete_tout": 0.049982,
+                                "complete_wrong_server": 0.0,
+                                "invalid_key": 0.0,
+                                "new_key": 0.0,
+                                "new_key_chk_enter": 0.0,
+                                "process_tm": 0.0,
+                                "process_tm_trend": 0.0,
+                                "process_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "total_tps": 0.0,
+                                "wait_tm": 0.0,
+                                "wait_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "wait_user": 0.0
+                            },
+                            "runtime": {
+                                "atid": 78112,
+                                "current": 78063,
+                                "etimeout": 20,
+                                "ic_access_mode": 0,
+                                "real_run_size": 50,
+                                "svr_cnt": 1,
+                                "used_size": 0
+                            },
+                            "total": {
+                                "alive_notice": 0,
+                                "block": 0,
+                                "bypass": 0,
+                                "chk_enter": 0,
+                                "chk_enter_succ": 78063,
+                                "chk_enter_wrong_server": 0,
+                                "complete": 50,
+                                "complete_succ": 0,
+                                "complete_tout": 78063,
+                                "complete_wrong_server": 0,
+                                "invalid_key": 0,
+                                "new_key": 0,
+                                "new_key_chk_enter": 78063
+                            },
+                            "uptime": 1764056386,
+                            "xview": {
+                                "data": [
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "interval": 1,
+                                "uptime": 1764056385
+                            }
+                        }
+                    },
+                    "se_login": {
+                        "id": "se_login",
+                        "name": "7 \ub2f5\ub840\ud488 \ub85c\uadf8\uc778",
+                        "stat": {
+                            "avg": {
+                                "alive_notice": 0.0,
+                                "block": 0.0,
+                                "bypass": 0.0,
+                                "chk_enter": 0.0,
+                                "chk_enter_succ": 0.149947,
+                                "chk_enter_wrong_server": 0.0,
+                                "complete": 0.0,
+                                "complete_succ": 0.0,
+                                "complete_tout": 0.149947,
+                                "complete_wrong_server": 0.0,
+                                "invalid_key": 0.0,
+                                "new_key": 0.0,
+                                "new_key_chk_enter": 0.149947,
+                                "process_tm": 0.0,
+                                "process_tm_trend": 0.0,
+                                "process_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "total_tps": 0.149947,
+                                "wait_tm": 0.0,
+                                "wait_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "wait_user": 0.0
+                            },
+                            "runtime": {
+                                "atid": 605796,
+                                "current": 605752,
+                                "etimeout": 20,
+                                "ic_access_mode": 0,
+                                "real_run_size": 50,
+                                "svr_cnt": 1,
+                                "used_size": 4
+                            },
+                            "total": {
+                                "alive_notice": 0,
+                                "block": 0,
+                                "bypass": 0,
+                                "chk_enter": 108,
+                                "chk_enter_succ": 605733,
+                                "chk_enter_wrong_server": 0,
+                                "complete": 16,
+                                "complete_succ": 0,
+                                "complete_tout": 605729,
+                                "complete_wrong_server": 0,
+                                "invalid_key": 0,
+                                "new_key": 0,
+                                "new_key_chk_enter": 605752
+                            },
+                            "uptime": 1764056386,
+                            "xview": {
+                                "data": [
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "interval": 1,
+                                "uptime": 1764056385
+                            }
+                        }
+                    },
+                    "shop": {
+                        "id": "shop",
+                        "name": "4 \ub2f5\ub840\ud488",
+                        "stat": {
+                            "avg": {
+                                "alive_notice": 0.0,
+                                "block": 0.0,
+                                "bypass": 0.0,
+                                "chk_enter": 0.0,
+                                "chk_enter_succ": 2.2492,
+                                "chk_enter_wrong_server": 0.0,
+                                "complete": 0.0,
+                                "complete_succ": 0.0,
+                                "complete_tout": 1.899324,
+                                "complete_wrong_server": 0.0,
+                                "invalid_key": 0.0,
+                                "new_key": 0.0,
+                                "new_key_chk_enter": 2.2492,
+                                "process_tm": 0.0,
+                                "process_tm_trend": 0.0,
+                                "process_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "total_tps": 2.2492,
+                                "wait_tm": 0.0,
+                                "wait_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "wait_user": 1001.0
+                            },
+                            "runtime": {
+                                "atid": 3240793,
+                                "current": 3240652,
+                                "etimeout": 20,
+                                "ic_access_mode": 0,
+                                "real_run_size": 200,
+                                "svr_cnt": 1,
+                                "used_size": 53
+                            },
+                            "total": {
+                                "alive_notice": 0,
+                                "block": 0,
+                                "bypass": 0,
+                                "chk_enter": 257213,
+                                "chk_enter_succ": 3239230,
+                                "chk_enter_wrong_server": 0,
+                                "complete": 29057,
+                                "complete_succ": 3746,
+                                "complete_tout": 3235402,
+                                "complete_wrong_server": 0,
+                                "invalid_key": 102,
+                                "new_key": 0,
+                                "new_key_chk_enter": 3240652
+                            },
+                            "uptime": 1764056387,
+                            "xview": {
+                                "data": [
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "interval": 1,
+                                "uptime": 1764056387
+                            }
+                        }
+                    },
+                    "shop_view": {
+                        "id": "shop_view",
+                        "name": "5 \ub2f5\ub840\ud488 \uc0c1\uc138",
+                        "stat": {
+                            "avg": {
+                                "alive_notice": 0.0,
+                                "block": 0.0,
+                                "bypass": 0.0,
+                                "chk_enter": 0.0,
+                                "chk_enter_succ": 1.649414,
+                                "chk_enter_wrong_server": 0.0,
+                                "complete": 0.0,
+                                "complete_succ": 0.0,
+                                "complete_tout": 1.399502,
+                                "complete_wrong_server": 0.0,
+                                "invalid_key": 0.0,
+                                "new_key": 0.0,
+                                "new_key_chk_enter": 1.649414,
+                                "process_tm": 0.0,
+                                "process_tm_trend": 0.0,
+                                "process_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "total_tps": 1.649414,
+                                "wait_tm": 0.0,
+                                "wait_tms": [
+                                    0.0,
+                                    0.0,
+                                    0.0,
+                                    0.0
+                                ],
+                                "wait_user": 0.0
+                            },
+                            "runtime": {
+                                "atid": 1959872,
+                                "current": 1959818,
+                                "etimeout": 20,
+                                "ic_access_mode": 0,
+                                "real_run_size": 100,
+                                "svr_cnt": 1,
+                                "used_size": 41
+                            },
+                            "total": {
+                                "alive_notice": 0,
+                                "block": 0,
+                                "bypass": 0,
+                                "chk_enter": 19,
+                                "chk_enter_succ": 1959818,
+                                "chk_enter_wrong_server": 0,
+                                "complete": 27270,
+                                "complete_succ": 2689,
+                                "complete_tout": 1957088,
+                                "complete_wrong_server": 0,
+                                "invalid_key": 122,
+                                "new_key": 0,
+                                "new_key_chk_enter": 1959818
+                            },
+                            "uptime": 1764056386,
+                            "xview": {
+                                "data": [
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "interval": 1,
+                                "uptime": 1764056386
+                            }
+                        }
+                    }
+                },
+                "id": "service_1",
+                "name": "service_1",
+                "stat": {
+                    "action_stat": {
+                        "avg": {
+                            "alive_notice": 0.0,
+                            "block": 0.0,
+                            "bypass": 0.0,
+                            "chk_enter": 0.0,
+                            "chk_enter_succ": 6.047849,
+                            "chk_enter_wrong_server": 0.0,
+                            "complete": 0.44984,
+                            "complete_succ": 0.349876,
+                            "complete_tout": 4.598365,
+                            "complete_wrong_server": 0.0,
+                            "invalid_key": 0.0,
+                            "new_key": 0.0,
+                            "new_key_chk_enter": 6.047849,
+                            "process_tm": 2.538462,
+                            "process_tm_trend": 0.0,
+                            "process_tms": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.807692
+                            ],
+                            "total_tps": 6.497689,
+                            "wait_tm": 0.0,
+                            "wait_tms": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "wait_user": 0.0
+                        },
+                        "total": {
+                            "alive_notice": 0,
+                            "block": 0,
+                            "bypass": 0,
+                            "chk_enter": 406332,
+                            "chk_enter_succ": 8864251,
+                            "chk_enter_wrong_server": 0,
+                            "complete": 525897,
+                            "complete_succ": 327213,
+                            "complete_tout": 8536830,
+                            "complete_wrong_server": 0,
+                            "invalid_key": 1202,
+                            "new_key": 0,
+                            "new_key_chk_enter": 8867199
+                        },
+                        "xview": {
+                            "data": [
+                                1,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0
+                            ],
+                            "interval": 1,
+                            "uptime": 1764056385
+                        }
+                    },
+                    "avg": {
+                        "block": 0.0,
+                        "bypass": 0.0
+                    },
+                    "runtime": {
+                        "current_used": 830,
+                        "dynamic_action_cnt": 0,
+                        "ic_access_mode": 0,
+                        "static_action_cnt": 8,
+                        "static_sum": 830,
+                        "svr_cnt": 1
+                    },
+                    "total": {
+                        "block": 0,
+                        "bypass": 0
+                    },
+                    "uptime": 1764056386
+                }
+            }
+        },
+        "status": "success"
+    }
+}

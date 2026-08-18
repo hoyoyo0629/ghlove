@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>7대째 가업을 이어온 “한양도예 황토쌀독” : 고향사랑e음 고향소식</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+  </head>
+
+  <body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page">
+      <div id="wrap">
+
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <img src="/newsletter/static/images/vol001/detail_10.png" alt="황토 쌀독이 쌓여있는 사진">
+              <div class="banner_link_btn">
+                <a href="https://smartstore.naver.com/irony04
+                " target="_blank" title="새창 열림">자세히 보기&nbsp;&nbsp;+</a>
+              </div>
+            </div>
+            <div class="tit_area">
+              <h4>경기도 화성시</h4>
+              <h3>
+                7대째 가업을 이어온<br/>
+                <span class="blue">“한양도예 황토쌀독”</span>
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar"></div>
+          <section id="" class="detail_contents_area">
+            <ul class="deco-arrow blue-deco blue">
+              <li>
+                화성시에 위치한 ‘한양도예(인플로라팟)’는 7대째 가업을 이어 150년 동안 장인정신과 조선 도공의 후예라는 자부심으로 전통 도자기와 옹기 제품만을 생산해오고 있는 기업입니다.
+              </li>
+              <li>
+                모든 제품은 100% 물레 수작업으로 제작되며, 100% 국산 황토 흙으로 만들어 환경호르몬이 없고 친환경적인 것이 특징입니다. 더불어 통풍 효과를 높이고 쌀벌레가 생기는 것을 방지하기 위해 유약 처리를 하지 않아 ‘숨 쉬는’ 쌀독으로 유명합니다. 인체에 유익한 원적외선과 음이온 배출을 통하여 곡물과 과일의 신선도를 오랫동안 유지해줍니다.
+              </li>
+              <li>
+                한양도예는 화성시 고향사랑기부자를 위해 오직 화성시 답례품몰에서만 만날 수 있는 모던스타일 황토쌀독을 시중 가격보다 저렴한 30,000P로 판매하고 있으니 많은 관심 부탁드립니다.
+              </li>
+            </ul>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

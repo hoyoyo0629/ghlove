@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>오프라인 기부절차 안내-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/donation_guge.css">
+    <link rel="stylesheet" href="/static/css/research-box.css">
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-donation-lnb-ali :menu-url="page.menuUrl"></layout-donation-lnb-ali>
+
+            
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-not-arrow"></span>
+                        기부안내
+                        <span class="txt-not-arrow"></span>
+                        오프라인기부절차안내
+                    </span>
+                    <h2 class="page-title-txt">오프라인 기부절차 안내</h2>
+                </div>
+            </section>
+            <section id="contents">
+                <div class="">
+                    <div class="center">
+                        <div class="s-contents d-guide first">
+                            <div class="tab_menu_wrap" id="tabMenu">
+                                <div class="tab_group offline">
+                                    <button type="button" class="tab_items on" @click="goToTabMenu(0)">농협 기부안내</button>
+                                    <button type="button" class="tab_items" @click="goToTabMenu(1)"><span
+                                            class="liLabel">고향사랑e음</span><span class="liLabel"> 로그인</span></button>
+                                    <button type="button" class="tab_items" @click="goToTabMenu(2)">답례품구매</button>
+                                </div>
+
+                            </div>
+
+                            <!-- 농협 기부안내 -->
+                            <div class="tab_con view">
+                                <div class="details_steps">
+                                    <img src="/static/images/do_info/tab_nh1.png" alt="" class="pc_img">
+                                    <img src="/static/images/do_info/m-tab_nh1.png" alt="" class="mobile_img">
+
+                                    <div class="detailsTxt">
+                                        <p><strong class="pointblue"> 01.</strong> 가까운 농협 지점을 방문하여 오프라인 기부 담당자에게 기부 의사를
+                                            이야기합니다.</p>
+                                        <p><strong class="pointblue"> 02.</strong> 안내에 따라 전달받은 기부<strong
+                                                class="pointblue">양식</strong>과 <strong class="pointblue">약관</strong>을
+                                            작성하여
+                                            담당자에게 제출 후 기부를 진행합니다.</p>
+                                    </div>
+                                </div>
+
+
+                                <div class="details_steps">
+                                    <img src="/static/images/do_info/tab_nh2.png" alt="" class="pc_img">
+                                    <img src="/static/images/do_info/m-tab_nh2.png" alt="" class="mobile_img">
+
+                                    <div class="detailsTxt">
+                                        <p><strong class="pointblue"> 03.</strong> 은행 담당자가 출력된 납부 신청서를 전달받아 기부금 납부까지
+                                            진행하면
+                                            오프라인 기부가 완료됩니다.</p>
+                                        <p class="pointRed">※ 답례품 구매를 위해서는 납부신청서에 적힌 아이디가 필요하므로 분실/폐기 하지 않도록 주의 바랍니다.
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                                <div class="mobile_section_bar"></div>
+                            </div>
+
+                            <!-- 고향사랑e음 로그인 -->
+                            <div class="tab_con">
+                                <div class="pc_img">
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_nh-login1.png" alt="" class="pc_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 01.</strong> 고향사랑e음 홈페이지에 접속하여 화면 상단의 로그인 선택
+                                            </p>
+                                            <p><strong class="pointblue"> 02.</strong> 일반 로그인 선택 후 </p>
+                                            <p><strong class="pointblue"> 03.</strong> 비밀번호 찾기를 클릭합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_nh-login2.png" alt="" class="pc_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 04.</strong> 기부자의 이름과</p>
+                                            <p><strong class="pointblue"> 05.</strong> 농협에서 발급받은 납부신청서에 적힌 아이디를 입력한 후
+                                            </p>
+                                            <p><strong class="pointblue"> 06.</strong> '본인인증' 버튼을 선택합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_nh-login3.png" alt="" class="pc_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 08.</strong> 본인인증 창이 열리면 공인인증 방법과 휴대폰 중 가능한 방식을 선택합니다. 공인 인증의 경우</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_nh-login4.png" alt="" class="pc_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 09.</strong> 금융인증서나 휴대폰인증을 선택하신 경우, 정보를 입력하고 인증을 받습니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_nh-login5.png" alt="" class="pc_img">
+                                        <div class="detailsTxt">
+                                        	<p>공인 인증서의 경우</p>
+                                            <p><strong class="pointblue"> 09.</strong> '인증서 등록'을 눌러 등록을 먼저 한 후</p>
+                                            <p><strong class="pointblue"> 10.</strong> '인증하기'을 눌러 본인 인증을 진행합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_nh-login6.png" alt="" class="pc_img">
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 11.</strong> 새로운 비밀번호를 규칙에 맞게 설정한 후</p>
+                                            <p><strong class="pointblue"> 12.</strong> '확인'버튼을 선택하면 로그인이 됩니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mobile_img">
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/m-nh-login1.jpg" alt="" class="mobile_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 01.</strong> 고향사랑e음 홈페이지에 접속하여 화면 상단의 로그인 선택
+                                            </p>
+                                            <p><strong class="pointblue"> 02.</strong> 아이디 로그인 선택 후</p>
+                                            <p><strong class="pointblue"> 03.</strong> 비밀번호 찾기를 선택합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/m-nh-login2.jpg" alt="" class="mobile_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 04.</strong> 기부자의 이름과</p>
+                                            <p><strong class="pointblue"> 05.</strong> 농협에서 발급받은 납부신청서에 적힌 아이디를 입력한 후
+                                            </p>
+                                            <p><strong class="pointblue"> 06.</strong> '본인인증' 버튼을 선택합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/m-nh-login3.jpg" alt="" class="mobile_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 07.</strong> '인증하기'버튼을 선택합니다.</p>
+                                            <p><strong class="pointblue"> 08.</strong> 금융인증 창이 열리면 인증에 필요한 정보를 입력하고 인증을 진행합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/m-nh-login4.jpg" alt="" class="mobile_img">
+
+                                        <div class="detailsTxt">
+                                            <p>휴대폰 인증의 경우 </p>
+                                            <p><strong class="pointblue"> 07.</strong> '인증하기'를 눌러 </p>
+                                            <p><strong class="pointblue"> 08.</strong> 통신사를 선택 후 본인 인증을 진행합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/m-nh-login5.jpg" alt="" class="mobile_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 09.</strong> 새로운 비밀번호를 규칙에 맞게 설정한 후</p>
+                                            <p><strong class="pointblue"> 10.</strong> '본인 인증'버튼을 선택하면 로그인이 됩니다.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mobile_section_bar"></div>
+                                    
+                                </div>
+                            </div>
+
+                            <!-- 답례품 구매 -->
+                            <div class="tab_con">
+                                <div class="pc_img">
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_goods-off1.png" alt="" class="pc_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 01.</strong> 상단 '마이페이지' 버튼을 클릭한 후 </p>
+                                            <p><strong class="pointblue"> 02.</strong> 마이페이지 화면에서 '기부포인트 현황'을 클릭합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_goods-off2.png" alt="" class="pc_img">
+
+                                        <div class="detailsTxt">
+                                            <p>포인트가 정상적으로 적립이 되었는지 확인하고</p>
+                                            <p><strong class="pointblue"> 03.</strong> '답례품몰 가기'를 클릭하면 기부한 지자체의 답례품몰이 새
+                                                창으로
+                                                열립니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/pc_goods-off3.png" alt="" class="pc_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 04.</strong> 내가 기부한 지자체의 답례품 중 구매가 가능한 포인트 한도
+                                                내의
+                                                상품을 선택합니다. </p>
+                                            <p><strong class="pointblue"> 05.</strong> 옵션과 수량을 선택한 후 '선택하기' 버튼을 선택하여 구매를
+                                                진행합니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mobile_img">
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/m-goods-off1.jpg" alt=""
+                                            class="mobile_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 01.</strong> 고향사랑e음 웹사이트에 접속하여 화면 상단의 전체메뉴 아이콘
+                                                선택한
+                                                후 </p>
+                                            <p><strong class="pointblue"> 02.</strong> 마이페이지 화면에서 '기부포인트 현황'을 선택합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/m-goods-off2.jpg" alt=""
+                                            class="mobile_img">
+
+                                        <div class="detailsTxt">
+                                            <p>포인트가 정상적으로 적립이 되었는지 확인하고 </p>
+                                            <p><strong class="pointblue"> 03.</strong> '답례품몰 가기'를 선택하면 기부한 지자체의 답례품몰이 새
+                                                창으로
+                                                열립니다.</p>
+                                            <p><strong class="pointblue"> 04.</strong> 내가 기부한 지자체의 답례품 중 구매가 가능한 포인트 한도
+                                                내의
+                                                답례품을 선택합니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="details_steps">
+                                        <img src="/static/images/do_info/m-goods-off3.jpg" alt=""
+                                            class="mobile_img">
+
+                                        <div class="detailsTxt">
+                                            <p><strong class="pointblue"> 05.</strong> 옵션과 수량을 선택한 후 '선택하기' 버튼을 선택하여 구매를
+                                                진행합니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 버튼그룹 -->
+                            <div class="btn-box">
+                                <button type="button" class="blueBtn cancellation" @click="scrollTop()">
+                                    맨위로
+                                    <span>
+                                        <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="tab_con_sub view">
+                        	<div class="details_steps">
+                                <img src="/static/images/do_info/tab_nh3.png" alt="" class="pc_img">
+                                <img src="/static/images/do_info/m-tab_nh3.png" alt="" class="mobile_img">
+                            </div>
+                        </div>
+                        
+                        <div class="tab_con_sub">
+                        	<div class="details_steps">
+                                <img src="/static/images/do_info/pc_nh-login7.png" alt="" class="pc_img" style="margin: auto;">
+                                <img src="/static/images/do_info/m-tab_nh-login5.png" alt="" class="mobile_img">
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- 콘텐츠 만족도 -->
+                        <layout-content-stsfdg></layout-content-stsfdg>
+
+                    </div>
+                </div>
+
+
+            </section>
+
+          
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                //'layout-donation-lnb-ali': httpVueLoader('/components/layouts/donation_info-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+                'layout-content-stsfdg': httpVueLoader('/components/layouts/content-stsfdg/stsfdg.vue')
+            },
+            data: {
+                // ali data
+                userName: "",
+                userGrade: "",
+                selectedSurvey: "01",
+                result: {},
+                tabMenu: ['고향사랑e음 로그인', '답례품 구매'],
+                page: {
+                    menuUrl: "/donation/guide5.html"
+                },
+            },
+            methods: {
+                goToTabMenu: function (n) {
+                    let thisList = n;
+                    $('.tab_items').eq(n).addClass('on').siblings().removeClass('on');
+                    $('.tab_con').eq(n).addClass('view').siblings().removeClass('view');
+                    if (n < 2) {
+	                    $('.tab_con_sub').eq(n).addClass('on').siblings().removeClass('on');
+	                    $('.tab_con_sub').eq(n).addClass('view').siblings().removeClass('view');	
+					} else {
+						$('.tab_con_sub').removeClass('on');
+						$('.tab_con_sub').removeClass('view');
+					}
+                    
+                },
+
+                scrollTop() {
+                    location.href = '#tabMenu';
+                },
+                // *************** ali-add methods
+                // init: function () { // page init
+                //     $(".lnb-bar_2dep li").eq(3).addClass("currentT").siblings("li").removeClass("currentT");
+                //     $(".lnb-bar_3dep").eq(0).show();
+                //     $(".lnb-bar_3dep:eq(0) li:eq(3) a").addClass("currentP");
+                // },
+                radioChange: function (e) { // radio button checked value
+                    vm.selectedSurvey = e.target.value;
+                },
+                goToSurvey: function () { // 현재 페이지 만족도
+                    console.log("############### current radio checked value : " + vm.selectedSurvey);
+                    var message = "";
+                    if (vm.selectedSurvey != null && vm.selectedSurvey != "") {
+                        message = "만족도 평가를 등록하였습니다. 감사합니다.";
+                    } else {
+                        message = "만족도 평가 항목을 선택해 주세요";
+                    }
+
+                    $s.alert(message, function () {
+                        location.reload();
+                    });
+                }
+
+            },
+            computed: {
+
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    Saleson.init();
+                    //setTimeout(() => this.init(), 100);
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

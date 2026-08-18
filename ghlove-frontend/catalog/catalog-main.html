@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="https://ilovegohyang.go.kr/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta
+      itemprop="image"
+      content="https://ilovegohyang.go.kr/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>고향사랑e음 소식지-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/donation_guge.css?d=20230703" />
+    <link rel="stylesheet" href="/static/css/research-box.css" />
+
+    <link rel="stylesheet" href="/static/css/main-b.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css">
+
+    <link rel="stylesheet" href="/static/css/news_contents.css">
+    <link rel="stylesheet" href="/static/css/news_header.css">
+    <link rel="stylesheet" href="/static/css/goods_card.css">
+
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <layout-header-ali @go-to-tab-menu="goToTabMenu" :menu-url="menuUrl"></layout-header-ali>
+
+        <section class="main_contents news_kv">
+            <!-- <div class="pc_img"> -->
+            <div>
+                <div class="news_kv_inner">
+                    <!-- <div class="kv">
+                        <div class="kv_img_cover">
+                            <img src="/static/images/news/main_bg.png" alt="">
+                        </div>
+                    </div>
+                    <div id="contents" class="quick_donation_guid news_quick_btn">
+                        <div class="center">
+                            <a href="/donation/donation.html" class="de-img offline">
+                                <img src="/static/images/news/btn01.png" alt="기부하기 〉 바로 기부하러 가기">
+                            </a>
+                            <a href="/donation/guide2.html" class="de-img online">
+                                <img src="/static/images/news/btn02.png" alt="기부안내 PC,모바일 기부과정을 알고싶다면?">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="selectBox">
+                        <select name="catalogVer" id="catalogVer" @change="changeCatalogVer($event)" ref="catalogVer">
+                            <option value="select">시도 선택</option>
+                            <option v-for="(data, i) in catalogYearNoList" :value="data.catalogYearNo">
+	                          {{data.catalogVerStr}}
+	                        </option>
+                        </select>
+                    </div> -->
+
+                    <!-- <div class="kv" v-for="(banner, i) in bannerNews" :value="banner.catalogContentId">
+
+                    </div> -->
+
+					<div class="main_banner center" v-if="bannerNews != ''">
+						<div class="swiper-button-prev pc" slot="button-prev"><span class="screen_out">이전슬라이드</span></div>
+						<swiper class="main_slider" :options="bannerSliderOption" @click.native="goBannerPage" ref="awesomeNewSwiper">
+							<swiper-slide v-for="(data, i) in bannerNews" :key="i"><!-- click event, a tag 사용시 함수 사용 불가... -->
+	                            <!-- <button style="width:100%; height: 100%;"> -->
+									<div class="banner_container">
+			                            <div class="img_area">
+			                                <img class="item_img banner_img" :src="data.bannerImg" alt="설명">
+			                            </div>
+			                            <div class="banner_subject">
+			                              <span class="deepBlue pointSize">{{data.catalogContentCn}}</span>
+			                            </div>
+			                    	</div>
+								<!-- </button> -->
+							</swiper-slide>
+						</swiper>
+						<div class="swiper-button-next pc" slot="button-next"><span class="screen_out">다음슬라이드</span></div>
+						<div class="swiper-control">
+							<div class="stop_resume">
+								<button type="button" v-if="autoSlide == true" @click="stopAutoSlide"><img class="icon-img" src="/static/images/icon/pause.png" alt="일시정지"></button>
+								<button type="button" v-else @click="resumeAutoSlide"><img class="icon-img" src="/static/images/icon/play.png" alt="재생"></button>
+							</div>
+							<div class="swiper-pagination" slot="pagination"></div>
+						</div>
+					</div>
+
+
+                </div>
+            </div>
+
+            <!-- <div class="mobile_img">
+                <div class="news_kv_inner">
+                    <div class="kv">
+                        <div class="kv_img_cover">
+                            <img src="/static/images/news/m_main_bg.jpg" alt="">
+                        </div>
+
+                        <div class="selectBox">
+                            <select name="catalogVer" id="catalogVerM" @change="changeCatalogVer($event)" ref="catalogVerM">
+	                            <option value="select">시도 선택</option>
+	                            <option v-for="(data, i) in catalogYearNoList" :value="data.catalogYearNo">
+		                          {{data.catalogVerStr}}
+		                        </option>
+	                        </select>
+                        </div>
+                        <section id="contents" class="quick_donation_guid news_quick_btn">
+                            <div class="center">
+                                <a href="/donation/donation.html" class="mo-img offline">
+                                    <img src="/static/images/news/m_btn01.png" alt="기부하기 〉 바로 기부하러 가기">
+                                </a>
+                                <a href="/donation/guide2.html" class="mo-img online">
+                                    <img src="/static/images/news/m_btn02.png" alt="온기부안내 PC,모바일 기부과정을 알고싶다면?">
+                                </a>
+                            </div>
+                        </section>
+                    </div>
+
+                </div>
+            </div> -->
+        </section>
+
+        <!-- <section class="news_main_share">
+            <div class="share">
+				<button type="button" class="top-banner" @click="goToGuid()">
+                    <span class="center">
+                        <span class="text_box">
+                            <strong>친구와 공유하기</strong>
+                            <span class="text">친구와 함께 고향에 마음을 전하세요.</span>
+                        </span>
+                    </span>
+                </button>
+            </div>
+        </section> -->
+    </div>
+
+        <section id="contents" class="newsletterTabsPages">
+          <div class="">
+            <div class="center">
+              <div class="s-contents d-guide first">
+                <!-- <div class="tab_menu_wrap" id="tabMenu">
+
+                  <div class="tab_group_wrap">
+                    <div class="tab_group">
+                      <button type="button" id="navTab0" class="tab_items on" @click="goToTabMenu('0')">전체</button>
+                      <button type="button" id="navTab1" class="tab_items" @click="goToTabMenu('1')">주요 답례품</button>
+                      <button type="button" id="navTab2" class="tab_items" @click="goToTabMenu('2')">기금사업 공감</button>
+                      <button type="button" id="navTab3" class="tab_items" @click="goToTabMenu('3')">인기 답례품</button>
+                      <button type="button" id="navTab4" class="tab_items" @click="goToTabMenu('4')">제철식품</button>
+                    </div>
+                  </div>
+
+                </div> -->
+
+                <!-- tab0 전체 -->
+                <div class="tab_con tab_con00 view">
+                  <div class="pc_img">
+                    <div class="" id="tabMenu">
+                      <ul>
+                        <li>
+                          <div class="h4">
+                            <a class="h4_cover tab_items" id="conNavBox1" href="javascript:void(0);" @click="goToTabMenu('1')">
+                              고향 소식
+                              <span>고향 소식</span>
+                              <div class="plus"></div>
+                            </a>
+                          </div>
+                          <swiper v-if="hometownNews.length > 0" :options="hometownSliderOption">
+                          	<swiper-slide v-for="(hometown, i) in hometownNews" :key="i">
+		                          <a class="btm_wrap" @click="goItemPage(hometown.hometownContentId)" style="margin: auto;"
+		                          >
+		                            <div>
+		                                <img class="item_img" :src="hometown.img" :alt="hometown.contentSubject + ' 안내 이미지'">
+		                            </div>
+		                            <div>
+		                              <p class="minitit" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 5px 10px 0px 10px;">{{hometown.contentSubject}}</p>
+		                              <p class="minisub" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 5px 10px 5px 10px;">{{hometown.contentCn}}</p>
+		                              <!-- <span class="deepBlue"><span class="pointSize">{{ formatNumber(catalogNewItem[0].salePrice) }}</span> P</span> -->
+		                            </div>
+		                          </a>
+	                          </swiper-slide>
+                          </swiper>
+                          <div class="search_ru" v-if="hometownNews.length == '0'">
+			                    <div class="list-none">
+			                        <img src="/static/images/icon/cli-icon_result-none.png" alt="결과 없음">
+			                        등록된 고향 소식이 없습니다.
+			                    </div>
+			                </div>
+                        </li>
+                        <li>
+                          <div class="h4">
+                            <a class="h4_cover tab_items" id="conNavBox2" href="javascript:void(0);" @click="goToTabMenu('2')">
+                              우수 사례
+                              <span>우수 사례</span>
+                              <div class="plus"></div>
+                            </a>
+                          </div>
+                          <swiper v-if="hometownNews.length > 0" :options="hometownSliderOption">
+                          	<swiper-slide v-for="(hometown, i) in hometownNews" :key="i">
+		                          <a class="btm_wrap" @click="goItemPage(hometown.hometownContentId)" style="margin: auto;"
+		                          >
+		                            <div>
+		                                <img class="item_img" :src="hometown.img" :alt="hometown.contentSubject + ' 안내 이미지'">
+		                            </div>
+		                            <div>
+		                              <p class="minitit" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 5px 10px 0px 10px;">{{hometown.contentSubject}}</p>
+		                              <p class="minisub" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 5px 10px 5px 10px;">{{hometown.contentCn}}</p>
+		                              <!-- <span class="deepBlue"><span class="pointSize">{{ formatNumber(catalogNewItem[0].salePrice) }}</span> P</span> -->
+		                            </div>
+		                          </a>
+	                          </swiper-slide>
+                          </swiper>
+                          <div class="search_ru" v-if="hometownNews.length == '0'">
+			                    <div class="list-none">
+			                        <img src="/static/images/icon/cli-icon_result-none.png" alt="결과 없음">
+			                        등록된 우수 사례가 없습니다.
+			                    </div>
+			                </div>
+                        </li>
+                        <li style="height: auto;">
+                          <div class="h4">
+                            <a class="h4_cover tab_items" id="conNavBox3" href="javascript:void(0);" @click="goToTabMenu('3')">
+                              인기 답례품
+                              <span>지자체 인기 답례품</span>
+                              <div class="plus"></div>
+                            </a>
+                          </div>
+                            <swiper v-if="hometownNews.length > 0" :options="hometownSliderOption">
+                          	<swiper-slide v-for="(hometown, i) in hometownNews" :key="i">
+		                          <a class="btm_wrap" @click="goItemPage(hometown.hometownContentId)" style="margin: auto;"
+		                          >
+		                            <div>
+		                                <img class="item_img" :src="hometown.img" :alt="hometown.contentSubject + ' 안내 이미지'">
+		                            </div>
+		                            <div>
+		                              <p class="minitit" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 5px 10px 0px 10px;">{{hometown.contentSubject}}</p>
+		                              <p class="minisub" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 5px 10px 5px 10px;">{{hometown.contentCn}}</p>
+		                              <!-- <span class="deepBlue"><span class="pointSize">{{ formatNumber(catalogNewItem[0].salePrice) }}</span> P</span> -->
+		                            </div>
+		                          </a>
+	                          </swiper-slide>
+                          </swiper>
+                        </li>
+                        <li style="height: auto;">
+                          <div class="h4">
+                            <a class="h4_cover tab_items" id="conNavBox4" href="javascript:void(0);" @click="goToTabMenu('4')">
+                              제철식품
+                              <span>계절별 인기 식품</span>
+                              <div class="plus"></div>
+                            </a>
+                          </div>
+                          <swiper v-if="hometownNews.length > 0" :options="hometownSliderOption">
+                          	<swiper-slide v-for="(hometown, i) in hometownNews" :key="i">
+		                          <a class="btm_wrap" @click="goItemPage(hometown.hometownContentId)" style="margin: auto;"
+		                          >
+		                            <div>
+		                                <img class="item_img" :src="hometown.img" :alt="hometown.contentSubject + ' 안내 이미지'">
+		                            </div>
+		                            <div>
+		                              <p class="minitit" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 5px 10px 0px 10px;">{{hometown.contentSubject}}</p>
+		                              <p class="minisub" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;margin: 5px 10px 5px 10px;">{{hometown.contentCn}}</p>
+		                              <!-- <span class="deepBlue"><span class="pointSize">{{ formatNumber(catalogNewItem[0].salePrice) }}</span> P</span> -->
+		                            </div>
+		                          </a>
+	                          </swiper-slide>
+                          </swiper>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="btm_banner">
+                      <a href="">
+                        <img src="/static/images/news/tab01_banner.png" alt="더하고 곱하다">
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="mobile_img">
+                    <div class="" id="tabMenu">
+                      <ul>
+                        <li>
+                          <div class="h4">
+                            <a class="h4_cover tab_items" id="conNavBox1" href="javascript:void(0);" @click="goToTabMenu('1')">
+                              주요 답례품
+                              <span>지자체별 주요 답례품</span>
+                              <div class="plus"></div>
+                            </a>
+                          </div>
+                          <a class="btm_wrap" href="javascript:void(0);" v-if="catalogNewItem.length > 0">
+                            <div class="left">
+                                <img class="item_img" :src="itemImage(catalogNewItem[0].itemImage)" :alt="catalogNewItem[0].itemImage">
+                            </div>
+                            <div class="right">
+                              <p class="minitit">{{catalogNewItem[0].locgovNm}}</p>
+                              <p class="minisub">{{catalogNewItem[0].itemName}} {{catalogNewItem[0].companyName}}</p>
+                              <span class="deepBlue"><span class="pointSize">{{ formatNumber(catalogNewItem[0].salePrice) }}</span> P</span>
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <div class="h4">
+                            <a class="h4_cover tab_items" id="conNavBox2" href="javascript:void(0);" @click="goToTabMenu('2')">
+                              기금사업 공감
+                              <span>기부자 공감 기금사업 안내</span>
+                              <div class="plus"></div>
+                            </a>
+                          </div>
+                          <a class="btm_wrap" href="javascript:void(0);" v-if="dsgnDonationItem.length > 0">
+                            <div class="left">
+                                <img class="item_img" :src="itemImage('/upload/prj/'+dsgnDonationItem[0].prjId+'/'+dsgnDonationItem[0].prjImage)" :alt="dsgnDonationItem[0].prjSubject">
+                            </div>
+                            <div class="right">
+                              <p class="minitit">{{dsgnDonationItem[0].prjSubject}}</p>
+                              <p class="minisub">{{dsgnDonationItem[0].prjStDtForm}} ~ {{dsgnDonationItem[0].prjEdDtForm}} <br> {{dsgnDonationItem[0].locgovNm}}</p>
+                              <span class="deepBlue">목표 금액 <span class="pointSize">{{ formatNumber(dsgnDonationItem[0].targetAmt) }}</span> 원</span>
+                              <!-- <div class="percentage_bar"><progress :value="dsgnDonationItem[0].rateAmt" max="100"></progress></div>
+                              <div class="per_bar_sub">
+                                <span class="per_txt"><span class="per_num">{{dsgnDonationItem[0].rateAmtStrWithPercent}}</span>
+                                <span class="per_btn" href="javascript:void(0);">{{dsgnDonationItem[0].label}}</span>
+                              </div> -->
+                            </div>
+                          </a>
+                        </li>
+                        <li>
+                          <div class="h4">
+                            <a class="h4_cover tab_items" id="conNavBox3" href="javascript:void(0);" @click="goToTabMenu('3')">
+                              인기 답례품
+                              <span>지자체 인기 답례품</span>
+                              <div class="plus"></div>
+                            </a>
+                          </div>
+                            <a class="btm_wrap" href="javascript:void(0);" v-if="locgovFavItem.length > 0">
+                              <div class="left">
+                                  <img class="item_img" :src="itemImage(locgovFavItem[0].itemImage)" :alt="locgovFavItem[0].itemName">
+                              </div>
+                              <div class="right">
+                                <p class="minitit">{{locgovFavItem[0].locgovNm}}</p>
+                                <p class="minisub">{{locgovFavItem[0].itemName}} {{locgovFavItem[0].companyName}}</p>
+                                <span class="deepBlue"><span class="pointSize">{{ formatNumber(locgovFavItem[0].salePrice) }}</span> P</span>
+                              </div>
+                          </a>
+                        </li>
+                        <li>
+                          <div class="h4">
+                            <a class="h4_cover tab_items" id="conNavBox4" href="javascript:void(0);" @click="goToTabMenu('4')">
+                              제철식품
+                              <span>계절별 인기 식품</span>
+                              <div class="plus"></div>
+                            </a>
+                          </div>
+                          <a class="btm_wrap" href="javascript:void(0);" v-if="catalogSeasonalItem.length > 0">
+                            <div class="left">
+                              <div class="img_frame">
+                                <img class="item_img" v-bind:src="itemImage(catalogSeasonalItem[0].itemImage)" :alt="catalogSeasonalItem[0].itemName">
+                              </div>
+                            </div>
+                            <div class="right">
+                              <p class="minitit" v-html="catalogSeasonalItem[0].itemName"></p>
+                              <span class="deepBlue"><span class="pointSize">{{ formatNumber(catalogSeasonalItem[0].salePrice) }}</span> P</span>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="btm_banner">
+                      <a href="">
+                        <img src="/static/images/news/m_tab01_banner.jpg" alt="더하고 곱하다">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <!-- // tab0 전체 -->
+
+
+
+                <!-- tab1 주요 답례품 -->
+                <div class="tab_con tab_con01">
+                  <div class="pc_img">
+                    <div class="page-title-box">
+                      <h2 class="page-title-txt">주요 답례품</h2>
+                      <p class="h2_sub_txt">지자체별 주요 답례품</p>
+                      <div class="selectBox select_city">
+                        <form action="javascript:void(0);" class="box01">
+                          <label for="city">시·도</label>
+                          <select name="upperLocgovCode" id="upperLocgovCode" v-model="selectedUpperLocgovCode">
+                            <option value="">전체</option>
+                            <option v-for="(data, i) in sidoList" :value="data.sidoCode">{{data.sidoName}}</option>
+                          </select>
+                        </form>
+                        <form action="javascript:void(0);" class="box02">
+                          <label for="village">시·군·구</label>
+                          <select name="locgovCode" id="locgovCode" v-model="selectedLocgovCode">
+                          	<option value="">시군구 선택</option>
+                            <option v-for="(data, i) in cityList" :value="data.cityCode">{{data.cityName}}</option>
+                          </select>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="center" id="itemArea">
+                      <div class="section all_goods" id="">
+                        <ul class="goods-list-group">
+                          <li class="goods-list-items" v-for="(data, i) in catalogNewItem" :key="i" @click="goItemPage(data.itemUserCode)">
+                            <div class="list_inner">
+                              <span class="img_frame">
+                                <img class="item_img" v-bind:src="itemImage(data.itemImage)" :alt="data.itemName">
+                              </span>
+                              <button type="button" class="do_btn">
+                                <span class="btn_txt"> {{data.locgovNm}} 기부 </span>
+                                <span class="btn_arrow"></span>
+                              </button>
+                              <span class="card_title" v-html="data.itemName"></span>
+                              <span class="deepBlue"><span class="pointSize">{{ formatNumber(data.salePrice) }}</span> P</span>
+                            </div>
+                          </li>
+                        </ul>
+						<div class="list-none" v-if="catalogNewItem.length == 0 && tabNo == 1">
+						  <img src="/static/images/icon/empty-prj.png" alt="결과 없음">
+						  "검색된 주요 답례품이 없습니다."
+						</div>
+                        <div class="btn-box moreBtn" v-show="moreBtnDisplay">
+	                       	<button class="formBtn more" type="button" v-on:click="nextPage('tab_con01')">더보기</button>
+	                   	</div>
+                      </div>
+                  </div>
+                 </div>
+
+                  <div class="mobile_img">
+                    <div class="page-title-box">
+                      <h2 class="page-title-txt">주요 답례품</h2>
+                      <p class="h2_sub_txt">지자체별 주요 답례품</p>
+                      <div class="selectBox select_city">
+                        <form action="javascript:void(0);" class="box01">
+                          <label for="city">시·도</label>
+                          <select name="upperLocgovCode" id="upperLocgovCode" v-model="selectedUpperLocgovCode">
+                            <option value="">전체</option>
+                            <option v-for="(data, i) in sidoList" :value="data.sidoCode">{{data.sidoName}}</option>
+                          </select>
+                        </form>
+                        <form action="javascript:void(0);" class="box02">
+                          <label for="village">시·군·구</label>
+                          <select name="locgovCode" id="locgovCode" v-model="selectedLocgovCode">
+                          	<option value="">시군구 선택</option>
+                            <option v-for="(data, i) in cityList" :value="data.cityCode">{{data.cityName}}</option>
+                          </select>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="center" id="itemArea">
+                      <div class="section all_goods" id="">
+                        <ul class="goods-list-group">
+                          <li class="goods-list-items" v-for="(data, i) in catalogNewItem" :key="i" @click="goItemPage(data.itemUserCode)">
+                            <div class="list_inner">
+                              <span class="img_frame">
+                                <img class="item_img" v-bind:src="itemImage(data.itemImage)" :alt="data.itemName">
+                              </span>
+                              <button type="button" class="do_btn">
+                                <span class="btn_txt"> {{data.locgovNm}} 기부 </span>
+                                <span class="btn_arrow"></span>
+                              </button>
+                              <span class="card_title" v-html="data.itemName"></span>
+                              <span class="deepBlue"><span class="pointSize">{{ formatNumber(data.salePrice) }}</span> P</span>
+                            </div>
+                          </li>
+                        </ul>
+						<div class="list-none" v-if="catalogNewItem.length == 0 && tabNo == 1">
+						  <img src="/static/images/icon/empty-prj.png" alt="결과 없음"><br>
+						  "검색된 주요 답례품이 없습니다."
+						</div>
+                        <div class="btn-box moreBtn" v-show="moreBtnDisplay">
+	                       	<button class="formBtn more" type="button" v-on:click="nextPage('tab_con01')">더보기</button>
+	                   	</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- // tab1 주요 답례품 -->
+
+
+
+                <!-- tab2 기금사업 공감 -->
+                <div class="tab_con tab_con02">
+                  <div class="pc_img">
+                    <div class="page-title-box">
+                      <h2 class="page-title-txt">기금사업 공감</h2>
+                      <p class="h2_sub_txt">지자체별 기부자 공감 기금사업 안내</p>
+                    </div>
+                    <div class="center" id="">
+                      <div class="section all_fund" id="">
+                        <ul class="fund-list-group">
+
+                          <li class="fund-list-items" v-for="(data, i) in dsgnDonationItem" :key="i" @click="goDsgnDonationPage(data.prjId)">
+                            <div class="list_inner">
+                              <a class="img_frame" href="javascript:void(0);">
+                                <img class="item_img" v-bind:src="itemImage('/upload/prj/'+data.prjId+'/'+data.prjImage)" :alt="data.prjSubject">
+                              </a>
+                              <div class="btm_area">
+                                <span class="date_txt">{{data.prjStDtForm}} ~ {{data.prjEdDtForm}}</span>
+                                <span class="fund_tit">{{data.prjSubject}}</span>
+                                <span class="loca_tit"><span class="btn_icon"></span>{{data.locgovNm}}</span>
+                                <div class="percentage">
+                                  <span class="price_wrap"><span class="price">{{formatNumber(data.targetAmt)}}</span>원</span>
+                                  <div class="percentage_bar"><progress :value="data.rateAmt" max="100"></progress></div>
+                                  <div class="per_bar_sub">
+                                    <span class="per_txt"><span class="per_num">{{data.rateAmtStrWithPercent}}</span>
+                                    <span class="per_btn" href="javascript:void(0);">{{data.label}}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+						<div class="list-none" v-if="dsgnDonationItem.length == 0 && tabNo == 2">
+						  <img src="/static/images/icon/empty-prj.png" alt="결과 없음">
+						  "검색된 기금사업이 없습니다."
+						</div>
+                        <div class="btn-box moreBtn" v-show="moreBtnDisplay">
+	                       	<button class="formBtn more" type="button" v-on:click="nextPage('tab_con02')">더보기</button>
+	                   	</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mobile_img">
+                    <div class="page-title-box">
+                      <h2 class="page-title-txt">기금사업 공감</h2>
+                      <p class="h2_sub_txt">지자체별 기부자 공감 기금사업 안내</p>
+                        <div class="filter_radio">
+                          	<div class="radio-items" v-for="(status, i) in prjStatusList" :key="i">
+                            	<input type="radio" name="prjStatus" :id="'prjStatus' + i" :value="status.value" v-model="prjStatus">
+                            	<label :for="'prjStatus' + i">{{status.label}}</label>
+                        	</div>
+                        </div>
+                    </div>
+                    <div class="center" id="">
+                      <div class="section all_fund" id="">
+                        <ul class="fund-list-group">
+                          <li class="fund-list-items" v-for="(data, i) in dsgnDonationItem" :key="i" @click="goDsgnDonationPage(data.prjId)">
+                            <div class="list_inner">
+                              <a class="img_frame" href="javascript:void(0);">
+                                <img class="item_img" v-bind:src="itemImage('/upload/prj/'+data.prjId+'/'+data.prjImage)" :alt="data.prjSubject">
+                              </a>
+                              <div class="btm_area">
+                                <span class="date_txt">{{data.prjStDtForm}} ~ {{data.prjEdDtForm}}</span>
+                                <span class="fund_tit">{{data.prjSubject}}</span>
+                                <span class="loca_tit"><span class="btn_icon"></span>{{data.locgovNm}}</span>
+                                <div class="percentage">
+                                  <span class="price_wrap"><span class="price">{{formatNumber(data.targetAmt)}}</span>원</span>
+                                  <div class="percentage_bar"><progress :value="data.rateAmt" max="100"></progress></div>
+                                  <div class="per_bar_sub">
+                                    <span class="per_txt"><span class="per_num">{{data.rateAmtStrWithPercent}}</span>
+                                    <span class="per_btn" href="javascript:void(0);">{{data.label}}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        </ul>
+						<div class="list-none" v-if="dsgnDonationItem.length == 0 && tabNo == 2">
+						  <img src="/static/images/icon/empty-prj.png" alt="결과 없음"><br>
+						  "검색된 기금사업이 없습니다."
+						</div>
+                        <div class="btn-box moreBtn" v-show="moreBtnDisplay">
+	                       	<button class="formBtn more" type="button" v-on:click="nextPage('tab_con02')">더보기</button>
+	                   	</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- // tab2 기금사업 공감 -->
+
+
+
+                <!-- tab3 인기 답례품 -->
+                <div class="tab_con tab_con03">
+					<div class="pc_img">
+                    <div class="page-title-box">
+                      <h2 class="page-title-txt">인기 답례품</h2>
+                      <p class="h2_sub_txt">지자체 인기 답례품</p>
+                    </div>
+
+                    <div class="center">
+						<ul class="fund-list-group">
+							<li class="fund-list-items" v-for="(data, i) in locgovFavItem" :key="i" @click="goItemPage(data.itemUserCode)">
+								<div class="left_area">
+									<span class="img_frame">
+										<img class="item_img"  v-bind:src="itemImage(data.itemImage)" :alt="data.itemName">
+									</span>
+								</div>
+								<div class="right_area">
+									<span class="loca_tit"><span class="btn_icon"></span>{{data.locgovNm}}</span>
+									<span class="fund_tit">{{data.itemName}}</span>
+									<span class="seller"><span class="miniBox">판매자</span>{{data.companyName}}</span>
+								</div>
+								<span class="price_wrap"><span class="price">{{data.salePrice}}</span>P</span>
+							</li>
+						</ul>
+						<div class="list-none" v-if="locgovFavItem.length == 0 && tabNo == 3">
+						  <img src="/static/images/icon/empty-prj.png" alt="결과 없음">
+						  "검색된 인기 답례품이 없습니다."
+						</div>
+	                    <div class="btn-box moreBtn" v-show="moreBtnDisplay">
+	                       	<button class="formBtn more" type="button" v-on:click="nextPage('tab_con03')">더보기</button>
+	                   	</div>
+                    </div>
+				</div>
+
+                  <div class="mobile_img">
+                    <div class="page-title-box">
+                      <h2 class="page-title-txt">인기 답례품</h2>
+                      <p class="h2_sub_txt">지자체 인기 답례품</p>
+                    </div>
+
+                    <div class="center">
+	                    <ul class="fund-list-group">
+	                      <li class="fund-list-items" v-for="(data, i) in locgovFavItem" :key="i" @click="goItemPage(data.itemUserCode)">
+	                        <div class="left_area">
+	                          <span class="img_frame">
+	                            <img class="item_img"  v-bind:src="itemImage(data.itemImage)" :alt="data.itemName">
+	                          </span>
+	                        </div>
+	                        <div class="right_area">
+	                          <span class="loca_tit"><span class="btn_icon"></span>{{data.locgovNm}}</span>
+	                          <span class="fund_tit">{{data.itemName}}</span>
+	                          <span class="seller"><span class="miniBox">판매자</span>{{data.companyName}}</span>
+	                        </div>
+	                        <span class="price_wrap"><span class="price">{{data.salePrice}}</span>P</span>
+	                      </li>
+	                    </ul>
+						<div class="list-none" v-if="locgovFavItem.length == 0 && tabNo == 3">
+						  <img src="/static/images/icon/empty-prj.png" alt="결과 없음"><br>
+						  "검색된 인기 답례품이 없습니다."
+						</div>
+			          	<div class="btn-box moreBtn" v-show="moreBtnDisplay">
+	                       	<button class="formBtn more" type="button" v-on:click="nextPage('tab_con03')">더보기</button>
+	                   	</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- // tab3 인기 답례품 -->
+
+
+                <!-- tab4 제철식품 -->
+                <div class="tab_con tab_con04">
+                  <div class="pc_img">
+                    <div class="page-title-box">
+                      <h2 class="page-title-txt">제철식품</h2>
+                      <p class="h2_sub_txt">계절별 제철 식품</p>
+                      <div class="selectBox select_city">
+                        <form action="javascript:void(0);" class="box01">
+                          <label for="city">시·도</label>
+                          <select name="upperLocgovCode" id="upperLocgovCode" v-model="selectedUpperLocgovCode">
+                            <option value="">전체</option>
+                            <option v-for="(data, i) in sidoList" :value="data.sidoCode">{{data.sidoName}}</option>
+                          </select>
+                        </form>
+                        <form action="javascript:void(0);" class="box02">
+                          <label for="village">시·군·구</label>
+                          <select name="locgovCode" id="locgovCode" v-model="selectedLocgovCode">
+                          	<option value="">시군구 선택</option>
+                            <option v-for="(data, i) in cityList" :value="data.cityCode">{{data.cityName}}</option>
+                          </select>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="center" id="itemArea">
+                      <div class="section all_goods" id="">
+                        <ul class="goods-list-group">
+                          <li class="goods-list-items" v-for="(data, i) in catalogSeasonalItem" :key="i" @click="goItemPage(data.itemUserCode)">
+                            <div class="list_inner">
+                              <span class="img_frame">
+                                <img class="item_img" v-bind:src="itemImage(data.itemImage)" :alt="data.itemName">
+                              </span>
+                              <button type="button" class="do_btn">
+                                <span class="btn_txt"> {{data.locgovNm}} 기부 </span>
+                                <span class="btn_arrow"></span>
+                              </button>
+                              <span class="card_title" v-html="data.itemName"></span>
+                              <span class="deepBlue"><span class="pointSize">{{ formatNumber(data.salePrice) }}</span> P</span>
+                            </div>
+                          </li>
+                        </ul>
+						<div class="list-none" v-if="catalogSeasonalItem.length == 0 && tabNo == 4">
+						  <img src="/static/images/icon/empty-prj.png" alt="결과 없음">
+						  "검색된 제철식품이 없습니다."
+						</div>
+                        <div class="btn-box moreBtn" v-show="moreBtnDisplay">
+	                       	<button class="formBtn more" type="button" v-on:click="nextPage('tab_con04')">더보기</button>
+	                   	</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mobile_img">
+                    <div class="page-title-box">
+                      <h2 class="page-title-txt">제철식품</h2>
+                      <p class="h2_sub_txt">계절별 제철 식품</p>
+                      <div class="selectBox select_city">
+                        <form action="javascript:void(0);" class="box01">
+                          <label for="city">시·도</label>
+                          <select name="upperLocgovCode" id="upperLocgovCode" v-model="selectedUpperLocgovCode">
+                            <option value="">전체</option>
+                            <option v-for="(data, i) in sidoList" :value="data.sidoCode">{{data.sidoName}}</option>
+                          </select>
+                        </form>
+                        <form action="javascript:void(0);" class="box02">
+                          <label for="village">시·군·구</label>
+                          <select name="locgovCode" id="locgovCode" v-model="selectedLocgovCode">
+                          	<option value="">시군구 선택</option>
+                            <option v-for="(data, i) in cityList" :value="data.cityCode">{{data.cityName}}</option>
+                          </select>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="center" id="itemArea">
+                      <div class="section all_goods" id="">
+                        <ul class="goods-list-group">
+                          <li class="goods-list-items" v-for="(data, i) in catalogSeasonalItem" :key="i" @click="goItemPage(data.itemUserCode)">
+                            <div class="list_inner">
+                              <span class="img_frame">
+                                <img class="item_img" v-bind:src="itemImage(data.itemImage)" :alt="data.itemName">
+                              </span>
+                              <button type="button" class="do_btn">
+                                <span class="btn_txt"> {{data.locgovNm}} 기부 </span>
+                                <span class="btn_arrow"></span>
+                              </button>
+                              <span class="card_title" v-html="data.itemName"></span>
+                              <span class="deepBlue"><span class="pointSize">{{ formatNumber(data.salePrice) }}</span> P</span>
+                            </div>
+                          </li>
+                        </ul>
+						<div class="list-none" v-if="catalogSeasonalItem.length == 0 && tabNo == 4">
+						  <img src="/static/images/icon/empty-prj.png" alt="결과 없음"><br>
+						  "검색된 제철식품이 없습니다."
+						</div>
+                        <div class="btn-box moreBtn" v-show="moreBtnDisplay">
+	                       	<button class="formBtn more" type="button" v-on:click="nextPage('tab_con04')">더보기</button>
+	                   	</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- // tab4 제철식품 -->
+
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+        <!-- footer component -->
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script src="/modules/goods.item.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="//developers.kakao.com/sdk/js/kakao.js"></script>
+
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        created: function() {
+            // Kakao SDK 초기화
+            Kakao.init(KAKAO_JAVASCRIPT_KEY);
+        },
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_news.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          'pagination': httpVueLoader('/components/ui/pagination.vue'),
+        },
+		data: {
+			menuUrl: location.pathname,
+          	itemListPage:0,
+			totalPage:0,
+			catalogYearNoList:[],
+			catalogSeasonalItem:[],
+			catalogNewItem:[],
+			catalogNewItemArr:[],
+			locgovFavItem:[],
+			dsgnDonationItem:[],
+			catalogYear:0,
+			catalogNo:0,
+			catalogYearNo:"",
+			selectedUpperLocgovCode:"",
+			selectedLocgovCode:"",
+			sidoList:[],
+			cityList:[],
+			prjStatusList:[],
+			upperLocgovCode:"",
+			locgovCode:"",
+			prjStatus:"",
+			tabNo:"",
+			itemUserCodeList:"",
+			itemPrjIdList:0,
+			isChangeSido:false,
+			moreBtnDisplay: false,
+			catalogMngParam:{
+				catalogYear:0,
+				catalogNo:0,
+				displayYn:"",
+				upperLocgovCode:"",
+				locgovCode:"",
+				itemUserCodeList:"",
+				page:0,
+			},
+			sidoParam:{
+				sidoCode:""
+			},
+			locgovFavItemParam:{
+				upperLocgovCode:"",
+				locgovCode:"",
+				catalogYearNo:"",
+				page:0,
+				itemUserCodeList:"",
+			},
+			dsgnDonationParam:{
+				prjStDt:"",
+				prjEdDt:"",
+				prjStatus:"",
+				page:0,
+				itemPrjIdList:0,
+				sort:""
+			},
+			bannerNews: [
+				{
+					catalogContentId: 1
+					, bannerImg: "/static/images/card-news/card_news01.jpg"
+					, moBannerImg: "/static/images/card-news/card_news01.jpg"
+					, catalogContentCn: "고향의 봄을 부르는 고향사랑 기부제1"
+				},
+				{
+					catalogContentId: 2
+					, bannerImg: "/static/images/card-news/card_news02.jpg"
+					, moBannerImg: "/static/images/card-news/card_news02.jpg"
+					, catalogContentCn: "고향의 봄을 부르는 고향사랑 기부제2"
+				},
+				{
+					catalogContentId: 3
+					, bannerImg: "/static/images/card-news/card_news03.jpg"
+					, moBannerImg: "/static/images/card-news/card_news03.jpg"
+					, catalogContentCn: "고향의 봄을 부르는 고향사랑 기부제3"
+				},
+			],
+			hometownNews: [
+				{
+					hometownContentId: 1
+					, img: "/static/images/card-news/card_news01.jpg"
+					, moImg: "/static/images/card-news/card_news01.jpg"
+					, contentSubject: "고향소식1"
+					, contentCn: "새로운 고향소식 안내해드립니다.1"
+				},
+				{
+					hometownContentId: 2
+					, img: "/static/images/card-news/card_news02.jpg"
+					, moImg: "/static/images/card-news/card_news02.jpg"
+					, contentSubject: "고향소식2"
+					, contentCn: "새로운 고향소식 안내해드립니다.2"
+				},
+				{
+					hometownContentId: 3
+					, img: "/static/images/card-news/card_news03.jpg"
+					, moImg: "/static/images/card-news/card_news03.jpg"
+					, contentSubject: "고향소식3"
+					, contentCn: "새로운 고향소식 안내해드립니다.3"
+				},
+			],
+			bestItems: [
+				{
+					itemUserCode: "G1001010101"
+					, itemImg: "/static/images/card-news/card_news01.jpg"
+					, itemMoImg: "/static/images/card-news/card_news01.jpg"
+					, itemName: "답례품 명1"
+					, salePrice: 500
+				},
+				{
+					catalogContentId: "G1001010202"
+					, itemImg: "/static/images/card-news/card_news02.jpg"
+					, itemMoImg: "/static/images/card-news/card_news02.jpg"
+					, itemName: "답례품 명2"
+					, salePrice: 600
+				},
+				{
+					catalogContentId: "G1001010303"
+					, itemImg: "/static/images/card-news/card_news03.jpg"
+					, itemMoImg: "/static/images/card-news/card_news03.jpg"
+					, itemName: "답례품 명3"
+					, salePrice: 700
+				},
+			],
+			bannerSliderOption: {
+				centeredSlides: true,
+				slidesPerView: "auto",
+				spaceBetween: 60,
+				autoplay: {
+					disableOnInteraction: false				// 드래그하여 슬라이드 넘길경우 멈추지 않게 하기 위함
+				},
+				loop: true,
+				pagination: {
+					el: '.main_banner .swiper-pagination',
+					type: "fraction",
+					// renderBullet: function (index, className) {
+					//     return '<span class="' + className + '">' + (index + 1) + "</span>";
+					// },
+				},
+				navigation: {
+					nextEl: '.swiper-button-next',
+					prevEl: '.swiper-button-prev',
+				},
+				grabCursor: true
+			},
+			hometownSliderOption: {
+				centeredSlides: false,
+				slidesPerView: 2,
+				spaceBetween: 10,
+				/*autoplay: {
+					disableOnInteraction: false				// 드래그하여 슬라이드 넘길경우 멈추지 않게 하기 위함
+				},*/
+				loop: true,
+				/*pagination: {
+					el: '.main_banner .swiper-pagination',
+					type: "fraction",
+					// renderBullet: function (index, className) {
+					//     return '<span class="' + className + '">' + (index + 1) + "</span>";
+					// },
+				},
+				navigation: {
+					nextEl: '.swiper-button-next',
+					prevEl: '.swiper-button-prev',
+				},
+				grabCursor: true*/
+			},
+			autoSlide: true,
+        },
+
+        methods: {
+			loadingMounted: function () {
+				Saleson.init();
+            	vm.initCallFunction();
+      		},
+      		showMoreBtn: function (isShow) {
+        		this.moreBtnDisplay = isShow;
+      		},
+			initCallFunction: function () {
+				let param = {};
+
+				vm.showLoading(true);
+				$s.api.getCatalogMainInfo(
+					param,
+					function(response) {
+						vm.showLoading(false);
+					}
+				);
+
+				/*
+				$s.api.getSubmit(
+					"/api/catalog/getCatalogYearNoList",
+					vm.catalogMngParam,
+					function(response) {
+						vm.showLoading(false);
+						vm.catalogYear = response.catalogYearNoList[0].catalogYear;
+						vm.catalogNo = response.catalogYearNoList[0].catalogNo;
+						vm.locgovFavItemParam.catalogYearNo = response.catalogYearNoList[0].catalogYearNo;
+						vm.catalogYearNoList = response.catalogYearNoList;
+						vm.getItemList();
+					}
+				);
+				*/
+			},
+			getItemList: function() {
+				vm.showLoading(true);
+				$s.api.getSido(vm.sidoParam,
+					function(response) {
+						vm.showLoading(false);
+						vm.sidoList = response.resultList.sidoList;
+					}
+				);
+				$s.api.getBsnsTypes(
+                	function (response) {
+                        vm.prjStatusList = [];
+                        vm.prjStatusList.push({label: '전체', value: ''});
+
+                        try {
+                            let prjStatus = response.prjStatus;
+                            let length = prjStatus.length;
+                            for (let i = 0 ; i < length ; i++) {
+                                let status = prjStatus[i];
+                                if (status.extentionCode == 'FRONT') {
+                                    let prjType = {label : status.label, value: status.id};
+                                    vm.prjStatusList.push(prjType);
+                                }
+                            }
+                        } catch (e) {
+                            console.log = () => {};
+                        }
+                        vm.prjStatus = '';
+                    }
+                );
+				vm.getCatalogNewItem();
+				vm.getCatalogSeasonalItem();
+				vm.getLocgovFavItem();
+				vm.getDsgnDonationItem();
+			},
+			getCatalogNewItem: function() {
+				if (!vm.itemListPage) {
+            		vm.itemListPage = 1;
+        		}
+				vm.catalogMngParam.page = this.itemListPage;
+				vm.showLoading(true);
+				vm.catalogMngParam.catalogYear = vm.catalogYear;
+				vm.catalogMngParam.catalogNo = vm.catalogNo;
+				vm.catalogMngParam.upperLocgovCode = vm.upperLocgovCode;
+				vm.catalogMngParam.locgovCode = vm.locgovCode;
+				vm.catalogMngParam.itemUserCodeList = vm.itemUserCodeList;
+				$s.api.getSubmit(
+					"/api/catalog/getCatalogNewItem",
+					vm.catalogMngParam,
+					function(response) {
+						vm.showLoading(false);
+						if(response.content != 0){
+							if (vm.itemListPage < response.pageInfo.totalPages) {
+								vm.showMoreBtn(true);
+							} else {
+								vm.showMoreBtn(false);
+							}
+							let size = response.content.length;
+							for (let i = 0; i < size; i++) {
+								let itemInfo = response.content[i];
+								if(vm.itemUserCodeList == "") {
+									vm.itemUserCodeList = vm.itemUserCodeList+response.content[i].itemUserCode;
+								} else {
+									vm.itemUserCodeList = vm.itemUserCodeList+","+response.content[i].itemUserCode;
+								}
+								vm.catalogNewItem.push(itemInfo);
+							}
+						} else {
+							vm.catalogNewItem = [];
+							vm.showMoreBtn(false);
+						}
+					}, vm.commError);
+			},
+			getCatalogSeasonalItem: function() {
+				vm.showLoading(true);
+				vm.catalogMngParam.catalogYear = vm.catalogYear;
+				vm.catalogMngParam.catalogNo = vm.catalogNo;
+				vm.catalogMngParam.upperLocgovCode = vm.upperLocgovCode;
+				vm.catalogMngParam.locgovCode = vm.locgovCode;
+				vm.catalogMngParam.itemUserCodeList = vm.itemUserCodeList;
+				$s.api.getSubmit(
+					"/api/catalog/getCatalogSeasonalItem",
+					vm.catalogMngParam,
+					function(response) {
+						vm.showLoading(false);
+						if(response.content != 0){
+							if (vm.itemListPage < response.pageInfo.totalPages) {
+								vm.showMoreBtn(true);
+							} else {
+								vm.showMoreBtn(false);
+							}
+							let size = response.content.length;
+							for (let i = 0; i < size; i++) {
+								let itemInfo = response.content[i];
+								vm.catalogSeasonalItem.push(itemInfo)
+								if(vm.itemUserCodeList == "") {
+									vm.itemUserCodeList = vm.itemUserCodeList+response.content[i].itemUserCode;
+								} else {
+									vm.itemUserCodeList = vm.itemUserCodeList+","+response.content[i].itemUserCode;
+								}
+							}
+						} else {
+							vm.catalogSeasonalItem = [];
+							vm.showMoreBtn(false);
+						}
+					});
+			},
+			getLocgovFavItem: function() {
+        		if (!vm.itemListPage) {
+            		vm.itemListPage = 1;
+        		}
+				vm.locgovFavItemParam.page = this.itemListPage;
+				vm.locgovFavItemParam.itemUserCodeList = vm.itemUserCodeList;
+				$s.api.getSubmit(
+					"/api/catalog/getLocgovFavItem",
+					vm.locgovFavItemParam,
+					function(response) {
+						vm.showLoading(false);
+						if(response.locgovFavItem != 0){
+							if (vm.itemListPage < response.pageInfo.totalPages) {
+								vm.showMoreBtn(true);
+							} else {
+								vm.showMoreBtn(false);
+							}
+							let size = response.locgovFavItem.length;
+							for (let i = 0; i < size; i++) {
+								let itemInfo = response.locgovFavItem[i];
+								vm.locgovFavItem.push(itemInfo);
+								if(vm.itemUserCodeList == "") {
+									vm.itemUserCodeList = vm.itemUserCodeList+response.locgovFavItem[i].itemUserCode;
+								} else {
+									vm.itemUserCodeList = vm.itemUserCodeList+","+response.locgovFavItem[i].itemUserCode;
+								}
+							}
+						} else {
+							vm.locgovFavItem = [];
+							vm.showMoreBtn(false);
+						}
+					}
+				);
+			},
+			getDsgnDonationItem: function() {
+				if (!vm.itemListPage) {
+            		vm.itemListPage = 1;
+        		}
+				vm.dsgnDonationParam.page = this.itemListPage;
+				vm.showLoading(true);
+				var srchStParam = "";
+				var srchEdParam = "";
+				if(vm.catalogNo == 1) {
+					srchStParam = "0101";
+					srchEdParam = "0331";
+				} else if (vm.catalogNo == 2) {
+					srchStParam = "0401";
+					srchEdParam = "0630";
+				} else if (vm.catalogNo == 3) {
+					srchStParam = "0701";
+					srchEdParam = "0930";
+				} else {
+					srchStParam = "1001";
+					srchEdParam = "1231";
+				}
+				vm.dsgnDonationParam.prjStDt = vm.catalogYear.toString() + srchStParam;
+				vm.dsgnDonationParam.prjEdDt = vm.catalogYear.toString() + srchEdParam;
+				vm.dsgnDonationParam.itemPrjIdList = vm.itemPrjIdList;
+				if(vm.tabNo == "" || vm.tabNo == "0") {
+					vm.dsgnDonationParam.sort = "RANDOM";
+				}
+				$s.api.getSubmit(
+					"/api/catalog/getDsgnDonationItem",
+					vm.dsgnDonationParam,
+					function(response) {
+						vm.showLoading(false);
+						if(response.dsgnDonationItem != 0){
+							if (response.pageInfo.currentPage < response.pageInfo.totalPages) {
+								vm.showMoreBtn(true);
+							} else {
+								vm.showMoreBtn(false);
+							}
+							let size = response.dsgnDonationItem.length;
+							for (let i = 0; i < size; i++) {
+								let itemInfo = response.dsgnDonationItem[i];
+								vm.dsgnDonationItem.push(itemInfo);
+								if(vm.itemPrjIdList == "") {
+									vm.itemPrjIdList = vm.itemPrjIdList+response.dsgnDonationItem[i].prjId;
+								} else {
+									vm.itemPrjIdList = vm.itemPrjIdList+","+response.dsgnDonationItem[i].prjId;
+								}
+							}
+						} else {
+							vm.dsgnDonationItem = [];
+							vm.showMoreBtn(false);
+						}
+					}
+				);
+			},
+			paging: function() {
+
+			},
+			showLoading: function (isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+            },
+            goToGuid: function () {
+                Kakao.Link.sendDefault({
+                    objectType: 'feed',
+                    content: {
+                        title: '고향사랑e음 소식지',
+                        description: '친구와 함께 고향에 마음을 전하세요.',
+                        imageUrl:
+                        VIRTUAL_DOMAIN + '/static/images/cli-logo.png',
+                        link: {
+                            webUrl: 'VIRTUAL_DOMAIN',
+                        },
+                    },
+                    buttons: [
+                        {
+                            title: '기부하러 바로가기',
+                            link: {
+                                webUrl: VIRTUAL_DOMAIN + '/donation/donation.html',
+                            },
+                        },{
+                            title: '고향사랑e음 알림이 바로가기',
+                            link: {
+                                webUrl: VIRTUAL_DOMAIN + '/catalog/index.html',
+                            },
+                        },
+                    ],
+                })
+            },
+
+          	goToTabMenu: function (n) { // tabs 이동
+          		vm.locgovFavItem = [];
+				vm.catalogSeasonalItem = [];
+				vm.catalogNewItem = [];
+				vm.dsgnDonationItem = [];
+				vm.itemUserCodeList = "";
+            	vm.tabNo = n;
+            	$(".tab_items").eq(n).addClass("on").siblings().removeClass("on");
+            	$(".tab_con").eq(n).addClass("view").siblings().removeClass("view");
+				if(vm.tabNo == "1" || vm.tabNo == "4") {
+					vm.selectedUpperLocgovCode = "";
+					vm.selectedLocgovCode = "";
+					vm.catalogMngParam.itemsPerPage=$goods.const.ITEMS_PER_GOODS;
+					vm.changeSido(vm.selectedUpperLocgovCode, vm.tabNo);
+					vm.changeSigungu(vm.selectedLocgovCode, vm.tabNo);
+				}
+
+				if(vm.tabNo == "0") {
+          			vm.selectedUpperLocgovCode = "";
+					vm.selectedLocgovCode = "";
+					vm.catalogMngParam.itemsPerPage=$goods.const.ITEMS_PER_GOODS;
+          			vm.getCatalogNewItem();
+          			vm.getCatalogSeasonalItem();
+          			vm.getLocgovFavItem();
+          			vm.getDsgnDonationItem();
+				}
+
+				if(vm.tabNo == "2") {
+					vm.getDsgnDonationItem();
+				}
+
+				if(vm.tabNo == "3") {
+					vm.getLocgovFavItem();
+				}
+          	},
+
+			changeCatalogVer: function(v) {
+				let catalogVer = v.target.value;
+				vm.catalogYear = parseInt(catalogVer.substring(0,4));
+				vm.catalogNo = parseInt(catalogVer.substr(-1,1));
+				vm.locgovFavItemParam.catalogYearNo = catalogVer;
+				this.$refs.catalogVer.value = catalogVer;
+				this.$refs.catalogVerM.value = catalogVer;
+				vm.goToTabMenu(vm.tabNo);
+				vm.locgovFavItem = [];
+				vm.catalogSeasonalItem = [];
+				vm.catalogNewItem = [];
+				vm.dsgnDonationItem = [];
+				vm.itemUserCodeList = "";
+
+        		vm.selectedUpperLocgovCode = "";
+        		vm.selectedLocgovCode = "";
+        		vm.catalogMngParam.itemsPerPage=$goods.const.ITEMS_PER_GOODS;
+
+        		vm.getCatalogNewItem();
+				vm.getCatalogSeasonalItem();
+				vm.getLocgovFavItem();
+				vm.getDsgnDonationItem();
+			},
+
+			changeSido: function(v) {
+				vm.sidoParam.sidoCode = v;
+				if(vm.sidoParam.sidoCode != ""){
+					var params = {
+                       	'sidoCode': vm.sidoParam.sidoCode
+                   	};
+					$s.api.getSiGunGu(params,
+						function(response) {
+							vm.cityList = response.resultList.cityList;
+					});
+				} else {
+					vm.cityList=[];
+				}
+			},
+
+			changeSigungu: function(v, t) {
+				if(v == 0) {vm.locgovCode = "";}
+				else {vm.locgovCode = v; }
+				vm.catalogSeasonalItem = [];
+				vm.catalogNewItem = [];
+				if(t == "1") {
+					vm.getCatalogNewItem();
+				}
+				if(t == "4") {
+					vm.getCatalogSeasonalItem();
+				}
+			},
+
+			changePrjStatus: function(v) {
+				if(v != 0){
+					vm.dsgnDonationParam.prjStatus = v;
+				}
+				vm.getDsgnDonationItem();
+			},
+
+			goItemPage: function(v) {
+				location.href = "/items/details.html?code=" + v;
+			},
+
+			goDsgnDonationPage: function(v) {
+				location.href = "/designated-donation/details.html?prjId=" + v;
+			},
+
+      		scrollTop() {
+        		location.href = "#tabMenu";
+      		},
+	   		nextPage: function (tab) {
+        		vm.itemListPage++;
+        		if (tab == 'tab_con01') {
+					vm.getCatalogNewItem();
+        		} else if (tab == 'tab_con02') {
+          			vm.getDsgnDonationItem();
+        		} else if (tab == 'tab_con03') {
+					vm.getLocgovFavItem();
+        		} else if (tab == 'tab_con04') {
+					vm.getCatalogSeasonalItem();
+        		} else {
+
+        		}
+			},
+			resumeAutoSlide: function () {
+				setTimeout(function () {
+					vm.$refs.awesomeNewSwiper.swiper.autoplay.start();
+				}, 10);
+				vm.autoSlide = true;
+			},
+			stopAutoSlide: function () {
+				setTimeout(function () {
+					vm.$refs.awesomeNewSwiper.swiper.autoplay.stop();
+				}, 10);
+				vm.autoSlide = false;
+			},
+			swiperSetting: function () {
+				setTimeout(function () {
+					try {
+						if (vm.representativeBanners.length < 2) {
+							vm.stopAutoSlide();
+						}
+						let realIndex = vm.$refs.awesomeNewSwiper.swiper.realIndex;
+						if (realIndex != NaN) {
+							vm.displayBannerIdx = realIndex + 1;
+						}
+
+						let loopedSlides = vm.$refs.awesomeNewSwiper.swiper.loopedSlides;
+						if (loopedSlides != NaN) {
+							vm.totalBannerCnt = loopedSlides;
+						}
+
+						vm.$refs.awesomeNewSwiper.swiper.eventsListeners.activeIndexChange.push(function () {
+							let activeIdx = vm.$refs.awesomeNewSwiper.swiper.realIndex;
+							if (activeIdx != NaN) {
+								vm.displayBannerIdx = activeIdx + 1;
+							}
+						});
+					} catch (e) {
+						console.log = () => {};
+					}
+
+				}, 10);
+			}
+		},
+
+		watch: {
+			selectedUpperLocgovCode: function (v) {
+				if(v == "") {
+					vm.selectedLocgovCode = "";
+					vm.cityList = [];
+					vm.catalogMngParam.upperLocgovCode = "";
+					vm.itemUserCodeList = "";
+					vm.itemListPage=1;
+					vm.catalogNewItem = [];
+					vm.getCatalogNewItem();
+				} else {
+					vm.changeSido(v);
+					vm.selectedLocgovCode = "";
+					vm.isChangeSido = true;
+				}
+			},
+			selectedLocgovCode: function (v) {
+				if (!vm.isChangeSido || v) {
+					vm.changeSigungu(v, vm.tabNo);
+				}
+				vm.isChangeSido = false;
+			},
+			prjStatus: function (v) {
+				if(v != "0") { vm.dsgnDonationParam.prjStatus = v; }
+				vm.getDsgnDonationItem();
+			},
+		},
+		mounted: function() {
+			/*this.$nextTick(function () {
+            	Saleson.init();
+
+			});*/
+		},
+	});
+
+	// 공통 키비주얼 (header.html) 불러오기
+	/*const header = document.querySelector('header');
+	fetch('/catalog/header.html')
+	.then(res => res.text())
+	.then(data => header.innerHTML = data);*/
+
+	// 네비 탭 on 붙이기
+/*	$(document).ready(function () {
+
+		$(".tab_group .tab_items").click(function () {
+			$(this).addClass("on").siblings().removeClass("on");
+		});
+
+        // pc + mo
+		$(".tab_con00 #conNavBox1").click(function(){$("#navTab1").addClass("on").siblings().removeClass("on");});
+		$(".tab_con00 #conNavBox2").click(function(){$("#navTab2").addClass("on").siblings().removeClass("on");});
+		$(".tab_con00 #conNavBox3").click(function(){$("#navTab3").addClass("on").siblings().removeClass("on");});
+		$(".tab_con00 #conNavBox4").click(function(){$("#navTab4").addClass("on").siblings().removeClass("on");});
+	});
+*/
+
+      // 네비 탭 누르면 정가운데로 위치
+      var $scrItem = $('.tab_items');
+        var scrIWidth = 0;
+        for (var i=0; i<$scrItem.length; i++) {
+            scrIWidth += $scrItem.eq(i).outerWidth();
+        }
+        $('.tab_group').css('width',scrIWidth)
+        $scrItem.click(function(){
+            var target = $(this);
+            $scrItem.removeClass('on')
+            target.addClass('on');
+            muCenter(target);
+        })
+
+        function muCenter(target){
+            var box = $('.tab_group_wrap');
+            var boxItem = box.find('.tab_items');
+            var boxHarf = box.width()/2;
+            var pos;
+            var listWidth=0;
+            var targetLeft = 0;
+
+            boxItem.each(function(){ listWidth += $(this).outerWidth(); })
+
+            for (var i=0; i<target.index(); i++) targetLeft += boxItem.eq(i).outerWidth(); // 선택요소 까지 길이
+
+            var selectTargetPos = (targetLeft + target.outerWidth()/2);
+            if (selectTargetPos <= boxHarf) { // left
+                pos = 0;
+            }else if (listWidth - selectTargetPos <= boxHarf) { //right : target 절반 이후 영역이 boxHarf 보다 작을경우 right 정렬
+                pos = listWidth-box.width();
+            }else {
+                pos = selectTargetPos - boxHarf; // 중앙정렬
+            }
+
+            setTimeout(function(){
+                box.animate({scrollLeft:pos},300)
+            }, 200);
+        }
+    </script>
+  </body>
+</html>

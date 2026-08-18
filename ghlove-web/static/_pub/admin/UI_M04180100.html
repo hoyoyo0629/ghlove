@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 운영자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../../content/modules/smarteditor2_3_10/css/smart_editor2.css">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/smarteditor2_3_10/css/smart_editor2_in.css">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/smarteditor2_3_10/css/smart_editor2_items.css">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/smarteditor2_3_10/css/smart_editor2_out.css">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">시스템관리</a> &gt; <a href="">ISMS 환경설정</a>
+                    </div>
+                    <h3><span>ISMS 환경설정</span></h3>
+
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                                <col style="width:300px;">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label td-head" rowspan="3">공통</td>
+                                    <td class="line-right td-head">
+                                        <div>패스워드 오입력 횟수(횟수)</div>
+                                    </td>
+                                    <td class="td-head">
+                                        <div>
+                                            <input id="" name="" title="패스워드 오입력 횟수(횟수)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>패스워드 유효일수</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="패스워드 유효일수" class="input_txt required _filter wd-150" type="text" value="90">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>QUERY 이력 유효일수(년)</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="QUERY 이력 유효일수(년)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label td-head" rowspan="5">관리자</td>
+                                    <td class="line-right td-head">
+                                        <div>관리자 메뉴사용 이력 유효일수(년)</div>
+                                    </td>
+                                    <td class="td-head">
+                                        <div>
+                                            <input id="" name="" title="관리자 메뉴사용 이력 유효일수(년)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>관리자 정보 변경이력 유효일수(년)</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="관리자 정보 변경이력 유효일수(년)" class="input_txt required _filter wd-150" type="text" value="90">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>관리자 로그인 이력 유효일수(월)</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="관리자 로그인 이력 유효일수(월)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>관리자 세션 TIMEOUT(분)</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="관리자 세션 TIMEOUT(분)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>관리자 계정 미사용 기간(일수)</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="관리자 계정 미사용 기간(일수)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label td-head" rowspan="4">회원</td>
+                                    <td class="line-right td-head">
+                                        <div>회원 정보 변경이력 유효일수(년)</div>
+                                    </td>
+                                    <td class="td-head">
+                                        <div>
+                                            <input id="" name="" title="회원 정보 변경이력 유효일수(년)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>회원 로그인 이력 유효일수(월)</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="회원 로그인 이력 유효일수(월)" class="input_txt required _filter wd-150" type="text" value="90">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>회원 세션 TIMEOUT(분)</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="회원 세션 TIMEOUT(분)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="line-right">
+                                        <div>로그인 실패로 인한 Lock 시간(분)</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="로그인 실패로 인한 Lock 시간(분)" class="input_txt required _filter wd-150" type="text" value="5">
+                                        </div>
+                                    </td>
+                                </tr>
+                      
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn_all btn_center">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-dark-gray btn-small">저장</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

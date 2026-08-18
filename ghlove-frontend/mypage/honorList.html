@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 기부혜택증 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/honor_comu.css" />
+    <!--페이지네이션-->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box" style="margin-bottom: 30px">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              마이페이지
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              기부혜택증
+            </span>
+            <!-- <h2 class="page-title-txt pc">
+              기부혜택증
+            </h2> -->
+            <h2 class="page-title-txt mobile">기부혜택증</h2>
+            <h2 class="page-title-txt tablet">기부혜택증</h2>
+          </div>
+        </section>
+        <section id="contents" class="honor">
+          <!-- <div class="pc_ver">
+                    <div class="center">
+                        <div class="h_total">
+                            <div class="h_total-lv3"></div>
+                            <div class="h_total-lv2"></div>
+                            <div class="h_total-lv1"></div>
+                            <div class="honor_grade"  v-for="(item, index) in totalList">
+                                <div class="grade_wrap">
+                                    <img :src="'/static/images/icon/honor_grade' + (index + 1) + '.png'" alt="" :class="'grade' + (index + 1)">
+                                </div>
+                                <div class="grade_standard"><span>{{item.label}} 명예 </span> <span class="t_count">{{item.levelCnt}} 건</span></div>
+                            </div>
+                        </div>
+
+                        <div class="h_card_wrap">
+                            <div class="h_card" v-for="(data,i) in honorList" :key="i"
+                                :class="{'honor0' : data.honorCntrbtrLevelCode == 0,'honor1' : data.honorCntrbtrLevelCode == 100, 'honor2' : data.honorCntrbtrLevelCode == 200, 'honor3' : data.honorCntrbtrLevelCode == 300}">
+                                <div class="h_year">{{data.stdrYear}}년</div>
+                                <div class="h_tit">{{data.label}} 기부자</div>
+                                <div class="h_loc">{{data.upperLocgovNm}} {{data.locgovNm}}</div>
+                            </div>
+                            <div class="h_card honor0">
+                                <div class="h_tit">명예기부자?</div>
+                                <div class="s-txt">고향사랑 기부 완료시 명예기부자로
+                                    선정됩니다. 지자체별 설정 금액에 따라
+                                    획득 가능한 명예기부자가 달라집니다.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+          <!-- 모바일 -->
+          <div class="m_ver">
+            <div class="center" v-if="honorList && honorList.length > 0" style="max-width: 550px">
+              <div class="medal_area">
+                <!-- <ul>
+                                <li class="medal_gold">
+                                    <span class="img">&nbsp;</span>
+                                    <span class="bold">특급명예</span>&nbsp;&nbsp;<span>{{goldCnt}}</span>&nbsp;&nbsp;건
+                                </li>
+                                <li class="medal_silver">
+                                    <span class="img">&nbsp;</span>
+                                    <span class="bold">최우수명예</span>&nbsp;&nbsp;<span>{{silverCnt}}</span>&nbsp;&nbsp;건
+                                </li>
+                                <li class="medal_bronze">
+                                    <span class="img">&nbsp;</span>
+                                    <span class="bold">우수명예</span>&nbsp;&nbsp;<span>{{bronzeCnt}}</span>&nbsp;&nbsp;건
+                                </li>
+                            </ul> -->
+              </div>
+
+              <div class="honor_card_area">
+                <div class="titArea">
+                  <!-- <span class="logo">로고</span>
+                                <h3>명예 시도민증 확인 서비스</h3> -->
+                </div>
+
+                <!-- swiper -->
+                <div class="swiper-button-prev" v-if="honorList && honorList.length > 0"></div>
+                <div ref="idCard" class="slideArea swiper">
+                  <div class="swiper-wrapper">
+                    <!-- <swiper-slide v-for="(slide, index) in qrCodes" :key="slide.locgovCode"> -->
+                    <div class="swiper-slide" v-for="(slide, index) in honorList" :key="slide.lclgvCd">
+                      <div class="lineBox" tabindex="0">
+                        <div style="display: flex; flex-direction: row">
+                          <div class="subTitle">
+                            <span><img alt="" src="/static/images/icon/cli-logo-icon.png" />기부혜택증</span>
+                          </div>
+                          <div style="width: 50%">
+                            <div style="width: 100%">
+                              <div class="countdownLine"></div>
+                            </div>
+                            <div class="countdownBox">
+                              <div class="countdownTimer">
+                                <div style="text-align: right">현재시각</div>
+                                <span ref="countdown" class="countdownTime">{{nowDate}}{{nowTime}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- <h5 class="lineBoxTit" v-if="slide.hnrGrd == 'GOLD'"><span>특급 명예</span> 시도민증</h5>
+		                                            <h5 class="lineBoxTit" v-if="slide.hnrGrd == 'SILVER'"><span>최우수 명예</span> 시도민증</h5>
+		                                            <h5 class="lineBoxTit" v-if="slide.hnrGrd == 'BRONZE'"><span>우수 명예</span> 시도민증</h5> -->
+
+                        <h5 class="lineBoxTit" v-if="slide.hnrUserStngTtl" v-html="titleSetting(slide.hnrUserStngTtl)"></h5>
+                        <h5 class="lineBoxTit" v-else v-html="titleSetting('고향사랑기부 기부혜택증')"></h5>
+
+                        <div class="qrArea">
+                          <span>
+                            <!-- <img :src="slide.imgPathStr ? slide.imgPathStr : '/static/images/honors/default_honor_img.png'" alt="샘플" @error="errorImage"> -->
+                            <img
+                              :src="getRprsImage(slide.lclgvCd, slide.rprsImgNm)"
+                              :alt="slide.lclgvNm2 + ' 기부혜택증 대표이미지'"
+                              @error="errorImage"
+                            />
+                          </span>
+                        </div>
+                        <div class="userInfo">
+                          <div class="name">{{slide.userName}}</div>
+                          <ul>
+                            <li class="lclgvInfo">{{slide.lclgvNm2}}</li>
+                          </ul>
+                          <div style="margin: auto; display: flex">
+                            <div style="flex: 1"></div>
+                            <div style="align-self: center; margin-right: 4px">
+                              <div class="verticalLine"></div>
+                            </div>
+                            <ul style="margin-top: 0px">
+                              <li>
+                                <div style="text-align: center">
+                                  <span class="miniTit">발급일</span>
+                                  <span class="userTxt">{{slide.startDateFormat}}</span>
+                                </div>
+                              </li>
+                              <li>
+                                <div style="text-align: center">
+                                  <span class="miniTit">기&nbsp;&nbsp;&nbsp;&nbsp;간</span>
+                                  <span class="userTxt">{{slide.expiredDateFormat}}</span>
+                                </div>
+                              </li>
+                            </ul>
+                            <div style="flex: 1"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="reloadBtm">
+                        <a
+                          @click="findBenefit(appendCdnDomain(slide.hnrUserRwrd), slide.lclgvNm2, index)"
+                          @keydown="findBenefitE(appendCdnDomain(slide.hnrUserRwrd), slide.lclgvNm2, index, $event)"
+                          :id="'benefit' + index"
+                          tabindex="0"
+                          style="cursor: pointer"
+                          >혜택보기</a
+                        >
+                      </div>
+                    </div>
+                    <!-- </swiper-slide> -->
+                  </div>
+                </div>
+                <div class="swiper-button-next" v-if="honorList && honorList.length > 0"></div>
+                <!-- // swiper -->
+              </div>
+            </div>
+
+            <div class="center" v-if="!honorList || honorList.length == 0">
+              <div class="h_total">
+                <div class="honor_grade" v-for="(item, index) in totalList">
+                  <div class="grade_wrap">
+                    <img :src="'/static/images/icon/honor_grade' + (index + 1) + '.png'" alt="" :class="'grade' + (index + 1)" />
+                  </div>
+                  <div class="grade_standard"><span>{{item.label}} 명예 </span> <span class="t_count">{{item.levelCnt}} 건</span></div>
+                </div>
+              </div>
+
+              <div class="h_card_wrap">
+                <div class="h_card honor0">
+                  <div class="h_tit">발급된 기부혜택증이 없습니다.</div>
+				  <!-- 2025.04.07 전국지자체 확대로 인해 삭제
+                  <div class="s-txt" style="color: #002c77">(현재 제주특별 자치도에서 시범서비스중입니다.)</div>
+                   -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+
+        <!-- footer component -->
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+        },
+        data: {
+          honorList: [],
+          totalList: [],
+
+          page: {
+            onsubmitType: "return false;",
+            menuUrl: location.pathname,
+          },
+          //isNoData: true,
+
+          nowDate: "",
+          nowTime: "",
+		  today: "",
+          goldCnt: 0,
+          silverCnt: 0,
+          bronzeCnt: 0,
+          timeCounter: "",
+        },
+        methods: {
+          init: function (index) {
+            $s.api.postSubmit("/api/mypage/honorList", {}, function (response) {
+              vm.totalList = response.total;
+              vm.honorList = response.honorList;
+            });
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          initCallFunction: function () {
+            this.getHonorListNew();
+          },
+          loadingMounted: function () {
+			const days = ['일', '월', '화', '수', '목', '금', '토'];
+            this.timeCounter = setInterval(function () {
+              let date = new Date();
+              vm.nowDate = date.getFullYear() + "." + vm.get2Numer(date.getMonth() + 1) + "." + vm.get2Numer(date.getDate()) + ".";
+				const dayName = days[date.getDay()];
+				let conHr = String(vm.get2Numer(date.getHours())).padStart(2,"0");
+				let conMin = String(vm.get2Numer(date.getMinutes())).padStart(2,"0");
+				let conSec = String(vm.get2Numer(date.getSeconds())).padStart(2,"0");
+				//console.log(":day : " + dayName);
+
+              //vm.nowTime = vm.get2Numer(date.getHours()) + ":" + vm.get2Numer(date.getMinutes() + ":" + vm.get2Numer(date.getSeconds()));
+				vm.nowTime = `${conHr}:${conMin}:${conSec}`;
+				vm.today = dayName;
+              /*+ ':' + vm.get2Numer(date.getSeconds())*/
+            }, 1000);
+
+            this.initCallFunction();
+          },
+          getHonorListNew: function () {
+            //this.clearInfo();
+            vm.goldCnt = 0;
+            vm.silverCnt = 0;
+            vm.bronzeCnt = 0;
+            this.showLoading(true);
+            $s.api.getHonorListNew(
+              function (response) {
+                vm.showLoading(false);
+                if (response.errCode) {
+                  $s.alert(response.errMsg, function () {
+                    vm.historyBack();
+                    $s.closeAlert();
+                  });
+                } else {
+                  vm.honorList = response.honorList;
+                  vm.goldCnt = response.goldCnt;
+                  vm.silverCnt = response.silverCnt;
+                  vm.bronzeCnt = response.bronzeCnt;
+
+                  setTimeout(function () {
+                    new Swiper(".swiper", {
+                      	// Optional parameters
+                      	loop: false,
+                      	slidesPerView: 1,
+                      	// If we need pagination
+                      	pagination: {
+                        	el: ".swiper-pagination",
+                      	},
+
+                      	// Navigation arrows
+                      	navigation: {
+	                        nextEl: ".swiper-button-next",
+                        	prevEl: ".swiper-button-prev",
+                      	},
+
+                      	// And if we need scrollbar
+                      	scrollbar: {
+	                        el: ".swiper-scrollbar",
+                      	},
+						on : {
+							slideChange:function() {
+								const item = vm.honorList[this.activeIndex];
+								vm.saveHonorViewHist(item.lclgvCd);
+								//console.log("전환실행" + item.lclgvCd);
+							}
+						}
+                    });
+
+                    vm.removeTabIndex();
+					if (vm.honorList.length > 0) {
+
+						const firstItem = vm.honorList[0];
+
+						//console.log("초기 실행 : " , firstItem);
+						//console.log("초기2 실행 : " , firstItem.lclgvCd);
+
+						vm.saveHonorViewHist(firstItem.lclgvCd);
+
+					}
+
+
+                  }, 100);
+                }
+              },
+              function (error) {
+                vm.showLoading(false);
+
+                $s.alert(error.response.data.message, function () {
+                  vm.historyBack();
+                  $s.closeAlert();
+                });
+              }
+            );
+          },
+		  saveHonorViewHist: function(lclgvCd) {
+			//console.log("saveHonorViewHist : " + lclgvCd);
+			var params = {
+            	lclgvCd: lclgvCd,
+          	};
+			$.ajax({
+            	url: $s.config.apiDomain + "/api/mypage/saveHonorViewHist",
+            	type: "POST",
+            	headers: $s.api.getAuthorizationHeader(),
+            	data: params,
+            	success: function (response) {
+					//console.log("saveHonorViewHist : " , response);
+				},
+          	});
+		  },
+          historyBack: function () {
+            if (history.length == 1) {
+              $s.redirect("/");
+            } else {
+              history.back();
+            }
+          },
+          findBenefit: function (hnrUserRwrd, locgovNm, index) {
+            if (!hnrUserRwrd) {
+              hnrUserRwrd = "<p>저장된 혜택내용이 없습니다.</p>";
+            }
+            hnrUserRwrd = "<h2 style='width:100%;text-align:center;'>" + locgovNm + " 혜택</h2><br>" + hnrUserRwrd;
+            $s.alertHtml(hnrUserRwrd, function () {
+              $("#op-alert").modal("hide");
+              setTimeout(() => {
+                $("#benefit" + index).focus();
+              }, 100);
+            });
+          },
+          get2Numer: function (number) {
+            if (number < 10) {
+              return "0" + number;
+            } else {
+              return number;
+            }
+          },
+          removeTabIndex: function () {
+            let dupEle = vm.$refs.idCard.querySelectorAll(".swiper-slide-duplicate");
+            let cnt = dupEle.length;
+            for (let i = 0; i < cnt; i++) {
+              let btn = dupEle[i].querySelector(".reloadBtm");
+              btn.removeAttribute("tabIndex");
+            }
+          },
+          findBenefitE(hnrUserRwrd, locgovNm, index, e) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+              this.findBenefit(hnrUserRwrd, locgovNm, index);
+            }
+          },
+          getRprsImage: function (lclgvCd, rprsImgNm) {
+            let path = "/static/images/honors/default_honor_img.png";
+            if (rprsImgNm) {
+              path = CDN_DOMAIN + "/upload/lclgvHnrUserMng/" + lclgvCd + "/" + rprsImgNm;
+            }
+            return path;
+          },
+          titleSetting: function (title) {
+            try {
+              if (title) {
+                let length = title.length;
+                if (length > 18) {
+                  length = 18;
+                }
+                if (length > 9) {
+                  let topTitle = title.substring(0, 9);
+                  let bottomTitle = title.substring(9, length);
+                  title = topTitle + "<br>" + bottomTitle;
+                }
+              }
+              return title;
+            } catch (e) {
+              return title;
+            }
+          },
+        },
+        watch: {
+          nowTime: function (newValue) {
+            let idCard = vm.$refs.idCard;
+            if (idCard && idCard.getElementsByClassName("countdownTime")) {
+              let elementList = vm.$refs.idCard.getElementsByClassName("countdownTime"); // 앞뒤 스와이퍼에서 생성된 요소까지 처리하기 위함
+              let length = elementList.length;
+              if (length > 0) {
+                for (let i = 0; i < length; i++) {
+                  elementList[i].innerText = this.nowDate + " " + this.nowTime;
+                }
+              }
+            }
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init();
+          });
+        },
+        beforeDestroy: function () {
+          if (this.timeCounter) {
+            console.log("clearTimeout");
+            clearTimeout(this.timeCounter);
+          }
+        },
+      });
+    </script>
+  </body>
+</html>

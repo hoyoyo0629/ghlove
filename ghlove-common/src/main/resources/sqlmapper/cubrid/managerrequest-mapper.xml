@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.user.ManagerRequestMapper">
+	<resultMap id="UserBaseResult" type="com.onlinepowers.framework.security.userdetails.User">
+		<id property="userId" column="USER_ID" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="email" column="EMAIL" />
+		<result property="password" column="PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="statusCode" column="STATUS_CODE" />
+		<result property="loginCount" column="LOGIN_COUNT" />
+		<result property="loginDate" column="LOGIN_DATE" />
+		<result property="denyDate" column="DENY_DATE" />
+		<result property="leaveDate" column="LEAVE_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="loginFailCount" column="LOGIN_FAIL_COUNT" />
+	</resultMap>
+
+	<resultMap id="UserResult" type="com.onlinepowers.framework.security.userdetails.User" extends="UserBaseResult">
+		<association property="userRoles" resultMap="UserRoleResult" />
+		<association property="userDetail" resultMap="UserDetailResult" />
+	</resultMap>
+
+	<resultMap id="UserRoleResult" type="com.onlinepowers.framework.security.userdetails.UserRole">
+		<result property="userId" column="USER_ID" />
+		<result property="authority" column="AUTHORITY" />
+	</resultMap>
+
+	<resultMap id="UserDetailResult" type="saleson.shop.user.domain.UserDetail">
+		<result property="userId" column="USER_ID" />
+		<result property="groupCode" column="GROUP_CODE" />
+		<result property="newPost" column="NEW_POST" />
+		<result property="post" column="POST" />
+		<result property="address" column="ADDRESS" />
+		<result property="addressDetail" column="ADDRESS_DETAIL" />
+		<result property="telNumber" column="TEL_NUMBER" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="faxNumber" column="FAX_NUMBER" />
+		<result property="receiveEmail" column="RECEIVE_EMAIL" />
+		<result property="receiveSms" column="RECEIVE_SMS" />
+		<result property="receivePush" column="RECEIVE_PUSH" />
+		<result property="gender" column="GENDER" />
+		<result property="age" column="AGE" />
+		<result property="point" column="USER_POINT" />
+		<result property="buyCount" column="BUY_COUNT_FOR_ORDER" />
+		<result property="buyPrice" column="BUY_PRICE_FOR_ORDER" />
+		<result property="lastBuyDate" column="LAST_BUY_DATE" />
+		<result property="leaveReason" column="LEAVE_REASON" />
+		<result property="siteFlag" column="SITE_FLAG" />
+		<result property="useFlag" column="USE_FLAG" />
+		<result property="birthdayType" column="BIRTHDAY_TYPE" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="levelId" column="LEVEL_ID" />
+		<result property="userLevelExpirationDate" column="USER_LEVEL_EXPIRATION_DATE" />
+		<result property="levelName" column="LEVEL_NAME" />
+		<result property="groupName" column="GROUP_NAME" />
+		<association property="userlevel" resultMap="saleson.shop.userlevel.UserLevelMapper.UserLevelResult"/>
+	</resultMap>
+
+	<resultMap id="managerRequestResult" type="saleson.shop.user.domain.ManagerRequest">
+		<result property="userId"			column="USER_ID" />
+		<result property="reqstSn"			column="REQST_SN" />
+		<result property="loginId"			column="LOGIN_ID" />
+		<result property="locgovCode"		column="LOCGOV_CODE" />
+		<result property="reqstSeCode"		column="REQST_SE_CODE" />
+		<result property="psitnCode"		column="PSITN_CODE" />
+		<result property="psitnNm"			column="PSITN_NM" />
+		<result property="psitnDeptNm"		column="PSITN_DEPT_NM" />
+		<result property="ofcpsNm"			column="OFCPS_NM" />
+		<result property="cttpc"			column="CTTPC" />
+		<result property="confmSttusCode"	column="CONFM_STTUS_CODE" />
+		<result property="rejectResn"		column="REJECT_RESN" />
+		<result property="frstRegisterId"	column="FRST_REGISTER_ID" />
+		<result property="frstRegistPnttm"	column="FRST_REGIST_PNTTM" />
+		<result property="lastUpdusrId"		column="LAST_UPDUSR_ID" />
+		<result property="lastUpdtPnttm"	column="LAST_UPDT_PNTTM" />
+		<result property="userName"			column="USER_NAME" />
+		<result property="email"			column="EMAIL" />
+		<result property="phoneNumber"		column="PHONE_NUMBER" />
+		<result property="birthday"			column="BIRTHDAY" />
+		<result property="receiveEmail"		column="RECEIVE_EMAIL" />
+		<result property="confmSttusNm"		column="CONFM_STTUS_NM" />
+		<result property="reqstSeNm"		column="REQST_SE_NM" />
+		<result property="locgovNm"			column="LOCGOV_NM" />
+		<result property="upperlocgovNm"	column="UPPER_LOCGOV_NM" />
+		<result property="upperLocgovCode"	column="UPPER_LOCGOV_CODE" />
+		<result property="bankNm"			column="BANK_NM" />
+		<result property="updIdRole"			column="UPD_ID_ROLE" />
+	</resultMap>
+
+	<sql id="sqlManagerRequestListByParamWhere">
+		<where>
+			<!-- 로그인 사용자가 지자체 / 오프라인일 경우 해당 소속만 조회 -->
+			<!-- 로그인 사용자가 시스템 / 행안부일 경우 지정기부 제외 -->
+			<if test="reqstSeCode != null and reqstSeCode != ''">
+				<choose>
+					<!-- <when test="reqstSeCode == 'ALL'">
+						AND R.REQST_SE_CODE != 'ROLE_ADMIN_10'
+					</when> -->
+					<when test="reqstSeCode != 'ALL'">
+						AND R.REQST_SE_CODE = #{reqstSeCode}
+					</when>				
+				</choose>
+			</if>
+
+			<!-- 지자체부담당자 조회시 로그인 사용자의 지자체만 조회 -->
+			<if test="(reqstSeCode != null and reqstSeCode != '' and reqstSeCode == 'ROLE_ADMIN_6')
+						and (superUserId != null and superUserId != '')">
+				AND R.LOCGOV_CODE = (SELECT LOCGOV_CODE FROM OP_MANAGER WHERE USER_ID = #{superUserId} AND STATUS_CODE = 9)
+			</if>
+
+			<!-- 검색조건 : 검색구분 + 값 -->
+			<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
+				<choose>
+					<when test="srchKey == 'LOGIN_ID'">
+						AND R.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					</when>
+					<when test="srchKey == 'USER_NAME'">
+						AND U.USER_NAME = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					</when>
+					<when test="srchKey == 'EMAIL'">
+						AND U.EMAIL = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					</when>
+				</choose>
+			</if>
+
+			<!-- 검색조건 : 등록일 (시작) -->
+			<if test="srchStartCreated != null and srchStartCreated != ''">
+				AND DATE_FORMAT(R.FRST_REGIST_PNTTM,'%Y%m%d') <![CDATA[ >= ]]> #{srchStartCreated}
+			</if>
+
+			<!-- 검색조건 : 등록일 (종료) -->
+			<if test="srchEndCreated != null and srchEndCreated != ''">
+				AND DATE_FORMAT(R.FRST_REGIST_PNTTM,'%Y%m%d') <![CDATA[ <= ]]> #{srchEndCreated}
+			</if>
+
+			<!-- 검색조건 : 상태 -->
+			<if test="srchConfmSttusCode != null and srchConfmSttusCode != ''">
+				AND CONFM_STTUS_CODE = #{srchConfmSttusCode}
+			</if>
+			
+			AND C2.EXTENSION_CODE = 'SYSTEM'
+		</where>
+	</sql>
+
+	<select id="getManagerByLoginId" parameterType="string" resultMap="UserResult">
+		/** managerrequest-mapper.getManagerByLoginId (관리자 조회 - 로그인 아이디 기준) */
+		SELECT
+			A.USER_ID
+			,crypto_dec('normal', LOGIN_ID, '', 0) AS LOGIN_ID
+			,A.PASSWORD
+			,crypto_dec('normal', USER_NAME, '', 0) AS USER_NAME
+			,crypto_dec('normal', EMAIL, '', 0)  AS EMAIL
+			,crypto_dec('normal', PHONE_NUMBER, '', 0) AS PHONE_NUMBER 
+			,A.STATUS_CODE
+		    ,A.LOGIN_COUNT
+			,A.LOGIN_DATE
+			,A.DENY_DATE
+			,A.LEAVE_DATE
+			,A.LOGIN_FAIL_COUNT
+			,A.LOGIN_TRY_DATE
+			,A.PASSWORD_TYPE
+			,A.PASSWORD_EXPIRED_DATE
+			,A.AUTH_EXPIRED_DATE
+			,A.UPDATED_DATE
+			,A.CREATED_DATE
+			,A.LOCGOV_CODE
+			,A.BANK_CODE
+		FROM
+		(
+			SELECT
+					M.USER_ID,
+					M.LOGIN_ID,
+					M.PASSWORD,
+					M.USER_NAME,
+					M.EMAIL,
+					M.PHONE_NUMBER,
+					M.STATUS_CODE,
+					M.LOGIN_COUNT,
+					M.LOGIN_DATE,
+					M.DENY_DATE,
+					M.LEAVE_DATE,
+					M.LOGIN_FAIL_COUNT,
+					M.LOGIN_TRY_DATE,
+					M.PASSWORD_TYPE,
+					M.PASSWORD_EXPIRED_DATE,
+					M.AUTH_EXPIRED_DATE,
+					M.UPDATED_DATE,
+					M.CREATED_DATE,
+					M.LOCGOV_CODE,
+					M.BANK_CODE
+			FROM OP_MANAGER M
+			WHERE M.LOGIN_ID = (SELECT crypto_enc('normal', #{value}, ''))
+		) A
+	</select>
+
+	<select id="getManagerRequestList" parameterType="saleson.shop.user.support.ManagerRequestSearchParam" resultMap="saleson.shop.user.ManagerRequestMapper.managerRequestResult">
+		/** managerrequest-mapper.getManagerRequestList (관리자 신청 목록 조회) */
+		SELECT
+			 A.USER_ID
+			,A.REQST_SN
+			,crypto_dec('normal',LOGIN_ID, '', 0) AS LOGIN_ID
+			,A.LOCGOV_CODE
+			,A.REQST_SE_CODE
+			,A.PSITN_CODE
+			,A.PSITN_NM
+			,A.PSITN_DEPT_NM
+			,crypto_dec('normal', OFCPS_NM, '', 0) AS FCPS_NM
+			,crypto_dec('normal', CTTPC, '', 0) AS CTTPC
+			,A.CONFM_STTUS_CODE
+			,A.REJECT_RESN
+			,A.FRST_REGISTER_ID
+			,A.FRST_REGIST_PNTTM
+			,A.LAST_UPDUSR_ID
+			,A.LAST_UPDT_PNTTM
+		FROM
+		(
+			SELECT
+					R.USER_ID,
+					R.REQST_SN,
+					R.LOGIN_ID,
+					R.LOCGOV_CODE,
+					R.REQST_SE_CODE,
+					R.PSITN_CODE,
+					R.PSITN_NM,
+					R.PSITN_DEPT_NM,
+					R.OFCPS_NM,
+					R.CTTPC,
+					R.CONFM_STTUS_CODE,
+					R.REJECT_RESN,
+					R.FRST_REGISTER_ID,
+					R.FRST_REGIST_PNTTM,
+					R.LAST_UPDUSR_ID,
+					R.LAST_UPDT_PNTTM
+			FROM
+					G_MNGR_REQST R				
+			<where>
+				<if test="userId != null and userId != ''">
+					AND R.USER_ID = #{userId}
+				</if>
+				<if test="reqstSn != null and reqstSn != ''">
+					AND R.REQST_SN= #{reqstSn}
+				</if>
+				<if test="loginId != null and loginId != ''">
+					AND R.LOGIN_ID= (SELECT crypto_enc('normal', #{loginId}, ''))
+				</if>
+				<if test="locgovCode != null and locgovCode != ''">
+					AND R.LOCGOV_CODE = #{locgovCode}
+				</if>
+				<if test="reqstSeCode != null and reqstSeCode != ''">
+					AND R.REQST_SE_CODE = #{reqstSeCode}
+				</if>
+				<if test="confmSttusCode != null and confmSttusCode != ''">
+					AND R.CONFM_STTUS_CODE = #{confmSttusCode}
+				</if>
+			</where>
+		) A
+	</select>
+
+	<insert id="insertManagerRequest" parameterType="saleson.shop.user.domain.ManagerRequest">
+		/** managerrequest-mapper.insertManagerRequest (관리자 신청 등록) */
+		INSERT G_MNGR_REQST (
+			USER_ID,
+			REQST_SN,
+			LOGIN_ID,
+			LOCGOV_CODE,
+			REQST_SE_CODE,
+			PSITN_CODE,
+			PSITN_NM,
+			PSITN_DEPT_NM,
+			OFCPS_NM,
+			CTTPC,
+			CONFM_STTUS_CODE,
+			REJECT_RESN,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		) VALUES (
+			#{userId},
+			(SELECT IFNULL(MAX(REQST_SN), 0)+1 FROM G_MNGR_REQST WHERE USER_ID = #{userId}),
+			crypto_enc('normal', #{loginId}, ''),
+			#{locgovCode},
+			#{reqstSeCode},
+			#{psitnCode},
+			#{psitnNm},
+			#{psitnDeptNm},
+			crypto_enc('normal', #{ofcpsNm}, ''),
+			crypto_enc('normal', #{cttpc}, ''),
+			#{confmSttusCode},
+			#{rejectResn},
+			#{frstRegisterId},
+			<include refid="CommonMapper.datetime" />,
+			#{lastUpdusrId},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<select id="getManagerRequestCountByParam" parameterType="saleson.shop.user.support.ManagerRequestSearchParam" resultType="Integer">
+		/** managerrequest-mapper.getManagerRequestCountByParam (관리자 권한 승인관리 목록 갯수 조회) */
+		SELECT
+				COUNT(*)
+		FROM
+				G_MNGR_REQST R
+		INNER JOIN
+				OP_USER U
+			ON	U.USER_ID = R.USER_ID
+		INNER JOIN
+				OP_USER_DETAIL UD
+			ON	UD.USER_ID = U.USER_ID
+		LEFT OUTER JOIN
+				OP_COMMON_CODE C1
+			ON	C1.CODE_TYPE = 'CFM_STATUS'
+			AND	C1.USE_YN = 'Y'
+			AND	C1.LANGUAGE = 'ko'
+			AND	C1.ID = R.CONFM_STTUS_CODE
+		LEFT OUTER JOIN
+				OP_COMMON_CODE C2
+			ON	C2.CODE_TYPE = 'REQST_SE_CODE'
+			AND	C2.USE_YN = 'Y'
+			AND	C2.LANGUAGE = 'ko'
+			AND	C2.ID = R.REQST_SE_CODE
+		LEFT OUTER JOIN
+				OP_COMMON_CODE C3
+			ON	C3.CODE_TYPE = 'LOCGOV_CODE'
+			AND	C3.USE_YN = 'Y'
+			AND	C3.LANGUAGE = 'ko'
+			AND	C3.ID = R.LOCGOV_CODE
+		LEFT OUTER JOIN
+				OP_COMMON_CODE C4
+			ON	C4.CODE_TYPE = 'WDR'
+			AND	C4.USE_YN = 'Y'
+			AND	C4.LANGUAGE = 'ko'
+			AND	C4.ID = CONCAT(SUBSTR(R.LOCGOV_CODE, 1, 2), '000')
+		LEFT OUTER JOIN
+				OP_COMMON_CODE C5
+			ON	C5.CODE_TYPE = 'OFF_BANK_LIST'
+			AND	C5.USE_YN = 'Y'
+			AND	C5.LANGUAGE = 'ko'
+			AND	C5.ID = R.PSITN_CODE
+		<include refid="sqlManagerRequestListByParamWhere" />
+	</select>
+
+	<select id="getManagerRequestListByParam" parameterType="saleson.shop.user.support.ManagerRequestSearchParam" resultMap="saleson.shop.user.ManagerRequestMapper.managerRequestResult">
+		/** managerrequest-mapper.getManagerRequestListByParam (관리자 권한 승인관리 목록 조회)  */
+		SELECT
+				A.USER_ID
+				,A.REQST_SN
+				,crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID
+				,A.LOCGOV_CODE
+				,A.REQST_SE_CODE
+				,A.PSITN_CODE
+				,A.PSITN_NM
+				,A.PSITN_DEPT_NM
+				,crypto_dec('normal', A.OFCPS_NM, '', 0) AS OFCPS_NM
+				,crypto_dec('normal', A.CTTPC, '', 0) AS CTTPC
+				,A.CONFM_STTUS_CODE
+				,A.REJECT_RESN
+				,A.FRST_REGISTER_ID
+				,DATE_FORMAT(A.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM
+				,A.LAST_UPDUSR_ID
+				,DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') AS LAST_UPDT_PNTTM
+				,crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME
+				,crypto_dec('normal', A.EMAIL, '', 0) AS EMAIL
+				,crypto_dec('normal', A.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+				,crypto_dec('normal', A.BIRTHDAY, '', 0) AS BIRTHDAY
+				,A.CONFM_STTUS_NM
+				,A.REQST_SE_NM
+				,A.LOCGOV_NM
+				,A.UPPER_LOCGOV_NM
+				,A.BANK_NM
+				,A.UPPER_LOCGOV_CODE
+		FROM (
+				<include refid="CommonMapper.paginationHeader" />
+				SELECT
+						R.USER_ID,
+						R.REQST_SN,
+						R.LOGIN_ID,
+						R.LOCGOV_CODE,
+						R.REQST_SE_CODE,
+						R.PSITN_CODE,
+						R.PSITN_NM,
+						R.PSITN_DEPT_NM,
+						R.OFCPS_NM,
+						R.CTTPC,
+						R.CONFM_STTUS_CODE,
+						R.REJECT_RESN,
+						R.FRST_REGISTER_ID,
+						R.FRST_REGIST_PNTTM,
+						R.LAST_UPDUSR_ID,
+						R.LAST_UPDT_PNTTM,
+						U.USER_NAME,
+						U.EMAIL,
+						UD.PHONE_NUMBER,
+						UD.BIRTHDAY,
+						C1.LABEL AS CONFM_STTUS_NM,
+						C2.LABEL AS REQST_SE_NM,
+						C3.LABEL AS LOCGOV_NM,
+						C4.LABEL AS UPPER_LOCGOV_NM,
+						C5.LABEL AS BANK_NM,
+						CONCAT(SUBSTR(R.LOCGOV_CODE, 1, 2), '000') AS UPPER_LOCGOV_CODE
+				FROM
+						G_MNGR_REQST R
+				INNER JOIN
+						OP_USER U
+					ON	U.USER_ID = R.USER_ID
+				INNER JOIN
+						OP_USER_DETAIL UD
+					ON	UD.USER_ID = U.USER_ID
+				LEFT OUTER JOIN
+						OP_COMMON_CODE C1
+					ON	C1.CODE_TYPE = 'CFM_STATUS'
+					AND	C1.USE_YN = 'Y'
+					AND	C1.LANGUAGE = 'ko'
+					AND	C1.ID = R.CONFM_STTUS_CODE
+				LEFT OUTER JOIN
+						OP_COMMON_CODE C2
+					ON	C2.CODE_TYPE = 'REQST_SE_CODE'
+					AND	C2.USE_YN = 'Y'
+					AND	C2.LANGUAGE = 'ko'
+					AND	C2.ID = R.REQST_SE_CODE
+				LEFT OUTER JOIN
+						OP_COMMON_CODE C3
+					ON	C3.CODE_TYPE = 'LOCGOV_CODE'
+					AND	C3.USE_YN = 'Y'
+					AND	C3.LANGUAGE = 'ko'
+					AND	C3.ID = R.LOCGOV_CODE
+				LEFT OUTER JOIN
+						OP_COMMON_CODE C4
+					ON	C4.CODE_TYPE = 'WDR'
+					AND	C4.USE_YN = 'Y'
+					AND	C4.LANGUAGE = 'ko'
+					AND	C4.ID = CONCAT(SUBSTR(R.LOCGOV_CODE, 1, 2), '000')
+				LEFT OUTER JOIN
+						OP_COMMON_CODE C5
+					ON	C5.CODE_TYPE = 'OFF_BANK_LIST'
+					AND	C5.USE_YN = 'Y'
+					AND	C5.LANGUAGE = 'ko'
+					AND	C5.ID = R.PSITN_CODE
+				<include refid="sqlManagerRequestListByParamWhere" />
+				ORDER BY
+						R.FRST_REGIST_PNTTM DESC
+				<include refid="CommonMapper.paginationFooter" />
+		) A
+	</select>
+
+	<select id="getManagerRequestDetails" parameterType="saleson.shop.user.support.ManagerRequestSearchParam" resultMap="saleson.shop.user.ManagerRequestMapper.managerRequestResult">
+		/** managerrequest-mapper.getManagerRequestDetails (관리자 권한 승인관리 상세 조회) */
+		SELECT
+			A.USER_ID
+			,A.REQST_SN
+			,CRYPTO_DEC('normal', LOGIN_ID, '', 0) AS LOGIN_ID
+			,A.LOCGOV_CODE
+			,A.REQST_SE_CODE
+			,A.PSITN_CODE
+			,A.PSITN_NM
+			,A.PSITN_DEPT_NM
+			,CRYPTO_DEC('normal', OFCPS_NM, '', 0) AS OFCPS_NM
+			,CRYPTO_DEC('normal', CTTPC, '', 0) AS CTTPC
+			,A.CONFM_STTUS_CODE
+			,A.REJECT_RESN
+			,A.FRST_REGISTER_ID
+			,A.FRST_REGIST_PNTTM
+			,A.LAST_UPDUSR_ID
+			,A.LAST_UPDT_PNTTM
+			,CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+			,CRYPTO_DEC('normal', EMAIL, '', 0) AS EMAIL
+			,CRYPTO_DEC('normal', PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+			,CRYPTO_DEC('normal', BIRTHDAY, '', 0) AS BIRTHDAY
+			,A.RECEIVE_EMAIL
+			,A.CONFM_STTUS_NM
+			,A.REQST_SE_NM
+			,A.LOCGOV_NM
+			,A.UPPER_LOCGOV_NM
+			,A.BANK_NM
+			,A.UPPER_LOCGOV_CODE
+		FROM
+		(
+			SELECT
+					R.USER_ID,
+					R.REQST_SN,
+					R.LOGIN_ID,
+					R.LOCGOV_CODE,
+					R.REQST_SE_CODE,
+					R.PSITN_CODE,
+					R.PSITN_NM,
+					R.PSITN_DEPT_NM,
+					R.OFCPS_NM,
+					R.CTTPC,
+					R.CONFM_STTUS_CODE,
+					R.REJECT_RESN,
+					R.FRST_REGISTER_ID,
+					DATE_FORMAT(R.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM,
+					R.LAST_UPDUSR_ID,
+					DATE_FORMAT(R.LAST_UPDT_PNTTM,'%Y-%m-%d') AS LAST_UPDT_PNTTM,
+					U.USER_NAME, 
+					U.EMAIL,
+					UD.PHONE_NUMBER,
+					UD.BIRTHDAY,
+					UD.RECEIVE_EMAIL,
+					C1.LABEL AS CONFM_STTUS_NM,
+					C2.LABEL AS REQST_SE_NM,
+					C3.LABEL AS LOCGOV_NM,
+					C4.LABEL AS UPPER_LOCGOV_NM,
+					C5.LABEL AS BANK_NM,
+					CONCAT(SUBSTR(R.LOCGOV_CODE, 1, 2), '000') AS UPPER_LOCGOV_CODE
+			FROM
+					G_MNGR_REQST R
+			INNER JOIN
+					OP_USER U
+				ON	U.USER_ID = R.USER_ID
+			INNER JOIN
+					OP_USER_DETAIL UD
+				ON	UD.USER_ID = U.USER_ID
+			LEFT OUTER JOIN
+					OP_COMMON_CODE C1
+				ON	C1.CODE_TYPE = 'CFM_STATUS'
+				AND	C1.USE_YN = 'Y'
+				AND	C1.LANGUAGE = 'ko'
+				AND	C1.ID = R.CONFM_STTUS_CODE
+			LEFT OUTER JOIN
+					OP_COMMON_CODE C2
+				ON	C2.CODE_TYPE = 'REQST_SE_CODE'
+				AND	C2.USE_YN = 'Y'
+				AND	C2.LANGUAGE = 'ko'
+				AND	C2.ID = R.REQST_SE_CODE
+			LEFT OUTER JOIN
+					OP_COMMON_CODE C3
+				ON	C3.CODE_TYPE = 'LOCGOV_CODE'
+				AND	C3.USE_YN = 'Y'
+				AND	C3.LANGUAGE = 'ko'
+				AND	C3.ID = R.LOCGOV_CODE
+			LEFT OUTER JOIN
+					OP_COMMON_CODE C4
+				ON	C4.CODE_TYPE = 'WDR'
+				AND	C4.USE_YN = 'Y'
+				AND	C4.LANGUAGE = 'ko'
+				AND	C4.ID = CONCAT(SUBSTR(R.LOCGOV_CODE, 1, 2), '000')
+			LEFT OUTER JOIN
+					OP_COMMON_CODE C5
+				ON	C5.CODE_TYPE = 'OFF_BANK_LIST'
+				AND	C5.USE_YN = 'Y'
+				AND	C5.LANGUAGE = 'ko'
+				AND	C5.ID = R.PSITN_CODE
+			WHERE
+					R.USER_ID = #{userId}
+				AND	R.REQST_SN = #{reqstSn}
+		) A
+	</select>
+
+	<select id="getManagerRequestHistory" parameterType="saleson.shop.user.support.ManagerRequestSearchParam" resultMap="saleson.shop.user.ManagerRequestMapper.managerRequestResult">
+		/** managerrequest-mapper.getManagerRequestHistory (관리자 권한 승인관리 이력 조회) */
+		SELECT
+			A.FRST_REGIST_PNTTM
+		   ,A.REQST_SE_CODE
+		   ,A.REQST_SE_NM
+       	   ,A.CONFM_STTUS_NM
+       	   ,A.UPD_ID_ROLE
+           ,A.LOGIN_ID
+           ,A.LAST_UPDT_PNTTM
+		FROM
+		(
+			SELECT DATE_FORMAT(R.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM
+				   ,REQST_SE_CODE
+				   ,( CASE WHEN R.REQST_SE_CODE = 'ROLE_ADMIN_6' THEN CONCAT(C4.LABEL, '', C3.LABEL) ELSE C2.LABEL END ) AS REQST_SE_NM
+		       	   ,C1.LABEL AS CONFM_STTUS_NM
+		       	   ,( SELECT ROLE_NAME
+		       	        FROM OP_ROLE OROLE
+				       INNER JOIN OP_USER_ROLE OUR
+				          ON OROLE.AUTHORITY  = OUR.AUTHORITY
+				         AND OUR.AUTHORITY LIKE 'ROLE_ADMIN%'
+				       WHERE OUR.USER_ID = R.LAST_UPDUSR_ID
+				         AND ROWNUM = 1 ) AS UPD_ID_ROLE
+		           ,( CASE WHEN R.CONFM_STTUS_CODE != '200' THEN CRYPTO_DEC('normal', U.LOGIN_ID, '', 0) ELSE NULL END) AS LOGIN_ID
+		           ,DATE_FORMAT(R.LAST_UPDT_PNTTM ,'%Y-%m-%d') AS LAST_UPDT_PNTTM
+		      FROM G_MNGR_REQST R
+			 INNER JOIN OP_USER U
+			    ON U.USER_ID = R.last_updusr_id
+			 INNER JOIN OP_USER_DETAIL UD
+				ON UD.USER_ID = U.USER_ID
+			  LEFT OUTER JOIN OP_COMMON_CODE C1
+				ON C1.CODE_TYPE = 'CFM_STATUS'
+			   AND C1.USE_YN = 'Y'
+			   AND C1.LANGUAGE = 'ko'
+			   AND C1.ID = R.CONFM_STTUS_CODE
+			  LEFT OUTER JOIN OP_COMMON_CODE C2
+				ON C2.CODE_TYPE = 'REQST_SE_CODE'
+			   AND C2.USE_YN = 'Y'
+			   AND C2.LANGUAGE = 'ko'
+			   AND C2.ID = R.REQST_SE_CODE
+			  LEFT OUTER JOIN OP_COMMON_CODE C3
+				ON C3.CODE_TYPE = 'LOCGOV_CODE'
+			   AND C3.USE_YN = 'Y'
+			   AND C3.LANGUAGE = 'ko'
+			   AND C3.ID = R.LOCGOV_CODE
+			  LEFT OUTER JOIN OP_COMMON_CODE C4
+				ON C4.CODE_TYPE = 'WDR'
+			   AND C4.USE_YN = 'Y'
+			   AND C4.LANGUAGE = 'ko'
+			   AND C4.ID = CONCAT(SUBSTR(R.LOCGOV_CODE, 1, 2), '000')
+			  LEFT OUTER JOIN OP_COMMON_CODE C5
+				ON C5.CODE_TYPE = 'OFF_BANK_LIST'
+			   AND C5.USE_YN = 'Y'
+			   AND C5.LANGUAGE = 'ko'
+			   AND C5.ID = R.PSITN_CODE
+			 WHERE R.USER_ID = #{userId}
+			 ORDER BY R.LAST_UPDT_PNTTM DESC
+		) A
+	</select>
+
+	<update id="updateManagerRequest" parameterType="saleson.shop.user.domain.ManagerRequest">
+		/** managerrequest-mapper.updateManagerRequest (관리자 신청 수정) */
+		UPDATE
+				G_MNGR_REQST
+		SET
+				LAST_UPDUSR_ID = #{lastUpdusrId},
+				LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />
+				<if test="confmSttusCode != null and confmSttusCode != ''">
+					, CONFM_STTUS_CODE = #{confmSttusCode}
+				</if>
+				<if test="rejectResn != null and rejectResn != ''">
+					, REJECT_RESN = #{rejectResn}
+				</if>
+		WHERE
+				USER_ID = #{userId}
+			AND	REQST_SN = #{reqstSn}
+	</update>
+
+	<insert id="insertManagerByUserSync" parameterType="saleson.shop.user.domain.ManagerRequest">
+		/** managerrequest-mapper.insertManagerByUserSync (관리자 등록 - 사용자 정보 동기화) */
+		INSERT INTO OP_MANAGER (
+			USER_ID,
+			LOGIN_ID,
+			PASSWORD,
+			USER_NAME,
+			EMAIL,
+			PHONE_NUMBER,
+			STATUS_CODE,
+			LOGIN_COUNT,
+			LOGIN_DATE,
+			DENY_DATE,
+			LEAVE_DATE,
+			LOGIN_FAIL_COUNT,
+			LOGIN_TRY_DATE,
+			PASSWORD_TYPE,
+			PASSWORD_EXPIRED_DATE,
+			AUTH_EXPIRED_DATE,
+			UPDATED_DATE,
+			CREATED_DATE,
+			LOCGOV_CODE,
+			BANK_CODE,
+			EMP_ID,
+			PSITN_NM,
+			PSITN_DEPT_NM,
+			OFCPS_NM,
+			INFO_UPDT_DE
+		)
+		SELECT
+				U.USER_ID,
+				U.LOGIN_ID,
+				U.PASSWORD,
+				U.USER_NAME,
+				U.EMAIL,
+				(SELECT UD.PHONE_NUMBER FROM OP_USER_DETAIL UD WHERE UD.USER_ID = #{userId} AND UD.USE_FLAG = 'Y'),
+				U.STATUS_CODE,
+				0,
+				U.LOGIN_DATE,
+				U.DENY_DATE,
+				U.LEAVE_DATE,
+				0,
+				U.LOGIN_TRY_DATE,
+				U.PASSWORD_TYPE,
+				U.PASSWORD_EXPIRED_DATE,
+				NULL,
+				<include refid="CommonMapper.datetime" />,
+				<include refid="CommonMapper.datetime" />,
+				R.LOCGOV_CODE,
+				R.PSITN_CODE,
+				NULL,
+				R.PSITN_NM,
+				R.PSITN_DEPT_NM,
+				R.OFCPS_NM,
+				<include refid="CommonMapper.date" />
+		FROM
+				OP_USER U
+		INNER JOIN
+				G_MNGR_REQST R
+			ON	R.USER_ID = U.USER_ID
+			AND	R.REQST_SN = #{reqstSn}
+		WHERE
+				U.USER_ID = #{userId}
+			AND	U.STATUS_CODE = 9
+	</insert>
+
+	<select id="getManagerRequestDetailsAuthCount" parameterType="saleson.shop.user.support.ManagerRequestSearchParam" resultType="Integer">
+		/** managerrequest-mapper.getManagerRequestDetailsAuthCount (관리자 권한 승인관리 상세 조회 접근 권한 체크) */
+		SELECT	COUNT(*)
+		FROM	G_MNGR_REQST R
+		WHERE	R.USER_ID = #{userId}
+		AND		R.REQST_SN = #{reqstSn}
+		<!-- 로그인 사용자가 지자체 / 오프라인일 경우 해당 소속만 조회 -->
+		<if test="reqstSeCode != null and reqstSeCode != '' and reqstSeCode != 'ALL'">
+			AND	R.REQST_SE_CODE = #{reqstSeCode}
+		</if>
+		<!-- 지자체부담당자 조회시 로그인 사용자의 지자체만 조회 -->
+		<if test="(reqstSeCode != null and reqstSeCode != '' and (reqstSeCode == 'ROLE_ADMIN_6' or reqstSeCode == 'ROLE_ADMIN_10'))
+					and (superUserId != null and superUserId != '')">
+			AND	R.LOCGOV_CODE = (SELECT LOCGOV_CODE FROM OP_MANAGER WHERE USER_ID = #{superUserId} AND STATUS_CODE = 9)
+		</if>
+	</select>
+
+	<select id="getPasswordChangeTypeByUserId" parameterType="Long" resultType="String">
+		/** managerrequest-mapper.getPasswordChangeTypeByUserId (비밀번호 변경 타입 조회) */
+		SELECT
+				CASE
+					WHEN IFNULL(M.INFO_UPDT_DE, '') = '' AND M.PASSWORD_TYPE = 'T' THEN 'PASS_CHANGE_F'
+					WHEN M.PASSWORD_TYPE = 'T' THEN 'PASS_CHANGE_I'
+					WHEN DATEDIFF(DATE_FORMAT(STR_TO_DATE(M.PASSWORD_EXPIRED_DATE, '%Y%m%d%H%i%s'), '%Y%m%d%H%i%s'), NOW()) <![CDATA[<]]> 1 THEN 'PASS_CHANGE_C'
+					ELSE ''
+				END
+		FROM OP_MANAGER M
+		WHERE M.STATUS_CODE = 9
+		AND M.USER_ID = #{userId}
+	</select>
+
+	<update id="updateManagerLoginFailCount" parameterType="Long">
+		/** managerrequest-mapper.updateManagerLoginFailCount (로그인 실패 카운트 증가) */
+		UPDATE
+				OP_MANAGER
+		SET
+				LOGIN_FAIL_COUNT = IFNULL(LOGIN_FAIL_COUNT, 0) + 1
+		WHERE
+				USER_ID = #{userId}
+	</update>
+
+	<select id="getUserInfoByLoginId" parameterType="String" resultMap="saleson.shop.user.ManagerRequestMapper.managerRequestResult">
+		/** managerrequest-mapper.getUserInfoByLoginId (회원 정보 조회) */
+		SELECT
+			A.USER_ID
+			,A.PASSWORD
+			,crypto_dec('normal', LOGIN_ID, '', 0) AS LOGIN_ID
+			,crypto_dec('normal', USER_NAME, '', 0) AS USER_NAME
+			,crypto_dec('normal', EMAIL, '', 0) AS EMAIL
+			,crypto_dec('normal', PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+			,crypto_dec('normal', BIRTHDAY, '', 0) AS BIRTHDAY
+		FROM
+		(
+			SELECT
+					U.USER_ID,
+					U.PASSWORD,
+					U.LOGIN_ID,
+					U.USER_NAME,
+					U.EMAIL, 
+					UD.PHONE_NUMBER,
+					UD.BIRTHDAY
+			FROM
+					OP_USER U
+			INNER JOIN
+					OP_USER_DETAIL UD
+				ON	U.USER_ID = UD.USER_ID
+			WHERE
+					U.LOGIN_ID = (SELECT crypto_enc('normal', #{loginId}, ''))
+		)A
+	</select>
+
+	<select id="getUserStatusCodeByUserId" parameterType="Long" resultType="String">
+		/** managerrequest-mapper.getUserStatusCodeByUserId (사용자 상태값 확인) */
+		SELECT STATUS_CODE
+		FROM OP_USER
+		WHERE USER_ID = #{value}
+	</select>
+
+	<select id="getUserRole" parameterType="Long" resultType="com.onlinepowers.framework.security.userdetails.UserRole">
+		/** managerrequest-mapper.getUserRole (사용자 권한 확인) */
+		SELECT OM.USER_ID
+		       ,OUR.AUTHORITY
+		  FROM OP_MANAGER OM
+		 INNER JOIN OP_USER_ROLE OUR
+		    ON OM.USER_ID = OUR.USER_ID
+		 WHERE OM.USER_ID = #{userId}
+	</select>
+
+	<select id="getNoticeList" parameterType="string"  resultType="saleson.shop.notice.domain.ManagerNotice">
+		/** managerrequest-mapper.getNoticeList (관리자 공지사항 가져오기) */
+		SELECT MANAGER_NOTICE_ID
+		       ,SUBJECT
+		       ,CONTENT
+		       ,START_DATE
+		       ,END_DATE
+		       ,USE_YN
+		       ,WIDTH
+		       ,HEIGHT
+		  FROM OP_MANAGER_NOTICE
+		 WHERE USE_YN = 'Y'
+		   AND START_DATE <![CDATA[<=]]> DATE_FORMAT(now(), '%Y%m%d%H%m%s')
+		   AND END_DATE <![CDATA[>=]]> DATE_FORMAT(now(), '%Y%m%d%H%m%s')
+		  <choose>
+			<when test="type != null and type != ''">
+				AND NOTICE_TYPE IN('A', #{type})
+			</when>
+			<otherwise>
+				AND NOTICE_TYPE = 'A'
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

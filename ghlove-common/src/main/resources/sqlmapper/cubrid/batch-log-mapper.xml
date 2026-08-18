@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.batch.BatchLogMapper">
+
+    <resultMap id="BatchLogResult" type="saleson.batch.domain.BatchLog">
+        <result property="jobName" 			    column="JOB_NAME" />
+        <result property="batchType" 			column="BATCH_TYPE" />
+        <result property="executionDate" 		column="EXECUTION_DATE" />
+        <result property="startTime" 			column="START_TIME" />
+        <result property="endTime" 				column="END_TIME" />
+        <result property="rsltCodeDesc" 		column="RSLT_CODE_DESC" />
+        <result property="message" 		column="MESSAGE" />
+    </resultMap>
+
+    <select id="getBatchLogListCount" parameterType="saleson.batch.support.BatchLogParam" resultType="Integer">
+    	/* saleson.batch.BatchLogMapper.getBatchLogListCount */
+		SELECT COUNT(1) 			
+		FROM OP_BATCH_EXECUTION BE
+		   , OP_BATCH_JOB       BJ
+		WHERE 1 = 1
+		AND BE.BATCH_TYPE LIKE '%' || BJ.JOB_METHOD || '%'
+            <if test='query != null and query != ""'>
+                <choose>
+                    <when test='searchType == "JOBNAME"'>
+                        AND JOB_NAME LIKE CONCAT('%', #{query}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND BE.execution_date BETWEEN NVL(#{searchStartDate} , to_char(sys_date, 'YYYYMMDD')) AND  NVL(#{searchEndDate} , to_char(sys_date, 'YYYYMMDD'))
+   <!--           
+			<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+						AND BE.execution_date BETWEEN #{searchStartDate} AND #{searchEndDate}
+			</if>
+ -->			
+		ORDER BY BE.EXECUTION_DATE DESC, BE.START_TIME, BE.END_TIME;
+    </select>
+
+    <select id="getBatchLogList" parameterType="saleson.batch.support.BatchLogParam" resultMap="BatchLogResult">
+		<include refid="CommonMapper.paginationHeader" />
+	    	/* saleson.batch.BatchLogMapper.getBatchLogList */		
+			SELECT BJ.JOB_NAME AS JOB_NAME			
+			     , BE.BATCH_TYPE  		
+			     , BE.EXECUTION_DATE 	
+			     , BE.START_TIME 		
+			     , BE.END_TIME 			
+			     , BE."RESULT" AS RSLT_CODE			
+			     , CASE WHEN BE.RESULT = '1' THEN '정상'
+			            ELSE '오류'
+			     	END AS RSLT_CODE_DESC
+			     , BE.MESSAGE 			
+			FROM OP_BATCH_EXECUTION BE
+			   , OP_BATCH_JOB       BJ
+			where 1=1
+			AND BE.BATCH_TYPE LIKE '%' || BJ.JOB_METHOD || '%'
+            <if test='query != null and query != ""'>
+                <choose>
+                    <when test='searchType == "JOBNAME"'>
+                        AND JOB_NAME LIKE CONCAT('%', #{query}, '%')
+                    </when>
+                </choose>
+            </if>
+            AND BE.execution_date BETWEEN NVL(#{searchStartDate} , to_char(sys_date, 'YYYYMMDD')) AND  NVL(#{searchEndDate} , to_char(sys_date, 'YYYYMMDD'))
+<!--            
+			<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+						AND BE.execution_date BETWEEN #{searchStartDate} AND #{searchEndDate}
+			</if>
+-->			
+			ORDER BY BE.EXECUTION_DATE DESC, BE.START_TIME, BE.END_TIME
+		<include refid="CommonMapper.paginationFooter" />
+    </select>
+</mapper>

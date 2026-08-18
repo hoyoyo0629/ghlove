@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onlinepowers.framework.security.token.TokenMapper">
+	<resultMap id="TokenResult" type="com.onlinepowers.framework.security.token.domain.Token">
+		<result property="requestToken"		column="REQUEST_TOKEN" />	
+		<result property="requestType" 		column="REQUEST_TYPE" />
+		<result property="accessToken" 		column="ACCESS_TOKEN" />
+		<result property="remoteAddr" 		column="REMOTE_ADDR" />
+		<result property="expireDate" 		column="EXPIRE_DATE" />
+		<result property="createdDate" 	column="CREATED_DATE" />
+	</resultMap>
+
+	<select id="getToken" parameterType="com.onlinepowers.framework.security.token.domain.Token" resultMap="TokenResult">
+		SELECT * FROM OP_TOKEN
+		WHERE REQUEST_TOKEN = #{requestToken}
+  	</select>
+  	
+  	<insert id="insertToken" parameterType="com.onlinepowers.framework.security.token.domain.Token" >
+		INSERT INTO OP_TOKEN (REQUEST_TOKEN, REQUEST_TYPE, ACCESS_TOKEN, REMOTE_ADDR, EXPIRE_DATE, CREATED_DATE) 
+		VALUES (#{requestToken}, #{requestType}, #{accessToken}, #{remoteAddr}, DATE_FORMAT(ADDDATE(NOW(), INTERVAL 5 MINUTE),'%Y%m%d%H%i%s'), <include refid="CommonMapper.datetime"/>)
+	</insert>
+
+	<delete id="deleteExpiredToken">
+		DELETE FROM OP_TOKEN 
+		WHERE <include refid="CommonMapper.datetime"/> > EXPIRE_DATE
+	</delete>
+	
+	
+	<delete id="deleteToken" parameterType="String" >
+		DELETE FROM OP_TOKEN 
+		WHERE REQUEST_TOKEN = #{value}
+	</delete>
+
+</mapper>

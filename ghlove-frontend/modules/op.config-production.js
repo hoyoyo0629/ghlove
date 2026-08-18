@@ -1,0 +1,12 @@
+var API_DOMAIN = 'https://ilovegohyang.go.kr';
+var CDN_DOMAIN = 'https://ilovegohyang.go.kr';
+var VIRTUAL_DOMAIN = 'https://ilovegohyang.go.kr';
+var OZ_DOMAIN = 'https://ilovegohyang.go.kr';
+var SERVER_POSITION = 'production';
+var IS_USE_NET_FUNNEL = true;
+var IS_USE_ONEPASS = false;
+var KAKAO_JAVASCRIPT_KEY = 'dd50d625a46ffbfef8c8b7377dbb4eb3';
+var KAKAO_REDIRECT_URL = VIRTUAL_DOMAIN + '/users/login.html';
+var KAKAO_REDIRECT_URL2 = VIRTUAL_DOMAIN + '/users/join.html';
+var KAKAO_SETTLE_ID = '5a30eca7-4a0b-4dee-b2af-a575f8cec389';
+//var DUPLICATION_CALL_LIMIT = 5000;			// 중복 호출 가능 최소 시간(milliseconds)

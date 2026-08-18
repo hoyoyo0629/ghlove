@@ -1,0 +1,115 @@
+<!doctype html>
+    <html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="../../../../favicon.ico">
+        <title>고향사랑 팝업 | 고향사랑e음</title>
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="/static/css/swiper.min.css">
+        <link rel="stylesheet" href="/static/css/common.css">
+        <link rel="stylesheet" href="/static/css/layout.css">
+        <link rel="stylesheet" href="/static/css/popup.css">
+        <link rel="stylesheet" href="/static/css/main.css">
+
+        <link rel="stylesheet" href="/static/css/event.css">
+
+        <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+    </head>
+    <body>
+        <div id="saleson" v-cloak>
+            <div class="p_admin_win">
+                <div class="p_header">
+                    <h3 class="p_header_tit">{{result.subject}}</h3>
+                </div>
+                <div class="p_body">
+                    <div v-if="result.popupImage != '' && result.popupImage != null
+                            && result.imageLink != '' && result.imageLink != null" class="p_content">
+                        <a :href="result.imageLink" target="_blank" title="새창 열림">
+                            <img :src="itemImage(result.popupImageSrc)" border="0" />
+                        </a>
+                    </div>
+                    <div v-else-if="result.popupImage != '' && result.popupImage != null" class="p_content">
+                        <img :src="itemImage(result.popupImageSrc)" border="0" />
+                    </div>
+                    <div v-else v-html="unescapeHtml(nl2br(result.content))" class="p_content"></div>
+                </div>
+                <div class="check_area">
+                    <input type="checkbox" :id="'check' + result.popupId" title="오늘 하루 이 창을 열지 않음" @click="setCookie(result.popupId)">
+                    <label :for="'check' + result.popupId">오늘 하루 이 창을 열지 않음</label>
+                </div>
+                <a href="javascript:void(0);" v-if="isMobile" class="p_admin_win_close" @click="popupClose(result.popupId)">
+                    <span class="screen_out">닫기</span>
+                </a>
+            </div>
+        </div>
+    </body>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            data: {
+                result: {},
+                param: {
+                    id: 0
+                }
+            },
+            computed: {
+                isMobile: function() {
+                    return $s.isMobile();
+                }
+            },
+            methods: {
+                setCookie: function(popupId) {
+                    $s.api.popup.setCookie('1', popupId);
+                },
+                popupClose: function(popupId) {
+                    $s.api.popup.popupClose('1', popupId);
+                }
+            },
+            mounted: function() {
+                this.$nextTick(function () {
+                    Saleson.init();
+
+                    vm.param.id = $s.core.getParameter('id');
+
+                    $s.api.getPopupById(vm.param, function (data) {
+                        vm.result = data.content;
+                    }, function (error) {
+                        $s.alert(error.response.data.message);
+                    });
+                });
+
+            }
+        });
+    </script>
+</html>

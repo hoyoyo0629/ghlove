@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="icon" href="/static/favicon.ico">
+      <title>금결원 지로 실패 팝업 | 고향사랑e음</title>
+</head>
+
+<body>
+</body>
+
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script>
+	$(document).ready(function() {
+		opener.document.getElementById("giroPopResult").value = "FAIL";
+		//opener.callGiroResultFail();
+	    self.opener = self;
+		self.close();
+	});
+</script>
+</html>

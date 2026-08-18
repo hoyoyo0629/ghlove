@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.common.alimtalk.AlimtalkMapper">
+
+    <insert id="insertTifAlimtalkInfo">
+		INSERT INTO TIF_ALIMTALK_INFO(
+			IF_REQ_ID
+			,TEMPLATE_CODE
+			,RECEIPT_NUM
+			,RECEIVER_NUM
+			,RECEIVER_NAME
+			,ORDER_DATE
+			,ORDER_NO
+			,ORDER_NAME
+			,CLAIM_REASON_DETAIL
+			,IF_START_TIME
+			,IF_END_TIME
+			,IF_STATUS_CD
+			,IF_ERR_MSG
+		) VALUES (
+			#{ifReqId}
+			,#{templateCode}
+			,#{receiptNum}
+			,#{receiverNum}
+			,#{receiverName}
+			,#{orderDate}
+			,#{orderNo}
+			,#{orderName}
+			,#{claimReasonDetail}
+			,#{ifStartTime}
+			,#{ifEndTime}
+			,#{ifStatusCd}
+			,#{ifErrMsg}
+		);
+    </insert>
+
+</mapper>

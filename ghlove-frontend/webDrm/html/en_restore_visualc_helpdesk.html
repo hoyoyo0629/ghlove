@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>:: Fasoo Secure Web ::</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<META content=no-cache http-equiv=pragma>
+<META content=no-cache http-equiv=cache-control>
+<META content=0 http-equiv=expires>
+<meta http-equiv="X-UA-Compatible" content="IE=7" />
+<link type="text/css" href="../css/web_guide.css" rel="stylesheet" />
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/jquery-ui.js"></script>
+<script src="../js/web_guide.js"></script>	
+<script src="../js/cookieLib.js"></script>	
+<script src="../js/windowsEnvLib.js"></script>	
+<script language=javascript>
+//OS, IE 버전에 따라서 다른 캡쳐 이미지를 보여줌
+function DispGuideChangeUI()
+{
+    var imgInstallRestore = document.getElementById("imgInstallRestore");
+    var imgVisualC = document.getElementById("imgVisualC");    
+    
+    if (GetOSName() != "Windows")
+    {
+        imgInstallRestore.innerHTML = GetOSName() + " <br> Not Support OS ! ";       
+        return;
+    }
+   
+    if (GetOSVersion() == "XP")
+    {
+        imgInstallRestore.innerHTML = '<img src="../images/en_install_restore_xp.jpg" border=0 />';
+
+    }
+	else if(GetOSVersion() == "10")
+	{
+	imgInstallRestore.innerHTML = '<img src="../images/en_install_restore_win10.jpg" border=0 />';
+	}
+    else
+    {
+        imgInstallRestore.innerHTML = '<img src="../images/en_install_restore_win7.jpg" border=0 />';
+
+    }        
+}
+function DisplayChangeGuideList()
+{
+	if(GetCookie('f_restore') == 'true')
+	{
+		if(GetCookie('f_visualc') == 'true')
+		{
+			//Helpdesk 문의 가이드 호출
+		    //이미 f_install_guide, f_restore 쿠키 값이 true
+            var txtBtn4 = document.getElementById("guideList_3");
+            txtBtn4.click();	
+		}
+		else
+		{
+			//VisualC 재배포 패키지 가이드 호출 
+            var txtBtn3 = document.getElementById("guideList_2");
+            txtBtn3.click();
+		}
+	}
+	else
+	{
+		//응급복구 가이드 호출
+        SetCookieVal ('f_restore', 'true');	     
+        var txtBtn2 = document.getElementById("guideList_1");
+        txtBtn2.click();
+	}
+}
+
+function SetLinkSetupFile()
+{    
+    var setupLink = document.getElementById("linkSetup");    
+    
+    if (GetWindowsBitType() == 32)
+        setupLink.href = "../Setup/vcredist_x86.exe";
+    else
+        setupLink.href = "../Setup/vcredist_x64.exe";    
+}
+
+function DownloadPackageBtn()
+{
+    SetCookieVal ('f_visualc', 'true');	
+    var setupLink = document.getElementById("linkSetup");    
+    setupLink.click();
+}
+
+function DisplayErrorGuide()
+{
+    DisplayChangeGuideList();
+    SetWindowsInfo();   
+    DispGuideChangeUI();  
+    SetLinkSetupFile();  
+    ReplaceHelpdeskGuide("ENG");
+    ReplaceHelpdeskInfo("ENG");     
+}
+</script>
+</head>
+
+<body onLoad="DisplayErrorGuide();">
+<div class="wrap">
+    <div class="header">
+        <div>
+            <h1><img src="../images/img_h1.png" alt="Fasoo"/></h1>
+            <h2>
+                <span>Troubleshooting</span>
+            </h2>
+        </div>
+    </div>
+	<div class="content">
+		<div class="text_01">
+			FSW is not properly functioning.<br/>
+			Please follow the instructions below.
+		</div>
+		<span class="ac_text_02" id="ErrorNum"></span>
+		
+		<!-- <span>
+		    <h3 id="H1">1. Install FSW as described below in case automatic installation was not successful. </h3>
+			<p>
+				<span class="btn_base"><a id="A2" href="en_install_guide.html"><button onclick="A2.click()">Click "Install link".</button></a></span>
+
+			</p>			
+		</span> -->
+		
+		<div class="accordion">
+		
+			<h3 id="guideList_1">1. Install FSW as described below in case automatic installation was not successful. </h3>
+			<p>
+				<span class="btn_base"><a id="A2" href="en_install_guide.html"><button onclick="A2.click()">Click "Install link".</button></a></span>
+
+			</p>	
+
+		    <h3 id="guideList_2">2. Recovery</h3>		    
+		    <p>
+		        <span class="ac_text">- start > All Programs > Fasoo.com > FSW Client > Click "DRM Recovery"</span>
+		        <span id="imgInstallRestore"></span>
+		    </p>		    
+		    		    
+		    <h3 id="guideList_3">3. Click "VC++ Redistributable Package".</h3>
+		    <p>
+		        <span class="btn_base"><a id="linkSetup" onclick="DownloadPackageBtn()"><button onclick="linkSetup.click()">Install "VC++ Redistributable Package"</button></a></span>
+		        <span class="cont_open ac_text_02"><img src="../images/en_visualc_win7.jpg" alt="" /></span>		    
+		    </p>
+		    
+		    <h3 id="helpdesk_guide_menu"></h3>
+
+		    <!-- helpdesk Info -->
+		    <p id="helpdesk_guide"> </p>
+
+		</div>
+	</div>
+	<div class="footer">
+		<p class="float_left" id="osie"></p>
+
+		<!-- helpdesk Info -->
+		<p id="helpdesk_Info" class="float_right text_01"></p>	
+
+	</div>
+</div>
+
+</body>
+</html>

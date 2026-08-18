@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.totalsearch.TotalSearchMapper">
+
+	<resultMap id="RecentResult" type="saleson.shop.totalsearch.domain.MyRecent">
+		<result property="recentId" column="RECENT_ID" />
+		<result property="keyword" column="KEYWORD" />
+		<result property="userId" column="USER_ID" />
+		<result property="createdDate" column="CREATED_DATE" />
+	</resultMap>
+
+	<select id="getRecentList" parameterType="Long" resultMap="RecentResult" >
+		SELECT * FROM G_MYRECENT
+		WHERE 
+			USER_ID = #{userId}
+		ORDER BY CREATED_DATE DESC
+	</select>
+	
+	<insert id="insertRecent" parameterType="saleson.shop.totalsearch.domain.MyRecent">
+		MERGE INTO G_MYRECENT A USING db_root  
+			ON   A.USER_ID = #{userId}
+				AND A.KEYWORD = #{keyword}
+			
+			WHEN MATCHED THEN
+			    UPDATE SET
+					A.CREATED_DATE = <include refid="CommonMapper.datetime"/>
+					
+			WHEN NOT MATCHED THEN
+			    INSERT (RECENT_ID, KEYWORD, USER_ID, CREATED_DATE)
+					VALUES (#{recentId}, #{keyword}, #{userId}, <include refid="CommonMapper.datetime"/>)
+	</insert>
+	
+	<delete id="deleteRecent" parameterType="int" >
+		DELETE FROM G_MYRECENT
+		WHERE 
+			RECENT_ID = #{recentId}
+	</delete>
+	
+	<delete id="deleteRecentAll" parameterType="Long" >
+		DELETE FROM G_MYRECENT
+		WHERE 
+			USER_ID = #{userId}
+	</delete>	
+</mapper>

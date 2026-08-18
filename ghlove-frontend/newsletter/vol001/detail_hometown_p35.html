@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+	<title>금정의 향기를 담다! 특색있는 금정구 답례품 소개 : 고향사랑e음 고향소식</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+  </head>
+
+  <body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page hometown10">
+      <div id="wrap">
+
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <div class="banner_img_wrap">
+                <div class="img_wrap" style="width:50%;">
+                  <img src="/newsletter/static/images/vol001/detail_21_1.jpg" alt="금막초 제품 사진">
+                </div>
+                <div class="img_wrap" style="width:50%;">
+                  <img src="/newsletter/static/images/vol001/detail_21_2.jpg" alt="금정구 사랑세트 사진">
+                </div>
+              </div>
+              <div class="banner_link_btn">
+                <a href="/goods/searchGoods-main.html?type=L&locgov=26410
+                " target="_blank" title="새창 열림">자세히 보기&nbsp;&nbsp;+</a>
+              </div>
+            </div>
+            <div class="tit_area">
+              <h4>부산광역시 금정구</h4>
+              <h3>
+                <span class="blue">“금정의 향기를 담다!”, </span> <br/>
+                특색있는 금정구 답례품 소개
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar"></div>
+          <section id="" class="detail_contents_area">
+            <ul class="deco-arrow blue-deco blue">
+              <li>
+                금막초는 부산광역시 금정구를 대표하는 금정산성막걸리를 주원료로 하여, 일반 식초와 달리 미생물의 발효 속도에 따라 천천히 숙성시켜 자연의 깊은 맛이 살아있다. 찌개, 무침, 샐러드 등 다양한 요리에 넣으면 맛을 풍부하게 하고 한층 더 깊은 맛을 낸다.
+              </li>
+              <li>
+                대한민국제과명장 빵집 이흥용과자점의 금정구 사랑세트는 금정구 고향사랑기부제 답례품 전용상품이다. 이 세트는 허니마들렌, 상투쿠키 및 베이비마들렌으로 구성되어 있고, 촉촉하고 달콤하며 버터의 깊은 풍미가 느껴져서 남녀노소 모두의 입맛을 사로잡고 있다.
+              </li>
+            </ul>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+
+    </div>
+  </div>
+  </body>
+</html>

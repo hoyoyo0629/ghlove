@@ -1,0 +1,791 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.mypage.MypageMapper">
+
+	<select id="intrstLocGovInfo" parameterType="saleson.shop.mypage.support.IntrstLocGovParam" resultType="saleson.shop.mypage.domain.IntrstLocGov">
+		<include refid="CommonMapper.paginationHeader" />
+		/* saleson.shop.mypage.MypageMapper.intrstLocGovInfo */
+		SELECT
+			a.locgov_code,
+			b.upper_locgov_nm,
+			b.locgov_nm,
+			b.upper_locgov_code,
+			(
+				select IFNULL(SUM(d.cntr_amt),0)
+				from g_cntr d
+				where d.user_id = c.user_id
+				and d.cntr_locgov_code = a.locgov_code
+				and d.sttemnt_pay_de is not null
+				and d.delete_at = 'N'
+				and d.cntr_sttus_code = '200'
+			)as cntr_amt,
+			(
+			select gcs.point_rate
+			from g_ctbny_setup gcs
+			where gcs.locgov_code = a.locgov_code
+			and gcs.stdr_year = to_char(sysdate, 'yyyy')
+			) as point_rate
+		FROM g_intrst_locgov a,  g_locgov b , op_user c
+		where a.locgov_code = b.locgov_code
+		and a.user_id = c.user_id
+		AND a.user_id=#{userId}
+		ORDER BY a.locgov_code ASC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="intrstLocGovCnt" parameterType="saleson.shop.mypage.support.IntrstLocGovParam" resultType="int">
+		/* saleson.shop.mypage.MypageMapper.intrstLocGovCnt */
+		SELECT COUNT(a.LOCGOV_CODE)
+		FROM g_intrst_locgov a, g_locgov b , op_user c
+		WHERE a.locgov_code = b.LOCGOV_CODE
+		AND a.user_id = c.user_id
+		AND a.user_id=#{userId}
+	</select>
+
+	<delete id="deleteIntrstLocGov" parameterType="saleson.shop.mypage.support.IntrstLocGovParam">
+		/* saleson.shop.mypage.MypageMapper.deleteIntrstLocGov */
+		DELETE FROM g_intrst_locgov
+		WHERE locgov_code = #{locgovCode}
+		AND user_id = #{userId}
+	</delete>
+
+	<select id="getCntrPointCnt" parameterType="saleson.shop.mypage.support.CntrPointParam" resultType="int">
+		/* saleson.shop.mypage.MypageMapper.getCntrPointCnt */
+		select count(a.cntr_sn) from (
+		   SELECT
+				c.locgov_code ,
+				c.upper_locgov_nm ,
+				c.locgov_nm ,
+				a.cntr_sn ,
+				sum(a.cntr_point) ,
+				(
+					SELECT IFNULL(SUM(d.cntr_use_point),0) FROM g_cntr_use_point d
+					WHERE d.user_id = a.USER_ID
+					AND d.cntr_locgov_code  = a.cntr_locgov_code
+					AND d.use_se_code = '1'
+				) as cntr_use_point, -- 사용포인트
+				sum(a.cntr_blce_point)
+			FROM g_cntr a, op_user b, g_locgov c
+			WHERE a.user_id = b.user_id
+			AND a.user_id = #{userId}
+			AND a.delete_at  ='N'
+			AND a.cntr_locgov_code = c.locgov_code
+			group by a.cntr_locgov_code
+			ORDER BY a.frst_regist_pnttm desc
+		) a
+	</select>
+
+	<select id="getCntrPointInfo" parameterType="saleson.shop.mypage.support.CntrPointParam" resultType="saleson.shop.mypage.domain.CntrPoint">
+		<include refid="CommonMapper.paginationHeader" />
+		/* saleson.shop.mypage.MypageMapper.getCntrPointInfo */
+		SELECT
+			T_A.*
+			, T_A.CNTR_POINT - T_A.CNTR_USE_POINT AS CNTR_BLCE_POINT
+		FROM
+		(
+			SELECT
+				C.LOCGOV_CODE ,
+				C.UPPER_LOCGOV_NM ,
+				C.LOCGOV_NM ,
+				A.CNTR_SN ,
+				SUM(A.CNTR_POINT) AS CNTR_POINT,
+				(
+					SELECT IFNULL(SUM(D.CNTR_USE_POINT),0) FROM G_CNTR_USE_POINT D
+					WHERE D.USER_ID = A.USER_ID
+					AND D.CNTR_LOCGOV_CODE  = A.CNTR_LOCGOV_CODE
+				) AS CNTR_USE_POINT, -- 사용포인트
+				(SELECT DECODE(COUNT(USER_ID),0, '일반', '명예기부자') FROM G_HONOR_CNTRBTR WHERE USER_ID = A.USER_ID AND LOCGOV_CODE = A.CNTR_LOCGOV_CODE) AS USER_GRADE,
+				CASE
+					WHEN E.CNT > 0 THEN E.DETAIL || ' 등 ' || CNT || '건'
+					ELSE E.DETAIL
+				END AS DETAIL
+			FROM
+				OP_USER B
+				JOIN G_CNTR A ON A.USER_ID = B.USER_ID AND A.CNTR_STTUS_CODE = '200' AND A.DELETE_AT  ='N' AND A.STTEMNT_PAY_DE IS NOT NULL
+				JOIN G_LOCGOV C ON A.CNTR_LOCGOV_CODE = C.LOCGOV_CODE
+				LEFT JOIN (
+					SELECT
+						CNTR_LOCGOV_CODE,
+						LINK_INSTT_CD,
+						CASE
+							WHEN D.DETAIL IS NULL THEN '고향사랑e음' ELSE D.DETAIL
+						END AS DETAIL,
+						COUNT(LINK_INSTT_CD) OVER(PARTITION BY CNTR_LOCGOV_CODE) AS CNT,
+						ROW_NUMBER() OVER(PARTITION BY CNTR_LOCGOV_CODE ORDER BY count(*) DESC) AS RN
+					FROM
+						G_CNTR A
+						LEFT JOIN OP_COMMON_CODE D ON D.ID = A.LINK_INSTT_CD AND D.CODE_TYPE = 'LINK_INSTT_CD'
+					WHERE A.USER_ID = #{userId}
+					GROUP BY CNTR_LOCGOV_CODE, LINK_INSTT_CD
+				) E ON E.CNTR_LOCGOV_CODE = A.CNTR_LOCGOV_CODE AND E.RN = 1
+			WHERE
+				A.USER_ID = #{userId}
+			GROUP BY A.CNTR_LOCGOV_CODE
+			ORDER BY A.FRST_REGIST_PNTTM DESC
+			<include refid="CommonMapper.paginationFooter" />
+		) T_A
+	</select>
+
+	<select id="getCntrPointDetailCnt" parameterType="saleson.shop.mypage.support.CntrPointParam" resultType="int">
+		<![CDATA[
+		/* saleson.shop.mypage.MypageMapper.getCntrPointDetailCnt */
+		SELECT
+		    count(cntr_sn) as cnt
+		FROM(
+			SELECT
+				GC.cntr_sn
+				, CNTR_DE
+		        , OU.USER_NAME
+		        , OU.LOGIN_ID
+		        , CNTR_AMT
+		        , CNTR_POINT
+		        , '' AS CNTR_USE_POINT
+		        , (SELECT SUM(CNTR_POINT) FROM G_CNTR A WHERE A.FRST_REGIST_PNTTM <= GC.FRST_REGIST_PNTTM AND A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND A.USER_ID = GC.USER_ID AND A.DELETE_AT  ='N') AS CURRENT_CNTR_POINT
+		        , (SELECT IFNULL(SUM(CNTR_USE_POINT), 0) FROM G_CNTR_USE_POINT A WHERE A.FRST_REGIST_PNTTM <= GC.FRST_REGIST_PNTTM AND A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND A.USER_ID = GC.USER_ID) AS CURRENT_CNTR_USE_POINT
+		        , FRST_REGIST_PNTTM
+		        , '' as ORDER_CODE
+				, '' as URL_ADRES
+			FROM G_CNTR GC, OP_USER OU
+			WHERE 1=1
+			AND GC.DELETE_AT = 'N'
+			AND GC.USER_ID = OU.USER_ID
+			AND GC.STTEMNT_PAY_DE IS NOT NULL
+			AND GC.CNTR_STTUS_CODE = '200'
+			AND GC.CNTR_LOCGOV_CODE = #{locgovCode}
+			AND OU.USER_ID = #{userId}
+			UNION ALL
+			SELECT
+			     GC.cntr_sn
+				, POINT_USE_DE AS CNTR_DE
+				, OU.USER_NAME
+				, OU.LOGIN_ID
+				, '' AS CNTR_AMT
+				, '' AS CNTR_POINT
+				, CNTR_USE_POINT
+				, (SELECT SUM(CNTR_POINT) FROM G_CNTR A WHERE A.FRST_REGIST_PNTTM <= GC.FRST_REGIST_PNTTM AND A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND A.USER_ID = GC.USER_ID AND A.DELETE_AT  ='N') AS CURRENT_CNTR_POINT
+				, (SELECT IFNULL(SUM(CNTR_USE_POINT), 0) FROM G_CNTR_USE_POINT A WHERE A.FRST_REGIST_PNTTM <= GC.FRST_REGIST_PNTTM AND A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND A.USER_ID = GC.USER_ID) AS CURRENT_CNTR_USE_POINT
+				, FRST_REGIST_PNTTM
+				, GC.ORDER_CODE
+				, GC.URL_ADRES
+			FROM G_CNTR_USE_POINT GC, OP_USER OU
+			WHERE 1=1
+			AND GC.USER_ID = OU.USER_ID
+			AND GC.CNTR_LOCGOV_CODE = #{locgovCode}
+			AND OU.USER_ID = #{userId}
+		) A
+		ORDER BY FRST_REGIST_PNTTM DESC
+		]]>
+	</select>
+
+	<select id="getCntrPointDetail" parameterType="saleson.shop.mypage.support.CntrPointParam" resultType="saleson.shop.mypage.domain.CntrPoint">
+		<include refid="CommonMapper.paginationHeader" />
+		<![CDATA[
+		/* saleson.shop.mypage.MypageMapper.getCntrPointDetail */
+		SELECT
+		    cntr_sn
+			, DATE_FORMAT(CNTR_DE, '%Y.%m.%d') as CNTR_DE
+			, USER_NAME
+			, LOGIN_ID
+			, CAST(CNTR_AMT AS VARCHAR) AS CNTR_AMT
+			, CAST(CNTR_POINT AS VARCHAR) AS CNTR_POINT
+			, CAST(CNTR_USE_POINT AS VARCHAR) AS CNTR_USE_POINT
+			, (CURRENT_CNTR_POINT - CURRENT_CNTR_USE_POINT) AS CNTR_BLCE_POINT
+			, ORDER_CODE
+			, URL_ADRES
+		FROM(
+			SELECT
+				GC.cntr_sn
+				, CNTR_DE
+		        , CRYPTO_DEC('normal', OU.USER_NAME, '', 0) AS USER_NAME
+		        , CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) AS LOGIN_ID
+		        , CNTR_AMT
+		        , CNTR_POINT
+		        , '' AS CNTR_USE_POINT
+		        , (SELECT SUM(CNTR_POINT) FROM G_CNTR A WHERE A.FRST_REGIST_PNTTM <= GC.FRST_REGIST_PNTTM AND A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND A.USER_ID = GC.USER_ID AND A.DELETE_AT  ='N') AS CURRENT_CNTR_POINT
+		        , (SELECT IFNULL(SUM(CNTR_USE_POINT), 0) FROM G_CNTR_USE_POINT A WHERE A.FRST_REGIST_PNTTM <= GC.FRST_REGIST_PNTTM AND A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND A.USER_ID = GC.USER_ID) AS CURRENT_CNTR_USE_POINT
+		        , FRST_REGIST_PNTTM
+		        , '' as ORDER_CODE
+				, '' as URL_ADRES
+			FROM G_CNTR GC, OP_USER OU
+			WHERE 1=1
+			AND GC.DELETE_AT = 'N'
+			AND GC.USER_ID = OU.USER_ID
+			AND GC.STTEMNT_PAY_DE IS NOT NULL
+			AND GC.CNTR_STTUS_CODE = '200'
+			AND GC.CNTR_LOCGOV_CODE = #{locgovCode}
+			AND OU.USER_ID = #{userId}
+			UNION ALL
+			SELECT
+			     GC.cntr_sn
+				, POINT_USE_DE AS CNTR_DE
+				, CRYPTO_DEC('normal', OU.USER_NAME, '', 0) AS USER_NAME
+		        , CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) AS LOGIN_ID
+				, '' AS CNTR_AMT
+				, '' AS CNTR_POINT
+				, CNTR_USE_POINT
+				, (SELECT SUM(CNTR_POINT) FROM G_CNTR A WHERE A.FRST_REGIST_PNTTM <= GC.FRST_REGIST_PNTTM AND A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND A.USER_ID = GC.USER_ID AND A.DELETE_AT  ='N') AS CURRENT_CNTR_POINT
+				, (SELECT IFNULL(SUM(CNTR_USE_POINT), 0) FROM G_CNTR_USE_POINT A WHERE A.FRST_REGIST_PNTTM <= GC.FRST_REGIST_PNTTM AND A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND A.USER_ID = GC.USER_ID) AS CURRENT_CNTR_USE_POINT
+				, FRST_REGIST_PNTTM
+				, GC.ORDER_CODE
+				, GC.URL_ADRES
+			FROM G_CNTR_USE_POINT GC, OP_USER OU
+			WHERE 1=1
+			AND GC.USER_ID = OU.USER_ID
+			AND GC.CNTR_LOCGOV_CODE = #{locgovCode}
+			AND OU.USER_ID = #{userId}
+		) A
+		ORDER BY FRST_REGIST_PNTTM DESC
+		]]>
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="cntrPointTotal" parameterType="saleson.shop.mypage.support.CntrPointParam" resultType="int">
+		/* saleson.shop.mypage.MypageMapper.cntrPointTotal */
+		SELECT IFNULL(SUM(a.cntr_point),0) as cntr_point
+		FROM g_cntr a, op_user b
+		WHERE a.user_id = b.user_id
+		AND b.user_id = #{userId}
+		AND a.delete_at = 'N'
+		<if test="locgovCode != null and locgovCode!=''">
+	    	and a.cntr_locgov_code = #{locgovCode}
+	    </if>
+	</select>
+
+	<select id="usePointTotal" parameterType="saleson.shop.mypage.support.CntrPointParam" resultType="int">
+		/* saleson.shop.mypage.MypageMapper.usePointTotal */
+		SELECT IFNULL(SUM(c.cntr_use_point),0) as cntr_use_point
+		FROM g_cntr a, op_user b, g_cntr_use_point c
+		WHERE a.USER_ID = b.USER_ID
+		AND b.USER_ID = #{userId}
+		AND b.user_id = c.user_id
+		AND a.cntr_sn = c.cntr_sn
+		AND a.delete_at = 'N'
+		<if test="locgovCode != null and locgovCode!=''">
+	    	and a.cntr_locgov_code = #{locgovCode}
+	    </if>
+	</select>
+
+	<select id="getTotalCntrAmt" parameterType="saleson.shop.mypage.support.CntrParam" resultType="int">
+		/* saleson.shop.mypage.MypageMapper.getTotalCntrAmt */
+		SELECT IFNULL(SUM(a.cntr_amt),0) as cntr_amt
+		FROM g_cntr a, op_user b
+		WHERE a.user_id = b.user_id
+		AND b.user_id =#{userId}
+		AND a.sttemnt_pay_de is not null
+		AND a.delete_at = 'N'
+		AND a.cntr_sttus_code = '200'
+	</select>
+
+	<select id="getThisYearTotalCntrAmt" parameterType="Long" resultType="int">
+		/* saleson.shop.mypage.MypageMapper.getTotalCntrAmt */
+		SELECT
+			IFNULL(SUM(GC.CNTR_AMT), 0) AS CNTR_AMT
+		FROM
+			G_CNTR GC
+			JOIN OP_USER U ON GC.USER_ID = U.USER_ID
+		WHERE 1=1
+			AND U.USER_ID = #{userId}
+			AND GC.STTEMNT_PAY_DE IS NOT NULL
+			AND GC.DELETE_AT = 'N'
+			AND GC.CNTR_STTUS_CODE = '200'
+			AND GC.CNTR_DE LIKE CONCAT(DATE_FORMAT(SYSDATE, '%Y'), '%')
+	</select>
+
+	<select id="getGntrListTotalCnt" parameterType="saleson.shop.mypage.support.CntrParam" resultType="int">
+		/* saleson.shop.mypage.MypageMapper.getGntrListTotalCnt */
+		SELECT
+			count(a.cntr_sn) as cntr_sn
+		FROM g_cntr a, op_user b, g_locgov c
+		WHERE a.user_id = b.user_id
+		AND a.cntr_locgov_code = c.locgov_code
+	    AND b.user_id = #{userId}
+	    AND a.delete_at = 'N'
+     	<if test="locgovCode != null and locgovCode!=''">
+	    	and a.cntr_locgov_code = #{locgovCode}
+	    </if>
+		<if test="upperLocgovCode!=null and upperLocgovCode!=''">
+	    	and c.upper_locgov_code = #{upperLocgovCode}
+	    </if>
+	    <if test="searchYear!=null and searchYear!=''">
+	    	and a.cntr_de LIKE CONCAT(#{searchYear}, '%')
+	    </if>
+	    <if test="serachPeriod =='today'">
+	    	and a.cntr_de = DATE_FORMAT(SYSDATE,'%Y%m%d')
+	    </if>
+	   <if test="serachPeriod =='7day'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 7 DAY ),'%Y%m%d')
+	    </if>
+	    <if test="serachPeriod =='1month'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 1 MONTH ),'%Y%m%d')
+	    </if>
+	    <if test="serachPeriod =='3month'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 3 MONTH ),'%Y%m%d')
+	    </if>
+	    <if test="serachPeriod =='6month'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 6 MONTH ),'%Y%m%d')
+	    </if>
+	    <if test="serachPeriod =='1year'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 1 YEAR ),'%Y%m%d')
+	    </if>
+	</select>
+
+	<select id="getCntrListInfo" parameterType="saleson.shop.mypage.support.CntrParam" resultType="saleson.shop.mypage.domain.Cntr">
+		<include refid="CommonMapper.paginationHeader" />
+		/* saleson.shop.mypage.MypageMapper.getCntrListInfo */
+		SELECT
+			a.cntr_sn,
+			DATE_FORMAT(a.cntr_de, '%Y.%m.%d') as cntr_de,
+			c.locgov_code,
+			c.upper_locgov_nm,
+			c.locgov_nm,
+			a.cntr_amt,
+			a.cntr_point,
+			a.cntr_blce_point,
+			a.elctrn_pay_no,
+			case
+		   	when a.sttemnt_pay_de is not null and cntr_sttus_code = '200' then DATE_FORMAT(a.sttemnt_pay_de, '%Y.%m.%d')
+		   	else '납부결과확인'
+		   	end as sttemnt_pay_de,
+			case
+		   	when a.sttemnt_pay_de is not null and cntr_sttus_code = '200' then 1
+		   	else 2
+		   	end as sttemnt_pay_de_case,
+		   	a.cntr_locgov_code, <!--  기부 지자체 코드 -->
+		   	case
+		   		when substr(a.cntr_locgov_code,1,2) = '11' then (select to_char(sysdatetime, 'hh24missFF') || lpad(random() % 1000, 3, 0)) <!--  서울 -->
+		   		else (select mng_htm5 from gif_stnd_buga_now where elct_pay_no = a.elctrn_pay_no) <!--  서울 이외 -->
+		   	end as mng_no, <!--  계정 관리 번호 -->
+		   	(select point_rate from g_ctbny_setup where locgov_code = a.cntr_locgov_code and stdr_year = DATE_FORMAT(NOW(),'%Y')) as point_rate <!--  지자체 포인트 지급률 -->
+		   	, A.DSGN_DNTN_BIZ_ID AS PRJ_ID		<!-- 지정기부아이디 -->
+		   	, IFNULL(DPM.DSGN_DNTN_BIZ_TTL, '자치단체기부') AS PRJ_SUBJECT			<!-- 지정기부 사업명 -->
+		   	, D.DETAIL
+		   	, A.LINK_INSTT_CD
+		FROM OP_USER B
+		JOIN G_CNTR A ON A.USER_ID = B.USER_ID
+		JOIN G_LOCGOV C ON A.CNTR_LOCGOV_CODE = C.LOCGOV_CODE
+		LEFT JOIN G_DSGN_DNTN_BIZ_MNG DPM ON A.DSGN_DNTN_BIZ_ID = DPM.DSGN_DNTN_BIZ_ID
+		LEFT JOIN OP_COMMON_CODE D ON D.ID = A.LINK_INSTT_CD AND D.CODE_TYPE = 'LINK_INSTT_CD'
+		WHERE
+		A.DELETE_AT = 'N'
+	    AND B.USER_ID = #{userId}
+	    <if test="locgovCode != null and locgovCode!=''">
+	    	and a.cntr_locgov_code = #{locgovCode}
+	    </if>
+		<if test="upperLocgovCode!=null and upperLocgovCode!=''">
+	    	and c.upper_locgov_code = #{upperLocgovCode}
+	    </if>
+	    <if test="searchYear!=null and searchYear!=''">
+	    	and a.cntr_de LIKE CONCAT(#{searchYear}, '%')
+	    </if>
+	    <if test="serachPeriod =='today'">
+	    	and a.cntr_de = DATE_FORMAT(SYSDATE,'%Y%m%d')
+	    </if>
+	   <if test="serachPeriod =='7day'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 7 DAY ),'%Y%m%d')
+	    </if>
+	    <if test="serachPeriod =='1month'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 1 MONTH ),'%Y%m%d')
+	    </if>
+	    <if test="serachPeriod =='3month'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 3 MONTH ),'%Y%m%d')
+	    </if>
+	    <if test="serachPeriod =='6month'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 6 MONTH ),'%Y%m%d')
+	    </if>
+	    <if test="serachPeriod =='1year'">
+	    	and a.cntr_de <![CDATA[>=]]> DATE_FORMAT(DATE_SUB(SYSDATE, INTERVAL 1 YEAR ),'%Y%m%d')
+	    </if>
+	    ORDER BY a.frst_regist_pnttm DESC
+	    <include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getLocGovList" parameterType="saleson.shop.user.domain.LocGovInfo" resultType="saleson.shop.user.domain.LocGovInfo">
+		/* saleson.shop.mypage.MypageMapper.getLocGovList */
+		SELECT
+			LOCGOV_CODE,
+			LOCGOV_NM,
+			UPPER_LOCGOV_CODE
+		FROM G_LOCGOV
+		WHERE USE_AT = 'Y'
+		AND UPPER_LOCGOV_CODE = #{upperLocgovCode}
+		ORDER BY ORDERING
+	</select>
+
+	<select id="blcePointTotal" parameterType="saleson.shop.mypage.support.CntrPointParam" resultType="int">
+		/* saleson.shop.mypage.MypageMapper.blcePointTotal */
+		SELECT
+			IFNULL(SUM(CNTR_POINT), 0) - IFNULL(SUM(cntr_use_point), 0)
+		FROM
+		(
+			SELECT
+				GC.CNTR_POINT
+			    , (SELECT IFNULL(SUM(CNTR_USE_POINT),0) FROM G_CNTR_USE_POINT A WHERE A.CNTR_SN = GC.CNTR_SN AND A.use_se_code = '1') AS CNTR_USE_POINT
+			FROM G_CNTR GC
+			WHERE GC.DELETE_AT = 'N' AND GC.STTEMNT_PAY_DE IS NOT NULL AND GC.user_id = #{userId}
+			<if test="locgovCode != null and locgovCode!=''">
+		    	and GC.cntr_locgov_code = #{locgovCode}
+		    </if>
+		) A
+	</select>
+
+	<select id="getLocgovNm" parameterType="saleson.shop.user.domain.LocGovInfo" resultType="saleson.shop.mypage.domain.CntrPointDetail">
+		/* saleson.shop.mypage.MypageMapper.getLocgovNm */
+		SELECT
+			LOCGOV_NM,
+			UPPER_LOCGOV_NM
+		FROM G_LOCGOV
+		WHERE LOCGOV_CODE = #{locgovCode}
+	</select>
+
+	<select id="getTaxRedutionEstimate" parameterType="saleson.shop.mypage.support.CntrParam" resultType="int">
+		<![CDATA[
+		/* saleson.shop.mypage.MypageMapper.getTaxRedutionEstimate */
+		select case
+		   when cntr_amt <= 100000 then cntr_amt
+	       when cntr_amt > 100000 then (((cntr_amt - 100000) * 0.165) + 100000)
+	       end as cntr_amt
+		from (
+			select IFNULL(SUM(cntr_amt),0) as cntr_amt
+			from g_cntr
+			where user_id = #{userId}
+			and sttemnt_pay_de like concat( to_char(sysdate, 'yyyy') ,'%')
+			and delete_at = 'N'
+			and cntr_sttus_code = '200'
+		)
+		]]>
+	</select>
+
+	<select id="getOrderLevelList" parameterType="saleson.shop.mypage.support.CntrParam" resultType="saleson.shop.mypage.domain.Order">
+		/* saleson.shop.mypage.MypageMapper.getOrderLevelList */
+		SELECT A.ID AS ORDER_STATUS, A.LABEL AS ORDER_LABEL, COUNT(B.ORDER_STATUS) AS ORDER_COUNT
+		  FROM OP_COMMON_CODE A
+		  LEFT JOIN OP_ORDER_ITEM B
+		    ON A.ID = B.ORDER_STATUS
+		   AND B.USER_ID = #{userId}
+		 WHERE A.CODE_TYPE = 'ORDER_STATUS'
+		   AND A.ID IN ('10', '20', '30', '35', '40')
+		 GROUP BY A.ID
+		 UNION ALL
+		SELECT A.ID AS ORDER_STATUS, SUBSTR(A.LABEL, 0, 2) AS ORDER_LABEL, COUNT(B.ORDER_STATUS) AS ORDER_COUNT
+		  FROM OP_COMMON_CODE A
+		  LEFT JOIN OP_ORDER_ITEM B
+		    ON A.ID = B.ORDER_STATUS
+		   AND B.USER_ID = #{userId}
+		 WHERE A.CODE_TYPE = 'ORDER_STATUS'
+		   AND A.ID IN ('50', '55', '58', '59', '60', '65', '69', '70', '75', '79')
+		 GROUP BY SUBSTR(A.ID, 0, 1)
+	</select>
+
+	<select id="getOrderClaimLevelList" parameterType="saleson.shop.mypage.support.CntrParam" resultType="saleson.shop.mypage.domain.Order">
+		/* saleson.shop.mypage.MypageMapper.getOrderClaimLevelList */
+		SELECT A.ID AS ORDER_STATUS, A.LABEL AS ORDER_LABEL
+		  FROM OP_COMMON_CODE A
+		 WHERE A.CODE_TYPE = 'ORDER_STATUS'
+		   AND A.ID IN ('50', '55', '58', '60', '65', '70', '75')
+		 GROUP BY A.ID
+		 ORDER BY A.LABEL DESC
+	</select>
+
+	<select id="getCntrReceipt" parameterType="saleson.shop.mypage.support.ReceiptParam" resultType="saleson.shop.mypage.domain.Cntr">
+		/* saleson.shop.mypage.MypageMapper.getCntrReceipt */
+		SELECT CNTR_SN
+		       ,CNTR_LOCGOV_CODE AS LOCGOV_CODE
+		  FROM G_CNTR  A, OP_USER  B , OP_USER_DETAIL C
+		 WHERE A.USER_ID =B.USER_ID
+		   AND B.USER_ID =C.USER_ID
+		   AND A.CNTR_SN = #{cntrSn}
+		   AND A.USER_ID = #{userId}
+	</select>
+
+	<insert id="insertCntrReceipt" parameterType="saleson.shop.mypage.support.ReceiptParam">
+		/* saleson.shop.mypage.MypageMapper.insertCntrReceipt */
+		INSERT INTO G_CNTR_RCIPT (
+			CNTR_OUTPT_SN
+			,CNTR_SN
+			,ELCTRN_PAY_NO
+			,ISSU_DE
+			,FRST_REGISTER_ID
+			,FRST_REGIST_PNTTM
+			,LAST_UPDUSR_ID
+			,LAST_UPDT_PNTTM
+		)
+		SELECT ( SELECT NVL(MAX(CNTR_OUTPT_SN), 0) + 1 FROM G_CNTR_RCIPT ) AS CNTR_OUTPT_SN
+			   ,CNTR_SN
+			   ,ELCTRN_PAY_NO
+			   ,<include refid="CommonMapper.date" />
+			   ,#{userId}
+			   ,<include refid="CommonMapper.datetime" />
+			   ,#{userId}
+			   ,<include refid="CommonMapper.datetime" />
+	      FROM G_CNTR
+	     WHERE CNTR_SN = #{cntrSn}
+	       AND USER_ID = #{userId}
+
+	</insert>
+
+	<select id="getUserHonorListTotal" parameterType="long" resultType="saleson.shop.user.domain.HonorCntrbtr">
+		/* saleson.shop.mypage.MypageMapper.getUserHonorListTotal */
+		SELECT OCC.ID AS HONOR_CNTRBTR_LEVEL_CODE
+			   ,OCC.LABEL
+			   ,COUNT(CASE WHEN GHC.HONOR_CNTRBTR_LEVEL_CODE IS NOT NULL THEN 1 END) AS LEVEL_CNT
+		  FROM OP_COMMON_CODE OCC
+		  LEFT OUTER JOIN G_HONOR_CNTRBTR GHC
+			ON OCC.ID = GHC.HONOR_CNTRBTR_LEVEL_CODE
+		   AND USER_ID = #{userId}
+		 WHERE CODE_TYPE ='HONOR_STD'
+		 GROUP BY OCC.ID, OCC.LABEL
+		 ORDER BY OCC.ID DESC
+	</select>
+
+	<select id="getUserHonorList" parameterType="long" resultType="saleson.shop.user.domain.HonorCntrbtr">
+		/* saleson.shop.mypage.MypageMapper.getUserHonorList */
+		SELECT GHC.STDR_YEAR
+			   ,GL.LOCGOV_CODE
+			   ,GL.LOCGOV_NM
+			   ,GHC.HONOR_CNTRBTR_LEVEL_CODE
+			   ,OCC.LABEL
+			   ,GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+			   ,(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+		  FROM G_HONOR_CNTRBTR GHC
+		 INNER JOIN G_LOCGOV GL
+		    ON GHC.LOCGOV_CODE = GL.LOCGOV_CODE
+		 INNER JOIN OP_COMMON_CODE OCC
+		    ON CODE_TYPE ='HONOR_STD'
+		   AND GHC.HONOR_CNTRBTR_LEVEL_CODE = OCC.ID
+		 WHERE USER_ID = #{userId}
+		 ORDER BY GHC.STDR_YEAR, GHC.HONOR_CNTRBTR_LEVEL_CODE DESC, GHC.LOCGOV_CODE
+	</select>
+
+	<delete id="deleteIntrstLocGovAll" parameterType="saleson.shop.mypage.support.IntrsLocgovParam">
+		/* saleson.shop.mypage.MypageMapper.deleteIntrstLocGovAll */
+		DELETE FROM g_intrst_locgov
+		WHERE user_id = #{userId}
+		AND locgov_code in
+		<foreach item="locgovCode" collection="locgovArr" open="(" separator="," close=")">
+			#{locgovCode}
+		</foreach>
+	</delete>
+
+	<select id="getUserCntrHonorList" parameterType="long" resultType="saleson.shop.mypage.support.HonorInfo">
+		/* saleson.shop.mypage.MypageMapper.getUserCntrHonorList */
+		SELECT
+			*
+			, SUM(
+				CASE WHEN T_B.GRADE = 'GOLD'
+					THEN 1
+					ELSE 0
+					END
+			) OVER() AS GOLD_CNT
+			, SUM(
+				CASE WHEN T_B.GRADE = 'SILVER'
+					THEN 1
+					ELSE 0
+					END
+			) OVER() AS SILVER_CNT
+			, SUM(
+				CASE WHEN T_B.GRADE = 'BRONZE'
+					THEN 1
+					ELSE 0
+					END
+			) OVER() AS BRONZE_CNT
+			, ADDDATE(ADDDATE(TO_DATE(PUB_DE, 'YYYYMMDD'), INTERVAL 1 YEAR), INTERVAL -1 DAY) AS EXP_DE
+		FROM (
+			SELECT
+				LOCGOV_CODE
+				, STDR_3LEVEL_AMT
+				, STDR_2LEVEL_AMT
+				, STDR_1LEVEL_AMT
+				, CASE WHEN TOTAL_CNTR_AMT <![CDATA[ >= ]]> STDR_3LEVEL_AMT
+						THEN 'GOLD'
+						WHEN TOTAL_CNTR_AMT <![CDATA[ >= ]]> STDR_2LEVEL_AMT
+						THEN 'SILVER'
+						WHEN TOTAL_CNTR_AMT <![CDATA[ >= ]]> STDR_1LEVEL_AMT
+						THEN 'BRONZE'
+						ELSE ''
+					END AS GRADE
+				, LOC_NM
+				, USER_LOC_NM
+				, PUB_DE
+			FROM (
+				SELECT
+					C.CNTR_LOCGOV_CODE AS LOCGOV_CODE
+					, SUM(C.CNTR_AMT) AS TOTAL_CNTR_AMT
+					, IFNULL(L.STDR_1LEVEL_AMT, 0) AS STDR_1LEVEL_AMT
+					, IFNULL(L.STDR_2LEVEL_AMT, 0) AS STDR_2LEVEL_AMT
+					, IFNULL(L.STDR_3LEVEL_AMT, 0) AS STDR_3LEVEL_AMT
+					, L.UPPER_LOCGOV_NM || ' ' || L.LOCGOV_NM AS LOC_NM
+					, L2.UPPER_LOCGOV_NM || ' ' || L2.LOCGOV_NM AS USER_LOC_NM
+					, MAX(C.CNTR_DE) AS PUB_DE
+				FROM (
+						SELECT
+							CNTR_LOCGOV_CODE
+							, CNTR_AMT
+							, PSITN_LOCGOV_CODE
+							, CNTR_DE
+						FROM G_CNTR
+						WHERE 1=1
+						AND USER_ID = #{value}
+						AND STTEMNT_PAY_DE IS NOT NULL
+						AND CNTR_STTUS_CODE = '200'
+						AND DELETE_AT = 'N'
+						<!-- AND CNTR_DE BETWEEN CONCAT(DATE_FORMAT(ADDDATE(SYSDATE, INTERVAL -1 YEAR), '%Y'), '0101') AND CONCAT(DATE_FORMAT(ADDDATE(SYSDATE, INTERVAL -1 YEAR), '%Y'), '1231') -->  <!-- 조회일 기준 전년 1년 -->
+						AND CNTR_DE BETWEEN DATE_FORMAT(ADDDATE(ADDDATE(SYSDATE, INTERVAL -1 YEAR), INTERVAL 1 DAY), '%Y%m%D') AND DATE_FORMAT(SYS_DATE, '%Y%m%D')	<!-- 조회일 기준 1년 -->
+						ORDER BY CNTR_SN DESC
+					) C
+					LEFT OUTER JOIN G_LOCGOV L ON C.CNTR_LOCGOV_CODE = L.LOCGOV_CODE
+					LEFT OUTER JOIN G_LOCGOV L2 ON C.PSITN_LOCGOV_CODE = L2.LOCGOV_CODE
+				GROUP BY C.CNTR_LOCGOV_CODE
+			) T_A
+		) T_B
+		WHERE T_B.STDR_3LEVEL_AMT <![CDATA[ > ]]> 0
+		AND T_B.GRADE <![CDATA[ <> ]]> ''
+		AND T_B.GRADE IS NOT NULL
+		ORDER BY T_B.LOCGOV_CODE
+	</select>
+
+
+	<select id="getReceiptCntrAmtAndTotalCnt" parameterType="saleson.shop.mypage.support.CntrReceipt" resultType="map">
+		/* saleson.shop.mypage.MypageMapper.getCntrListInfo */
+		SELECT
+			IFNULL(SUM(a.cntr_amt),0) as cntr_amt
+			,count(*) as cntr_cnt
+		FROM OP_USER B
+		JOIN G_CNTR A ON A.USER_ID = B.USER_ID
+		JOIN G_LOCGOV C ON A.CNTR_LOCGOV_CODE = C.LOCGOV_CODE
+		WHERE
+			A.DELETE_AT = 'N'
+			AND A.CNTR_STTUS_CODE = '200'
+		    AND B.USER_ID = #{userId}
+	    <if test="locgovCode != null and locgovCode!=''">
+	    	and a.cntr_locgov_code = #{locgovCode}
+	    </if>
+		<if test="upperLocgovCode!=null and upperLocgovCode!=''">
+	    	and c.upper_locgov_code = #{upperLocgovCode}
+	    </if>
+	    <if test="searchStartDate!=null and searchStartDate!='' and searchEndDate!=null and searchEndDate!=''">
+	    	and a.cntr_de BETWEEN DATE_FORMAT(#{searchStartDate},'%Y%m%d') AND DATE_FORMAT(#{searchEndDate},'%Y%m%d')
+	    </if>
+
+	</select>
+
+	<select id="getReceiptListInfo" parameterType="saleson.shop.mypage.support.CntrReceipt" resultType="saleson.shop.mypage.domain.Cntr">
+		<include refid="CommonMapper.paginationHeader" />
+		/* saleson.shop.mypage.MypageMapper.getReceiptListInfo */
+		SELECT
+			A.CNTR_SN ,
+			DATE_FORMAT(A.CNTR_DE, '%Y.%c.%e.') as cntr_de,
+			C.LOCGOV_CODE,
+			C.UPPER_LOCGOV_NM,
+			C.LOCGOV_NM,
+			A.CNTR_AMT
+		FROM
+			OP_USER B
+			JOIN G_CNTR A ON A.USER_ID = B.USER_ID
+			JOIN G_LOCGOV C ON A.CNTR_LOCGOV_CODE = C.LOCGOV_CODE
+		WHERE
+			A.DELETE_AT = 'N'
+			AND A.CNTR_STTUS_CODE = '200'
+		    AND B.USER_ID = #{userId}
+	    <if test="locgovCode != null and locgovCode!=''">
+	    	and a.cntr_locgov_code = #{locgovCode}
+	    </if>
+		<if test="upperLocgovCode!=null and upperLocgovCode!=''">
+	    	and c.upper_locgov_code = #{upperLocgovCode}
+	    </if>
+	    <if test="searchStartDate!=null and searchStartDate!='' and searchEndDate!=null and searchEndDate!=''">
+	    	and a.cntr_de BETWEEN DATE_FORMAT(#{searchStartDate},'%Y%m%d') AND DATE_FORMAT(#{searchEndDate},'%Y%m%d')
+	    </if>
+	    ORDER BY A.CNTR_DE DESC
+	    <include refid="CommonMapper.paginationFooter" />
+    </select>
+
+   	<select id="getReceiptCntrPopInfo" parameterType="saleson.shop.mypage.support.CntrReceipt" resultType="map">
+		/* saleson.shop.mypage.MypageMapper.getReceiptCntrPopInfo */
+		SELECT
+			IFNULL(SUM(cntr_amt),0) as cntr_amt
+			,count(*) as cntr_cnt
+		FROM
+			G_CNTR
+		WHERE CNTR_SN IN
+		<foreach item="cntrSn" collection="cntrSnList" open="(" separator="," close=")">
+			#{cntrSn}
+		</foreach>
+	</select>
+
+	<select id="getReceiptPopListInfo" parameterType="saleson.shop.mypage.support.CntrReceipt" resultType="saleson.shop.mypage.domain.Cntr">
+		<include refid="CommonMapper.paginationHeader" />
+		/* saleson.shop.mypage.MypageMapper.getReceiptPopListInfo */
+		SELECT
+			A.CNTR_SN ,
+			DATE_FORMAT(A.CNTR_DE, '%Y.%c.%e.') as cntr_de,
+			A.CNTR_DE AS origin_cntr_de,
+			C.LOCGOV_CODE,
+			C.UPPER_LOCGOV_NM,
+			C.LOCGOV_NM,
+			C.BIZRNO as BIZ_RNO,
+			A.CNTR_AMT,
+			RANK() OVER (ORDER BY C.LOCGOV_CODE ASC) AS RANK_CODE
+		FROM
+			G_CNTR A
+			JOIN G_LOCGOV C ON A.CNTR_LOCGOV_CODE = C.LOCGOV_CODE
+		WHERE
+			A.CNTR_SN IN
+		<foreach item="cntrSn" collection="cntrSnList" open="(" separator="," close=")">
+			#{cntrSn}
+		</foreach>
+	    ORDER BY A.CNTR_DE DESC
+	    <include refid="CommonMapper.paginationFooter" />
+    </select>
+    <select id="getSpelDstrZn" resultType="java.util.HashMap">
+    	SELECT
+    		LOCGOV_NM as locgov_nm,
+    		LOCGOV_CODE as locgov_code,
+    		NOTI_REASON as noti_reason,
+    		NOTI_DATE as noti_date,
+    		END_DATE as end_date
+    	FROM
+    		OP_SPEL_DSTR_ZN
+    </select>
+
+   	<select id="getTopLocGov" parameterType="saleson.shop.mypage.support.CntrReceipt" resultType="map">
+		/* saleson.shop.mypage.MypageMapper.getTopLocGov */
+		SELECT
+			GC.UPPER_LOCGOV_NM + ' ' + GC.LOCGOV_NM AS locgovNm,
+			COUNT(*) OVER() AS locCount
+		FROM
+			(
+			SELECT
+				DISTINCT
+				CNTR_LOCGOV_CODE AS LOCGOV_CODE
+			FROM
+				G_CNTR
+			WHERE
+				CNTR_SN IN
+				<foreach item="cntrSn" collection="cntrSnList" open="(" separator="," close=")">
+					#{cntrSn}
+				</foreach>
+		) A
+		JOIN G_LOCGOV GC ON A.LOCGOV_CODE = GC.LOCGOV_CODE
+		ORDER BY GC.LOCGOV_CODE
+		LIMIT 1
+    </select>
+
+    <!-- 기부혜택증 열람기록 저장 -->
+    <insert id="saveHonorViewHist" parameterType="saleson.shop.mypage.support.ReceiptParam">
+    	/* saleson.shop.mypage.MypageMapper.saveHonorViewHist */
+    	INSERT INTO OP_HONOR_VIEW_HIST
+    	(
+    		VIEW_DT,
+    		USER_ID,
+    		LCLGV_CD
+    	)
+    	VALUES
+    	(
+			now(),
+			#{userId},
+			#{lclgvCd}
+    	)
+    </insert>
+
+</mapper>

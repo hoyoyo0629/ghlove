@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title></title>
+
+	<link rel="stylesheet" href="/static/css/common.css" />
+	<link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/receipt-print.css" />
+  </head>
+
+  <body>
+     <div id="receiptPrint">
+
+         <!-- page.1 -->
+         <div class="page">
+	         <div class="lineBox card-front">
+
+	             <!-- 타이틀 -->
+	             <div class="title-area">
+        	         <div class="donation-comment">
+	                     <img src="/static/images/donation_receipt/donation-comment.png" />
+	                 </div>
+	                 <h5>고향사랑기부 확인증</h5>
+	             </div>
+
+	             <!-- 내용 -->
+	             <div class="section-area">
+	                 <table class="table-area">
+	                     <colgroup>
+	                         <col style="width:40%">
+	                         <col style="width:60%">
+	                     </colgroup>
+	                     <tr>
+	                         <th style="letter-spacing: 2.55em;">성명</th>
+	                         <td>{{userName}}</td>
+	                     </tr>
+	                     <tr>
+	                         <th style="letter-spacing: 0.25em;">생년월일</th>
+	                         <td>{{birthday}}</td>
+	                     </tr>
+	                     <tr>
+	                         <th>기부지자체</th>
+	                         <td>{{topLocGov}}</td>
+	                     </tr>
+	                     <tr>
+	                         <th style="letter-spacing: 0.25em;">기부금액</th>
+	                         <td>총 {{ formatNumber(totalCntrAmt) }}원</td>
+	                     </tr>
+	                 </table>
+	             </div>
+
+	             <!-- 하단 -->
+	             <div class="bottom-area">
+	                 <div class="comment-area">위와 같이 고향사랑기부에 참여하였음을 확인함</div>
+	                 <div class="date-area">{{nowDate}}</div>
+	                 <div class="icon-area">
+	                     <img alt="" src="/static/images/donation_receipt/logo.png" />
+	                 </div>
+
+	             </div>
+
+	         </div>
+         </div>
+         <!-- page.1 END -->
+
+         <!-- page.2 -->
+         <div class="page">
+	         <div class="lineBox card-back">
+
+	             <!-- 타이틀 -->
+	             <div class="title-area">
+	                 <h5>고향사랑기부내역</h5>
+	             </div>
+
+	             <!-- 내용 -->
+	             <div class="section-area">
+	                 <div class="table-result-body">
+	                  <hr />
+	                     <table>
+	                         <colgroup>
+	                             <col style="width:25%">
+	                             <col style="width:50%">
+	                             <col style="width:25%">
+	                         </colgroup>
+	                         <tr class="result-title">
+	                             <th>기부일자</th>
+	                             <th>기부지자체</th>
+	                             <th>기부액 (원)</th>
+	                         </tr>
+	                             <tr class="result-row" v-for="(data,i) in list" :key="i">
+	                                 <td class="">{{data.cntrDe}}</td>
+	                                 <td class="">{{data.upperLocgovNm}} {{data.locgovNm}}{{data.spelDstrYn == 'Y' ? `(특별재난지역)`: ''}}<br/>(사업자번호 : {{data.bizRno}})</td>
+	                                 <td class="amount">{{formatNumber(data.cntrAmt)}}</td>
+	                             </tr>
+	                     </table>
+	                  <hr />
+	                 </div>
+	             </div>
+
+	            <!-- 하단 -->
+	             <div class="bottom-area">
+	                 <div class="comment-area">본 기부확인증은 고향사랑e음 기부내역을 바탕으로 발급되었으며,</div>
+	                 <div class="comment-area">전체 기부내역은 고향사랑e음을 통해서 확인이 가능합니다.</div>
+	             </div>
+
+	         </div>
+         </div>
+         <!-- page.2 END -->
+	</div>
+
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script type="text/babel">
+		const printData = JSON.parse(sessionStorage.getItem("receiptPrintData"));
+
+		var vm = new Vue({
+			el:"#receiptPrint",
+			data: printData,
+			mounted(){
+				window.print();
+				sessionStorage.removeItem("receiptPrintData");
+			}
+		});
+
+
+	</script>
+  </body>
+</html>

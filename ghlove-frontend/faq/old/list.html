@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="icon" href="../../../../favicon.ico">
+        <title>고향사랑e음</title>
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="/static/css/swiper.min.css">
+        <link rel="stylesheet" href="/static/css/common.css">
+        <link rel="stylesheet" href="/static/css/layout.css">
+        <link rel="stylesheet" href="/static/css/popup.css">
+        <link rel="stylesheet" href="/static/css/customer.css">
+    </head>
+    <body>
+        <div id="saleson" v-cloak>
+            <layout-header></layout-header>
+
+            <section class="contents faq_contents">
+                <h2 class="screen_out">FAQ</h2>
+                <div class="tit_wrap">
+                    <h3 class="tit">고객센터</h3>
+                </div>
+                <div class="customer_wrap">
+                    <div class="container">
+                        <navigation list-type="faq"></navigation>
+                        <div class="total_top">
+                            <p class="total">전체 <span v-cloak>{{formatNumber(result.totalElements)}}</span></p>
+                            <div class="search_form">
+                                <div class="row">
+                                    <div class="col-9">
+                                        <select class="custom-select box" v-model="param.faqType">
+                                            <option value="">전체</option>
+                                            <option v-for="data in types" :value="data.code">{{data.title}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="button" class="btn btn_m box btn_primary" @click="search()">조회</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list_wrap faq_list">
+                            <ul>
+                                <li class="list_area list_open" v-for="data in result.content" v-cloak>
+                                    <div class="list_in">
+                                        <p class="category">[{{getFaqTypeName(data.faqType)}}]</p>
+                                        <div class="question"><span class="qa">Q.</span>{{data.title}}</div>
+                                        <div class="hide_area">
+                                            <div class="answer"><span class="qa">A.</span><span v-html="data.content"></span></div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <pagination :current-page="result.number + 1" :total-pages="result.totalPages" @change="paging"></pagination>
+                </div>
+            </section>
+
+            <layout-footer></layout-footer>
+        </div>
+
+        <!-- JavaScript -->
+        <script src="/static/js/jquery-3.4.1.min.js"></script>
+        <script src="/static/js/swiper.min.js"></script>
+        <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+        <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+        <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.popupoverlay.js"></script>
+        <script src="/static/js/jquery.waypoints.min.js"></script>
+        <script src="/static/js/jquery.counterup.min.js"></script>
+        <script src="/static/js/common.js"></script>
+        <script src="/static/js/header.js"></script>
+        <script src="/static/js/footer.js"></script>
+
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="/modules/es6-promise.min.js"></script>
+        <script src="/modules/es6-promise.auto.min.js"></script>
+        <script src="/modules/axios.js"></script>
+        <script src="/modules/vue.js"></script>
+        <script src="/modules/httpVueLoader.js"></script>
+        <script src="/modules/op.config.js"></script>
+        <script src="/modules/op.saleson.js"></script>
+        <script type="text/babel" src="/modules/op.vue.js"></script>
+        <script type="text/babel">
+            Vue.use(VueAwesomeSwiper);
+            var vm = new Vue({
+                el: '#saleson',
+                components: {
+                    'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+                    'layout-header': httpVueLoader('/components/layouts/header.vue'),
+                    'navigation': httpVueLoader('/components/ui/mypage/service-navigation.vue'),
+                    'pagination': httpVueLoader('/components/ui/pagination.vue')
+                },
+                data: {
+                    param: {
+                        page: 1,
+                        itemsPerPage: 10,
+                        faqType: ""
+                    },
+                    types: {},
+                    result: {}
+                },
+                methods: {
+                    submit: function () {
+                        $s.api.getFaq(vm.param,
+                            function (response) {
+                                vm.types = response.types;
+                                vm.result = response.content;
+                            }
+                        )
+                    },
+                    paging: function (page) {
+                        vm.param.page = page;
+                        vm.submit();
+                    },
+                    search: function () {
+                        vm.paging(1);
+                    },
+                    getFaqTypeName: function (faqType) {
+                        for (var i=0; i<vm.types.length; i++) {
+                            if (faqType === vm.types[i].code) {
+                                return vm.types[i].title;
+                            }
+                        }
+                    }
+                },
+                mounted: function() {
+                    this.$nextTick(function () {
+                        Saleson.init();
+
+                        vm.paging(1);
+                        initializeListEvent();
+                    });
+                }
+            });
+        </script>
+    </body>
+</html>

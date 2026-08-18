@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head id="saleson-head">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>답례품 > 장바구니 > 주문결제 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+    <link rel="stylesheet" href="/static/css/order_ali.css" />
+    <link rel="stylesheet" href="/static/css/order-modal.css" />
+    <!--배송지 모달-->
+    <link rel="stylesheet" href="/static/css/lclgv_chc/map.css" />
+    <link rel="stylesheet" href="/static/css/joind-agf.css" />
+    <!-- 모달 -->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <layout-header-ali></layout-header-ali>
+      <layout-header :menu-url="menuUrl" @show-map-select="showMapSelect" ref="layoutHeaderSearchPc"></layout-header>
+
+      <div id="wrap">
+        <!-- 지자체 선택 팝업  -->
+        <div class="black-bg" ref="getParentModal">
+          <div class="overlayer join-complete">
+            <div class="overlayer-header" style="font-size: 26px; height: 60px; line-height: 60px; padding: 0">지자체 선택</div>
+            <div class="overlayer-body" style="padding-top: 30px; border-radius: 0 0 15px 15px">
+              <layout-map-select @show-loading="showLoading" @select-lclgv="selectLclgvPc"></layout-map-select>
+            </div>
+            <div class="btn-box">
+              <button
+                type="button"
+                class="temp-button hidden_txt"
+                title="지자체 선택팝업 닫기"
+                style="top: 18px; right: 18px"
+                @click="closeMapSelect()"
+              >
+                지자체 선택 팝업 닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="cart_contents">
+        <div class="page-title-box">
+          <span class="ali_breadcrumb">
+            <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            답례품
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            장바구니
+          </span>
+          <div>
+            <h2 class="page-title-txt" v-if="stepStatus == '1'">장바구니</h2>
+            <h2 class="page-title-txt" v-else-if="stepStatus == '2'">주문/결제</h2>
+            <h2 class="page-title-txt" v-else="stepStatus == '3'">주문완료</h2>
+          </div>
+          <div class="steps-box">
+            <div class="step_status cart" :class="[stepStatus == '1'? 'on':'']">
+              <div class="icon-bg" title="장바구니"></div>
+            </div>
+
+            <div class="step_status payment" :class="[stepStatus == '2'? 'on':'']">
+              <div class="icon-bg" title="주문결제"></div>
+            </div>
+
+            <div class="step_status complete" :class="[stepStatus == '3'? 'on':'']">
+              <div class="icon-bg" title="주문완료"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="contents">
+        <form class="order_wrap needs-validation" name="buy" @submit.prevent="submit">
+          <div class="contents_wrap" v-for="(buyItem, i) in buyItems" :key="i" v-show="buyItem.locgovItems && buyItem.locgovItems.length > 0">
+            <div class="center">
+              <div class="s-contents">
+                <div class="cart_top">
+                  <div class="chk_box check-level1">
+                    <input type="checkbox" id="locCode" />
+                    <label for="locCode">{{buyItem.locgovNm}}</label>
+                  </div>
+                  <div class="grade-bg">잔여 포인트 : <span class="blue-txt">{{Number(buyItem.givePoint).toLocaleString()}} P</span></div>
+                </div>
+                <div class="list_body">
+                  <div class="list_wrap">
+                    <div class="list-title">
+                      <div class="date-col chk_date">답례품정보</div>
+                      <div class="date-col g_amtprc">
+                        <div class="g_info_wrap">
+                          <div class="date-col g_info__amount">수량</div>
+                          <div class="date-col g_info__price">답례품 포인트</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <ul class="item_list-group">
+                      <li class="list-items" v-for="(item, i) in buyItem.locgovItems" :key="i">
+                        <div class="date-col g_info">
+                          <div class="g_info_wrap">
+                            <div
+                              class="link_wrap"
+                              tabindex="0"
+                              @click="jumpToDetails(item.item.itemUserCode)"
+                              :role="item.item.itemName + ' 상세 페이지로 이동'"
+                            >
+                              <div class="g_info__img"><img v-bind:src="itemImage(item.item.imageSrc)" :alt="item.item.itemName + ' 이미지'" /></div>
+                              <div class="g_info__txt">
+                                <!--<div class="info_loc">{{item.item.locgovNm}}
+															</div>
+															<div class="info_loc">{{item.item.seller.sellerName}}
+															</div> -->
+                                <div class="info_loc">[{{item.companyName}}]</div>
+                                <div class="info_title"><span v-html="item.item.itemName"></span></div>
+                                <div class="info_opt" v-show="item.options"><span v-html="item.options"></span></div>
+                                <div class="info_opt"><span v-html="formatTextOption(item.textOption)"></span></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="date-col g_amtprc">
+                          <div class="g_info_wrap">
+                            <div class="g_info__amount">{{Number(item.itemPrice.quantity).toLocaleString()}}개</div>
+                            <div class="g_info__price">{{Number(item.itemPrice.saleAmount).toLocaleString()}} P</div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="cart_bot">
+                    <div class="smallTxt">답례품 포인트 <span class="bot_P">{{Number(buyItem.sumPrice).toLocaleString()}} P</span> + 무료배송 =</div>
+                    <div class="bigTxt">
+                      <span class="bot_txt"> 결제 예정 포인트</span>
+                      <span class="bot_price pointblue" v-if="buyItem.givePoint >= buyItem.sumPrice"
+                        >{{Number(buyItem.sumPrice).toLocaleString()}}P</span
+                      >
+                      <span class="bot_price pointRed" v-if="buyItem.givePoint < buyItem.sumPrice"
+                        >{{Number(buyItem.sumPrice).toLocaleString()}}P
+                        <span> ( 구매불가 )</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+	        <div class="common_none" v-show="buyItem.locgovItems && buyItem.locgovItems.length == 0">
+	          <p>장바구니에 담겨있는 답례품이 없습니다.</p>
+	        </div>
+          </div>
+        </form>
+        <div class="mobile_section_bar"></div>
+        <div class="contents_wrap">
+          <div class="center user_form">
+            <div class="s-contents deliver">
+              <!-- <form action="/"> -->
+              <!-- 주문정보입력 -->
+              <fieldset>
+                <div class="add-info-area">
+                  <div class="lable-field">
+                    <h3><span>주문자</span><span> 정보</span></h3>
+                    <p class="essential">
+                      <span class="spch">*</span><span><span>필수</span> <span>입력 정보</span></span>
+                    </p>
+                  </div>
+                  <div class="info-field">
+                    <div class="info-field-group">
+                      <div class="info-field-items">
+                        <label for="userName" class="flied-title">주문자<span class="essential"> *</span></label>
+                        <span class="form-field">
+                          <input type="text" name="userName" id="userName" v-model="buy.buyer.userName" readonly />
+                        </span>
+                      </div>
+                      <!-- 주문자주소 -->
+                      <div class="info-field-items" v-show="false">
+                        <label for="address" class="flied-title">주문자주소<span class="essential"> * </span></label>
+                        <div class="form-field">
+                          <div class="search-address m-field">
+                            <input
+                              type="text"
+                              name="address"
+                              id="address"
+                              v-model="searchAddress.order.address"
+                              readonly="readonly"
+                              aria-label="주소찾기 버튼으로 주소를 입력하세요."
+                            />
+                            <button type="button" class="formBtn" id="searchAddressBtn" @click="openDaumPostcode('order')" title="새 창 열림">
+                              주소찾기
+                            </button>
+                          </div>
+                          <div class="input-address">
+                            <div class="address_m-field">
+                              <input
+                                type="text"
+                                name="post"
+                                id="post"
+                                v-model="searchAddress.order.zipcode"
+                                readonly="readonly"
+                                aria-label="주소찾기 버튼으로 주소를 입력하세요."
+                              />
+                              <input
+                                type="text"
+                                name="addressDetail"
+                                id="addressDetail"
+                                v-model="searchAddress.order.addressDetail"
+                                aria-label="상세주소를 입력하세요."
+                              />
+                            </div>
+                          </div>
+                          <!--<div class="basic_address">
+													<input type="checkbox" id="b_address">
+													<label for="b_address">기본 주소 설정</label>
+												</div>-->
+                        </div>
+                      </div>
+                      <div class="info-field-items userNum">
+                        <label class="flied-title">휴대폰번호<span class="essential">*</span></label>
+                        <span class="form-field">
+                         <label for = "phoneCode" class="sr-only">휴대폰 번호 앞자리 선택</label>
+                          <select name="phoneCode" id="phoneCode" v-model="searchAddress.order.mobile1">
+                            <option v-for="code in phoneCodes" :value="code.key.id" aria-label="휴대폰번호 앞자리를 선택하세요.">
+                              {{code.label}}
+                            </option>
+                          </select>
+                          <span class="s-txt">-</span>
+                          <input
+                            type="number"
+                            name="phoneMid"
+                            id="phoneMid"
+                            v-model="searchAddress.order.mobile2"
+                            maxlength="4"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            aria-label="휴대폰번호 가운데 3-4자리를 입력하세요"
+                          />
+                          <span class="s-txt">-</span>
+                          <input
+                            type="number"
+                            name="phoneLast"
+                            id="phoneLast"
+                            v-model="searchAddress.order.mobile3"
+                            maxlength="4"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            aria-label="휴대폰번호 마지막 4자리를 입력하세요"
+                          />
+                        </span>
+                      </div>
+                      <div class="info-field-items userEmail">
+                        <label for="userEmail" class="flied-title">이메일<span class="essential">*</span></label>
+                        <span class="form-field">
+                          <span class="m-field">
+                            <input
+                              type="text"
+                              name="emailFirst"
+                              id="emailFirst"
+                              v-model="searchAddress.order.email1"
+                              aria-label="이메일 주소 @앞자리를 입력하세요"
+                            />
+                            <span class="s-txt">@</span>
+                          </span>
+                          <input
+                            id="orderEmailAddress"
+                            type="text"
+                            v-model="searchAddress.order.email2"
+                            v-bind:readOnly="orderEmailReadOnly"
+                            aria-label="이메일 주소 @뒷자리를 작성하세요. 직접 작성하지 않고 선택하려면 다음으로 탭"
+                          />
+                          <select
+                            id="orderEmailL"
+                            :name="param.emailCode"
+                            :id="param.emailCode"
+                            v-model="searchAddress.order.email3"
+                            @change="emailChange('order')"
+                            aria-label="이메일 주소 @뒷자리를 선택하세요"
+                          >
+                            <option v-for="code in emailCodes" :value="code.key.id">{{code.label}}</option>
+                          </select>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="line"></div>
+                <div class="add-info-area">
+                  <div class="lable-field">
+                    <h3>배송지</h3>
+                    <p class="essential">
+                      <span class="spch">*</span><span><span>필수</span> <span>입력 정보</span></span>
+                    </p>
+                  </div>
+                  <div class="info-field">
+                    <div class="info-field-group">
+                      <div class="info-field-items subscribe" v-show="!isAllMobileItem">
+                        <label for="" class="flied-title">배송지 선택</label>
+                        <div class="form-field">
+                          <div class="m-field">
+                            <div class="subscribe-select">
+                              <input
+                                type="radio"
+                                name="addressSelect"
+                                id="defaultA"
+                                value="default"
+                                checked
+                                @change="deliverySetTypeChange"
+                                v-model="addressType"
+                              />
+                              <label for="defaultA">기본 배송지</label>
+                            </div>
+                            <div class="subscribe-select">
+                              <input
+                                type="radio"
+                                name="addressSelect"
+                                id="newA"
+                                value="clear"
+                                @change="deliverySetTypeChange"
+                                v-model="addressType"
+                              />
+                              <label for="newA">새로운 배송지</label>
+                            </div>
+                            <div class="subscribe-select">
+                              <input type="radio" name="addressSelect" id="eqA" value="copy" @change="deliverySetTypeChange" v-model="addressType" />
+                              <label for="eqA">주문자 정보와 동일</label>
+                            </div>
+                          </div>
+                          <button type="button" class="formBtn" @click="openAddressList()" id="deliveryListBtn">
+                            배송지 목록 <img src="/static/images/icon/simple-arrow-right.png" alt="" />
+                          </button>
+                        </div>
+                      </div>
+                      <div class="info-field-items" v-show="!isAllMobileItem">
+                        <label for="receiveUserName" class="flied-title">받으시는분<span class="essential">*</span></label>
+                        <span class="form-field">
+                          <input type="text" name="receiveUserName" id="receiveUserName" v-model="buy.receivers[0].receiveName" />
+                        </span>
+                      </div>
+                      <!-- 배송지주소 -->
+                      <div class="info-field-items" v-show="!isAllMobileItem">
+                        <label for="receiveAddress" class="flied-title">배송지주소<span class="essential"> * </span></label>
+                        <div class="form-field">
+                          <div class="search-address m-field">
+                            <input
+                              type="text"
+                              name="receivePost"
+                              id="receivePost"
+                              v-model="buy.receivers[0].receiveZipcode"
+                              readonly="readonly"
+                              aria-label="주소찾기 버튼으로 우편번호를 입력하세요."
+                              placeholder="주소찾기 버튼으로 우편번호를 입력하세요."
+                            />
+                            <button
+                              type="button"
+                              class="formBtn"
+                              id="searchReceiveAddressBtn"
+                              @click="openDaumPostcode('receive',0)"
+                              title="새 창 열림"
+                            >
+                              주소찾기
+                            </button>
+                          </div>
+                          <div class="search-address m-field">
+                              <input
+                                type="text"
+								name="receiveAddress"
+								id="receiveAddress"
+								v-model="buy.receivers[0].receiveAddress"
+                                readonly="readonly"
+                                aria-label="주소찾기 버튼으로 주소를 입력하세요."
+                              	placeholder="주소찾기 버튼으로 주소를 입력하세요."
+                              	style="width: 100%;"
+                              />
+						  </div>
+                          <div class="search-address m-field">
+                              <input
+                                type="text"
+                                name="receiveAddressDetail"
+                                id="receiveAddressDetail"
+                                v-model="buy.receivers[0].receiveAddressDetail"
+                                aria-label="배송지 상세주소를 입력하세요."
+                              	placeholder="배송지 상세주소를 입력하세요."
+                              	style="width: 100%;"
+                              />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="info-field-items userNum">
+                        <label class="flied-title">휴대폰번호<span class="essential">*</span></label>
+                        <span class="form-field">
+                          <select
+                            name="receivePhoneCode"
+                            id="receivePhoneCode"
+                            v-model="buy.receivers[0].receiveMobile1"
+                            aria-label="배송지 휴대폰번호 앞자리를 선택하세요."
+                          >
+                            <option v-for="code in phoneCodes" :value="code.key.id">{{code.label}}</option>
+                          </select>
+                          <span class="s-txt">-</span>
+                          <input
+                            type="number"
+                            name="receivePhoneMid"
+                            id="receivePhoneMid"
+                            v-model="buy.receivers[0].receiveMobile2"
+                            maxlength="4"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            aria-label="배송지 휴대폰번호 가운데 3-4자리를 입력하세요"
+                          />
+                          <span class="s-txt">-</span>
+                          <input
+                            type="number"
+                            name="receivePhoneLast"
+                            id="receivePhoneLast"
+                            v-model="buy.receivers[0].receiveMobile3"
+                            maxlength="4"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            aria-label="배송지 휴대폰번호 마지막 4자리를 입력하세요"
+                          />
+                        </span>
+                      </div>
+                      <div class="info-field-items userNum">
+                        <label class="flied-title">전화번호</label>
+                        <span class="form-field">
+                          <select
+                            name="receiveTelCode"
+                            id="receiveTelCode"
+                            v-model="buy.receivers[0].receivePhone1"
+                            aria-label="배송지 전화번호 앞자리를 선택하세요."
+                          >
+                            <option v-for="code in telCodes" :value="code.key.id">{{code.label}}</option>
+                          </select>
+                          <span class="s-txt">-</span>
+                          <input
+                            type="number"
+                            name="receiveTelMid"
+                            id="receiveTelMid"
+                            v-model="buy.receivers[0].receivePhone2"
+                            maxlength="4"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            aria-label="배송지 전화번호 가운데 3-4자리를 입력하세요"
+                          />
+                          <span class="s-txt">-</span>
+                          <input
+                            type="number"
+                            name="receiveTelLast"
+                            id="receiveTelLast"
+                            v-model="buy.receivers[0].receivePhone3"
+                            maxlength="4"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            aria-label="배송지 전화번호 마지막 4자리를 입력하세요"
+                          />
+                        </span>
+                      </div>
+                      <div class="info-field-items userEmail" v-show="!isAllMobileItem">
+                        <label for="userEmail" class="flied-title">이메일</label>
+                        <span class="form-field">
+                          <span class="m-field">
+                            <input
+                              type="text"
+                              name="receiveEmailFirst"
+                              id="receiveEmailFirst"
+                              v-model="buy.receivers[0].receiveEmail1"
+                              aria-label="배송지 이메일 주소 @앞자리를 입력하세요"
+                            />
+                            <span class="s-txt">@</span>
+                          </span>
+                          <input
+                            id="receiveEmailAddress"
+                            type="text"
+                            v-model="buy.receivers[0].receiveEmail2"
+                            v-bind:readOnly="receiverEmailReadOnly"
+                            aria-label="배송지 이메일 주소 @뒷자리를 작성하세요. 직접 작성하지 않고 선택하려면 다음으로 탭"
+                          />
+                          <select
+                            id="receiveEmailL"
+                            name="receiveEmailL"
+                            v-model="buy.receivers[0].receiveEmail3"
+                            @change="emailChange('receiver')"
+                            aria-label="배송지 이메일 주소 @뒷자리를 선택"
+                          >
+                            <option v-for="code in emailCodes" :value="code.key.id">{{code.label}}</option>
+                          </select>
+                        </span>
+                      </div>
+                      <div class="info-field-items require">
+                        <div class="info-field-items">
+                          <label for="require" class="flied-title" v-if="!isAllMobileItem">배송시 요구사항</label>
+                          <label for="require" class="flied-title" v-else>발송시 요구사항</label>
+                          <span class="form-field">
+                            <input
+                              type="text"
+                              name="require"
+                              id="require"
+                              v-model="buy.receivers[0].content"
+                              maxlength="150"
+                              @input="changeNoteInput($event, 150)"
+                            />
+                            <span class="s-txt">[{{noteLength}}/150]</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="info-field-items notice">
+                        <p class="wait"><img src="/static/images/icon/flag_wait.png" alt="잠깐!" /></p>
+                        <ul style="margin-left: 10px">
+                          <li>
+                            <span class="s-txt">알림서비스는 국민비서 회원에게 제공되니 회원가입 해 주시기 바랍니다.</span>
+                          </li>
+                          <li>
+                            <span class="s-txt"
+                              ><a
+                                href="https://www.ips.go.kr/pot/forwardMain.do"
+                                target="_blank"
+                                title="새창 열림"
+                                style="text-decoration: underline; color: blue"
+                                ><strong>국민비서 가입하기</strong></a
+                              >
+                              국민비서 홈 &gt; 알림설정(기타-고향사랑e음 안내 알림 선택)</span
+                            >
+                          </li>
+                          <li>
+                            <span class="s-txt">※ 알림서비스 설정 후 다음날부터 되는 점 참고 바랍니다.</span>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="info-field-items notice">
+                        <ul style="margin-left: 118px">
+                          <li>
+                            <span class="s-txt">※고향사랑e음은 고향사랑기부법 제9조에 따라 답례품을 제공하기 위하여</span>
+                          </li>
+                          <li>
+                            <span class="s-txt">답례품 제공자에게 개인정보를 제공하고있습니다.</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <!-- </form> -->
+            </div>
+            <div class="mobile_section_bar"></div>
+            <!-- 결제정보 -->
+            <div class="s-contents payment">
+              <h3>결제하기</h3>
+              <!-- <form class="payment_wrap"> -->
+              <ul class="each_loc_list">
+                <li class="loc_list" v-for="(buyItem, i) in buyItems" :key="i" v-show="buyItem.locgovItems && buyItem.locgovItems.length > 0">
+                  <div class="loc_name">{{buyItem.locgovNm}}</div>
+                  <div class="last_point_info">
+                    <span class="lebel_title">최종 결제 포인트</span>
+                    <span class="pointblue">{{Number(buyItem.sumPrice).toLocaleString()}}P </span>
+                  </div>
+                  <div class="last_point_info">
+                    <span class="lebel_title">포인트 예상 잔액</span>
+                    <span class="">{{Number(buyItem.givePoint - buyItem.sumPrice).toLocaleString()}}P </span>
+                  </div>
+                </li>
+              </ul>
+              <div class="total_point">
+                <div class="last_point_info">
+                  <span class="lebel_title">배송비</span>
+                  <span class="">무료배송 </span>
+                </div>
+                <div class="last_point_info">
+                  <span class="lebel_title">답례품 포인트</span>
+                  <span class="pointblue bigTxt">{{Number(getTotalItemPrice()).toLocaleString()}}P</span>
+                </div>
+              </div>
+              <div class="cart_info_txt">
+                <ul>
+                  <li class="txt__list">주문할 답례품의 답례품명, 답례품가격, 배송정보를 확인하였으며 구매에 동의 하시겠습니까?</li>
+                  <li class="txt__list"><input type="checkbox" name="agree" id="agree" v-model="isAgree" /><label for="agree">동의</label></li>
+                </ul>
+              </div>
+
+              <!-- </form> -->
+            </div>
+          </div>
+        </div>
+		<div class="payment-yn-text" v-if="paymentYn == 'N'" style="display:flex;flex-direction: column;justify-content:center;align-items:center;font-weight: bold;margin-bottom: 5px;">
+			<div style="color: red;">구매제한 물품이 있어 미성년자는 주문할 수 없습니다.</div>
+			<div style="color: red;">취소 버튼을 누르면 이전화면으로 돌아갑니다.</div>
+		</div>
+        <!-- 버튼그룹 -->
+        <div class="btn-box order">
+          <button type="button" class="blueBtn cancellation" @click="goBack">
+            취소<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="이전페이지로 이동" /></span>
+          </button>
+          <button type="submit" class="blueBtn u-confirm" @click="preSubmit" id="paymentBtn" v-if="paymentYn == 'Y'">
+            <span id="mbTotal">{{Number(getTotalItemPrice()).toLocaleString()}} P </span> &nbsp;결제하기<span
+              ><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="답례품 주문하기"
+            /></span>
+          </button>
+        </div>
+      </section>
+
+      <modal-order-add
+        @set-default-delivery="setDefaultDelivery"
+        :delivery-list="userDeliveryList"
+        :delivery-open-page="deliveryOpenPage"
+        :view-mode="addViewMode"
+        :phone-codes="phoneCodes"
+        :tel-codes="telCodes"
+        @set-view-mode="setAddViewMode"
+        @open-daum-postcode="openDaumPostcode"
+        :add-delivery-info="addDeliveryInfo"
+        @save-new-delivery-info="saveNewDeliveryInfo"
+        @copy-delivery-info-by-list="copyDeliveryInfoByList"
+      ></modal-order-add>
+      <layout-fixed-btn></layout-fixed-btn>
+      <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+      <layout-address></layout-address>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/payment.js?v=202412020000"></script>
+    <script src="/modules/op.donation.js?v=20240212329"></script>
+
+    <script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          "layout-header": httpVueLoader("/components/layouts/header_g.vue"),
+          "modal-order-add": httpVueLoader("/components/ui/address/order_add.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          // 'layout-tabbar-ali': httpVueLoader('/components/layouts/m_tabbar_g.vue'),
+          // 'naver-pay-button': httpVueLoader('/components/ui/naver/naver-pay-button.vue'),
+          "layout-address": httpVueLoader("/components/ui/daum/address-layer.vue"),
+
+          "layout-map-select": httpVueLoader("/components/ui/lclgv_chc/map.vue"),
+        },
+        data: {
+          isAllMobileItem: false, // 상품이 전체가 모바일 상품인지 아닌지에 따라 배송지 입력 플래그
+          isNoData: false,
+          stepStatus: "2", //stepStatus: '1', <- 기본값			// 1: 장바구니, 2: 주문/결제, 3: 주문 완료
+
+          list: [],
+          orderPrice: [],
+          buyItems: [],
+          menuUrl: location.pathname,
+
+          phoneCodes: [],
+          telCodes: [],
+          emailCodes: [],
+          param: {},
+
+          // 주문 관련
+          buy: {
+            receivers: [
+              {
+                items: [],
+              },
+            ],
+            buyPayments: {
+              bank: {
+                accountNumbers: [],
+              },
+            },
+            orderPrice: {
+              orderPayAmountTotal: 0,
+            },
+            buyer: {
+              userName: "",
+              address: "",
+              addressDetail: "",
+              email: "",
+              mobile: "",
+              phone: "",
+              sido: "",
+              sigungu: "",
+              zipcode: "",
+            },
+            defaultUserDelivery: "",
+            deviceType: "",
+            failUrl: "",
+            successUrl: "",
+            campaignCode: null,
+            defaultPaymentType: "bank",
+          },
+          config: {},
+          order: {
+            buy: {
+              orderPayAmount: 0,
+            },
+            pgType: "",
+            totalItemPriceByCoupon: 0,
+            minimumPaymentAmount: 0,
+            pointUseMin: 0,
+            pointUseMax: 0,
+            pointUseRatio: 0,
+            orgReceivers: null,
+            useItemCoupons: [],
+            useAddItemCoupons: [],
+            useCartCoupons: [],
+            notMixPayType: [],
+            saveReceiverHtml: "",
+            orgZipcode: "",
+          },
+          pgType: "",
+          searchAddress: {
+            order: {
+              zipcode: "",
+              newZipcode: "",
+              address: "",
+              addressDetail: "",
+              addressInfo: "",
+              mobile: "",
+              mobile1: "",
+              mobile2: "",
+              mobile3: "",
+              phone: "",
+              email: "",
+              email1: "",
+              email2: "",
+              email3: "",
+              content: "",
+            },
+            receivers: [
+              {
+                zipcode: "",
+                newZipcode: "",
+                address: "",
+                addressDetail: "",
+                addressInfo: "",
+                mobile: "",
+                mobile1: "",
+                mobile2: "",
+                mobile3: "",
+                phone: "",
+                receiveEmail: "",
+                receiveEmail1: "",
+                receiveEmail2: "",
+                receiveEmail3: "",
+                content: "", // 배송시 요구사항
+              },
+            ],
+          },
+          checkoutSteps: [],
+
+          // 배송비 정보 레이어 데이터
+          shippingInfo: {
+            shippingFreeAmount: 0,
+            shipping: 0,
+            isIsland: false,
+            shippingExtraCharge1: 0,
+            shippingExtraCharge2: 0,
+          },
+          isSns: false,
+          includeTaxFreeItem: false,
+          userDeliveryList: [],
+          receiverEmailReadOnly: false,
+          orderEmailReadOnly: false,
+
+          // 주문 관련
+          addViewMode: "2", // 1 : 배송지 목록, 2 : 배송지 추가
+          addDeliveryInfo: {}, // 배송지 추가할 검색 정보
+          deliveryOpenPage: "step1",
+          addressType: "default", // 배송지 선택 타입
+          isAgree: false, // 주문 동의 여부
+          itemCnt: 0,
+          mobileItemCnt: 0,
+          noteLength: 0,
+		  paymentYn: 'Y',
+        },
+        methods: {
+          loadingMounted: function () {
+            this.initCallFunction();
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          initCallFunction: function () {
+            this.getSnsInfo();
+          },
+
+          jumpToDetails: function (itemUserCode) {
+            location.href = "/items/details.html?code=" + itemUserCode;
+          },
+
+          openAddressList: function () {
+            this.addViewMode = "1";
+            this.addDeliveryInfo = {};
+            $("#add_modal").show();
+            setTimeout(() => {
+              try {
+                $("#regDeliveryInfo").focus();
+              } catch (e) {
+                let errorBoolean = true;
+              }
+            }, 100);
+          },
+          getPaymentItemList: function () {
+            this.showLoading(true);
+            vm.itemCnt = 0;
+            vm.mobileItemCnt = 0;
+            $s.api.paymentStep(
+              "",
+              function (response) {
+                vm.showLoading(false);
+                vm.buy = response.buy;
+                vm.buy.failUrl = $s.config.virtualDomain + "/order/step1.html";
+                vm.buy.successUrl = $s.config.virtualDomain + "/order/step2.html";
+
+                vm.userDeliveryList = response.userDeliveryList;
+
+                vm.phoneCodes = response.phoneCodes;
+                vm.telCodes = response.telCodes;
+                vm.emailCodes = response.emailCodes;
+
+                vm.orderInit(response.userData);
+
+                vm.searchAddress.receivers[0].receiveEmail3 = "0";
+
+                vm.payTypeSelect(vm.buy.defaultPaymentType);
+
+                if ($s.isMobile()) {
+                  vm.isMobile = true;
+                  vm.buy.deviceType = "MOBILE";
+                }
+
+                $s.ga.checkout($s.ga.const.CHECKOUT_INIT_STEP);
+
+                //if (vm.buy.isLogin) {
+                //vm.setCheckoutStep($s.ga.const.CHECKOUT_INPUT_USER_STEP);
+                vm.addressInfoInit(response.buy.buyer, vm.isSns);
+                //}
+                vm.setCheckoutStep($s.ga.const.CHECKOUT_INPUT_PAYMENT_STEP);
+
+                for (var index in vm.buy.items) {
+                  var item = vm.buy.items[index].item;
+				  	// 답례품중 성인상품이며 현재 유저는 성인이 아닐때 결제버튼 삭제
+				  if(item.adultItemYn == 'Y' && response.adultYn == 'N') {
+					vm.paymentYn = 'N';
+				  }
+                  // 미사용 로직
+                  // if ("2" === item.taxType) {
+                  //   vm.includeTaxFreeItem = true;
+                  //   break;
+                  // }
+
+                  vm.itemCnt++;
+                  if (item.mobileItemYn === 'Y') {
+                    vm.mobileItemCnt++;
+                  }
+                }
+
+                // 상품수와 모바일 상품수
+                // 다르면 모바일상품 + 일반상품 OR 전부 일반상품
+                // 같으면 전부 모바일 상품
+                if(vm.itemCnt === vm.mobileItemCnt) {
+                  vm.isAllMobileItem = true
+                }
+
+                vm.setBuyItems(response.givePointList);
+              },
+              function (error) {
+                vm.showLoading(false);
+                let errorBoolean = true;
+                let errCd = error.response.data.message;
+                if (errCd === "BAD_BUY_NO_ITEM") {
+                  // 알림없이 바로 이동하도록 추가
+                  $s.redirect("/cart/index.html");
+                  //vm.isNoData = true;
+                } else {
+                  $s.alert(Common.getErrorMsg(errCd), function () {
+                    $s.closeAlert("contents"); // 알림창 닫기...
+                    //$('#op-alert').modal('hide');
+                    if (errCd === "BAD_BUY_NO_ITEM") {
+                      $s.redirect("/cart/index.html");
+                      //vm.isNoData = true;
+                    }
+                  });
+                }
+              }
+            );
+          },
+          orderInit: function (buy) {
+            buy = JSON.parse(buy);
+            var minimumPaymentAmount = this.config.minimumPaymentAmount;
+            var pointUseMin = this.config.pointUseMin;
+            var pointUseMax = this.config.pointUseMax;
+            var pointUseRatio = this.config.pointUseRatio;
+            var pgType = this.pgType;
+
+            this.order.buy = buy;
+            this.order.pgType = pgType;
+            this.order.totalItemPriceByCoupon = buy.totalItemAmountBeforeDiscounts;
+
+            if (!isNaN(minimumPaymentAmount) == false) {
+              minimumPaymentAmount = 0;
+            }
+
+            this.order.minimumPaymentAmount = Number(minimumPaymentAmount);
+
+            if (!isNaN(pointUseMin) == false) {
+              pointUseMin = 0;
+            }
+
+            if (!isNaN(pointUseMax) == false) {
+              pointUseMax = 0;
+            }
+
+            this.order.notMixPayType = buy.notMixPayType;
+            this.order.orgReceivers = buy.receivers;
+            this.order.pointUseMin = Number(pointUseMin);
+            this.order.pointUseMax = Number(pointUseMax);
+            this.order.pointUseRatio = Number(pointUseRatio);
+          },
+          payTypeSelect: function (payType) {
+            this.payType = payType;
+            var payAmount = this.buy.orderPrice.orderPayAmount;
+
+            for (var type in this.buy.buyPayments) {
+              if (type == payType) {
+                this.buy.buyPayments[type].amount = payAmount;
+              } else if (type != "point") {
+                this.buy.buyPayments[type].amount = 0;
+              }
+            }
+          },
+          // 필수 추가정보
+          formatTextOption: function (textOption) {
+            if(!textOption) return;
+            /*return textOption.split("||").join("<br>");*/
+            return textOption.split('||')
+                              .map(item => {
+                                const parts = item.split(' : ');
+                                const title = parts[0]? parts[0].trim() : '';
+                                let value = parts[1]? parts[1].trim() : '';
+
+                                if(value.length > 20){
+                                  value = value.substring(0,20) + '...';
+                                }
+                                return `${title} : ${value}`;
+                              })
+                              .join('<br>');
+
+          },
+          setCheckoutStep: function (step) {
+            if (this.checkoutSteps.indexOf(step) == -1) {
+              this.checkoutSteps.push(step);
+              $s.ga.checkout(step);
+            }
+          },
+          addressInfoInit: function (buyer, isSns) {
+            // 주문자 정보 세팅
+            vm.searchAddress.order.userName = buyer.userName;
+            vm.searchAddress.order.address = buyer.address;
+            vm.searchAddress.order.addressDetail = buyer.addressDetail;
+            vm.searchAddress.order.email = buyer.email;
+            vm.searchAddress.order.email1 = buyer.email1;
+            vm.searchAddress.order.email2 = buyer.email2;
+            vm.searchAddress.order.email3 = "0";
+            vm.orderEmailReadOnly = false;
+            let length = this.emailCodes.length;
+
+            for (let i = 0; i < length; i++) {
+              if (buyer.email2 == this.emailCodes[i].key.id && buyer.email2 != "0") {
+                vm.searchAddress.order.email3 = this.emailCodes[i].key.id;
+                vm.orderEmailReadOnly = true;
+                break;
+              }
+            }
+
+            vm.searchAddress.order.mobile = buyer.mobile;
+
+            // 국내 전화번호가 아닐 경우 처리용(카카오 회원가입 등..)
+            let checkStr = vm.searchAddress.order.mobile.substring(0, 1);
+            if (checkStr == "+") {
+              let phoneNoArray = vm.searchAddress.order.mobile.split("-");
+              vm.phoneCodes.push({
+                alias: null,
+                detail: phoneNoArray[0],
+                key: { codeType: "PHONE", id: phoneNoArray[0], language: "ko" },
+                label: phoneNoArray[0],
+              });
+              vm.telCodes.push({
+                alias: null,
+                detail: phoneNoArray[0],
+                key: { codeType: "TEL", id: phoneNoArray[0], language: "ko" },
+                label: phoneNoArray[0],
+              });
+            }
+            // 국내 전화번호가 아닐 경우 처리용(카카오 회원가입 등..)
+
+            vm.searchAddress.order.mobile1 = buyer.mobile1;
+            vm.searchAddress.order.mobile2 = buyer.mobile2;
+            vm.searchAddress.order.mobile3 = buyer.mobile3;
+            vm.searchAddress.order.zipcode = buyer.zipcode;
+            if (buyer.newZipcode) {
+              vm.searchAddress.order.newZipcode = buyer.newZipcode;
+            } else {
+              vm.searchAddress.order.newZipcode = buyer.zipcode;
+            }
+
+            if (this.userDeliveryList && this.userDeliveryList.length > 0) {
+              let length = this.userDeliveryList.length;
+              let existDefault = false;
+              for (let i = 0; i < length; i++) {
+                if (vm.userDeliveryList[i].defaultFlag === "Y") {
+                  existDefault = true;
+                  break;
+                }
+              }
+              if (existDefault) {
+                vm.copyDeliveryInfoCopy("default-0", null);
+              } else {
+                vm.addressType = "copy";
+                let event = new Object();
+                event.target = new Object();
+                event.target.checked = true;
+                vm.copyDeliveryInfoCopy("copy-0", event);
+              }
+            } else {
+              // $("radio[name=addressSelect]").value = "copy";
+              vm.addressType = "copy";
+              let event = new Object();
+              event.target = new Object();
+              event.target.checked = true;
+              vm.copyDeliveryInfoCopy("copy-0", event);
+            }
+          },
+          getSnsInfo: function () {
+            vm.getPaymentItemList();
+            /*
+							vm.showLoading(true);
+							$s.api.getSnsInfo(
+								function (response) {
+									if (response.sns) {
+										vm.isSns = true;
+									}
+									vm.getPaymentItemList();
+								}
+								, function (error) {
+									// vm.showLoading(false);
+									// $s.alert(error.response.data.description, function () {
+									// 	//$('#op-alert').modal('hide');		// 알림창 닫기...
+									// 	$s.closeAlert();
+									// 	$s.redirect('/');
+									// });
+									vm.getPaymentItemList();
+								}
+							);
+							*/
+          },
+          copyDeliveryInfoCopy: function (param, event) {
+            var type = param.split("-")[0];
+            var index = param.split("-")[1];
+            //var receivers = vm.buy.receivers;
+            var searchAddress = vm.searchAddress.receivers[index];
+            var buyer = vm.buy.buyer;
+
+            if (type == "copy" && event.target.checked) {
+              //Vue.set(vm.searchAddress.receivers[index], "addressInfo", vm.searchAddress.order.addressInfo);
+              //Vue.set(vm.searchAddress.receivers[index], "mobile", vm.searchAddress.order.mobile);
+              Vue.set(vm.buy.receivers[index], "receiveName", buyer.userName);
+
+              if (vm.buy.isLogin) {
+                Vue.set(vm.buy.receivers[index], "receiveAddress", buyer.address);
+                Vue.set(vm.buy.receivers[index], "receiveAddressDetail", buyer.addressDetail);
+                Vue.set(vm.buy.receivers[index], "receiveSido", buyer.sido);
+                Vue.set(vm.buy.receivers[index], "receiveSigungu", buyer.sigungu);
+                Vue.set(vm.buy.receivers[index], "receiveEupmyeondong", buyer.eupmyeondong);
+                Vue.set(vm.buy.receivers[index], "receiveZipcode", buyer.zipcode);
+                if (buyer.newZipcode) {
+                  Vue.set(vm.buy.receivers[index], "receiveNewZipcode", buyer.newZipcode);
+                } else {
+                  Vue.set(vm.buy.receivers[index], "receiveNewZipcode", buyer.zipcode);
+                }
+                Vue.set(vm.buy.receivers[index], "receiveFullMobile", buyer.fullMobile);
+                Vue.set(vm.buy.receivers[index], "receiveFullPhone", buyer.fullPhone);
+                Vue.set(vm.buy.receivers[index], "receiveFullZipcode", buyer.fullZipcode);
+              }
+
+              Vue.set(vm.buy.receivers[index], "receiveMobile", buyer.mobile);
+              Vue.set(vm.buy.receivers[index], "receiveMobile1", buyer.mobile1);
+              Vue.set(vm.buy.receivers[index], "receiveMobile2", buyer.mobile2);
+              Vue.set(vm.buy.receivers[index], "receiveMobile3", buyer.mobile3);
+
+              vm.buy.receivers[index].receivePhone = buyer.phone;
+              vm.buy.receivers[index].receivePhone1 = buyer.phone1;
+              vm.buy.receivers[index].receivePhone2 = buyer.phone2;
+              vm.buy.receivers[index].receivePhone3 = buyer.phone3;
+
+              Vue.set(vm.buy.receivers[index], "receiveEmail", buyer.email);
+              Vue.set(vm.buy.receivers[index], "receiveEmail1", buyer.email1);
+              Vue.set(vm.buy.receivers[index], "receiveEmail2", buyer.email2);
+              Vue.set(vm.buy.receivers[index], "receiveEmail3", "0");
+            } else if (type == "default") {
+              //						var userDelivery = vm.userDeliveryList[0];
+              let userDelivery = null;
+              let length = vm.userDeliveryList.length;
+              for (let i = 0; i < length; i++) {
+                let delivery = vm.userDeliveryList[i];
+                if (delivery.defaultFlag == "Y") {
+                  userDelivery = delivery;
+                  break;
+                }
+              }
+              if (userDelivery != null && userDelivery != "") {
+                //Vue.set(vm.searchAddress.receivers[index], "addressInfo", '[' + userDelivery.newZipcode + '] ' + userDelivery.address);
+                //Vue.set(vm.searchAddress.receivers[index], "mobile", userDelivery.mobile1 + "-" + userDelivery.mobile2 + "-" + userDelivery.mobile3);
+                Vue.set(vm.buy.receivers[index], "receiveName", userDelivery.userName);
+                Vue.set(vm.buy.receivers[index], "receiveAddress", userDelivery.address);
+                Vue.set(vm.buy.receivers[index], "receiveAddressDetail", userDelivery.addressDetail);
+                Vue.set(vm.buy.receivers[index], "receiveSido", userDelivery.sido);
+                Vue.set(vm.buy.receivers[index], "receiveSigungu", userDelivery.sigungu);
+                Vue.set(vm.buy.receivers[index], "receiveEupmyeondong", userDelivery.eupmyeondong);
+                Vue.set(vm.buy.receivers[index], "receiveMobile", userDelivery.mobile);
+                Vue.set(vm.buy.receivers[index], "receiveMobile1", userDelivery.mobile1);
+                Vue.set(vm.buy.receivers[index], "receiveMobile2", userDelivery.mobile2);
+                Vue.set(vm.buy.receivers[index], "receiveMobile3", userDelivery.mobile3);
+                vm.buy.receivers[index].receivePhone = userDelivery.phone;
+                vm.buy.receivers[index].receivePhone1 = userDelivery.phone1;
+                vm.buy.receivers[index].receivePhone2 = userDelivery.phone2;
+                vm.buy.receivers[index].receivePhone3 = userDelivery.phone3;
+                Vue.set(vm.buy.receivers[index], "receiveZipcode", userDelivery.zipcode);
+                if (userDelivery.newZipcode) {
+                  Vue.set(vm.buy.receivers[index], "receiveNewZipcode", userDelivery.newZipcode);
+                } else {
+                  Vue.set(vm.buy.receivers[index], "receiveNewZipcode", userDelivery.zipcode);
+                }
+                Vue.set(vm.buy.receivers[index], "receiveFullMobile", userDelivery.fullMobile);
+                Vue.set(vm.buy.receivers[index], "receiveFullPhone", userDelivery.fullPhone);
+                Vue.set(vm.buy.receivers[index], "receiveFullZipcode", userDelivery.fullZipcode);
+
+                Vue.set(vm.buy.receivers[index], "receiveEmail", "");
+                Vue.set(vm.buy.receivers[index], "receiveEmail1", "");
+                Vue.set(vm.buy.receivers[index], "receiveEmail2", "");
+                Vue.set(vm.buy.receivers[index], "receiveEmail3", "0");
+              } else {
+                //Vue.set(vm.searchAddress.receivers[index], "addressInfo", '');
+                //Vue.set(vm.searchAddress.receivers[index], "mobile", '');
+                Vue.set(vm.buy.receivers[index], "receiveName", "");
+                Vue.set(vm.buy.receivers[index], "receiveAddress", "");
+                Vue.set(vm.buy.receivers[index], "receiveAddressDetail", "");
+                Vue.set(vm.buy.receivers[index], "receiveSido", "");
+                Vue.set(vm.buy.receivers[index], "receiveSigungu", "");
+                Vue.set(vm.buy.receivers[index], "receiveEupmyeondong", "");
+                Vue.set(vm.buy.receivers[index], "receiveMobile", "");
+                Vue.set(vm.buy.receivers[index], "receiveMobile1", "");
+                Vue.set(vm.buy.receivers[index], "receiveMobile2", "");
+                Vue.set(vm.buy.receivers[index], "receiveMobile3", "");
+                Vue.set(vm.buy.receivers[index], "receivePhone", "");
+                Vue.set(vm.buy.receivers[index], "receivePhone1", "");
+                Vue.set(vm.buy.receivers[index], "receivePhone2", "");
+                Vue.set(vm.buy.receivers[index], "receivePhone3", "");
+                Vue.set(vm.buy.receivers[index], "receiveZipcode", "");
+                Vue.set(vm.buy.receivers[index], "receiveNewZipcode", "");
+                Vue.set(vm.buy.receivers[index], "receiveFullMobile", "");
+                Vue.set(vm.buy.receivers[index], "receiveFullPhone", "");
+                Vue.set(vm.buy.receivers[index], "receiveFullZipcode", "");
+
+                vm.buy.receivers[index].receivePhone = "";
+                vm.buy.receivers[index].receivePhone1 = "";
+                vm.buy.receivers[index].receivePhone2 = "";
+                vm.buy.receivers[index].receivePhone3 = "";
+
+                Vue.set(vm.buy.receivers[index], "receiveEmail", "");
+                Vue.set(vm.buy.receivers[index], "receiveEmail1", "");
+                Vue.set(vm.buy.receivers[index], "receiveEmail2", "");
+                Vue.set(vm.buy.receivers[index], "receiveEmail3", "0");
+
+                $s.alert("기본 배송지 정보가 없습니다.", "deliveryListBtn");
+              }
+            } else if (type == "clear") {
+              //Vue.set(vm.searchAddress.receivers[index], "addressInfo", '');
+              //Vue.set(vm.searchAddress.receivers[index], "mobile", '');
+              Vue.set(vm.buy.receivers[index], "receiveName", "");
+              Vue.set(vm.buy.receivers[index], "receiveAddress", "");
+              Vue.set(vm.buy.receivers[index], "receiveAddressDetail", "");
+              Vue.set(vm.buy.receivers[index], "receiveSido", "");
+              Vue.set(vm.buy.receivers[index], "receiveSigungu", "");
+              Vue.set(vm.buy.receivers[index], "receiveEupmyeondong", "");
+              Vue.set(vm.buy.receivers[index], "receiveMobile", "");
+              Vue.set(vm.buy.receivers[index], "receiveMobile1", "");
+              Vue.set(vm.buy.receivers[index], "receiveMobile2", "");
+              Vue.set(vm.buy.receivers[index], "receiveMobile3", "");
+              Vue.set(vm.buy.receivers[index], "receivePhone", "");
+              Vue.set(vm.buy.receivers[index], "receivePhone1", "");
+              Vue.set(vm.buy.receivers[index], "receivePhone2", "");
+              Vue.set(vm.buy.receivers[index], "receivePhone3", "");
+              Vue.set(vm.buy.receivers[index], "receiveZipcode", "");
+              Vue.set(vm.buy.receivers[index], "receiveNewZipcode", "");
+              Vue.set(vm.buy.receivers[index], "receiveFullMobile", "");
+              Vue.set(vm.buy.receivers[index], "receiveFullPhone", "");
+              Vue.set(vm.buy.receivers[index], "receiveFullZipcode", "");
+
+              vm.buy.receivers[index].receivePhone = "";
+              vm.buy.receivers[index].receivePhone1 = "";
+              vm.buy.receivers[index].receivePhone2 = "";
+              vm.buy.receivers[index].receivePhone3 = "";
+
+              Vue.set(vm.buy.receivers[index], "receiveEmail", "");
+              Vue.set(vm.buy.receivers[index], "receiveEmail1", "");
+              Vue.set(vm.buy.receivers[index], "receiveEmail2", "");
+              Vue.set(vm.buy.receivers[index], "receiveEmail3", "0");
+            }
+            vm.setShippingAmount();
+          },
+          copyDeliveryInfoByList: function (userDelivery) {
+            let index = 0;
+            if (userDelivery) {
+              //Vue.set(vm.searchAddress.receivers[index], "addressInfo", '[' + userDelivery.newZipcode + '] ' + userDelivery.address);
+              //Vue.set(vm.searchAddress.receivers[index], "mobile", userDelivery.mobile1 + "-" + userDelivery.mobile2 + "-" + userDelivery.mobile3);
+              Vue.set(vm.buy.receivers[index], "receiveName", userDelivery.userName);
+              Vue.set(vm.buy.receivers[index], "receiveAddress", userDelivery.address);
+              Vue.set(vm.buy.receivers[index], "receiveAddressDetail", userDelivery.addressDetail);
+              Vue.set(vm.buy.receivers[index], "receiveSido", userDelivery.sido);
+              Vue.set(vm.buy.receivers[index], "receiveSigungu", userDelivery.sigungu);
+              Vue.set(vm.buy.receivers[index], "receiveEupmyeondong", userDelivery.eupmyeondong);
+              Vue.set(vm.buy.receivers[index], "receiveMobile", userDelivery.mobile);
+              Vue.set(vm.buy.receivers[index], "receiveMobile1", userDelivery.mobile1);
+              Vue.set(vm.buy.receivers[index], "receiveMobile2", userDelivery.mobile2);
+              Vue.set(vm.buy.receivers[index], "receiveMobile3", userDelivery.mobile3);
+              Vue.set(vm.buy.receivers[index], "receiveZipcode", userDelivery.zipcode);
+              if (userDelivery.newZipcode) {
+                Vue.set(vm.buy.receivers[index], "receiveNewZipcode", userDelivery.newZipcode);
+              } else {
+                Vue.set(vm.buy.receivers[index], "receiveNewZipcode", userDelivery.zipcode);
+              }
+              Vue.set(vm.buy.receivers[index], "receiveFullMobile", userDelivery.fullMobile);
+              Vue.set(vm.buy.receivers[index], "receiveFullPhone", userDelivery.fullPhone);
+              Vue.set(vm.buy.receivers[index], "receiveFullZipcode", userDelivery.fullZipcode);
+
+              vm.buy.receivers[index].receivePhone = userDelivery.phone;
+              vm.buy.receivers[index].receivePhone1 = userDelivery.phone1;
+              vm.buy.receivers[index].receivePhone2 = userDelivery.phone2;
+              vm.buy.receivers[index].receivePhone3 = userDelivery.phone3;
+
+              vm.addressType = "";
+
+              vm.setShippingAmount();
+
+              setTimeout(() => {
+                $("#deliveryListBtn").focus();
+              }, 100);
+            }
+          },
+          setShippingAmount: function () {
+            //배송비 계산전 초기화
+            this.order.buy.totalShippingAmount = 0;
+          },
+          openDaumPostcode: function (type, index) {
+            let searchAddress = vm.searchAddress;
+            let buyer = vm.buy.buyer;
+            let child = Vue.child("layout-address");
+
+            if (child != null) {
+              let closeFocusId = "";
+              if (type == "order") {
+                closeFocusId = "searchAddressBtn";
+              } else if (type == "receive") {
+                closeFocusId = "searchReceiveAddressBtn";
+              } else if (type == "addDelivery") {
+                closeFocusId = "searchAddressBtnModal";
+              }
+
+              child.openDaumAddress(function (response) {
+                let focusId = "";
+                if (type == "order") {
+                  searchAddress.order.zipcode = response.zipcode;
+                  searchAddress.order.newZipcode = response.newZipcode;
+                  searchAddress.order.address = response.roadAddress;
+
+                  searchAddress.order.sido = response.sido;
+                  searchAddress.order.sigungu = response.sigungu;
+                  searchAddress.order.eupmyeondong = response.eupmyeondong;
+
+                  buyer.zipcode = response.zipcode;
+                  buyer.newZipcode = response.newZipcode;
+                  buyer.address = response.roadAddress;
+                  buyer.sido = response.sido;
+                  buyer.sigungu = response.sigungu;
+                  buyer.eupmyeondong = response.eupmyeondong;
+
+                  focusId = "searchAddressBtn";
+                } else if (type == "receive") {
+                  index = 0;
+                  vm.buy.receivers[index].receiveAddress = response.roadAddress;
+                  vm.buy.receivers[index].receiveSido = response.sido;
+                  vm.buy.receivers[index].receiveSigungu = response.sigungu;
+                  vm.buy.receivers[index].receiveEupmyeondong = response.eupmyeondong;
+                  vm.buy.receivers[index].receiveZipcode = response.zipcode;
+                  vm.buy.receivers[index].receiveNewZipcode = response.newZipcode;
+
+                  vm.order.buy.receivers[index].zipcode = response.zipcode;
+
+                  focusId = "searchReceiveAddressBtn";
+                } else if (type == "addDelivery") {
+                  Vue.set(vm.addDeliveryInfo, "address", response.roadAddress);
+                  Vue.set(vm.addDeliveryInfo, "sido", response.sido);
+                  Vue.set(vm.addDeliveryInfo, "sigungu", response.sigungu);
+                  Vue.set(vm.addDeliveryInfo, "eupmyeondong", response.eupmyeondong);
+                  Vue.set(vm.addDeliveryInfo, "zipcode", response.zipcode);
+                  Vue.set(vm.addDeliveryInfo, "newZipcode", response.newZipcode);
+
+                  focusId = "searchAddressBtnModal";
+                }
+                //vm.setCheckoutStep($s.ga.const.CHECKOUT_INPUT_USER_STEP);
+                try {
+                  setTimeout(() => {
+                    $("#" + focusId).focus();
+                  }, 100);
+                } catch (e) {
+                  console.log = () => {};
+                }
+              }, closeFocusId);
+            }
+          },
+          closeFunction: function (closeFocusId) {
+            $("#" + closeFocusId).focus();
+          },
+          emailChange: function (type) {
+            let email3;
+            if (type == "receiver") {
+              email3 = vm.buy.receivers[0].receiveEmail3;
+              vm.receiverEmailReadOnly = false;
+              if (email3 != "0") {
+                Vue.set(vm.buy.receivers[0], "receiveEmail2", email3);
+                vm.receiverEmailReadOnly = true;
+              } else {
+                Vue.set(vm.buy.receivers[0], "receiveEmail2", "");
+              }
+            } else if ("order") {
+              email3 = vm.searchAddress.order.email3;
+              vm.orderEmailReadOnly = false;
+              if (email3 != "0") {
+                Vue.set(vm.searchAddress.order, "email2", email3);
+                vm.orderEmailReadOnly = true;
+              } else {
+                Vue.set(vm.searchAddress.order, "email2", "");
+              }
+            }
+          },
+          setBuyItems: function (givePointList) {
+            // 구매하려는 답례품 지자체별로 묶기
+            try {
+              if (!givePointList || givePointList.length == 0) {
+                /*$s.alert("포인트가 부족합니다.", function() {
+										history.back();
+									});
+									return;*/
+                givePointList = [];
+              }
+            } catch (e) {
+              let errorBoolean = true;
+              /*$s.alert("포인트가 부족합니다.", function() {
+									history.back();
+								});
+								return;*/
+              givePointList = [];
+            }
+            this.buyItems = [];
+            let items = this.buy.items;
+            let itemsLength = items.length;
+
+            let givePointLength = givePointList.length;
+
+            for (let i = 0; i < itemsLength; i++) {
+              let item = items[i];
+              let locgovCode = item.locgovCode;
+              if (!this.existLocgovCode(this.buyItems, locgovCode)) {
+                let locgovObj = { locgovCode: locgovCode, locgovNm: item.locgovNm, locgovItems: [], givePoint: 0, sumPrice: 0 };
+                loopGive: for (let j = 0; j < givePointLength; j++) {
+                  if (locgovCode == givePointList[j].cntrLocgovCode) {
+                    locgovObj.givePoint = givePointList[j].cntrBlcePoint;
+                    break loopGive;
+                  }
+                }
+                this.buyItems.push(locgovObj);
+              }
+            }
+
+            for (let i = 0; i < itemsLength; i++) {
+              this.pushLocgovItem(this.buyItems, items[i]);
+            }
+            let locgovItemLength = this.buyItems.length;
+
+            for (let i = 0; i < locgovItemLength; i++) {
+              let locgovItem = this.buyItems[i];
+              if (locgovItem && locgovItem.locgovItems) {
+                this.buyItems[i].sumPrice = this.getLocgovSumPrice(locgovItem.locgovItems);
+                /*if (locgovItem.givePoint < this.getLocgovSumPrice(locgovItem.locgovItems)) {
+										$s.alert(locgovItem.locgovNm + " 포인트가 부족합니다.", function() {
+											history.back();
+										});
+										return false;
+									}*/
+              }
+            }
+          },
+          existLocgovCode: function (array, locgovCode) {
+            if (!array) {
+              return false;
+            } else {
+              try {
+                let length = array.length;
+                for (let i = 0; i < length; i++) {
+                  if (array[i].locgovCode == locgovCode) {
+                    return true;
+                  }
+                }
+                return false;
+              } catch (e) {
+                return false;
+              }
+            }
+          },
+          pushLocgovItem: function (array, item) {
+            let length = array.length;
+            for (let i = 0; i < length; i++) {
+              if (array[i].locgovCode == item.locgovCode) {
+                array[i].locgovItems.push(item);
+                return;
+              }
+            }
+          },
+          getLocgovSumPrice: function (items) {
+            let length = items.length;
+            let sumPrice = 0;
+            for (let i = 0; i < length; i++) {
+              sumPrice += items[i].itemPrice.saleAmount;
+            }
+            return sumPrice;
+          },
+          getTotalItemPrice: function () {
+            try {
+              let totalItemPrice = 0;
+              let length = this.buyItems.length;
+              for (let i = 0; i < length; i++) {
+                totalItemPrice += this.buyItems[i].sumPrice;
+              }
+              return totalItemPrice;
+            } catch (e) {
+              let errorBoolean = true;
+              return 0;
+            }
+          },
+          saveNewDeliveryInfo: function (isModify) {
+            if (this.addDeliveryInfo.isDefault) {
+              this.addDeliveryInfo.defaultFlag = "Y";
+            } else {
+              this.addDeliveryInfo.defaultFlag = "N";
+            }
+            this.showLoading(true);
+            $s.api.saveShipping(
+              this.addDeliveryInfo,
+              function (saveShippingResponse) {
+                if (saveShippingResponse.status == "OK") {
+                  $s.api.getShipping(function (getShippingResponse) {
+                    vm.showLoading(false);
+                    vm.userDeliveryList = getShippingResponse.content;
+                    vm.addViewMode = "1";
+                    setTimeout(() => {
+                      if (isModify) {
+                        $("#modDeliveryInfo").focus();
+                      } else {
+                        $("#regDeliveryInfo").focus();
+                      }
+                    }, 100);
+                  }, vm.commError);
+                } else {
+                  vm.showLoading(false);
+                  $s.alert("배송지 저장에 실패했습니다.", "deliveryConfirmBtn");
+                }
+              },
+              vm.commError
+            );
+          },
+          setDefaultDelivery: function (deliveryId) {
+            if (deliveryId) {
+              $s.confirm(
+                "정보를 수정 하시겠습니까?",
+                function () {
+                  let param = { mode: "mod", userDeliveryId: deliveryId };
+                  vm.showLoading(true);
+                  $s.api.shippingListAction(
+                    param,
+                    function (shippingListActionResponse) {
+                      if (shippingListActionResponse.status == "OK") {
+                        $s.closeAlert();
+                        $s.api.getShipping(function (getShippingResponse) {
+                          vm.showLoading(false);
+                          vm.userDeliveryList = getShippingResponse.content;
+                          vm.addViewMode = "1";
+                          setTimeout(() => {
+                            $("#setDefaultDeliveryBtn").focus();
+                          }, 100);
+                        }, vm.commError);
+                      } else {
+                        vm.showLoading(false);
+                        $s.alert("기본배송지 변경에 실패했습니다.", "setDefaultDeliveryBtn");
+                      }
+                    },
+                    vm.commError
+                  );
+                },
+                "setDefaultDeliveryBtn"
+              );
+            } else {
+              vm.showLoading(false);
+              $s.alert("배송지를 선택해주세요.", "setDefaultDeliveryBtn");
+            }
+          },
+          setAddViewMode: function (mode, selectedData) {
+            if (selectedData) {
+              this.addDeliveryInfo = selectedData;
+            }
+            this.addViewMode = mode;
+          },
+          deliverySetTypeChange: function (event) {
+            this.copyDeliveryInfoCopy(this.addressType + "-0", event);
+          },
+		  preSubmit: function () {
+        if(vm.isAllMobileItem){
+          return vm.submit();
+        }
+        //도로명 주소로 재 확인
+          if (!vm.buy.receivers[0].receiveAddress && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("배송지 주소를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#searchReceiveAddressBtn").focus();
+              });
+              return false;
+          }
+          if (!vm.buy.receivers[0].receiveAddressDetail && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("배송지 상세주소를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#receiveAddressDetail").focus();
+              });
+              return false;
+          }
+          if (!this.isAgree) {
+              vm.showLoading(false);
+              $s.alert("구매에 동의해주시기 바랍니다.", function () {
+                $("#op-alert").modal("hide");
+                $("#agree").focus();
+              });
+              return false;
+          }
+
+          if ($s.config.domain == 'local') {				// 로컬
+            return vm.submit();
+          }
+
+          var jusoObj = {
+              bassAdres: vm.buy.receivers[0].receiveAddress,
+              rstJuso: vm.buy.receivers[0].receiveAddress,
+          };
+          //도로명 주소로 재 확인
+          donation.contry
+              .getJusoApi(jusoObj, 1)
+              .then(function (response) {
+                  if(response.zipNo !== undefined && response.zipNo !== null && response.zipNo != "" && response.zipNo != " " && response.zipNo.length > 1) {
+                    // 배송지 주소가 정상 조회되면 기존 submit 로직 동작
+                    vm.submit();
+                  } else {
+                    $s.alert("배송지 주소 조회에 실패하였습니다. 입력하신 주소를 확인해주세요.", function () {
+                      $("#op-alert").modal("hide");
+                      $("#receiveAddress").focus();
+                    });
+                    return false;
+                  }
+                })
+              .catch(function(msg) {
+                  $s.alert(msg, function () {
+                  $("#op-alert").modal("hide");
+                  $("#receiveAddress").focus();
+                });
+                return false;
+              })
+          },
+          submit: function () {
+            // 면세답례품이 포함되어 있으면 네이버페이 사용 못하게
+            /*if (this.includeTaxFreeItem) {
+								$s.alert('면세답례품 구매 시 네이버페이를 이용할 수 없습니다. 다른 결제수단을 선택해 주세요.');
+								return false;
+							}
+		*/
+
+            //if (vm.searchAddress.order.userName === null || vm.searchAddress.order.userName === '') {
+            if (!vm.searchAddress.order.userName) {
+              vm.showLoading(false);
+              $s.alert("주문자 이름이 없습니다.", function () {
+                $("#op-alert").modal("hide");
+                $("#userName").focus();
+              });
+              return false;
+            }
+
+            //if (vm.searchAddress.order.address === null || vm.searchAddress.order.address === '') {
+            /*if (!vm.searchAddress.order.address && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("주문자 주소를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#searchAddressBtn").focus();
+              });
+              return false;
+            }
+
+            //if (vm.searchAddress.order.zipCode === null || vm.searchAddress.order.zipCode === '') {
+            if (!vm.searchAddress.order.zipCode === null  && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("주문자 우편번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#searchAddressBtn").focus();
+              });
+              return false;
+            }
+
+            //if (vm.searchAddress.order.newZipCode === null || vm.searchAddress.order.newZipCode === '') {
+            if (!vm.searchAddress.order.newZipCode === null  && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("주문자 우편번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#searchAddressBtn").focus();
+              });
+              return false;
+            }
+
+            //if (vm.searchAddress.order.addressDetail === null || vm.searchAddress.order.addressDetail === '') {
+            if (!vm.searchAddress.order.addressDetail  && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("주문자 상세주소를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#addressDetail").focus();
+              });
+              return false;
+            }*/
+
+            //if (vm.searchAddress.order.mobile1 === null || vm.searchAddress.order.mobile1 === '') {
+            if (!vm.searchAddress.order.mobile1) {
+              vm.showLoading(false);
+              $s.alert("주문자 휴대폰 첫번째 번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#phoneCode").focus();
+              });
+              return false;
+            }
+
+            //if (vm.searchAddress.order.mobile2 === null || vm.searchAddress.order.mobile2 === '') {
+            if (!vm.searchAddress.order.mobile2) {
+              vm.showLoading(false);
+              $s.alert("주문자 휴대폰 두번째 번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#phoneMid").focus();
+              });
+              return false;
+            }
+
+            //if (vm.searchAddress.order.mobile3 === null || vm.searchAddress.order.mobile3 === '') {
+            if (!vm.searchAddress.order.mobile3) {
+              vm.showLoading(false);
+              $s.alert("주문자 휴대폰 세번째 번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#phoneLast").focus();
+              });
+              return false;
+            }
+
+            //if (vm.searchAddress.order.email1 === null || vm.searchAddress.order.email1 === '') {
+            if (!vm.searchAddress.order.email1) {
+              vm.showLoading(false);
+              $s.alert("주문자 이메일 주소를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#emailFirst").focus();
+              });
+              return false;
+            }
+
+            //if (vm.searchAddress.order.email2 === null || vm.searchAddress.order.email2 === '') {
+            if (!vm.searchAddress.order.email2) {
+              vm.showLoading(false);
+              $s.alert("주문자 이메일 주소를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#orderEmailAddress").focus();
+              });
+              return false;
+            }
+
+            //if (vm.buy.receivers[0].receiveName === null || vm.buy.receivers[0].receiveName === '') {
+            if (!vm.buy.receivers[0].receiveName) {
+              vm.showLoading(false);
+              $s.alert("배송지 받으시는분 이름을 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#receiveUserName").focus();
+              });
+              return false;
+            }
+
+            //if (vm.buy.receivers[0].receiveAddress === null || vm.buy.receivers[0].receiveAddress === '') {
+            /*if (!vm.buy.receivers[0].receiveAddress && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("배송지 주소를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#searchReceiveAddressBtn").focus();
+              });
+              return false;
+            }*/
+
+            //if (vm.buy.receivers[0].receiveZipcode === null || vm.buy.receivers[0].receiveZipcode === '') {
+            if (!vm.buy.receivers[0].receiveZipcode && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("배송지 우편번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#searchReceiveAddressBtn").focus();
+              });
+              return false;
+            }
+
+            //if (vm.buy.receivers[0].receiveNewZipcode === null || vm.buy.receivers[0].receiveNewZipcode === '') {
+            if (!vm.buy.receivers[0].receiveNewZipcode && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("배송지 우편번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#searchReceiveAddressBtn").focus();
+              });
+              return false;
+            }
+
+            //if (vm.buy.receivers[0].receiveAddressDetail === null || vm.buy.receivers[0].receiveAddressDetail === '') {
+            if (!vm.buy.receivers[0].receiveAddressDetail && !vm.isAllMobileItem) {
+              vm.showLoading(false);
+              $s.alert("배송지 상세주소를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#receiveAddressDetail").focus();
+              });
+              return false;
+            }
+
+            //if (vm.buy.receivers[0].receiveMobile1 === null || vm.buy.receivers[0].receiveMobile1 === '') {
+            if (!vm.buy.receivers[0].receiveMobile1) {
+              vm.showLoading(false);
+              $s.alert("배송지 휴대폰 첫번째 번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#receivePhoneCode").focus();
+              });
+              return false;
+            }
+
+            //if (vm.buy.receivers[0].receiveMobile2 === null || vm.buy.receivers[0].receiveMobile2 === '') {
+            if (!vm.buy.receivers[0].receiveMobile2) {
+              vm.showLoading(false);
+              $s.alert("배송지 휴대폰 두번째 번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#receivePhoneMid").focus();
+              });
+              return false;
+            }
+
+            //if (vm.buy.receivers[0].receiveMobile3 === null || vm.buy.receivers[0].receiveMobile3 === '') {
+            if (!vm.buy.receivers[0].receiveMobile3) {
+              vm.showLoading(false);
+              $s.alert("배송지 휴대폰 세번째 번호를 입력해주세요.", function () {
+                $("#op-alert").modal("hide");
+                $("#receivePhoneLast").focus();
+              });
+              return false;
+            }
+
+            if (!this.isAgree) {
+              vm.showLoading(false);
+              $s.alert("구매에 동의해주시기 바랍니다.", function () {
+                $("#op-alert").modal("hide");
+                $("#agree").focus();
+              });
+              return false;
+            }
+
+            vm.payTypeSelect(vm.payType);
+
+            var campaignCode = $s.core.getSession("campaign_code");
+            vm.buy.campaignCode = campaignCode;
+
+            vm.setPhoneMobile(0);
+
+            if (!vm.submitCheck) {
+              vm.setCheckoutStep($s.ga.const.CHECKOUT_CONFIRM_ORDER_STEP);
+
+              // 결제 진행 중 여부 한 번 더 체크 (포인트로만 결제 시 결제하기 버튼 연속으로 클릭하면 중복 결제되는 이슈 있음)
+              if (vm.submitCheck) {
+                $s.alert("결제가 진행중입니다.", "paymentBtn");
+                return false;
+              } else {
+                $s.confirm(
+                  "결제를 진행하시겠습니까?",
+                  function () {
+                    if (vm.submitCheck) {
+                      // 결제 진행 중
+                    } else {
+                      vm.submitCheck = true;
+                      vm.showLoading(true);
+                      $s.api.giveGoodsSavePay(
+                        vm.buy,
+                        function (response) {
+                          vm.showLoading(false);
+                          vm.submitCheck = false;
+                          if (response.errMsg) {
+                            $s.alert(response.errMsg, "paymentBtn");
+                            return;
+                          }
+                          $s.redirect("/order/step2.html?orderSequence=" + response.data.orderSequence + "&orderCode=" + response.data.orderCode);
+                        },
+                        function (error) {
+                          //$s.closeAlert();
+                          vm.showLoading(false);
+                          vm.submitCheck = false;
+                          $s.api.handleApiExeption(error);
+                        }
+                      );
+                    }
+                  },
+                  "paymentBtn"
+                );
+              }
+              //} else {
+              //	vm.showLoading(false);
+              //	return false;
+            }
+          },
+          setPhoneMobile: function (index) {
+            vm.setPhone("order", index);
+            vm.setPhone("receiver", index);
+
+            vm.setMobile("order", index);
+            vm.setMobile("receiver", index);
+
+            this.buy.buyer.fullPhone = this.buy.buyer.phone;
+            this.buy.buyer.fullMobile = this.buy.buyer.mobile;
+
+            this.buy.receivers[index].fullReceiveMobile = this.buy.receivers[index].receiveMobile;
+            this.buy.receivers[index].fullReceivePhone = this.buy.receivers[index].receivePhone;
+            this.buy.receivers[index].fullReceiveZipcode = this.buy.receivers[index].receiveNewZipcode;
+          },
+          setMobile: function (type, index) {
+            if (type == "order") {
+              this.buy.buyer.mobile = this.buy.buyer.mobile1 + "-" + this.buy.buyer.mobile2 + "-" + this.buy.buyer.mobile3;
+            } else {
+              this.buy.receivers[index].receiveMobile =
+                this.buy.receivers[index].receiveMobile1 +
+                "-" +
+                this.buy.receivers[index].receiveMobile2 +
+                "-" +
+                this.buy.receivers[index].receiveMobile3;
+            }
+          },
+          setPhone: function (type, index) {
+            if (type == "order") {
+              var phone = this.searchAddress.order.phone.toString();
+              var phone3 = phone.substring(phone.length - 4, phone.length);
+              var phone2 = "";
+              var phone1 = "";
+
+              if (phone.length == 7) {
+                phone2 = phone.substring(0, 3);
+              } else {
+                phone2 = phone.substring(0, 4);
+              }
+
+              if (this.buy.buyer.phone1 !== null) {
+                phone1 = this.buy.buyer.phone1;
+              }
+
+              this.buy.buyer.phone1 = this.checkPhoneNum(phone1);
+              this.buy.buyer.phone2 = this.checkPhoneNum(phone2);
+              this.buy.buyer.phone3 = this.checkPhoneNum(phone3);
+              this.buy.buyer.phone = phone1 + "-" + phone2 + "-" + phone3;
+            } else {
+              // var phone = this.searchAddress.receivers[index].phone.toString();
+              // var phone3 = phone.substring(phone.length-4, phone.length);
+              // var phone2 = '';
+              // var phone1 = '';
+
+              // if (phone.length == 7) {
+              // 	phone2 = phone.substring(0,3);
+              // } else {
+              // 	phone2 = phone.substring(0,4);
+              // }
+
+              // if (this.buy.receivers[index].receivePhone1 !== null) {
+              // 	phone1 = this.buy.receivers[index].receivePhone1;
+              // }
+
+              // this.buy.receivers[index].receivePhone1 = phone1;
+              // this.buy.receivers[index].receivePhone2 = phone2;
+              // this.buy.receivers[index].receivePhone3 = phone3;
+              // this.buy.receivers[index].receivePhone = phone1 + '-' + phone2 + '-' + phone3;
+
+              this.buy.receivers[index].receivePhone1 = this.checkPhoneNum(this.buy.receivers[index].receivePhone1);
+              this.buy.receivers[index].receivePhone2 = this.checkPhoneNum(this.buy.receivers[index].receivePhone2);
+              this.buy.receivers[index].receivePhone3 = this.checkPhoneNum(this.buy.receivers[index].receivePhone3);
+
+              this.buy.receivers[index].receivePhone =
+                this.buy.receivers[index].receivePhone1 +
+                "-" +
+                this.buy.receivers[index].receivePhone2 +
+                "-" +
+                this.buy.receivers[index].receivePhone3;
+            }
+          },
+          goBack: function () {
+            history.back();
+          },
+          commError: function (error) {
+            vm.showLoading(false);
+            $s.api.handleApiExeption(error, "contents");
+          },
+          changeNoteInput: function (e, length) {
+            //let txt = e.target.value;
+            let txtLength = e.target.value.length;
+            // if (txtLength > length) {
+            // 	this.noteLength = length;
+            // } else {
+            this.noteLength = txtLength;
+            // }
+          },
+          checkPhoneNum: function (phoneNum) {
+            try {
+              if (isNaN(Number(phoneNum))) {
+                return "";
+              } else {
+                return phoneNum;
+              }
+            } catch (e) {
+              let errorBoolean = true;
+              return "";
+            }
+          },
+          selectLclgvPc: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+            this.$refs.layoutHeaderSearchPc.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+            this.closeMapSelect();
+          },
+          selectLclgvMo: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+            this.$refs.layoutHeaderSearchMobile.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+            this.closeMapSelect();
+          },
+          showMapSelect: function () {
+            this.$refs.getParentModal.setAttribute("style", "display: block;top: 0;");
+          },
+          closeMapSelect: function () {
+            this.$refs.getParentModal.removeAttribute("style");
+          },
+          onPageShow: function () {
+            this.loadingMounted();
+          },
+        },
+        // computed: {
+        //   isAllMobileItem: {
+        //     get: function () {
+        //       return this.itemCnt === this.mobileItemCnt && this.itemCnt > 0;
+        //     },
+        //   },
+        // },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init({ loginPage: true });
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <!-- 기부금 지출내역 popup -->
+    <div class="popup_wrap">
+        <div id="pop_header">
+            <h1 class="popup_title">기부금 지출내역</h1>
+			<a href="javascript:self.close();" class="btn_close"><img src="../../content/opmanager/images/btn/btn_close.png" alt="닫기"></a>
+		</div>
+
+        <div class="popup_contents">
+            <div>
+                <div class="board_write">
+                    <table class="board_write_table" summary="">
+                        <colgroup>
+                            <col style="width:220px;">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>지출일자</td>
+                                <td>
+                                    <div>
+                                        <span class="datepicker">
+                                            <input id="searchStartDate" name="searchStartDate" title=""
+                                                class="datepicker hasDatepicker" type="text" value="" maxlength="8"
+                                                autocomplete="off">
+                                            <button type="button" class="ui-datepicker-trigger">
+                                                <span class="icon_calendar">날짜 선택</span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>사업명</td>
+                                <td>
+                                    <div>
+                                        <input id="" name="" title="" class="input_txt required _filter wd-500" type="text">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>지출사업목적</td>
+                                <td>
+                                    <div class="flex_box gap-08 item-center">
+                                        <select id="" name="" title="지출사업목적" class="wd-500">
+                                            <option value="">선택</option>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>사용금액</td>
+                                <td>
+                                    <div class="flex_box gap-08 item-center">
+                                        <input id="" name="" title="" class="input_txt required _filter wd-500" type="text">
+                                        <span class="wave">원</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label"><span class="required_mark">*</span>사용내용</td>
+                                <td>
+                                    <div>
+                                        <span class="placeholder_wrap">
+                                            <span class="placeholder">placeholder</span>
+                                            <textarea id="comments" name="comments" cols="30" rows="10" maxlength="140" class="required _filter wd-500" title="사용내용"></textarea>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">비고</td>
+                                <td>
+                                    <div>
+                                        <input id="" name="" title="" class="input_txt required _filter wd-500" type="text">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">증빙서류</td>
+                                <td>
+                                    <div class="flex_box item-center">
+                                        <input type="file" name="" class="full input_file" title="이미지" multiple="multiple" accept="image/png, image/jpeg, image/gif" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="popup_btns">
+                    <div class="btn_all btn_center">
+                        <div class="btn_left gap-08">
+                            <button type="button" class="btn btn-active">등록</button>
+                            <button type="button" class="btn btn-default">취소</button>
+                        </div>
+                    </div>
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- // 기부금 지출내역 popup -->
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

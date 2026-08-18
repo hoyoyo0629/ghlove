@@ -1,0 +1,45 @@
+@charset "utf-8";
+
+.pc_img{display:block;}
+.mobile_img{display:none;}
+#header.newsletter .main-header .container {overflow-x: scroll;scrollbar-width:none;scrollbar-height:none}
+/*#header.newsletter .logo{width:100%;}*/
+#header.newsletter .logo {min-width: 180px;width: 40%;}
+#header.newsletter .logo img{height:35px;}
+#header.newsletter .logo a{display:block;text-align:center;}
+
+.news_kv{position:relative;background-color:#fff7af;}
+.news_kv .kv{position:relative;left:50%;margin-left:-640px;overflow:hidden;}
+.news_kv .kv_img_cover{display:block;}
+.news_kv .news_quick_btn{position:absolute;top:98px;left:50%;margin-left:37px;}
+.news_kv .news_quick_btn .center{max-width:340px;width:100%;}
+.news_kv .news_quick_btn .center .de-img{border-bottom-left-radius:22px;border-bottom-right-radius:22px;border-top-right-radius:22px;box-shadow:1px 1px 20px 1px #80808075;}
+/* .news_kv .news_quick_btn .center .de-img.offline{background:#08af30;} */
+/* .news_kv .news_quick_btn .center .de-img.online{background-color:#fff;} */
+.news_kv .news_quick_btn .center .de-img:last-child{margin-top:17px;}
+.news_kv .selectBox{width:238px;height:40px;position:absolute;top:70%;left:50%;margin-left:-391px;}
+.news_kv .selectBox select{border:1px solid #919294;font-size:20px;letter-spacing:-1px;background-image:url('/static/images/news/icon_select.png');padding:7px 19px;background-position-x:206px;background-size:24px 24px;} 
+.news_main_share .top-banner{background-color:#fb802e;}
+.news_main_share .top-banner .center{background-image:url('/static/images/news/share_btn.png');width:712px;}
+.news_main_share .top-banner span.text{font-weight:lighter;}
+
+@media screen and (max-width:768px) {
+    .pc_img{display:none;}
+    .mobile_img{display:block;}
+    #header.newsletter .logo img{height:24px;}
+    .news_kv_inner{position:relative;overflow:hidden;}
+    .news_kv .kv{left:unset;margin-left:0;}
+    .news_kv .kv_img_cover img{width:100%;}
+    .news_kv .selectBox{margin-left:0;transform:translateX(-50%);top:7.5%;width:48%;height:auto;}
+    .news_kv .selectBox select{font-size:15px;background-position-x:95%;padding:3.5% 5% 4.5%;height:auto;}
+    .news_main_share .top-banner span.text{display:none;}
+    .news_main_share .top-banner .center{width:80%;padding:7% 6% 4% 0;}
+    .news_main_share .top-banner .text_box{padding-left:0;}
+    .news_quick_btn.quick_donation_guid .center a.online{border:none;}
+    .news_quick_btn.quick_donation_guid .center a.offline{background:#08AF30;padding:0;}
+
+    .news_kv .news_quick_btn{position:unset;margin-left:0;padding:0 4% 10%;background:none;margin-top:-34%;}
+    .news_kv .news_quick_btn .center{max-width:unset;}
+    .news_kv section.quick_donation_guid .center a img{height:100%;}
+    .news_kv section.quick_donation_guid .center a.online{background-color:var(--white);padding:0;}
+}

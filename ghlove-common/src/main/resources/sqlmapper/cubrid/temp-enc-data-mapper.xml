@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.disposable.TempDataMapper">
+	
+	
+	<insert id="insertTempData" parameterType="saleson.shop.disposable.domain.TempData">
+	
+			/* saleson.shop.disposable.TempEncDataMapper.insertTempData  임시 암호화 정보 저장 */
+			INSERT INTO G_TEMP_ENC_DATA
+			(
+				DATA_ID
+				, ENC_DATA
+			)
+			VALUE
+			(
+				#{dataId}
+				, CRYPTO_ENC('normal', #{encData}, '')
+			)
+	
+	</insert>
+
+
+	
+	
+	<delete id="deleteTempDataByDataId" parameterType="saleson.shop.disposable.domain.TempData">
+	
+			/* saleson.shop.disposable.TempEncDataMapper.deleteTempDataByDataId  아이디로 임시 암호화 정보 삭제 */
+			DELETE G_TEMP_ENC_DATA
+			WHERE DATA_ID = #{dataId}
+	
+	</delete>
+	
+	
+	
+	<delete id="deleteTempData">
+	
+			/* saleson.shop.disposable.TempEncDataMapper.deleteTempData  임시 암호화 정보 삭제 */
+			DELETE G_TEMP_ENC_DATA
+			WHERE 1=1
+			AND REG_DT <![CDATA[ < ]]> ADDDATE(SYS_DATETIME, INTERVAL -1 MINUTE)
+	
+	</delete>
+
+
+	<select id="selectTempData" parameterType="saleson.shop.disposable.domain.TempData" resultType="saleson.shop.disposable.domain.TempData">
+	
+			/* saleson.shop.disposable.TempEncDataMapper.selectTempData  임시 암호화 정보 조회 */
+			SELECT
+				DATA_ID
+				, CRYPTO_DEC('normal', ENC_DATA, '', 0) AS ENC_DATA
+				, REG_DT
+			FROM G_TEMP_ENC_DATA
+			WHERE 1=1
+			AND REG_DT >= ADDDATE(SYS_DATETIME, INTERVAL -1 MINUTE)
+			AND DATA_ID = #{dataId}
+	
+	</select>
+
+
+	<select id="selectTempDataCnt" parameterType="String" resultType="int">
+	
+			/* saleson.shop.disposable.TempEncDataMapper.selectTempDataCnt  임시 암호화 정보 존재 여부 조회 */
+			SELECT
+				COUNT(*)
+			FROM G_TEMP_ENC_DATA
+			WHERE 1=1
+			AND DATA_ID = #{dataId}
+	
+	</select>
+
+</mapper>

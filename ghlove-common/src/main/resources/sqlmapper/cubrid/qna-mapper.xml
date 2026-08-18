@@ -1,0 +1,1827 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.qna.QnaMapper">
+
+	<resultMap id="QnaResult" type="saleson.shop.qna.domain.Qna">
+		<result property="qnaId" column="QNA_ID" />
+		<result property="qnaGroup" column="QNA_GROUP" />
+		<result property="qnaType" column="QNA_TYPE" />
+		<result property="subject" column="SUBJECT" />
+		<result property="question" column="QUESTION" />
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="sellerId" column="SELLER_ID" />
+		<result property="sellerName" column="SELLER_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="itemId" column="ITEM_ID" />
+		<result property="orderCode" column="ORDER_CODE" />
+		<result property="answerCount" column="ANSWER_COUNT" />
+		<result property="secretFlag" column="SECRET_FLAG" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="qnaImage" column="QNA_IMAGE" />
+		<result property="hits" column="HITS" />
+	</resultMap>
+
+	<resultMap id="QnaAnswerResult" type="saleson.shop.qna.domain.QnaAnswer">
+		<result property="qnaAnswerId" column="QNA_ANSWER_ID" />
+		<result property="qnaId" column="QNA_ID" />
+		<result property="answer" column="ANSWER" />
+		<result property="userId" column="USER_ID" />
+		<result property="title" column="TITLE" />
+		<result property="sendSmsFlag" column="SEND_SMS_FLAG" />
+		<result property="sendMailFlag" column="SEND_MAIL_FLAG" />
+		<result property="answerDate" column="ANSWER_DATE" />
+		<result property="userNm" column="USER_NM" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="roleNm" column="ROLE_NM" />
+		<result property="answerLoginId" column="ANSWER_LOGIN_ID" />
+		<result property="dataStatusCode" column="DATA_STATUS_CODE" />
+	</resultMap>
+
+	<resultMap id="QnaAndAnswerResult" type="saleson.shop.qna.domain.Qna" extends="QnaResult">
+		<result property="displayFlag" column="DISPLAY_FLAG" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="itemImage" column="ITEM_IMAGE" />
+		<result property="itemUserCode" column="ITEM_USER_CODE" />
+		<result property="sellerCompanyName" column="SELLER_COMPANY_NAME" />
+		<result property="locgovName" column="LOCGOV_NAME" />
+		<result property="rownum" column="ROWNUM" />
+		<collection property="qnaAnswer" resultMap="QnaAnswerResult" />
+	</resultMap>
+
+	<sql id="whereFrontQna">
+		<where>
+			<if test="query != null and query != ''">
+				<if test="where == 'SUBJECT'">
+					AND A.SUBJECT LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'CONTENT'">
+					AND A.CONTENT LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'GROUP'">
+					AND A.QNA_GROUP_NM LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'USER_NAME'">
+					AND CASE WHEN A.QNA_DETAIL_TYPE = 'A' THEN '관리자' ELSE A.USER_NAME END LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+				</if>
+				<if test="where == 'ORG_FILE_NAME'">
+					AND (
+						A.QNA_ID IN (SELECT QNA_ID FROM OP_QNA_FILE WHERE ORG_FILE_NAME LIKE CONCAT('%', #{query}, '%')) AND IFNULL(A.QNA_ANSWER_ID, 0) = 0
+						OR A.QNA_ANSWER_ID IN (SELECT QNA_ANSWER_ID FROM OP_QNA_ANSWER_FILE WHERE ORG_FILE_NAME LIKE CONCAT('%', #{query}, '%'))
+					)
+				</if>
+			</if>
+			<if test='searchStartDate != null and searchStartDate != ""'>
+				AND A.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+			</if>
+
+			<if test='searchEndDate != null and searchEndDate != ""'>
+				AND A.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+			</if>
+		</where>
+	</sql>
+
+
+
+	<insert id="insertQna" parameterType="saleson.shop.qna.domain.Qna">
+		/* saleson.shop.qna.QnaMapper.insertQna */
+		INSERT INTO OP_QNA (
+			QNA_ID,
+			QNA_GROUP,
+			QNA_TYPE,
+			SUBJECT,
+			QUESTION,
+			USER_ID,
+			USER_NAME,
+			EMAIL,
+			ITEM_ID,
+			SELLER_ID,
+			ORDER_CODE,
+			ANSWER_COUNT,
+			SECRET_FLAG,
+			DISPLAY_FLAG,
+			CREATED_DATE,
+			DATA_STATUS_CODE,
+			QNA_IMAGE,
+			USE_YN,
+			HITS
+		) VALUES (
+			#{qnaId},
+			#{qnaGroup},
+			#{qnaType},
+			#{subject},
+			#{question},
+			#{userId},
+			CRYPTO_ENC('normal', #{userName},''),
+			CRYPTO_ENC('normal', #{email},''),
+			#{itemId},
+			#{sellerId},
+			#{orderCode},
+			#{answerCount},
+			#{secretFlag},
+			'Y',
+			<include refid="CommonMapper.datetime"/>,
+			'0',
+			#{qnaImage},
+			'Y',
+			0
+		)
+	</insert>
+
+	<update id="updatesQna" parameterType="saleson.shop.qna.domain.Qna">
+		/* saleson.shop.qna.QnaMapper.updatesQna */
+		UPDATE OP_QNA SET
+			QNA_TYPE = #{qnaType},
+			SUBJECT = #{subject},
+			DISPLAY_FLAG = "Y"
+		WHERE QNA_ID = #{qnaId}
+	</update>
+
+	<delete id="deleteQna" parameterType="saleson.shop.qna.domain.Qna">
+		/* saleson.shop.qna.QnaMapper.deleteQna */
+		UPDATE OP_QNA
+		SET
+			DATA_STATUS_CODE = '1'
+		WHERE QNA_ID = #{qnaId}
+	</delete>
+
+	<delete id="deleteQnaAnswer" parameterType="saleson.shop.qna.domain.QnaAnswer">
+		/* saleson.shop.qna.QnaMapper.deleteQnaAnswer */
+		<!-- UPDATE OP_QNA_ANSWER
+		SET
+			DATA_STATUS_CODE = '1'
+		WHERE QNA_ANSWER_ID = #{qnaAnswerId} -->
+		DELETE FROM OP_QNA_ANSWER
+		WHERE QNA_ANSWER_ID = #{qnaAnswerId}
+	</delete>
+
+	<insert id="insertQnaAnswer" parameterType="saleson.shop.qna.domain.QnaAnswer">
+		/* saleson.shop.qna.QnaMapper.insertQnaAnswer */
+		INSERT INTO OP_QNA_ANSWER (QNA_ANSWER_ID, QNA_ID, ANSWER, USER_ID, TITLE, SEND_SMS_FLAG, SEND_MAIL_FLAG, ANSWER_DATE, DATA_STATUS_CODE)
+		VALUES (#{qnaAnswerId}, #{qnaId}, #{answer}, #{userId}, #{title}, #{sendSmsFlag}, #{sendMailFlag}, <include refid="CommonMapper.datetime"/>, '0')
+	</insert>
+
+	<update id="updateQnaAnswer" parameterType="saleson.shop.qna.domain.QnaAnswer" >
+		/* saleson.shop.qna.QnaMapper.updateQnaAnswer */
+		UPDATE OP_QNA_ANSWER SET
+			ANSWER = #{answer},
+			TITLE = #{title},
+			SEND_SMS_FLAG = #{sendSmsFlag},
+			SEND_MAIL_FLAG = #{sendMailFlag},
+			ANSWER_DATE = <include refid="CommonMapper.datetime"/>,
+			USER_ID = #{userId}
+		WHERE
+			QNA_ANSWER_ID = #{qnaAnswerId}
+	</update>
+
+	<!-- 문의사항 QNA -->
+	<sql id="whereQna">
+		<where>
+			AND Q.DATA_STATUS_CODE = '0'
+			AND Q.DISPLAY_FLAG = 'Y'
+
+			<if test='qnaGroup != null and qnaGroup != ""'>
+				AND Q.QNA_GROUP = #{qnaGroup}
+			</if>
+
+			<if test='qnaType != null and qnaType != ""'>
+				AND Q.QNA_TYPE = #{qnaType}
+			</if>
+
+			<if test='itemId > 0'>
+				AND Q.ITEM_ID = #{itemId}
+			</if>
+
+			<if test='userId != null and userId != ""'>
+				AND Q.USER_ID = #{userId}
+			</if>
+			<if test='searchStartDate != null and searchStartDate != ""'>
+				AND Q.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+			</if>
+
+			<if test='searchEndDate != null and searchEndDate != ""'>
+				AND Q.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+			</if>
+
+			<if test='sellerId > 0'>
+				AND Q.SELLER_ID = #{sellerId}
+			</if>
+
+			<if test="answerCount == 1">
+				<!-- AND Q.ANSWER_COUNT > 0 -->
+				AND (
+					SELECT COUNT(1) FROM OP_QNA_ANSWER WHERE QNA_ID = Q.QNA_ID
+				) <![CDATA[ > ]]> 0
+			</if>
+			<if test="answerCount == 2">
+				<!-- AND Q.ANSWER_COUNT = 0 -->
+				AND (
+					SELECT COUNT(1) FROM OP_QNA_ANSWER WHERE QNA_ID = Q.QNA_ID
+				) = 0
+			</if>
+
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "USER_NAME"'>
+						AND Q.USER_NAME = (SELECT crypto_enc('normal', #{query},''))
+			    		<!-- AND CRYPTO_DEC('normal', Q.USER_NAME, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+					</when>
+					<when test='where == "LOGIN_ID"'>
+						AND LOGIN_ID LIKE CONCAT('%', #{query} , '%')
+			    		<!-- AND CRYPTO_DEC('normal', LOGIN_ID, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+					</when>
+					<when test='where == "EMAIL"'>
+						AND Q.EMAIL = (SELECT crypto_enc('normal', #{query},''))
+			    		<!-- AND CRYPTO_DEC('normal', Q.EMAIL, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+					</when>
+					<when test='where == "SUBJECT"'>
+						AND Q.SUBJECT LIKE CONCAT('%', #{query} ,  '%')
+					</when>
+					<when test='where == "QUESTION"'>
+						AND Q.QUESTION LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "GROUP"'>
+						AND C.LABEL LIKE CONCAT('%', #{query} , '%')
+					</when>
+
+				</choose>
+			</if>
+
+			<if test="displayFlag != null and displayFlag != ''">
+				AND Q.DISPLAY_FLAG = #{displayFlag}
+			</if>
+
+			<if test="useYn != null and useYn != ''">
+				AND Q.USE_YN = #{useYn}
+			</if>
+
+		</where>
+	</sql>
+
+	<select id="getQnaListByParam" parameterType="saleson.shop.qna.support.QnaParam" resultMap="QnaAndAnswerResult">
+		/* saleson.shop.qna.QnaMapper.getQnaListByParam */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+			Q.QNA_ID,
+			Q.QNA_GROUP,
+			Q.QNA_TYPE,
+			Q.SUBJECT,
+			Q.QUESTION,
+			Q.USER_ID,
+			Q.SELLER_ID,
+			Q.ITEM_ID,
+			Q.ORDER_CODE,
+			Q.ANSWER_COUNT,
+			Q.SECRET_FLAG,
+			Q.DISPLAY_FLAG,
+			Q.CREATED_DATE,
+			Q.DATA_STATUS_CODE,
+			Q.QNA_IMAGE,
+			Q.USE_YN,
+			QA.*,
+			I.ITEM_NAME,
+			I.ITEM_USER_CODE,
+			I.ITEM_IMAGE,
+			CRYPTO_DEC('normal', S.SELLER_NAME, '', 0) AS SELLER_NAME,
+			S.COMPANY_NAME AS SELLER_COMPANY_NAME,
+			(
+				SELECT
+					CASE
+						WHEN LOCGOV.LOCGOV_CODE = LOCGOV.UPPER_LOCGOV_CODE
+							THEN LOCGOV.UPPER_LOCGOV_NM
+						ELSE
+							CONCAT(LOCGOV.UPPER_LOCGOV_NM, ' ', LOCGOV.LOCGOV_NM)
+						END
+				FROM G_LOCGOV LOCGOV
+				WHERE LOCGOV.LOCGOV_CODE = S.LOCGOV_CODE
+			) AS LOCGOV_NAME,
+			ROWNUM,
+			CRYPTO_DEC('normal',Q.LOGIN_ID, '', 0) as LOGIN_ID,
+			CRYPTO_DEC('normal',Q.USER_NAME, '', 0) as USER_NAME,
+			CRYPTO_DEC('normal',Q.EMAIL, '', 0) as EMAIL,
+			CASE WHEN (SELECT COUNT(1) FROM OP_SELLER_USER OSU WHERE OSU.USER_ID = QA.USER_ID) = 0 AND QA.USER_ID IS NOT NULL
+				THEN 'ADMIN'
+				ELSE NULL
+				END AS ROLE_NM
+		FROM (
+			<!-- <include refid="CommonMapper.paginationHeader" /> -->
+				SELECT
+					<!-- Q.*,
+					U.LOGIN_ID -->
+					Q.QNA_ID,
+					Q.QNA_GROUP,
+					Q.QNA_TYPE,
+					Q.SUBJECT,
+					Q.QUESTION,
+					Q.USER_ID,
+					Q.SELLER_ID,
+					Q.ITEM_ID,
+					Q.ORDER_CODE,
+					Q.ANSWER_COUNT,
+					Q.SECRET_FLAG,
+					Q.DISPLAY_FLAG,
+					Q.CREATED_DATE,
+					Q.DATA_STATUS_CODE,
+					Q.QNA_IMAGE,
+					Q.USE_YN,
+			    	U.LOGIN_ID,
+			    	Q.USER_NAME,
+			    	Q.EMAIL
+				FROM OP_QNA Q
+					LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9'
+					LEFT JOIN OP_COMMON_CODE C ON C.ID = Q.QNA_GROUP AND C.CODE_TYPE = 'QNA_GROUPS' AND C.USE_YN = 'Y'
+				WHERE
+					Q.DATA_STATUS_CODE = '0'
+					AND Q.DISPLAY_FLAG = 'Y'
+
+					<if test='qnaGroup != null and qnaGroup != ""'>
+						AND Q.QNA_GROUP = #{qnaGroup}
+					</if>
+
+					<if test='qnaType != null and qnaType != ""'>
+						AND Q.QNA_TYPE = #{qnaType}
+					</if>
+
+					<if test='itemId > 0'>
+						AND Q.ITEM_ID = #{itemId}
+					</if>
+
+					<if test='userId != null and userId != ""'>
+						AND Q.USER_ID = #{userId}
+					</if>
+					<if test='searchStartDate != null and searchStartDate != ""'>
+						AND Q.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+					</if>
+
+					<if test='searchEndDate != null and searchEndDate != ""'>
+						AND Q.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+					</if>
+
+					<if test='sellerId > 0'>
+						AND Q.SELLER_ID = #{sellerId}
+					</if>
+
+					<if test='qnaAnswerCode != null'>
+						<choose>
+							<when test='qnaAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+
+					<if test="answerCount == 1">
+						<!-- AND Q.ANSWER_COUNT > 0 -->
+						AND (
+							SELECT COUNT(1) FROM OP_QNA_ANSWER WHERE QNA_ID = Q.QNA_ID
+						) <![CDATA[ > ]]> 0
+					</if>
+					<if test="answerCount == 2">
+						<!-- AND Q.ANSWER_COUNT = 0 -->
+						AND (
+							SELECT COUNT(1) FROM OP_QNA_ANSWER WHERE QNA_ID = Q.QNA_ID
+						) = 0
+					</if>
+
+					<if test='query != null and query != ""'>
+						<choose>
+							<when test='where == "USER_NAME"'>
+								AND Q.USER_NAME = (SELECT crypto_enc('normal', #{query},''))
+					    		<!-- AND CRYPTO_DEC('normal', Q.USER_NAME, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+							</when>
+							<when test='where == "LOGIN_ID"'>
+								<!-- AND U.LOGIN_ID LIKE CONCAT('%', #{query} , '%') -->
+								AND U.LOGIN_ID LIKE CONCAT('%', crypto_enc('normal', #{query}, '') , '%')
+			    				<!-- AND CRYPTO_DEC('normal', U.LOGIN_ID, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+							</when>
+							<when test='where == "EMAIL"'>
+								AND Q.EMAIL = (SELECT crypto_enc('normal', #{query},''))
+					    		<!-- AND CRYPTO_DEC('normal', Q.EMAIL, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+							</when>
+							<when test='where == "SUBJECT"'>
+								AND Q.SUBJECT LIKE CONCAT('%', #{query} ,  '%')
+							</when>
+							<when test='where == "QUESTION"'>
+								AND Q.QUESTION LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test='where == "GROUP"'>
+								AND C.LABEL LIKE CONCAT('%', #{query} , '%')
+							</when>
+
+						</choose>
+					</if>
+
+					<if test="displayFlag != null and displayFlag != ''">
+						AND Q.DISPLAY_FLAG = #{displayFlag}
+					</if>
+
+					<if test="useYn != null and useYn != ''">
+						AND Q.USE_YN = #{useYn}
+					</if>
+
+				ORDER BY Q.CREATED_DATE DESC
+			<!-- <include refid="CommonMapper.paginationFooter" /> -->
+		) Q
+		LEFT JOIN OP_QNA_ANSWER QA ON Q.QNA_ID = QA.QNA_ID
+		LEFT JOIN OP_ITEM I ON Q.ITEM_ID = I.ITEM_ID
+		LEFT JOIN OP_SELLER S ON S.SELLER_ID = Q.SELLER_ID
+		<!-- 상품Q&A 상품명으로 검색 2017-04-26 yulsun.yoo -->
+		<where>
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "ITEM_NAME"'>
+						AND I.ITEM_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "SUBJECT"'>
+						AND Q.SUBJECT LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "ITEM_CODE"'>
+						AND I.ITEM_CODE LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "ITEM_USER_CODE"'>
+						AND I.ITEM_USER_CODE LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "COMPANY_NAME"'>
+						AND S.COMPANY_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+				</choose>
+			</if>
+			<choose>
+				<when test="sigungu != null and sigungu != ''">
+					AND S.LOCGOV_CODE = #{sigungu}
+				</when>
+				<otherwise>
+					<if test="sido != null and sido != ''">
+						AND S.LOCGOV_CODE IN (
+							SELECT
+								LOCGOV.LOCGOV_CODE
+							FROM G_LOCGOV LOCGOV
+							WHERE LOCGOV.UPPER_LOCGOV_CODE = #{sido}
+						)
+					</if>
+				</otherwise>
+			</choose>
+		</where>
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getQnaListCountByParam" parameterType="saleson.shop.qna.support.QnaParam" resultType="int">
+		/* saleson.shop.qna.QnaMapper.getQnaListCountByParam  */
+		<!-- SELECT
+			COUNT(*) AS CNT
+		FROM OP_QNA Q
+		INNER JOIN OP_USER U ON Q.USER_ID = U.USER_ID -->
+		SELECT
+			COUNT(*) AS CNT
+		FROM (
+			<!-- <include refid="CommonMapper.paginationHeader" /> -->
+				SELECT
+					<!-- Q.*,
+					U.LOGIN_ID -->
+					Q.QNA_ID,
+					Q.QNA_GROUP,
+					Q.QNA_TYPE,
+					Q.SUBJECT,
+					Q.QUESTION,
+					Q.USER_ID,
+					Q.SELLER_ID,
+					Q.ITEM_ID,
+					Q.ORDER_CODE,
+					Q.ANSWER_COUNT,
+					Q.SECRET_FLAG,
+					Q.DISPLAY_FLAG,
+					Q.CREATED_DATE,
+					Q.DATA_STATUS_CODE,
+					Q.QNA_IMAGE,
+					Q.USE_YN,
+			    	U.LOGIN_ID,
+			    	Q.USER_NAME,
+			    	Q.EMAIL
+				FROM OP_QNA Q
+					LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9'
+					LEFT JOIN OP_COMMON_CODE C ON C.ID = Q.QNA_GROUP AND C.CODE_TYPE = 'QNA_GROUPS' AND C.USE_YN = 'Y'
+				WHERE
+					Q.DATA_STATUS_CODE = '0'
+					AND Q.DISPLAY_FLAG = 'Y'
+
+					<if test='qnaGroup != null and qnaGroup != ""'>
+						AND Q.QNA_GROUP = #{qnaGroup}
+					</if>
+
+					<if test='qnaType != null and qnaType != ""'>
+						AND Q.QNA_TYPE = #{qnaType}
+					</if>
+
+					<if test='itemId > 0'>
+						AND Q.ITEM_ID = #{itemId}
+					</if>
+
+					<if test='userId != null and userId != ""'>
+						AND Q.USER_ID = #{userId}
+					</if>
+					<if test='searchStartDate != null and searchStartDate != ""'>
+						AND Q.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+					</if>
+
+					<if test='searchEndDate != null and searchEndDate != ""'>
+						AND Q.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+					</if>
+
+					<if test='sellerId > 0'>
+						AND Q.SELLER_ID = #{sellerId}
+					</if>
+
+					<if test='qnaAnswerCode != null'>
+						<choose>
+							<when test='qnaAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+
+					<if test="answerCount == 1">
+						<!-- AND Q.ANSWER_COUNT > 0 -->
+						AND (
+							SELECT COUNT(1) FROM OP_QNA_ANSWER WHERE QNA_ID = Q.QNA_ID
+						) <![CDATA[ > ]]> 0
+					</if>
+					<if test="answerCount == 2">
+						<!-- AND Q.ANSWER_COUNT = 0 -->
+						AND (
+							SELECT COUNT(1) FROM OP_QNA_ANSWER WHERE QNA_ID = Q.QNA_ID
+						) = 0
+					</if>
+
+					<if test='query != null and query != ""'>
+						<choose>
+							<when test='where == "USER_NAME"'>
+								AND Q.USER_NAME = (SELECT crypto_enc('normal', #{query},''))
+					    		<!-- AND CRYPTO_DEC('normal', Q.USER_NAME, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+							</when>
+							<when test='where == "LOGIN_ID"'>
+								<!-- AND U.LOGIN_ID LIKE CONCAT('%', #{query} , '%') -->
+								AND U.LOGIN_ID LIKE CONCAT('%', crypto_enc('normal', #{query}, '') , '%')
+			    				<!-- AND CRYPTO_DEC('normal', U.LOGIN_ID, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+							</when>
+							<when test='where == "EMAIL"'>
+								AND Q.EMAIL = (SELECT crypto_enc('normal', #{query},''))
+					    		<!-- AND CRYPTO_DEC('normal', Q.EMAIL, '', 0) LIKE CONCAT('%', #{query} , '%') -->
+							</when>
+							<when test='where == "SUBJECT"'>
+								AND Q.SUBJECT LIKE CONCAT('%', #{query} ,  '%')
+							</when>
+							<when test='where == "QUESTION"'>
+								AND Q.QUESTION LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test='where == "GROUP"'>
+								AND C.LABEL LIKE CONCAT('%', #{query} , '%')
+							</when>
+
+						</choose>
+					</if>
+
+					<if test="displayFlag != null and displayFlag != ''">
+						AND Q.DISPLAY_FLAG = #{displayFlag}
+					</if>
+
+					<if test="useYn != null and useYn != ''">
+						AND Q.USE_YN = #{useYn}
+					</if>
+
+				ORDER BY Q.CREATED_DATE DESC
+			<!-- <include refid="CommonMapper.paginationFooter" /> -->
+		) Q
+		LEFT JOIN OP_QNA_ANSWER QA ON Q.QNA_ID = QA.QNA_ID
+		LEFT JOIN OP_ITEM I ON Q.ITEM_ID = I.ITEM_ID
+		LEFT JOIN OP_SELLER S ON S.SELLER_ID = Q.SELLER_ID
+		<!-- 상품Q&A 상품명으로 검색 2017-04-26 yulsun.yoo -->
+		<where>
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "ITEM_NAME"'>
+						AND I.ITEM_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "SUBJECT"'>
+						AND Q.SUBJECT LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "ITEM_CODE"'>
+						AND I.ITEM_CODE LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "ITEM_USER_CODE"'>
+						AND I.ITEM_USER_CODE LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "COMPANY_NAME"'>
+						AND S.COMPANY_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+				</choose>
+			</if>
+			<choose>
+				<when test="sigungu != null and sigungu != ''">
+					AND S.LOCGOV_CODE = #{sigungu}
+				</when>
+				<otherwise>
+					<if test="sido != null and sido != ''">
+						AND S.LOCGOV_CODE IN (
+							SELECT
+								LOCGOV.LOCGOV_CODE
+							FROM G_LOCGOV LOCGOV
+							WHERE LOCGOV.UPPER_LOCGOV_CODE = #{sido}
+						)
+					</if>
+				</otherwise>
+			</choose>
+		</where>
+		<if test="pagination != null and pagination.itemsPerPage != 0">
+			<include refid="CommonMapper.paginationFooter" />
+		</if>
+	</select>
+
+	<select id="getQnaAnswerListByQnaId" parameterType="int" resultMap="QnaAnswerResult">
+		/* saleson.shop.qna.QnaMapper.getQnaAnswerListByQnaId */
+		SELECT
+			QA.*
+		FROM OP_QNA_ANSWER QA
+		WHERE QA.QNA_ID = #{qnaId}
+	</select>
+
+	<select id="getQnaAnswerByQnaId" parameterType="int" resultMap="QnaAnswerResult">
+		/* saleson.shop.qna.QnaMapper.getQnaAnswerByQnaId */
+		SELECT
+			 BB.*
+			,crypto_dec('normal', BB.USER_NM, '', 0) as USER_NM
+		FROM
+			(
+				SELECT
+					B.* ,
+					IFNULL(
+						(SELECT	M.USER_NAME AS USER_NAME
+						 FROM OP_MANAGER M
+						 WHERE M.USER_ID = B.USER_ID),
+						 ( SELECT S.USER_NAME AS USER_NAME
+						  FROM OP_SELLER_USER S
+						  WHERE S.USER_ID = B.USER_ID)
+					) USER_NM,
+					(SELECT crypto_dec('normal', U.LOGIN_ID, '', 0) LOGIN_ID FROM OP_USER U WHERE B.USER_ID = U.USER_ID AND U.STATUS_CODE = '9') AS LOGIN_ID
+				FROM OP_QNA_ANSWER B
+				WHERE B.QNA_ID = #{value}
+					AND B.DATA_STATUS_CODE = 0
+				ORDER BY ANSWER_DATE
+				LIMIT 1
+			) BB
+
+
+	</select>
+
+
+
+	<select id="getQnaByQnaId" parameterType="int" resultMap="QnaAndAnswerResult">
+		/* saleson.shop.qna.QnaMapper.getQnaByQnaId */
+		SELECT
+			Q.QNA_ID,
+			Q.QNA_GROUP,
+			Q.QNA_TYPE,
+			Q.SUBJECT,
+			Q.QUESTION,
+			Q.USER_ID,
+			Q.SELLER_ID,
+			Q.ITEM_ID,
+			Q.ORDER_CODE,
+			Q.ANSWER_COUNT,
+			Q.SECRET_FLAG,
+			Q.DISPLAY_FLAG,
+			Q.CREATED_DATE,
+			Q.DATA_STATUS_CODE,
+			Q.QNA_IMAGE,
+			Q.USE_YN,
+	    	CRYPTO_DEC('normal', Q.USER_NAME, '', 0) AS USER_NAME,
+	    	CRYPTO_DEC('normal', Q.EMAIL, '', 0) AS EMAIL,
+		    <!-- U.LOGIN_ID -->
+		    CRYPTO_DEC('normal', Q.LOGIN_ID, '', 0) AS LOGIN_ID,
+			QA.*,
+			I.ITEM_NAME,
+			I.ITEM_USER_CODE,
+			(SELECT ROLE_NAME FROM OP_ROLE WHERE AUTHORITY = (SELECT AUTHORITY FROM OP_USER_ROLE WHERE USER_ID = QA.USER_ID AND AUTHORITY LIKE CONCAT('ROLE_ADMIN', '%') LIMIT 1)) AS ROLE_NM,
+			crypto_dec('normal', (select login_id from op_manager where user_id = QA.user_id), '', 0) as ANSWER_LOGIN_ID
+		FROM (
+			SELECT
+				<!-- Q.*, -->
+				Q.QNA_ID,
+				Q.QNA_GROUP,
+				Q.QNA_TYPE,
+				Q.SUBJECT,
+				Q.QUESTION,
+				Q.USER_ID,
+				Q.SELLER_ID,
+				Q.ITEM_ID,
+				Q.ORDER_CODE,
+				Q.ANSWER_COUNT,
+				Q.SECRET_FLAG,
+				Q.DISPLAY_FLAG,
+				Q.CREATED_DATE,
+				Q.DATA_STATUS_CODE,
+				Q.QNA_IMAGE,
+				Q.USE_YN,
+		    	Q.USER_NAME AS USER_NAME,
+		    	Q.EMAIL AS EMAIL,
+			    <!-- U.LOGIN_ID -->
+			    U.LOGIN_ID AS LOGIN_ID
+			FROM OP_QNA Q
+				LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9'
+			WHERE QNA_ID = #{qnaId}
+		) Q
+		LEFT JOIN OP_QNA_ANSWER QA ON Q.QNA_ID = QA.QNA_ID
+		LEFT JOIN OP_ITEM I ON Q.ITEM_ID = I.ITEM_ID
+	</select>
+
+		<select id="getQnaByQnaAnswerId" parameterType="int" resultMap="QnaAndAnswerResult">
+		/* saleson.shop.qna.QnaMapper.getQnaByQnaAnswerId */
+		SELECT
+			Q.QNA_ID,
+			Q.QNA_GROUP,
+			Q.QNA_TYPE,
+			Q.SUBJECT,
+			Q.QUESTION,
+			Q.USER_ID,
+			Q.SELLER_ID,
+			Q.ITEM_ID,
+			Q.ORDER_CODE,
+			Q.ANSWER_COUNT,
+			Q.SECRET_FLAG,
+			Q.DISPLAY_FLAG,
+			Q.CREATED_DATE,
+			Q.DATA_STATUS_CODE,
+			Q.QNA_IMAGE,
+			Q.USE_YN,
+	    	CRYPTO_DEC('normal', U.USER_NAME, '', 0) AS USER_NAME,
+	    	CRYPTO_DEC('normal', Q.EMAIL, '', 0) AS EMAIL,
+		    <!-- U.LOGIN_ID -->
+		    CRYPTO_DEC('normal', U.LOGIN_ID, '', 0) AS LOGIN_ID,
+			QA.*,
+			I.ITEM_NAME,
+			I.ITEM_USER_CODE,
+			(SELECT ROLE_NAME FROM OP_ROLE WHERE AUTHORITY = (SELECT AUTHORITY FROM OP_USER_ROLE WHERE USER_ID = QA.USER_ID AND AUTHORITY LIKE CONCAT('ROLE_ADMIN', '%') LIMIT 1)) AS ROLE_NM,
+			crypto_dec('normal', (select login_id from op_manager where user_id = QA.user_id), '', 0) as ANSWER_LOGIN_ID
+		FROM (
+			SELECT
+				QNA_ANSWER_ID
+				, QNA_ID
+				, ANSWER
+				, USER_ID
+				, TITLE
+				, SEND_SMS_FLAG
+				, SEND_MAIL_FLAG
+				, ANSWER_DATE
+				, DATA_STATUS_CODE
+				, HITS
+				, SECRET_FLAG
+			FROM OP_QNA_ANSWER QA
+			WHERE QNA_ANSWER_ID = #{qnaAnswerId}
+		) QA
+		LEFT JOIN OP_QNA Q ON Q.QNA_ID = QA.QNA_ID
+		LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9'
+		LEFT JOIN OP_ITEM I ON Q.ITEM_ID = I.ITEM_ID
+	</select>
+
+	<select id="getQnaAnswerByQnaAnswerId" parameterType="saleson.shop.qna.domain.Qna"  resultMap="QnaAnswerResult">
+		/* saleson.shop.qna.QnaMapper.getQnaAnswerByQnaAnswerId */
+		SELECT
+			 BB.*
+			,crypto_dec('normal', BB.USER_NM, '', 0) as USER_NM
+		FROM
+			(
+				SELECT
+					B.* ,
+					IFNULL(
+						(SELECT	M.USER_NAME AS USER_NAME
+						 FROM OP_MANAGER M
+						 WHERE M.USER_ID = B.USER_ID),
+						 ( SELECT S.USER_NAME AS USER_NAME
+						  FROM OP_SELLER_USER S
+						  WHERE S.USER_ID = B.USER_ID)
+					) USER_NM,
+					(SELECT crypto_dec('normal', U.LOGIN_ID, '', 0) LOGIN_ID FROM OP_USER U WHERE B.USER_ID = U.USER_ID AND U.STATUS_CODE = '9') AS LOGIN_ID
+				FROM OP_QNA_ANSWER B
+				WHERE B.QNA_ANSWER_ID = #{answerId}
+					AND B.QNA_ID = #{qnaId}
+			) BB
+
+
+	</select>
+
+	<update id="updateQnaAnswerCount" parameterType="int">
+		/* saleson.shop.qna.QnaMapper.updateQnaAnswerCount */
+		UPDATE OP_QNA
+		SET ANSWER_COUNT = (SELECT COUNT(*) FROM OP_QNA_ANSWER WHERE QNA_ID = #{qnaId} )
+		WHERE QNA_ID = #{qnaId}
+	</update>
+
+	<select id="getFrontQnaOpenListCount" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="Integer">
+		/** qna-mapper.getFrontQnaOpenListCount (QNA 카운트) */
+		SELECT
+				COUNT(*)
+		FROM (
+				SELECT
+						QNA_ID,
+						'Q' AS QNA_DETAIL_TYPE
+				FROM
+						OP_QNA Q
+				WHERE
+						QNA_TYPE = 2
+					AND	DATA_STATUS_CODE = 0
+					AND	DISPLAY_FLAG = 'Y'
+					AND USE_YN = 'Y'
+					<if test='qnaOpenAnswerCode != null'>
+						<choose>
+							<when test='qnaOpenAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaOpenAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+					<if test="query != null and query != ''">
+						<if test="where == 'SUBJECT'">
+							AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test="where == 'USER_NAME'">
+							AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+						</if>
+					</if>
+				UNION ALL
+				SELECT
+						QA.QNA_ID,
+						'A' AS QNA_DETAIL_TYPE
+				FROM
+						OP_QNA_ANSWER QA
+				INNER JOIN
+						OP_QNA Q
+					ON	Q.QNA_ID = QA.QNA_ID
+					AND	Q.QNA_TYPE = 2
+					AND	Q.DATA_STATUS_CODE = 0
+					AND	Q.DISPLAY_FLAG = 'Y'
+					AND Q.USE_YN = 'Y'
+					<if test='qnaOpenAnswerCode != null'>
+						<choose>
+							<when test='qnaOpenAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaOpenAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+				WHERE
+					QA.DATA_STATUS_CODE = 0
+					<if test="query != null and query != ''">
+						<if test="where == 'SUBJECT'">
+							AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test="where == 'USER_NAME'">
+							AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+						</if>
+					</if>
+		) A
+		LEFT OUTER JOIN OP_QNA_ANSWER B
+			ON A.QNA_ID =  B.QNA_ID
+		WHERE 1=1
+		<if test='searchStartDate != null and searchStartDate != ""'>
+			AND A.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+		</if>
+
+		<if test='searchEndDate != null and searchEndDate != ""'>
+			AND A.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+		</if>
+	</select>
+
+	<select id="getFrontQnaOpenQuestionListCount" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="Integer">
+		/** qna-mapper.getFrontQnaOpenListCount (QNA 카운트) */
+		SELECT
+				COUNT(*)
+		FROM (
+				SELECT
+						QNA_ID,
+						NULL AS QNA_ANSWER_ID,
+						CREATED_DATE,
+						USER_ID,
+						USER_NAME,
+						'Q' AS QNA_DETAIL_TYPE,
+						SUBJECT,
+						HITS,
+						SECRET_FLAG,
+						QUESTION AS CONTENT,
+						QNA_GROUP,
+						(SELECT LABEL FROM OP_COMMON_CODE C WHERE C.ID = Q.QNA_GROUP AND C.CODE_TYPE = 'QNA_GROUPS' AND C.USE_YN = 'Y') AS QNA_GROUP_NM,
+						(SELECT U.LOGIN_ID FROM OP_USER U WHERE U.USER_ID = Q.USER_ID) AS LOGIN_ID
+				FROM
+						OP_QNA Q
+				WHERE
+						QNA_TYPE = 2
+					AND	DATA_STATUS_CODE = 0
+					AND	DISPLAY_FLAG = 'Y'
+					AND USE_YN = 'Y'
+					<if test='qnaOpenAnswerCode != null'>
+						<choose>
+							<when test='qnaOpenAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaOpenAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+					<if test="query != null and query != ''">
+						<if test="where == 'SUBJECT'">
+							AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test="where == 'USER_NAME'">
+							AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+						</if>
+					</if>
+				UNION ALL
+				SELECT
+						QA.QNA_ID,
+						QA.QNA_ANSWER_ID,
+						QA.ANSWER_DATE,
+						QA.USER_ID,
+						IFNULL(M.USER_NAME, U.USER_NAME) AS USER_NAME,
+						'A' AS QNA_DETAIL_TYPE,
+						QA.TITLE,
+						QA.HITS,
+						QA.SECRET_FLAG,
+						QA.ANSWER AS CONTENT,
+						'' AS QNA_GROUP,
+						'' AS QNA_GROUP_NM,
+						M.LOGIN_ID
+				FROM
+						OP_QNA_ANSWER QA
+				INNER JOIN
+						OP_QNA Q
+					ON	Q.QNA_ID = QA.QNA_ID
+					AND	Q.QNA_TYPE = 2
+					AND	Q.DATA_STATUS_CODE = 0
+					AND	Q.DISPLAY_FLAG = 'Y'
+					AND Q.USE_YN = 'Y'
+					<if test='qnaOpenAnswerCode != null'>
+						<choose>
+							<when test='qnaOpenAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaOpenAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+				LEFT OUTER JOIN
+						OP_MANAGER M
+					ON	M.USER_ID = QA.USER_ID
+				LEFT OUTER JOIN
+						OP_USER U
+					ON	U.USER_ID = QA.USER_ID
+				WHERE
+					QA.DATA_STATUS_CODE = 0
+					<if test="query != null and query != ''">
+						<if test="where == 'SUBJECT'">
+							AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test="where == 'USER_NAME'">
+							AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+						</if>
+					</if>
+
+		) A
+		LEFT OUTER JOIN OP_QNA_ANSWER B
+			ON A.QNA_ID =  B.QNA_ID
+		WHERE 1=1
+			AND A.QNA_DETAIL_TYPE = 'Q'
+		<if test='searchStartDate != null and searchStartDate != ""'>
+			AND A.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+		</if>
+
+		<if test='searchEndDate != null and searchEndDate != ""'>
+			AND A.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+		</if>
+	</select>
+
+	<select id="getFrontQnaOpenList" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="saleson.shop.qna.domain.QnaOpen">
+		/* saleson.shop.qna.QnaMapper.getFrontQnaOpenList  */
+		SELECT
+			T_A.QNA_ID,
+			T_A.QNA_ANSWER_ID,
+			T_A.CREATED_DATE,
+			T_A.QNA_USER_ID,
+			T_A.USER_ID,
+			CRYPTO_DEC('normal', T_A.USER_NAME, '', 0) AS USER_NAME,
+			T_A.QNA_DETAIL_TYPE,
+			T_A.SUBJECT,
+			T_A.HITS,
+			T_A.QNA_SECRET_FLAG,
+			T_A.SECRET_FLAG,
+			T_A.CONTENT,
+			T_A.QNA_GROUP,
+			T_A.QNA_GROUP_NM,
+			CRYPTO_DEC('normal', T_A.LOGIN_ID, '', 0) AS LOGIN_ID,
+			(SELECT COUNT(*) AS CNT FROM OP_QNA_ANSWER QA WHERE T_A.QNA_ID = QA.QNA_ID) AS ANSWER_CNT,
+			IFNULL(T_A.USER_ID, 0) AS ANSWER_USER_ID,
+			CRYPTO_DEC('normal', (SELECT LOGIN_ID FROM OP_MANAGER WHERE USER_ID = T_A.USER_ID2), '', 0) AS ANSWER_LOGIN_ID,
+			CRYPTO_DEC('normal', (SELECT USER_NAME FROM OP_MANAGER WHERE USER_ID = T_A.USER_ID2), '', 0) AS ANSWER_USER_NAME,
+			T_A.ANSWER_DATE
+		FROM (
+			<include refid="CommonMapper.paginationHeader" />
+			SELECT
+					A.QNA_ID,
+					A.QNA_ANSWER_ID,
+					A.CREATED_DATE,
+					A.QNA_USER_ID,
+					A.USER_ID,
+					<!-- crypto_dec('normal', A.USER_NAME, '', 0) as USER_NAME, -->
+					A.USER_NAME,
+					A.QNA_DETAIL_TYPE,
+					A.SUBJECT,
+					A.HITS,
+					A.QNA_SECRET_FLAG,
+					A.SECRET_FLAG,
+					A.CONTENT,
+					A.QNA_GROUP,
+					A.QNA_GROUP_NM,
+					<!-- crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID, -->
+					A.LOGIN_ID AS LOGIN_ID,
+					(SELECT COUNT(*) AS CNT FROM OP_QNA_ANSWER QA WHERE A.QNA_ID = QA.QNA_ID) AS ANSWER_CNT,
+					IFNULL(B.USER_ID, 0) AS USER_ID2,
+					<!-- crypto_dec('normal', (SELECT LOGIN_ID FROM OP_MANAGER WHERE USER_ID = B.USER_ID), '', 0) AS ANSWER_LOGIN_ID,
+					crypto_dec('normal', (SELECT USER_NAME FROM OP_MANAGER WHERE USER_ID = B.USER_ID), '', 0) AS ANSWER_USER_NAME, -->
+					B.ANSWER_DATE
+			FROM (
+					SELECT
+							QNA_ID,
+							0 AS QNA_ANSWER_ID,
+							CREATED_DATE,
+							USER_ID AS QNA_USER_ID,
+							USER_ID,
+							USER_NAME,
+							'Q' AS QNA_DETAIL_TYPE,
+							SUBJECT,
+							HITS,
+							SECRET_FLAG AS QNA_SECRET_FLAG,
+							SECRET_FLAG,
+							QUESTION AS CONTENT,
+							QNA_GROUP,
+							(SELECT LABEL FROM OP_COMMON_CODE C WHERE C.ID = Q.QNA_GROUP AND C.CODE_TYPE = 'QNA_GROUPS' AND C.USE_YN = 'Y') AS QNA_GROUP_NM,
+							(SELECT U.LOGIN_ID FROM OP_USER U WHERE U.USER_ID = Q.USER_ID) AS LOGIN_ID
+					FROM
+							OP_QNA Q
+					WHERE
+							QNA_TYPE = 2
+						AND	DATA_STATUS_CODE = 0
+						AND	DISPLAY_FLAG = 'Y'
+						AND USE_YN = 'Y'
+						<if test='qnaOpenAnswerCode != null'>
+							<choose>
+								<when test='qnaOpenAnswerCode == "0"'>
+									AND Q.ANSWER_COUNT > 0
+								</when>
+								<when test='qnaOpenAnswerCode == "1"'>
+									AND Q.ANSWER_COUNT = 0
+								</when>
+							</choose>
+						</if>
+						<if test="query != null and query != ''">
+							<if test="where == 'SUBJECT'">
+								AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+							</if>
+							<if test="where == 'USER_NAME'">
+								AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+							</if>
+						</if>
+					UNION ALL
+
+					SELECT
+							QA.QNA_ID,
+							QA.QNA_ANSWER_ID,
+							QA.ANSWER_DATE,
+							Q.USER_ID AS QNA_USER_ID,
+							QA.USER_ID,
+							IFNULL(M.USER_NAME, U.USER_NAME) AS USER_NAME,
+							'A' AS QNA_DETAIL_TYPE,
+							QA.TITLE,
+							QA.HITS,
+							Q.SECRET_FLAG AS QNA_SECRET_FLAG,
+							QA.SECRET_FLAG,
+							QA.ANSWER AS CONTENT,
+							'' AS QNA_GROUP,
+							'' AS QNA_GROUP_NM,
+							<!-- crypto_dec('normal', M.LOGIN_ID, '', 0) LOGIN_ID -->
+							M.LOGIN_ID AS LOGIN_ID
+					FROM
+							OP_QNA_ANSWER QA
+					INNER JOIN
+							OP_QNA Q
+						ON	Q.QNA_ID = QA.QNA_ID
+						AND	Q.QNA_TYPE = 2
+						AND	Q.DATA_STATUS_CODE = 0
+						AND	Q.DISPLAY_FLAG = 'Y'
+						AND Q.USE_YN = 'Y'
+						<if test='qnaOpenAnswerCode != null'>
+							<choose>
+								<when test='qnaOpenAnswerCode == "0"'>
+									AND Q.ANSWER_COUNT > 0
+								</when>
+								<when test='qnaOpenAnswerCode == "1"'>
+									AND Q.ANSWER_COUNT = 0
+								</when>
+							</choose>
+						</if>
+					LEFT OUTER JOIN
+							OP_MANAGER M
+						ON	M.USER_ID = QA.USER_ID
+					LEFT OUTER JOIN
+							OP_USER U
+						ON	U.USER_ID = QA.USER_ID
+					WHERE
+							QA.DATA_STATUS_CODE = 0
+							<if test="query != null and query != ''">
+								<if test="where == 'SUBJECT'">
+									AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+								</if>
+								<if test="where == 'USER_NAME'">
+									AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+								</if>
+							</if>
+			) A
+			LEFT OUTER JOIN OP_QNA_ANSWER B
+				ON A.QNA_ID =  B.QNA_ID
+			WHERE 1=1
+			<if test='searchStartDate != null and searchStartDate != ""'>
+				AND A.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+			</if>
+
+			<if test='searchEndDate != null and searchEndDate != ""'>
+				AND A.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+			</if>
+			ORDER BY
+			<choose>
+				<when test="(sort != '' and sort != null) and (orderBy != '' and orderBy != null)">
+					<choose>
+						<when test='orderBy == "CREATED_DATE"'> A.QNA_ID </when>
+						<when test='orderBy == "HITS"'> (SELECT IFNULL(HITS, 0) FROM OP_QNA WHERE QNA_ID = A.QNA_ID) </when>
+						<otherwise> A.QNA_ID </otherwise>
+					</choose>
+					<choose>
+						<when test='sort == "ASC"'>ASC</when>
+						<otherwise>DESC</otherwise>
+					</choose>
+					<choose>
+						<when test='orderBy == "CREATED_DATE"'> , IFNULL(A.QNA_ANSWER_ID, 0) </when>
+						<when test='orderBy == "HITS"'> , IFNULL(A.QNA_ANSWER_ID, 0) </when>
+					</choose>
+				</when>
+				<otherwise>
+					A.QNA_ID DESC, A.QNA_ANSWER_ID ASC
+				</otherwise>
+			</choose>
+			<include refid="CommonMapper.paginationFooter" />
+		) T_A
+	</select>
+
+	<select id="getFrontQnaOpenManagerListCount" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="Integer">
+		/* saleson.shop.qna.QnaMapper.getFrontQnaOpenManagerListCount */
+		SELECT
+				COUNT(*)
+		FROM (
+				SELECT
+						Q.QNA_ID,
+						NULL AS QNA_ANSWER_ID,
+						Q.CREATED_DATE,
+						Q.USER_ID,
+						Q.USER_NAME,
+						'Q' AS QNA_DETAIL_TYPE,
+						Q.SUBJECT,
+						Q.HITS,
+						Q.SECRET_FLAG,
+						Q.QUESTION AS CONTENT,
+						Q.QNA_GROUP,
+						C.LABEL AS QNA_GROUP_NM,
+						U.LOGIN_ID
+				FROM
+						OP_QNA Q
+						LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9'
+						LEFT JOIN OP_COMMON_CODE C ON C.ID = Q.QNA_GROUP AND C.CODE_TYPE = 'QNA_GROUPS' AND C.USE_YN = 'Y'
+				WHERE
+						QNA_TYPE = 2
+					AND	DATA_STATUS_CODE = 0
+					AND	DISPLAY_FLAG = 'Y'
+					AND Q.USE_YN = 'Y'
+					<if test='qnaOpenAnswerCode != null'>
+						<choose>
+							<when test='qnaOpenAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaOpenAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+					<if test="query != null and query != ''">
+						<if test='where == "GROUP"'>
+							AND C.LABEL LIKE CONCAT('%', #{query} , '%')
+						</if>
+						<if test="where == 'SUBJECT'">
+							AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test='where == "QUESTION"'>
+							AND Q.QUESTION LIKE CONCAT('%', #{query} , '%')
+						</if>
+						<if test='where == "LOGIN_ID"'>
+							AND U.LOGIN_ID LIKE CONCAT ('%', crypto_enc('normal', #{query}, '') , '%')
+						</if>
+						<if test="where == 'USER_NAME'">
+							AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+						</if>
+					</if>
+				<!-- UNION ALL
+				SELECT
+						QA.QNA_ID,
+						QA.QNA_ANSWER_ID,
+						QA.ANSWER_DATE,
+						QA.USER_ID,
+						IFNULL(M.USER_NAME, U.USER_NAME) AS USER_NAME,
+						'A' AS QNA_DETAIL_TYPE,
+						QA.TITLE,
+						QA.HITS,
+						QA.SECRET_FLAG,
+						QA.ANSWER AS CONTENT,
+						'' AS QNA_GROUP,
+						'' AS QNA_GROUP_NM,
+						M.LOGIN_ID
+				FROM
+						OP_QNA_ANSWER QA
+				INNER JOIN
+						OP_QNA Q
+					ON	Q.QNA_ID = QA.QNA_ID
+					AND	Q.QNA_TYPE = 2
+					AND	Q.DATA_STATUS_CODE = 0
+					AND	Q.DISPLAY_FLAG = 'Y'
+					AND Q.USE_YN = 'Y'
+					<if test='qnaOpenAnswerCode != null'>
+						<choose>
+							<when test='qnaOpenAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaOpenAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+				LEFT OUTER JOIN
+						OP_MANAGER M
+					ON	M.USER_ID = QA.USER_ID
+				LEFT OUTER JOIN
+						OP_USER U
+					ON	U.USER_ID = QA.USER_ID
+				WHERE
+					QA.DATA_STATUS_CODE = 0
+					<if test="query != null and query != ''">
+						<if test="where == 'SUBJECT'">
+							AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test="where == 'USER_NAME'">
+							AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+						</if>
+					</if> -->
+
+		) A
+		LEFT OUTER JOIN OP_QNA_ANSWER B
+			ON A.QNA_ID =  B.QNA_ID
+		WHERE 1=1
+		<if test='searchStartDate != null and searchStartDate != ""'>
+			AND A.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+		</if>
+
+		<if test='searchEndDate != null and searchEndDate != ""'>
+			AND A.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+		</if>
+	</select>
+
+	<select id="getFrontQnaOpenManagerList" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="saleson.shop.qna.domain.QnaOpen">
+		/* saleson.shop.qna.QnaMapper.getFrontQnaOpenManagerList */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+				A.QNA_ID,
+				A.QNA_ANSWER_ID,
+				A.CREATED_DATE,
+				A.USER_ID,
+				crypto_dec('normal', A.USER_NAME, '', 0) as USER_NAME,
+				A.QNA_DETAIL_TYPE,
+				A.SUBJECT,
+				A.HITS,
+				A.SECRET_FLAG,
+				A.CONTENT,
+				A.QNA_GROUP,
+				A.QNA_GROUP_NM,
+				crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID,
+				(SELECT COUNT(*) AS CNT FROM OP_QNA_ANSWER QA WHERE A.QNA_ID = QA.QNA_ID) AS ANSWER_CNT,
+				IFNULL(B.USER_ID, 0) as ANSWER_USER_ID,
+				crypto_dec('normal', (SELECT LOGIN_ID FROM OP_MANAGER WHERE USER_ID = B.USER_ID), '', 0) AS ANSWER_LOGIN_ID,
+				crypto_dec('normal', (SELECT USER_NAME FROM OP_MANAGER WHERE USER_ID = B.USER_ID), '', 0) AS ANSWER_USER_NAME,
+				B.ANSWER_DATE
+		FROM (
+				SELECT
+						Q.QNA_ID,
+						0 AS QNA_ANSWER_ID,
+						Q.CREATED_DATE,
+						Q.USER_ID,
+						Q.USER_NAME,
+						'Q' AS QNA_DETAIL_TYPE,
+						Q.SUBJECT,
+						Q.HITS,
+						Q.SECRET_FLAG,
+						Q.QUESTION AS CONTENT,
+						Q.QNA_GROUP,
+						C.LABEL AS QNA_GROUP_NM,
+						U.LOGIN_ID
+				FROM
+						OP_QNA Q
+						LEFT JOIN OP_USER U ON Q.USER_ID = U.USER_ID AND U.STATUS_CODE = '9'
+						LEFT JOIN OP_COMMON_CODE C ON C.ID = Q.QNA_GROUP AND C.CODE_TYPE = 'QNA_GROUPS' AND C.USE_YN = 'Y'
+				WHERE
+						QNA_TYPE = 2
+					AND	DATA_STATUS_CODE = 0
+					AND	DISPLAY_FLAG = 'Y'
+					AND Q.USE_YN = 'Y'
+					<if test='qnaOpenAnswerCode != null'>
+						<choose>
+							<when test='qnaOpenAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaOpenAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+					<if test="query != null and query != ''">
+
+						<if test='where == "GROUP"'>
+							AND C.LABEL LIKE CONCAT('%', #{query} , '%')
+						</if>
+						<if test="where == 'SUBJECT'">
+							AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test='where == "QUESTION"'>
+							AND Q.QUESTION LIKE CONCAT('%', #{query} , '%')
+						</if>
+						<if test='where == "LOGIN_ID"'>
+							AND U.LOGIN_ID LIKE CONCAT ('%', crypto_enc('normal', #{query}, '') , '%')
+						</if>
+						<if test="where == 'USER_NAME'">
+							AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+						</if>
+					</if>
+				<!-- UNION ALL
+
+				SELECT
+						QA.QNA_ID,
+						QA.QNA_ANSWER_ID,
+						QA.ANSWER_DATE,
+						QA.USER_ID,
+						IFNULL(M.USER_NAME, U.USER_NAME) AS USER_NAME,
+						'A' AS QNA_DETAIL_TYPE,
+						QA.TITLE,
+						QA.HITS,
+						QA.SECRET_FLAG,
+						QA.ANSWER AS CONTENT,
+						'' AS QNA_GROUP,
+						'' AS QNA_GROUP_NM,
+						crypto_dec('normal', M.LOGIN_ID, '', 0) LOGIN_ID
+				FROM
+						OP_QNA_ANSWER QA
+				INNER JOIN
+						OP_QNA Q
+					ON	Q.QNA_ID = QA.QNA_ID
+					AND	Q.QNA_TYPE = 2
+					AND	Q.DATA_STATUS_CODE = 0
+					AND	Q.DISPLAY_FLAG = 'Y'
+					AND Q.USE_YN = 'Y'
+					<if test='qnaOpenAnswerCode != null'>
+						<choose>
+							<when test='qnaOpenAnswerCode == "0"'>
+								AND Q.ANSWER_COUNT > 0
+							</when>
+							<when test='qnaOpenAnswerCode == "1"'>
+								AND Q.ANSWER_COUNT = 0
+							</when>
+						</choose>
+					</if>
+				LEFT OUTER JOIN
+						OP_MANAGER M
+					ON	M.USER_ID = QA.USER_ID
+				LEFT OUTER JOIN
+						OP_USER U
+					ON	U.USER_ID = QA.USER_ID
+				WHERE
+						QA.DATA_STATUS_CODE = 0
+						<if test="query != null and query != ''">
+							<if test="where == 'SUBJECT'">
+								AND Q.SUBJECT LIKE CONCAT('%', #{query}, '%')
+							</if>
+							<if test="where == 'USER_NAME'">
+								AND Q.USER_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query},''), '%')
+							</if>
+						</if> -->
+		) A
+		LEFT OUTER JOIN OP_QNA_ANSWER B
+			ON A.QNA_ID =  B.QNA_ID
+		WHERE 1=1
+		<if test='searchStartDate != null and searchStartDate != ""'>
+			AND A.CREATED_DATE <![CDATA[>=]]> CONCAT(#{searchStartDate}, '000000')
+		</if>
+
+		<if test='searchEndDate != null and searchEndDate != ""'>
+			AND A.CREATED_DATE <![CDATA[<=]]> CONCAT(#{searchEndDate}, '235959')
+		</if>
+		ORDER BY
+		<choose>
+			<when test="(sort != '' and sort != null) and (orderBy != '' and orderBy != null)">
+				<choose>
+					<when test='orderBy == "CREATED_DATE"'> A.QNA_ID </when>
+					<when test='orderBy == "HITS"'> (SELECT IFNULL(HITS, 0) FROM OP_QNA WHERE QNA_ID = A.QNA_ID) </when>
+					<otherwise> A.QNA_ID </otherwise>
+				</choose>
+				<choose>
+					<when test='sort == "ASC"'>ASC</when>
+					<otherwise>DESC</otherwise>
+				</choose>
+				<choose>
+					<when test='orderBy == "CREATED_DATE"'> , IFNULL(A.QNA_ANSWER_ID, 0) </when>
+					<when test='orderBy == "HITS"'> , IFNULL(A.QNA_ANSWER_ID, 0) </when>
+				</choose>
+			</when>
+			<otherwise>
+				A.QNA_ID DESC, A.QNA_ANSWER_ID ASC
+			</otherwise>
+		</choose>
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getFrontQnaOpenDetail" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="saleson.shop.qna.domain.QnaOpen">
+		/* saleson.shop.qna.QnaMapper.getFrontQnaOpenDetail */
+		WITH TEMP_QNA_TABLE AS (
+			SELECT
+					ROWNUM AS RNUM,
+					X.QNA_ID,
+					X.QNA_ANSWER_ID,
+					X.CREATED_DATE,
+					X.QNA_USER_ID,
+					X.USER_ID,
+					crypto_dec('normal', X.USER_NAME, '', 0) USER_NAME,
+					X.QNA_DETAIL_TYPE,
+					X.SUBJECT,
+					X.HITS,
+					X.QNA_SECRET_FLAG,
+					X.SECRET_FLAG,
+					X.QUESTION,
+					X.ANSWER_COUNT,
+					X.QNA_GROUP
+			FROM (
+					SELECT
+							A.QNA_ID,
+							A.QNA_ANSWER_ID,
+							A.CREATED_DATE,
+							A.QNA_USER_ID,
+							A.USER_ID,
+							A.USER_NAME,
+							A.QNA_DETAIL_TYPE,
+							A.SUBJECT,
+							A.HITS,
+							A.QNA_SECRET_FLAG,
+							A.SECRET_FLAG,
+							A.QUESTION,
+							A.ANSWER_COUNT,
+							A.QNA_GROUP
+					FROM (
+							SELECT
+									QNA_ID,
+									NULL AS QNA_ANSWER_ID,
+									CREATED_DATE,
+									USER_ID AS QNA_USER_ID,
+									USER_ID,
+									USER_NAME,
+									'Q' AS QNA_DETAIL_TYPE,
+									SUBJECT,
+									HITS,
+									SECRET_FLAG AS QNA_SECRET_FLAG,
+									SECRET_FLAG,
+									QUESTION,
+									ANSWER_COUNT,
+									QNA_GROUP
+							FROM
+									OP_QNA
+							WHERE
+									QNA_TYPE = 2
+								AND	DATA_STATUS_CODE = 0
+								AND	DISPLAY_FLAG = 'Y'
+								AND USE_YN = 'Y'
+
+							UNION ALL
+
+							SELECT
+									QA.QNA_ID,
+									QA.QNA_ANSWER_ID,
+									QA.ANSWER_DATE,
+									Q.USER_ID AS QNA_USER_ID,
+									QA.USER_ID,
+									IFNULL(M.USER_NAME, U.USER_NAME) AS USER_NAME,
+									'A' AS QNA_DETAIL_TYPE,
+									QA.TITLE,
+									QA.HITS,
+									Q.SECRET_FLAG AS QNA_SECRET_FLAG,
+									QA.SECRET_FLAG,
+									QA.ANSWER,
+									0 AS ANSWER_COUNT,
+									Q.QNA_GROUP
+							FROM
+									OP_QNA_ANSWER QA
+							INNER JOIN
+									OP_QNA Q
+								ON	Q.QNA_ID = QA.QNA_ID
+								AND	Q.QNA_TYPE = 2
+								AND	Q.DATA_STATUS_CODE = 0
+								AND	Q.DISPLAY_FLAG = 'Y'
+								AND Q.USE_YN = 'Y'
+							LEFT OUTER JOIN
+									OP_MANAGER M
+								ON	M.USER_ID = QA.USER_ID
+							LEFT OUTER JOIN
+									OP_USER U
+								ON	U.USER_ID = QA.USER_ID
+							WHERE
+									QA.DATA_STATUS_CODE = 0
+					) A
+					ORDER BY
+							A.QNA_ID DESC, IFNULL(A.QNA_ANSWER_ID, 0)
+			) X
+		)
+		SELECT
+				*
+				,(SELECT CONCAT(IFNULL(QNA_ID, 0), '|', IFNULL(QNA_ANSWER_ID, 0), '|', IFNULL(SUBJECT, ''), '|', IFNULL(QNA_SECRET_FLAG, '')) FROM TEMP_QNA_TABLE WHERE RNUM <![CDATA[<]]> A.RNUM ORDER BY RNUM DESC LIMIT 1) AS NEXT_QNA_INFO
+				,(SELECT CONCAT(IFNULL(QNA_ID, 0), '|', IFNULL(QNA_ANSWER_ID, 0), '|', IFNULL(SUBJECT, ''), '|', IFNULL(QNA_SECRET_FLAG, '')) FROM TEMP_QNA_TABLE WHERE RNUM <![CDATA[>]]> A.RNUM ORDER BY RNUM ASC LIMIT 1) AS PREV_QNA_INFO
+		FROM
+				TEMP_QNA_TABLE A
+		WHERE
+				A.QNA_ID = #{qnaId}
+		AND
+				IFNULL(A.QNA_ANSWER_ID, 0) = IFNULL(#{qnaAnswerId}, 0)
+		LIMIT
+				1
+	</select>
+
+	<update id="addQnaHitCount" parameterType="saleson.shop.qna.support.QnaOpenParam">
+		/** qna-mapper.addQnaHitCount (QNA 조회수 증가) */
+		UPDATE OP_QNA
+		SET HITS = HITS + 1
+		WHERE QNA_ID = #{qnaId}
+	</update>
+
+	<update id="addQnaAnswerHitCount" parameterType="saleson.shop.qna.support.QnaOpenParam">
+		/** qna-mapper.addQnaAnswerHitCount (QNA 답변 조회수 증가) */
+		UPDATE OP_QNA_ANSWER
+		SET HITS = HITS + 1
+		WHERE QNA_ID = #{qnaId}
+		AND QNA_ANSWER_ID = #{qnaAnswerId}
+	</update>
+
+	<select id="getFrontQnaFileList" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="saleson.shop.qna.domain.QnaOpenFile">
+		/** qna-mapper.getFrontQnaFileList (QNA 파일 목록 조회) */
+		SELECT
+				'Q' AS QNA_DETAIL_TYPE,
+				crypto_enc('normal', F.QNA_FILE_ID,'') AS QNA_FILE_ID,
+				F.QNA_ID,
+				F.FILE_NAME,
+				F.FILE_TY,
+				F.ORDERING,
+				F.CREATED_DATE,
+				F.ORG_FILE_NAME,
+				(SELECT Q.QNA_TYPE FROM OP_QNA Q WHERE Q.QNA_ID = F.QNA_ID LIMIT 1) AS QNA_TYPE
+		FROM
+				OP_QNA_FILE F
+		WHERE
+				F.QNA_ID = #{qnaId}
+		ORDER BY
+				F.ORDERING
+	</select>
+
+	<select id="getFrontQnaAnswerFileList" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="saleson.shop.qna.domain.QnaOpenFile">
+		/** qna-mapper.getFrontQnaAnswerFileList (QNA 답변 파일 목록 조회) */
+		SELECT
+				'A' AS QNA_DETAIL_TYPE,
+				crypto_enc('normal', F.QNA_ANSWER_FILE_ID,'') AS QNA_FILE_ID,
+				F.QNA_ANSWER_ID AS QNA_ID,
+				F.FILE_NAME,
+				F.FILE_TY,
+				F.ORDERING,
+				F.CREATED_DATE,
+				F.ORG_FILE_NAME,
+				(
+					SELECT QNA_TYPE
+					FROM OP_QNA Q
+					INNER JOIN OP_QNA_ANSWER A
+					ON Q.QNA_ID = A.QNA_ID
+					WHERE A.QNA_ANSWER_ID = F.QNA_ANSWER_ID
+					LIMIT 1
+				) AS QNA_TYPE
+		FROM
+				OP_QNA_ANSWER_FILE F
+		WHERE
+				F.QNA_ANSWER_ID = #{qnaAnswerId}
+		ORDER BY
+				F.ORDERING
+	</select>
+
+	<select id="getFrontQnaFileDetail" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="saleson.shop.qna.domain.QnaOpenFile">
+		/** qna-mapper.getFrontQnaFileDetail (QNA 파일 상세 조회) */
+		SELECT
+				'Q' AS QNA_DETAIL_TYPE,
+				F.QNA_FILE_ID,
+				F.QNA_ID,
+				F.FILE_NAME,
+				F.FILE_TY,
+				F.ORDERING,
+				F.CREATED_DATE,
+				F.ORG_FILE_NAME,
+				(SELECT Q.QNA_TYPE FROM OP_QNA Q WHERE Q.QNA_ID = F.QNA_ID LIMIT 1) AS QNA_TYPE
+		FROM
+				OP_QNA_FILE F
+		WHERE
+				crypto_enc('normal', F.QNA_FILE_ID,'') = #{qnaFileId}
+	</select>
+
+	<select id="getFrontQnaAnswerFileDetail" parameterType="saleson.shop.qna.support.QnaOpenParam" resultType="saleson.shop.qna.domain.QnaOpenFile">
+		/** qna-mapper.getFrontQnaAnswerFileDetail (QNA 답변 파일 상세 조회) */
+		SELECT
+				'A' AS QNA_DETAIL_TYPE,
+				F.QNA_ANSWER_FILE_ID AS QNA_FILE_ID,
+				F.QNA_ANSWER_ID AS QNA_ID,
+				F.FILE_NAME,
+				F.FILE_TY,
+				F.ORDERING,
+				F.CREATED_DATE,
+				F.ORG_FILE_NAME,
+				(
+					SELECT QNA_TYPE
+					FROM OP_QNA Q
+					INNER JOIN OP_QNA_ANSWER A
+					ON Q.QNA_ID = A.QNA_ID
+					WHERE A.QNA_ANSWER_ID = F.QNA_ANSWER_ID
+					LIMIT 1
+				) AS QNA_TYPE
+		FROM
+				OP_QNA_ANSWER_FILE F
+		WHERE
+				crypto_enc('normal', F.QNA_ANSWER_FILE_ID,'') = #{qnaFileId}
+	</select>
+
+	<insert id="insertQnaFile" parameterType="saleson.shop.qna.domain.QnaOpenFile">
+		/** qna-mapper.insertQnaFile (QNA 파일 등록) */
+		INSERT INTO OP_QNA_FILE (
+			QNA_FILE_ID,
+			QNA_ID,
+			FILE_NAME,
+			FILE_TY,
+			ORDERING,
+			CREATED_DATE,
+			ORG_FILE_NAME
+		) VALUES (
+			#{qnaFileId},
+			#{qnaId},
+			#{fileName},
+			#{fileTy},
+			(SELECT IFNULL(MAX(ORDERING), 0)+1 FROM OP_QNA_FILE WHERE QNA_ID = #{qnaId}),
+			<include refid="CommonMapper.datetime" />,
+			#{orgFileName}
+		)
+	</insert>
+
+	<delete id="deleteQnaFile" parameterType="saleson.shop.qna.domain.QnaOpenFile">
+		/** qna-mapper.deleteQnaFile (QNA 파일 삭제) */
+		DELETE FROM OP_QNA_FILE
+		WHERE QNA_FILE_ID = #{qnaFileId}
+	</delete>
+
+	<delete id="deleteQnaAnswerFile" parameterType="saleson.shop.qna.domain.QnaOpenFile">
+		/** qna-mapper.deleteQnaAnswerFile (QNA ANSWER 파일 삭제) */
+		DELETE FROM OP_QNA_ANSWER_FILE
+		WHERE QNA_ANSWER_FILE_ID = #{qnaFileId}
+	</delete>
+
+	<delete id="deleteFrontQna" parameterType="saleson.shop.qna.domain.Qna">
+		/** qna-mapper.deleteFrontQna (QNA 삭제) */
+		DELETE FROM OP_QNA
+		WHERE QNA_ID = #{qnaId}
+	</delete>
+
+	<update id="updateFrontQnaOpen" parameterType="saleson.shop.qna.domain.Qna">
+		/** qna-mapper.updateFrontQnaOpen (QNA 수정) */
+		UPDATE
+				OP_QNA
+		SET
+				QNA_GROUP = #{qnaGroup},
+				SUBJECT = #{subject},
+				QUESTION = #{question},
+				USER_NAME = CRYPTO_ENC('normal', #{userName},''),
+				EMAIL = CRYPTO_ENC('normal', #{email},''),
+				SECRET_FLAG = #{secretFlag}
+		WHERE
+				QNA_ID = #{qnaId}
+	</update>
+
+	<update id="updateQnaFileOrdering" parameterType="saleson.shop.qna.domain.Qna">
+		/** qna-mapper.updateQnaFileOrdering (QNA 파일 재정렬) */
+		UPDATE
+				OP_QNA_FILE A
+		INNER JOIN (
+					SELECT
+							ROWNUM AS RNUM,
+							F.QNA_FILE_ID,
+							F.ORDERING
+					FROM
+							OP_QNA_FILE F
+					WHERE
+							F.QNA_ID = #{qnaId}
+					ORDER BY
+							F.QNA_FILE_ID
+		) B
+		ON
+				A.QNA_FILE_ID = B.QNA_FILE_ID
+		SET
+				A.ORDERING = B.RNUM
+	</update>
+
+	<insert id="insertQnaAnswerFile" parameterType="saleson.shop.qna.domain.QnaOpenFile">
+		/* saleson.shop.qna.QnaMapper.insertQnaAnswerFile */
+		INSERT INTO OP_QNA_ANSWER_FILE (
+			QNA_ANSWER_FILE_ID
+			, QNA_ANSWER_ID
+			, FILE_NAME
+			, FILE_TY
+			, ORDERING
+			, CREATED_DATE
+			, ORG_FILE_NAME
+		) VALUES (
+			#{qnaFileId}
+			, #{qnaId}
+			, #{fileName}
+			, #{fileTy}
+			, (SELECT IFNULL(MAX(ORDERING)+1, 1) FROM OP_QNA_ANSWER_FILE WHERE QNA_ANSWER_ID = #{qnaId})
+			, <include refid="CommonMapper.datetime"/>
+			, #{orgFileName}
+		)
+	</insert>
+
+	<update id="updateQnaAnswerCountZero" parameterType="int">
+		/* saleson.shop.qna.QnaMapper.updateQnaAnswerCountZero */
+		UPDATE OP_QNA
+		SET ANSWER_COUNT = 0
+		WHERE QNA_ID = (select qna_id from op_qna_answer where qna_answer_id = #{qnaAnswerId})
+	</update>
+
+	<select id="getQnaUserInfo" parameterType="int" resultType="saleson.shop.donation.domain.GiveUserSmsInfo">
+		/* saleson.shop.qna.QnaMapper.getQnaUserInfo */
+		SELECT
+			CRYPTO_DEC('normal', A.USER_NAME, '', 0) AS USER_NAME
+			,A.RECEIVE_SMS
+			,A.MBER_CI
+			,A.USER_ID
+		    ,REPLACE (CRYPTO_DEC('normal',A.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+		FROM
+		(
+			SELECT  B.USER_NAME
+				   ,C.RECEIVE_SMS
+				   ,B.MBER_CI
+				   ,B.USER_ID
+				   ,C.PHONE_NUMBER
+		      FROM OP_QNA A
+	         INNER JOIN OP_USER B
+	            ON A.USER_ID = B.USER_ID
+	         INNER JOIN OP_USER_DETAIL C
+	            ON B.USER_ID = C.USER_ID
+	         WHERE QNA_ID = #{qnaId}
+         ) A
+	</select>
+
+	<select id="getFiveMinuteCheck" parameterType="saleson.shop.qna.domain.QnaOpen" resultType="int">
+		/* saleson.shop.qna.QnaMapper.getFiveMinuteCheck */
+		select count(created_date) as cnt
+		  from OP_QNA
+		 where user_id = #{userId}
+		   and (to_datetime(created_date, 'YYYYMMDDHH24MISS') >= ADDDATE(SYS_DATETIME, INTERVAL - 5 MINUTE))
+		   and use_yn='Y' order by created_date desc limit 1
+	</select>
+</mapper>

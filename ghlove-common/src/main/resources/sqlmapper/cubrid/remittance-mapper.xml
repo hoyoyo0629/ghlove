@@ -1,0 +1,4479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.remittance.RemittanceMapper">
+
+	<resultMap id="RemittanceExpectedResult" type="saleson.shop.remittance.domain.RemittanceExpected" extends="saleson.seller.main.SellerMapper.SellerResult">
+		<result property="itemTotalCommissionBaseAmount" column="ITEM_TOTAL_COMMISSION_BASE_AMOUNT" />
+		<result property="itemTotalCommissionAmount" column="ITEM_TOTAL_COMMISSION_AMOUNT" />
+		<result property="itemTotalSupplyAmount" column="ITEM_TOTAL_SUPPLY_AMOUNT" />
+		<result property="itemTotalSellerDiscountAmount" column="ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT" />
+		<result property="itemTotalSellerPointAmount" column="ITEM_TOTAL_SELLER_POINT_AMOUNT" />
+		<result property="itemTotalSetDiscountAmount" column="ITEM_TOTAL_SET_DISCOUNT_AMOUNT" />
+		<result property="shippingTotalAmount" column="SHIPPING_TOTAL_AMOUNT" />
+		<result property="addPaymentTotalAmount" column="ADD_PAYMENT_TOTAL_AMOUNT" />
+		<result property="minusTotalAmount" column="MINUS_TOTAL_AMOUNT" />
+		<result property="remittanceExpectedDate" column="REMITTANCE_EXPECTED_DATE" />
+		<result property="orCnt" column="OR_CNT" />
+
+	</resultMap>
+
+	<resultMap id="RemittanceConfirmResult" type="saleson.shop.remittance.domain.RemittanceConfirm" extends="saleson.seller.main.SellerMapper.SellerResult">
+		<result property="remittanceDate" column="REMITTANCE_DATE" />
+		<result property="confirmDate" column="CONFIRM_DATE" />
+
+		<result property="itemTotalCommissionBaseAmount" column="ITEM_TOTAL_COMMISSION_BASE_AMOUNT" />
+		<result property="itemTotalCommissionAmount" column="ITEM_TOTAL_COMMISSION_AMOUNT" />
+		<result property="itemTotalSupplyAmount" column="ITEM_TOTAL_SUPPLY_AMOUNT" />
+		<result property="itemTotalSellerDiscountAmount" column="ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT" />
+		<result property="itemTotalSellerPointAmount" column="ITEM_TOTAL_SELLER_POINT_AMOUNT" />
+		<result property="itemTotalSetDiscountAmount" column="ITEM_TOTAL_SET_DISCOUNT_AMOUNT" />
+		<result property="shippingTotalAmount" column="SHIPPING_TOTAL_AMOUNT" />
+		<result property="addPaymentTotalAmount" column="ADD_PAYMENT_TOTAL_AMOUNT" />
+		<result property="addPaymentTotalAmount" column="ADD_PAYMENT_TOTAL_AMOUNT" />
+		<result property="cancelItemTotalSupplyAmount" column="CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT" />
+		<result property="cancelShippingTotalAmount" column="CANCEL_SHIPPING_TOTAL_AMOUNT" />
+		<result property="remiDetailCnt" column="REMI_DETAIL_CNT" />
+
+		<result property="remittanceId" column="REMITTANCE_ID" />
+		<result property="finishingAmount" column="FINISHING_AMOUNT" />
+		<result property="fileCnt" column="FILE_CNT" />
+	</resultMap>
+
+	<resultMap id="RemittanceConfirmDetailResult" type="saleson.shop.remittance.domain.RemittanceConfirmDetail">
+		<result property="orderCode" column="ORDER_CODE" />
+		<result property="productType" column="PRODUCT_TYPE" />
+		<result property="remittanceStatusCode" column="REMITTANCE_STATUS_CODE" />
+		<result property="remittanceDate" column="REMITTANCE_DATE" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="options" column="OPTIONS" />
+		<result property="commissionBasePrice" column="COMMISSION_BASE_PRICE" />
+		<result property="commissionPrice" column="COMMISSION_PRICE" />
+		<result property="commissionRate" column="COMMISSION_RATE" />
+		<result property="commissionType" column="COMMISSION_TYPE" />
+		<result property="sellerDiscountPrice" column="SELLER_DISCOUNT_PRICE" />
+		<result property="sellerDiscountDetail" column="SELLER_DISCOUNT_DETAIL" />
+		<result property="sellerPoint" column="SELLER_POINT" />
+		<result property="setItemFlag" column="SET_ITEM_FLAG" />
+		<result property="setDiscountPrice" column="SET_DISCOUNT_PRICE" />
+		<result property="salePrice" column="SALE_PRICE" />
+		<result property="supplyPrice" column="SUPPLY_PRICE" />
+		<result property="quantity" column="QUANTITY" />
+		<result property="remittanceId" column="REMITTANCE_ID" />
+		<result property="remittancePrice" column="REMITTANCE_PRICE" />
+		<result property="etcAmt" column="ETC_AMT" />
+		<result property="orderSequence" column="ORDER_SEQUENCE" />
+		<result property="itemSequence" column="ITEM_SEQUENCE" />
+	</resultMap>
+
+	<resultMap id="RemittanceResult" type="saleson.shop.remittance.domain.Remittance" extends="saleson.seller.main.SellerMapper.SellerResult">
+		<id property="remittanceId" column="REMITTANCE_ID" />
+		<result property="confirmDate" column="CONFIRM_DATE" />
+		<result property="finishingDate" column="FINISHING_DATE" />
+		<result property="finishingAmount" column="FINISHING_AMOUNT" />
+		<result property="finishingManagerName" column="FINISHING_MANAGER_NAME" />
+		<result property="bankName" column="REMITTANCE_BANK_NAME" />
+		<result property="bankInName" column="REMITTANCE_BANK_IN_NAME" />
+		<result property="bankAccountNumber" column="REMITTANCE_BANK_ACCOUNT_NUMBER" />
+		<result property="createdDate" column="REMITTANCE_CREATED_DATE" />
+		<result property="salesAmount" column="SALES_AMOUNT" />
+		<result property="confirmDateSeller" column="CONFIRM_DATE_SELLER" />
+		<result property="paymentDate" column="PAYMENT_DATE" />
+		<result property="remittanceStatusCode" column="REMITTANCE_STATUS_CODE" />
+		<result property="orCnt" column="OR_CNT" />
+	</resultMap>
+
+	<resultMap id="RemittanceDetailResult" type="saleson.shop.remittance.domain.RemittanceDetail">
+		<id property="remittanceDetailId" column="REMITTANCE_DETAIL_ID" />
+		<result property="remittanceId" column="REMITTANCE_ID" />
+		<result property="orderCode" column="ORDER_CODE" />
+		<result property="itemType" column="ITEM_TYPE" />
+		<result property="itemUserCode" column="ITEM_USER_CODE" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="options" column="OPTIONS" />
+		<result property="salePrice" column="SALE_PRICE" />
+		<result property="sellerDiscountPrice" column="SELLER_DISCOUNT_PRICE" />
+		<result property="sellerDiscountDetail" column="SELLER_DISCOUNT_DETAIL" />
+		<result property="sellerPoint" column="SELLER_POINT" />
+		<result property="setItemFlag" column="SET_ITEM_FLAG" />
+		<result property="setDiscountPrice" column="SET_DISCOUNT_PRICE" />
+		<result property="supplyPrice" column="SUPPLY_PRICE" />
+		<result property="quantity" column="QUANTITY" />
+		<result property="commissionBasePrice" column="COMMISSION_BASE_PRICE" />
+		<result property="commissionRate" column="COMMISSION_RATE" />
+		<result property="commissionPrice" column="COMMISSION_PRICE" />
+		<result property="commissionType" column="COMMISSION_TYPE" />
+		<result property="remittancePrice" column="REMITTANCE_PRICE" />
+
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="buyerName" column="BUYER_NAME" />
+		<result property="payDate" column="PAY_DATE" />
+	</resultMap>
+
+	<resultMap id="RemittanceCountResult" type="saleson.common.opmanager.count.OpmanagerCount">
+		<id property="id" column="ID"/>
+		<result property="label" column="LABEL"/>
+		<result property="count" column="COUNT"/>
+	</resultMap>
+
+	<sql id="sellerDiscountPriceQuery">
+		OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)
+	</sql>
+
+	<sql id="defaultRemittanceFinishingFromQuery">
+		OP_REMITTANCE R
+			INNER JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+	</sql>
+
+	<sql id="defaultRemittanceFinishingWhereQuery">
+
+		<if test="sellerId > 0">
+			AND R.SELLER_ID = #{sellerId}
+		</if>
+		AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+
+	</sql>
+
+	<select id="getRemittanceFinishingCountByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingCountByParam */
+		SELECT COUNT(1)
+		FROM
+			OP_REMITTANCE R
+				INNER JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+		<where>
+			<if test="sellerId > 0">
+				AND R.SELLER_ID = #{sellerId}
+			</if>
+			<!-- AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+			<choose>
+				<when test='conditionType == "SELLER_LIST"'>
+					<!-- AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+					AND R.FINISHING_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+				</when>
+				<otherwise>
+					<!-- AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+					AND R.FINISHING_DATE BETWEEN #{startDate} AND #{endDate}
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="getRemittanceFinishingListByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingListByParam */
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				S.*,
+				(SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV L WHERE L.LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM,
+				R.REMITTANCE_ID,
+				R.CONFIRM_DATE,
+				R.FINISHING_DATE,
+				R.FINISHING_AMOUNT,
+				R.FINISHING_MANAGER_NAME,
+				R.BANK_NAME AS REMITTANCE_BANK_NAME,
+				R.BANK_IN_NAME AS REMITTANCE_BANK_IN_NAME,
+				R.BANK_ACCOUNT_NUMBER AS REMITTANCE_BANK_ACCOUNT_NUMBER,
+				R.CREATED_DATE AS REMITTANCE_CREATED_DATE,
+				(SELECT REMITTANCE_STATUS_CODE FROM OP_ORDER_ITEM WHERE R.REMITTANCE_ID = REMITTANCE_ID LIMIT 1) AS REMITTANCE_STATUS_CODE,
+				(SELECT SUM(T.TOTAL) AS TOTAL FROM (
+					SELECT
+							(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE + OI.SELLER_POINT + (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) + OI.SET_DISCOUNT_PRICE ELSE OI.SUPPLY_PRICE - OI.SELLER_POINT - (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) - OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY AS TOTAL
+					FROM
+						OP_ORDER_ITEM OI
+							INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					WHERE OI.REMITTANCE_ID = R.REMITTANCE_ID
+
+					UNION ALL
+
+					SELECT
+						(CASE WHEN OS.RETURN_FLAG = 'Y' THEN -OS.REMITTANCE_AMOUNT ELSE OS.REMITTANCE_AMOUNT END) AS TOTAL
+					FROM
+						OP_ORDER_SHIPPING OS
+							INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					WHERE OS.REMITTANCE_ID = R.REMITTANCE_ID
+
+					UNION ALL
+
+					SELECT
+						(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL
+					FROM
+						OP_ORDER_ADD_PAYMENT OAP
+							INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					WHERE OAP.REMITTANCE_ID = R.REMITTANCE_ID
+				) T) AS SALES_AMOUNT
+			FROM
+				OP_REMITTANCE R
+					INNER JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+			<where>
+				<if test="sellerId > 0">
+					AND R.SELLER_ID = #{sellerId}
+				</if>
+				<!-- AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+				<choose>
+					<when test='conditionType == "SELLER_LIST"'>
+						<!-- AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+						AND R.FINISHING_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+					</when>
+					<otherwise>
+						<!-- AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+						AND R.FINISHING_DATE BETWEEN #{startDate} AND #{endDate}
+					</otherwise>
+				</choose>
+			</where>
+			ORDER BY R.REMITTANCE_ID DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<sql id="defaultRemittanceFinishingDetailFromQuery">
+		OP_REMITTANCE_DETAIL RD
+	</sql>
+
+	<sql id="defaultRemittanceFinishingDetailWhereQuery">
+
+		RD.REMITTANCE_ID = #{remittanceId}
+
+	</sql>
+
+	<select id="getRemittanceFinishingDetailCountByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingDetailCountByParam */
+		SELECT COUNT(*)
+		FROM
+			OP_REMITTANCE_DETAIL RD
+		<where>
+			RD.REMITTANCE_ID = #{remittanceId}
+		</where>
+	</select>
+
+	<select id="getRemittanceFinishingDetailListByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceDetailResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingDetailListByParam */
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', T_A.BUYER_NAME_ENC, '', 0) AS BUYER_NAME
+		FROM (
+			SELECT *
+				, (
+					SELECT USER_NAME
+						FROM OP_USER U WHERE U.USER_ID = (
+							SELECT USER_ID
+								FROM OP_ORDER_ITEM OI
+								WHERE OI.ORDER_CODE = DTL.ORDER_CODE
+								LIMIT 1
+							)
+					) AS BUYER_NAME_ENC
+				, (
+					SELECT PAY_DATE
+						FROM OP_ORDER_ITEM OI
+						WHERE OI.ORDER_CODE = DTL.ORDER_CODE
+						LIMIT 1
+					) AS PAY_DATE
+				FROM (
+				<include refid="CommonMapper.paginationHeader" />
+					SELECT RD.*
+					FROM
+						OP_REMITTANCE_DETAIL RD
+					<where>
+						RD.REMITTANCE_ID = #{remittanceId}
+					</where>
+					ORDER BY RD.REMITTANCE_DETAIL_ID DESC
+				<include refid="CommonMapper.paginationFooter" />
+				) DTL
+		) T_A
+	</select>
+
+	<sql id="defaultRemittanceConfirmDetailColumnsForItem">
+		OI.ORDER_CODE,
+		CONCAT('ITEM-', OI.ORDER_CODE, '-', OI.ORDER_SEQUENCE, '-', OI.ITEM_SEQUENCE) AS REMITTANCE_KEY,
+		OI.ITEM_USER_CODE,
+		OI.REMITTANCE_STATUS_CODE,
+		'ITEM' AS PRODUCT_TYPE,
+		OI.REMITTANCE_DATE,
+		OI.ITEM_NAME,
+		OI.OPTIONS,
+		OI.COMMISSION_BASE_PRICE,
+		OI.COMMISSION_RATE,
+		OI.COMMISSION_PRICE,
+		OI.COMMISSION_TYPE,
+		OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END) AS SELLER_DISCOUNT_PRICE,
+		OI.SELLER_DISCOUNT_DETAIL,
+		OI.SELLER_POINT,
+		OI.SET_ITEM_FLAG,
+		OI.SET_DISCOUNT_PRICE,
+		OI.SALE_PRICE,
+		(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE ELSE OI.SUPPLY_PRICE END) AS SUPPLY_PRICE,
+		(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE + OI.SELLER_POINT + (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) + OI.SET_DISCOUNT_PRICE ELSE OI.SUPPLY_PRICE - OI.SELLER_POINT - (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) - OI.SET_DISCOUNT_PRICE END) AS REMITTANCE_PRICE,
+		OI.QUANTITY
+	</sql>
+
+	<sql id="defaultRemittanceConfirmDetailColumnsForShipping">
+		OS.ORDER_CODE,
+		CONCAT('SHIPPING-', OS.ORDER_CODE, '-', OS.ORDER_SEQUENCE, '-', OS.SHIPPING_SEQUENCE) AS REMITTANCE_KEY,
+		'' AS ITEM_USER_CODE,
+		OS.REMITTANCE_STATUS_CODE,
+		'SHIPPING' AS PRODUCT_TYPE,
+		OS.REMITTANCE_DATE,
+		'배송비' AS ITEM_NAME,
+		'' AS OPTIONS,
+		(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS COMMISSION_BASE_PRICE,
+		0 AS COMMISSION_RATE,
+		0 AS COMMISSION_PRICE,
+		'0' AS COMMISSION_TYPE,
+		0 AS SELLER_DISCOUNT_PRICE,
+		'' AS SELLER_DISCOUNT_DETAIL,
+		0 AS SELLER_POINT,
+		'' AS SET_ITEM_FLAG,
+		0 AS SET_DISCOUNT_PRICE,
+		(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS SALE_PRICE,
+		(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS SUPPLY_PRICE,
+		(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS REMITTANCE_PRICE,
+		1 AS QUANTITY
+	</sql>
+
+	<sql id="defaultRemittanceConfirmDetailColumnsForAddPayment">
+		OAP.ORDER_CODE,
+		CONCAT('ADD_PAYMENT-', OAP.ORDER_CODE, '-' , OAP.ADD_PAYMENT_ID) AS REMITTANCE_KEY,
+		'' AS ITEM_USER_CODE,
+		OAP.REMITTANCE_STATUS_CODE,
+		'ADD_PAYMENT' AS PRODUCT_TYPE,
+		OAP.REMITTANCE_DATE,
+		OAP.SUBJECT AS ITEM_NAME,
+		'' AS OPTIONS,
+		(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS COMMISSION_BASE_PRICE,
+		0 AS COMMISSION_RATE,
+		0 AS COMMISSION_PRICE,
+		'0' AS COMMISSION_TYPE,
+		0 AS SELLER_DISCOUNT_PRICE,
+		'' AS SELLER_DISCOUNT_DETAIL,
+		0 AS SELLER_POINT,
+		'' AS SET_ITEM_FLAG,
+		0 AS SET_DISCOUNT_PRICE,
+		(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS SALE_PRICE,
+		(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS SUPPLY_PRICE,
+		(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS REMITTANCE_PRICE,
+		1 AS QUANTITY
+	</sql>
+
+	<sql id="defaultRemittanceConfirmDetailListQueryForItem">
+		FROM
+			OP_ORDER_ITEM OI
+				INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		<where>
+			<choose>
+				<when test='viewTarget == "CANCEL"'>
+					AND OI.CANCEL_FLAG = 'Y'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OI.SELLER_ID = #{sellerId}
+				</if>
+
+				AND REMITTANCE_STATUS_CODE != '0'
+
+				AND (
+					(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+					OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+				)
+
+				<choose>
+					<when test='conditionType == "LIST"'>
+						AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+					</when>
+					<otherwise>
+						AND OI.REMITTANCE_DATE = #{startDate}
+					</otherwise>
+				</choose>
+
+				AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+		</where>
+	</sql>
+
+	<sql id="defaultRemittanceConfirmDetailListQueryForShipping">
+		FROM
+			OP_ORDER_SHIPPING OS
+				INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OS.SELLER_ID = #{sellerId}
+			</if>
+
+			AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					AND OS.REMITTANCE_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+		</where>
+	</sql>
+
+	<sql id="defaultRemittanceConfirmDetailListQueryForAddPayment">
+		FROM
+			OP_ORDER_ADD_PAYMENT OAP
+				INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OAP.SELLER_ID = #{sellerId}
+			</if>
+
+			AND REMITTANCE_STATUS_CODE != '0'
+			AND REMITTANCE_STATUS_CODE = #{statusCode}
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					AND OAP.REMITTANCE_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+		</where>
+	</sql>
+
+	<sql id="defaultRemittanceConfirmFromQueryForShipping">
+		OP_ORDER_SHIPPING OS
+			INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+	</sql>
+
+	<sql id="defaultRemittanceConfirmWhereQueryForShipping">
+		<if test="defaultOpmanagerSellerId > 0">
+			AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+		</if>
+
+		<if test="sellerId > 0">
+			AND OS.SELLER_ID = #{sellerId}
+		</if>
+
+		AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+		<choose>
+			<when test='conditionType == "LIST"'>
+				AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+			</when>
+			<otherwise>
+				AND OS.REMITTANCE_DATE = #{startDate}
+			</otherwise>
+		</choose>
+
+		AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+	</sql>
+
+	<sql id="defaultRemittanceConfirmFromQueryForAddPayment">
+		OP_ORDER_ADD_PAYMENT OAP
+			INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+	</sql>
+
+	<sql id="defaultRemittanceConfirmWhereQueryForAddPayment">
+		<if test="defaultOpmanagerSellerId > 0">
+			AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+		</if>
+
+		<if test="sellerId > 0">
+			AND OAP.SELLER_ID = #{sellerId}
+		</if>
+
+		AND REMITTANCE_STATUS_CODE != '0'
+		AND REMITTANCE_STATUS_CODE = #{statusCode}
+
+		<choose>
+			<when test='conditionType == "LIST"'>
+				AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+			</when>
+			<otherwise>
+				AND OAP.REMITTANCE_DATE = #{startDate}
+			</otherwise>
+		</choose>
+
+		AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+	</sql>
+
+	<sql id="defaultRemittanceConfirmFromQueryForItem">
+		OP_ORDER_ITEM OI
+			INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+	</sql>
+
+	<sql id="defaultRemittanceConfirmWhereQueryForItem">
+		<if test="defaultOpmanagerSellerId > 0">
+			AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+		</if>
+
+		<if test="sellerId > 0">
+			AND OI.SELLER_ID = #{sellerId}
+		</if>
+
+		AND REMITTANCE_STATUS_CODE != '0'
+
+		AND (
+			(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+			OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+		)
+
+		<choose>
+			<when test='conditionType == "LIST"'>
+				AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+			</when>
+			<otherwise>
+				AND OI.REMITTANCE_DATE = #{startDate}
+			</otherwise>
+		</choose>
+
+		AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+	</sql>
+
+	<select id="getRemittanceFinishingAmountValidateByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Long">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingAmountValidateByParam */
+		SELECT
+			CASE WHEN M1.TOTAL != M2.TOTAL THEN 0 ELSE M1.TOTAL END
+		FROM (
+			SELECT SUM(REMITTANCE_PRICE * QUANTITY) AS TOTAL
+			FROM OP_REMITTANCE_DETAIL
+			WHERE REMITTANCE_ID = #{remittanceId}
+		) M1, (
+			SELECT SUM(T.TOTAL) AS TOTAL FROM (
+				SELECT
+						(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE + OI.SELLER_POINT + (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) + OI.SET_DISCOUNT_PRICE ELSE OI.SUPPLY_PRICE - OI.SELLER_POINT - (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) - OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY AS TOTAL
+				FROM
+					OP_ORDER_ITEM OI
+						INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+				WHERE OI.REMITTANCE_ID = #{remittanceId}
+
+				UNION ALL
+
+				SELECT
+					(CASE WHEN OS.RETURN_FLAG = 'Y' THEN -OS.REMITTANCE_AMOUNT ELSE OS.REMITTANCE_AMOUNT END) AS TOTAL
+				FROM
+					OP_ORDER_SHIPPING OS
+						INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+				WHERE OS.REMITTANCE_ID = #{remittanceId}
+
+				UNION ALL
+
+				SELECT
+					(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL
+				FROM
+					OP_ORDER_ADD_PAYMENT OAP
+						INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+				WHERE OAP.REMITTANCE_ID = #{remittanceId}
+			) T
+		) M2
+	</select>
+
+	<sql id="baseRemittanceConfirmListQuery">
+		SELECT
+			S.*,
+			T.REMITTANCE_DATE,
+			T.ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+			T.ITEM_TOTAL_COMMISSION_AMOUNT,
+			T.ITEM_TOTAL_SUPPLY_AMOUNT,
+			T.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+			T.ITEM_TOTAL_SELLER_POINT_AMOUNT,
+			T.ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+			T.SHIPPING_TOTAL_AMOUNT,
+			T.ADD_PAYMENT_TOTAL_AMOUNT,
+			T.CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+			T.CANCEL_SHIPPING_TOTAL_AMOUNT
+		FROM (
+			SELECT
+				G.SELLER_ID,
+				G.REMITTANCE_DATE,
+				SUM(G.ITEM_TOTAL_COMMISSION_BASE_AMOUNT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+				SUM(G.ITEM_TOTAL_COMMISSION_AMOUNT) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+				SUM(G.ITEM_TOTAL_SUPPLY_AMOUNT) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+				SUM(G.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+				SUM(G.ITEM_TOTAL_SELLER_POINT_AMOUNT) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+				SUM(G.ITEM_TOTAL_SET_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+				SUM(G.SHIPPING_TOTAL_AMOUNT) AS SHIPPING_TOTAL_AMOUNT,
+				SUM(G.ADD_PAYMENT_TOTAL_AMOUNT) AS ADD_PAYMENT_TOTAL_AMOUNT,
+				SUM(G.CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT) AS CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+				SUM(G.CANCEL_SHIPPING_TOTAL_AMOUNT) AS CANCEL_SHIPPING_TOTAL_AMOUNT
+			FROM (
+				SELECT
+					M.SELLER_ID,
+					M.REMITTANCE_DATE,
+					(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+					(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+					(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SUPPLY_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+					(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+					(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_POINT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+					(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SET_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+					(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS SHIPPING_TOTAL_AMOUNT,
+					(CASE WHEN M.PRODUCT_TYPE = 'ADD_PAYMENT' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ADD_PAYMENT_TOTAL_AMOUNT,
+
+					(CASE WHEN M.PRODUCT_TYPE = 'ITEM' AND M.CANCEL_FLAG = 'Y' AND M.REMITTANCE_STATUS_CODE = '1' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+					(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' AND M.CANCEL_FLAG = 'Y' AND M.REMITTANCE_STATUS_CODE = '1' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS CANCEL_SHIPPING_TOTAL_AMOUNT
+				FROM (
+
+					SELECT
+						OI.SELLER_ID,
+						OI.REMITTANCE_DATE,
+						OI.CANCEL_FLAG,
+						OI.REMITTANCE_STATUS_CODE,
+						'ITEM' AS PRODUCT_TYPE,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_BASE_PRICE ELSE -OI.COMMISSION_BASE_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_BASE_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_PRICE ELSE -OI.COMMISSION_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SUPPLY_PRICE ELSE -OI.SUPPLY_PRICE END) * OI.QUANTITY) AS TOTAL_SUPPLY_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN 1 ELSE -1 END) * (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) * OI.QUANTITY) AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SELLER_POINT ELSE -OI.SELLER_POINT END) * OI.QUANTITY) AS TOTAL_SELLER_POINT_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SET_DISCOUNT_PRICE ELSE -OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY) AS TOTAL_SET_DISCOUNT_AMOUNT
+					FROM
+						OP_ORDER_ITEM OI
+							INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OI.SELLER_ID = #{sellerId}
+						</if>
+
+						AND REMITTANCE_STATUS_CODE != '0'
+
+						AND (
+							(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+							OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+						)
+
+						<choose>
+							<when test='conditionType == "LIST"'>
+								AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+							</when>
+							<otherwise>
+								AND OI.REMITTANCE_DATE = #{startDate}
+							</otherwise>
+						</choose>
+
+						AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+					</where>
+
+					GROUP BY OI.SELLER_ID, OI.REMITTANCE_DATE, OI.CANCEL_FLAG
+
+					UNION ALL
+
+					SELECT
+						OS.SELLER_ID,
+						OS.REMITTANCE_DATE,
+						'N' AS CANCEL_FLAG,
+						OS.REMITTANCE_STATUS_CODE,
+						'SHIPPING' AS PRODUCT_TYPE,
+						SUM(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+						0 AS TOTAL_COMMISSION_AMOUNT,
+						0 AS TOTAL_SUPPLY_AMOUNT,
+						0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+						0 AS TOTAL_SELLER_POINT_AMOUNT,
+					  	0 AS TOTAL_SET_DISCOUNT_AMOUNT
+					FROM
+						OP_ORDER_SHIPPING OS
+							INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OS.SELLER_ID = #{sellerId}
+						</if>
+
+						AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+						<choose>
+							<when test='conditionType == "LIST"'>
+								AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+							</when>
+							<otherwise>
+								AND OS.REMITTANCE_DATE = #{startDate}
+							</otherwise>
+						</choose>
+
+						AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+					</where>
+
+					GROUP BY OS.SELLER_ID, OS.REMITTANCE_DATE
+
+					UNION ALL
+
+					SELECT
+						OAP.SELLER_ID,
+						OAP.REMITTANCE_DATE,
+						'N' AS CANCEL_FLAG,
+						OAP.REMITTANCE_STATUS_CODE,
+						'ADD_PAYMENT' AS PRODUCT_TYPE,
+						SUM(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+						0 AS TOTAL_COMMISSION_AMOUNT,
+						0 AS TOTAL_SUPPLY_AMOUNT,
+						0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+						0 AS TOTAL_SELLER_POINT_AMOUNT,
+					  	0 AS TOTAL_SET_DISCOUNT_AMOUNT
+					FROM
+						OP_ORDER_ADD_PAYMENT OAP
+							INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OAP.SELLER_ID = #{sellerId}
+						</if>
+
+						AND REMITTANCE_STATUS_CODE != '0'
+						AND REMITTANCE_STATUS_CODE = #{statusCode}
+
+						<choose>
+							<when test='conditionType == "LIST"'>
+								AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate}
+							</when>
+							<otherwise>
+								AND OAP.REMITTANCE_DATE = #{startDate}
+							</otherwise>
+						</choose>
+
+						AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+					</where>
+
+					GROUP BY OAP.SELLER_ID, OAP.REMITTANCE_DATE
+				) M
+			) G
+			GROUP BY G.SELLER_ID, G.REMITTANCE_DATE
+		) T INNER JOIN OP_SELLER S ON T.SELLER_ID = S.SELLER_ID
+	</sql>
+
+	<select id="getRemittanceConfirmCountByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmCountByParam */
+		SELECT COUNT(1) FROM (
+			SELECT
+				S.*,
+				T.REMITTANCE_DATE,
+				T.ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+				T.ITEM_TOTAL_COMMISSION_AMOUNT,
+				T.ITEM_TOTAL_SUPPLY_AMOUNT,
+				T.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+				T.ITEM_TOTAL_SELLER_POINT_AMOUNT,
+				T.ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+				T.SHIPPING_TOTAL_AMOUNT,
+				T.ADD_PAYMENT_TOTAL_AMOUNT,
+				T.CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+				T.CANCEL_SHIPPING_TOTAL_AMOUNT
+			FROM (
+				SELECT
+					G.SELLER_ID,
+					G.REMITTANCE_DATE,
+					SUM(G.ITEM_TOTAL_COMMISSION_BASE_AMOUNT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+					SUM(G.ITEM_TOTAL_COMMISSION_AMOUNT) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+					SUM(G.ITEM_TOTAL_SUPPLY_AMOUNT) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+					SUM(G.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+					SUM(G.ITEM_TOTAL_SELLER_POINT_AMOUNT) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+					SUM(G.ITEM_TOTAL_SET_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+					SUM(G.SHIPPING_TOTAL_AMOUNT) AS SHIPPING_TOTAL_AMOUNT,
+					SUM(G.ADD_PAYMENT_TOTAL_AMOUNT) AS ADD_PAYMENT_TOTAL_AMOUNT,
+					SUM(G.CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT) AS CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+					SUM(G.CANCEL_SHIPPING_TOTAL_AMOUNT) AS CANCEL_SHIPPING_TOTAL_AMOUNT
+				FROM (
+					SELECT
+						M.SELLER_ID,
+						M.REMITTANCE_DATE,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SUPPLY_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_POINT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SET_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS SHIPPING_TOTAL_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ADD_PAYMENT' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ADD_PAYMENT_TOTAL_AMOUNT,
+
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' AND M.CANCEL_FLAG = 'Y' AND M.REMITTANCE_STATUS_CODE = '1' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' AND M.CANCEL_FLAG = 'Y' AND M.REMITTANCE_STATUS_CODE = '1' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS CANCEL_SHIPPING_TOTAL_AMOUNT
+					FROM (
+
+						SELECT
+							OI.SELLER_ID,
+							OI.REMITTANCE_DATE,
+							OI.CANCEL_FLAG,
+							OI.REMITTANCE_STATUS_CODE,
+							'ITEM' AS PRODUCT_TYPE,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_BASE_PRICE ELSE -OI.COMMISSION_BASE_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_PRICE ELSE -OI.COMMISSION_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SUPPLY_PRICE ELSE -OI.SUPPLY_PRICE END) * OI.QUANTITY) AS TOTAL_SUPPLY_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN 1 ELSE -1 END) * (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) * OI.QUANTITY) AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SELLER_POINT ELSE -OI.SELLER_POINT END) * OI.QUANTITY) AS TOTAL_SELLER_POINT_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SET_DISCOUNT_PRICE ELSE -OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY) AS TOTAL_SET_DISCOUNT_AMOUNT
+						FROM
+							OP_ORDER_ITEM OI
+								INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+						<where>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OI.SELLER_ID = #{sellerId}
+							</if>
+
+							<!-- AND REMITTANCE_STATUS_CODE != '0'
+
+							AND (
+								(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+								OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+							) -->
+
+							<choose>
+								<when test='confirm == null or confirm == ""'>
+									AND (OI.REMITTANCE_STATUS_CODE = '3' OR OI.REMITTANCE_STATUS_CODE = '4')
+								</when>
+								<when test='confirm == "N"'>
+									AND OI.REMITTANCE_STATUS_CODE = '3'
+								</when>
+								<when test='confirm == "Y"'>
+									AND OI.REMITTANCE_STATUS_CODE = '4'
+								</when>
+							</choose>
+
+							<choose>
+								<when test='conditionType == "LIST"'>
+									<!-- AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+									AND OI.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+								</when>
+								<when test='conditionType == "SELLER_LIST"'>
+									<!-- AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+									AND OI.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+								</when>
+								<otherwise>
+									AND OI.REMITTANCE_DATE = #{startDate}
+								</otherwise>
+							</choose>
+
+							<choose>
+								<when test="shLocgovCode != null and shLocgovCode != ''">
+									AND S.LOCGOV_CODE = #{shLocgovCode}
+								</when>
+								<otherwise>
+									<if test="shWdr != null and shWdr != ''">
+										AND S.LOCGOV_CODE IN (
+											SELECT LOCGOV_CODE FROM G_LOCGOV WHERE UPPER_LOCGOV_CODE = #{shWdr}
+										)
+									</if>
+								</otherwise>
+							</choose>
+
+							AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+						</where>
+
+						GROUP BY OI.SELLER_ID, OI.REMITTANCE_DATE, OI.CANCEL_FLAG
+
+						UNION ALL
+
+						SELECT
+							OS.SELLER_ID,
+							OS.REMITTANCE_DATE,
+							'N' AS CANCEL_FLAG,
+							OS.REMITTANCE_STATUS_CODE,
+							'SHIPPING' AS PRODUCT_TYPE,
+							SUM(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							0 AS TOTAL_COMMISSION_AMOUNT,
+							0 AS TOTAL_SUPPLY_AMOUNT,
+							0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							0 AS TOTAL_SELLER_POINT_AMOUNT,
+						  	0 AS TOTAL_SET_DISCOUNT_AMOUNT
+						FROM
+							OP_ORDER_SHIPPING OS
+								INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+						<where>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OS.SELLER_ID = #{sellerId}
+							</if>
+
+							<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2') -->
+
+							<choose>
+								<when test='confirm == null or confirm == ""'>
+									AND (REMITTANCE_STATUS_CODE = '3' OR REMITTANCE_STATUS_CODE = '4')
+								</when>
+								<when test='confirm == "N"'>
+									AND REMITTANCE_STATUS_CODE = '3'
+								</when>
+								<when test='confirm == "Y"'>
+									AND REMITTANCE_STATUS_CODE = '4'
+								</when>
+							</choose>
+
+							<choose>
+								<when test='conditionType == "LIST"'>
+									<!-- AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+									AND OS.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+								</when>
+								<when test='conditionType == "SELLER_LIST"'>
+									<!-- AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+									AND OS.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+								</when>
+								<otherwise>
+									AND OS.REMITTANCE_DATE = #{startDate}
+								</otherwise>
+							</choose>
+
+							AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+						</where>
+
+						GROUP BY OS.SELLER_ID, OS.REMITTANCE_DATE
+
+						UNION ALL
+
+						SELECT
+							OAP.SELLER_ID,
+							OAP.REMITTANCE_DATE,
+							'N' AS CANCEL_FLAG,
+							OAP.REMITTANCE_STATUS_CODE,
+							'ADD_PAYMENT' AS PRODUCT_TYPE,
+							SUM(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							0 AS TOTAL_COMMISSION_AMOUNT,
+							0 AS TOTAL_SUPPLY_AMOUNT,
+							0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							0 AS TOTAL_SELLER_POINT_AMOUNT,
+						  	0 AS TOTAL_SET_DISCOUNT_AMOUNT
+						FROM
+							OP_ORDER_ADD_PAYMENT OAP
+								INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+						<where>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OAP.SELLER_ID = #{sellerId}
+							</if>
+
+							<!-- AND REMITTANCE_STATUS_CODE != '0'
+							AND REMITTANCE_STATUS_CODE = #{statusCode} -->
+
+							<choose>
+								<when test='confirm == null or confirm == ""'>
+									AND (REMITTANCE_STATUS_CODE = '3' OR REMITTANCE_STATUS_CODE = '4')
+								</when>
+								<when test='confirm == "N"'>
+									AND REMITTANCE_STATUS_CODE = '3'
+								</when>
+								<when test='confirm == "Y"'>
+									AND REMITTANCE_STATUS_CODE = '4'
+								</when>
+							</choose>
+
+							<choose>
+								<when test='conditionType == "LIST"'>
+									<!-- AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+									AND OAP.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+								</when>
+								<when test='conditionType == "SELLER_LIST"'>
+									<!-- AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+									AND OAP.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+								</when>
+								<otherwise>
+									AND OAP.REMITTANCE_DATE = #{startDate}
+								</otherwise>
+							</choose>
+
+							AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+						</where>
+
+						GROUP BY OAP.SELLER_ID, OAP.REMITTANCE_DATE
+					) M
+				) G
+				GROUP BY G.SELLER_ID, G.REMITTANCE_DATE
+			) T INNER JOIN OP_SELLER S ON T.SELLER_ID = S.SELLER_ID
+		) T
+	</select>
+
+	<select id="getRemittanceConfirmListByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceConfirmResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmListByParam */
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				S.*,
+				T.LOCGOV_CODE,
+				<!-- T.LOCGOV_NM, -->
+				(SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV L WHERE L.LOCGOV_CODE = T.LOCGOV_CODE) AS LOCGOV_NM,
+				T.REMITTANCE_DATE,
+				T.CANCEL_FLAG,
+				T.REMITTANCE_STATUS_CODE,
+				T.PRODUCT_TYPE,
+				T.ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+				T.ITEM_TOTAL_COMMISSION_AMOUNT,
+				T.ITEM_TOTAL_SUPPLY_AMOUNT,
+				T.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+				T.ITEM_TOTAL_SELLER_POINT_AMOUNT,
+				T.ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+				T.SHIPPING_TOTAL_AMOUNT,
+				T.ADD_PAYMENT_TOTAL_AMOUNT,
+				T.CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+				T.CANCEL_SHIPPING_TOTAL_AMOUNT
+			FROM (
+				SELECT
+					G.SELLER_ID,
+					G.LOCGOV_CODE,
+					<!-- G.LOCGOV_NM, -->
+					G.REMITTANCE_DATE,
+					G.CANCEL_FLAG,
+					G.REMITTANCE_STATUS_CODE,
+					G.PRODUCT_TYPE,
+					SUM(G.ITEM_TOTAL_COMMISSION_BASE_AMOUNT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+					SUM(G.ITEM_TOTAL_COMMISSION_AMOUNT) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+					SUM(G.ITEM_TOTAL_SUPPLY_AMOUNT) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+					SUM(G.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+					SUM(G.ITEM_TOTAL_SELLER_POINT_AMOUNT) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+					SUM(G.ITEM_TOTAL_SET_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+					SUM(G.SHIPPING_TOTAL_AMOUNT) AS SHIPPING_TOTAL_AMOUNT,
+					SUM(G.ADD_PAYMENT_TOTAL_AMOUNT) AS ADD_PAYMENT_TOTAL_AMOUNT,
+					SUM(G.CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT) AS CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+					SUM(G.CANCEL_SHIPPING_TOTAL_AMOUNT) AS CANCEL_SHIPPING_TOTAL_AMOUNT
+				FROM (
+					SELECT
+						M.SELLER_ID,
+						M.LOCGOV_CODE,
+						<!-- (SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV WHERE LOCGOV_CODE = M.LOCGOV_CODE) AS LOCGOV_NM, -->
+						M.REMITTANCE_DATE,
+						M.CANCEL_FLAG,
+						M.REMITTANCE_STATUS_CODE,
+						M.PRODUCT_TYPE,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SUPPLY_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_POINT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SET_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS SHIPPING_TOTAL_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'ADD_PAYMENT' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ADD_PAYMENT_TOTAL_AMOUNT,
+
+						(CASE WHEN M.PRODUCT_TYPE = 'ITEM' AND M.CANCEL_FLAG = 'Y' AND M.REMITTANCE_STATUS_CODE = '1' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS CANCEL_ITEM_TOTAL_SUPPLY_AMOUNT,
+						(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' AND M.CANCEL_FLAG = 'Y' AND M.REMITTANCE_STATUS_CODE = '1' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS CANCEL_SHIPPING_TOTAL_AMOUNT
+					FROM (
+
+						SELECT
+							OI.SELLER_ID,
+							S.LOCGOV_CODE,
+							OI.REMITTANCE_DATE,
+							OI.CANCEL_FLAG,
+							OI.REMITTANCE_STATUS_CODE,
+							'ITEM' AS PRODUCT_TYPE,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_BASE_PRICE ELSE -OI.COMMISSION_BASE_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_PRICE ELSE -OI.COMMISSION_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SUPPLY_PRICE ELSE -OI.SUPPLY_PRICE END) * OI.QUANTITY) AS TOTAL_SUPPLY_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN 1 ELSE -1 END) * (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) * OI.QUANTITY) AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SELLER_POINT ELSE -OI.SELLER_POINT END) * OI.QUANTITY) AS TOTAL_SELLER_POINT_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SET_DISCOUNT_PRICE ELSE -OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY) AS TOTAL_SET_DISCOUNT_AMOUNT
+						FROM
+							OP_ORDER_ITEM OI
+								INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+								JOIN OP_SELLER S ON S.SELLER_ID = OI.SELLER_ID
+						<where>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OI.SELLER_ID = #{sellerId}
+							</if>
+
+							<!-- AND REMITTANCE_STATUS_CODE != '0'
+
+							AND (
+								(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+								OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+							) -->
+
+							<choose>
+								<when test='confirm == null or confirm == ""'>
+									AND (OI.REMITTANCE_STATUS_CODE = '3' OR OI.REMITTANCE_STATUS_CODE = '4')
+								</when>
+								<when test='confirm == "N"'>
+									AND OI.REMITTANCE_STATUS_CODE = '3'
+								</when>
+								<when test='confirm == "Y"'>
+									AND OI.REMITTANCE_STATUS_CODE = '4'
+								</when>
+							</choose>
+
+							<choose>
+								<when test='conditionType == "LIST"'>
+									<!-- AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+									AND OI.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+								</when>
+								<when test='conditionType == "SELLER_LIST"'>
+									<!-- AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+									AND OI.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+								</when>
+								<otherwise>
+									AND OI.REMITTANCE_DATE = #{startDate}
+								</otherwise>
+							</choose>
+
+							<choose>
+								<when test="shLocgovCode != null and shLocgovCode != ''">
+									AND S.LOCGOV_CODE = #{shLocgovCode}
+								</when>
+								<otherwise>
+									<if test="shWdr != null and shWdr != ''">
+										AND S.LOCGOV_CODE IN (
+											SELECT LOCGOV_CODE FROM G_LOCGOV WHERE UPPER_LOCGOV_CODE = #{shWdr}
+										)
+									</if>
+								</otherwise>
+							</choose>
+
+							AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+						</where>
+
+						GROUP BY OI.SELLER_ID, OI.REMITTANCE_DATE, OI.CANCEL_FLAG
+
+						UNION ALL
+
+						SELECT
+							OS.SELLER_ID,
+							S.LOCGOV_CODE,
+							OS.REMITTANCE_DATE,
+							'N' AS CANCEL_FLAG,
+							OS.REMITTANCE_STATUS_CODE,
+							'SHIPPING' AS PRODUCT_TYPE,
+							SUM(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							0 AS TOTAL_COMMISSION_AMOUNT,
+							0 AS TOTAL_SUPPLY_AMOUNT,
+							0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							0 AS TOTAL_SELLER_POINT_AMOUNT,
+						  	0 AS TOTAL_SET_DISCOUNT_AMOUNT
+						FROM
+							OP_ORDER_SHIPPING OS
+								INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+								JOIN OP_SELLER S ON S.SELLER_ID = OS.SELLER_ID
+						<where>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OS.SELLER_ID = #{sellerId}
+							</if>
+
+							<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2') -->
+
+							<choose>
+								<when test='confirm == null or confirm == ""'>
+									AND (REMITTANCE_STATUS_CODE = '3' OR REMITTANCE_STATUS_CODE = '4')
+								</when>
+								<when test='confirm == "N"'>
+									AND REMITTANCE_STATUS_CODE = '3'
+								</when>
+								<when test='confirm == "Y"'>
+									AND REMITTANCE_STATUS_CODE = '4'
+								</when>
+							</choose>
+
+							<choose>
+								<when test='conditionType == "LIST"'>
+									<!-- AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+									AND OS.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+								</when>
+								<when test='conditionType == "SELLER_LIST"'>
+									<!-- AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+									AND OS.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+								</when>
+								<otherwise>
+									AND OS.REMITTANCE_DATE = #{startDate}
+								</otherwise>
+							</choose>
+
+							AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+						</where>
+
+						GROUP BY OS.SELLER_ID, OS.REMITTANCE_DATE
+
+						UNION ALL
+
+						SELECT
+							OAP.SELLER_ID,
+							S.LOCGOV_CODE,
+							OAP.REMITTANCE_DATE,
+							'N' AS CANCEL_FLAG,
+							OAP.REMITTANCE_STATUS_CODE,
+							'ADD_PAYMENT' AS PRODUCT_TYPE,
+							SUM(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							0 AS TOTAL_COMMISSION_AMOUNT,
+							0 AS TOTAL_SUPPLY_AMOUNT,
+							0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							0 AS TOTAL_SELLER_POINT_AMOUNT,
+						  	0 AS TOTAL_SET_DISCOUNT_AMOUNT
+						FROM
+							OP_ORDER_ADD_PAYMENT OAP
+								INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+								JOIN OP_SELLER S ON S.SELLER_ID = OAP.SELLER_ID
+						<where>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OAP.SELLER_ID = #{sellerId}
+							</if>
+
+							<!-- AND REMITTANCE_STATUS_CODE != '0'
+							AND REMITTANCE_STATUS_CODE = #{statusCode} -->
+
+							<choose>
+								<when test='confirm == null or confirm == ""'>
+									AND (REMITTANCE_STATUS_CODE = '3' OR REMITTANCE_STATUS_CODE = '4')
+								</when>
+								<when test='confirm == "N"'>
+									AND REMITTANCE_STATUS_CODE = '3'
+								</when>
+								<when test='confirm == "Y"'>
+									AND REMITTANCE_STATUS_CODE = '4'
+								</when>
+							</choose>
+
+							<choose>
+								<when test='conditionType == "LIST"'>
+									<!-- AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+									AND OAP.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+								</when>
+								<when test='conditionType == "SELLER_LIST"'>
+									<!-- AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+									AND OAP.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+								</when>
+								<otherwise>
+									AND OAP.REMITTANCE_DATE = #{startDate}
+								</otherwise>
+							</choose>
+
+							AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+						</where>
+
+						GROUP BY OAP.SELLER_ID, OAP.REMITTANCE_DATE
+					) M
+				) G
+				GROUP BY G.SELLER_ID, G.REMITTANCE_DATE
+			) T INNER JOIN OP_SELLER S ON T.SELLER_ID = S.SELLER_ID
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getRemittanceConfirmDetailCountByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmDetailCountByParam */
+
+		SELECT SUM(T.COUNT) AS `COUNT` FROM (
+			SELECT
+				'ITEM' AS PRODUCT_TYPE,
+				COUNT(*) AS `COUNT`
+			FROM
+				OP_ORDER_ITEM OI
+					INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					JOIN OP_ORDER_PAYMENT OP ON OI.ORDER_CODE = OP.ORDER_CODE
+					JOIN OP_USER U ON OI.USER_ID = U.USER_ID
+			<where>
+				<choose>
+					<when test='viewTarget == "CANCEL"'>
+						AND OI.CANCEL_FLAG = 'Y'
+					</when>
+					<otherwise>
+
+					</otherwise>
+				</choose>
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OI.SELLER_ID = #{sellerId}
+					</if>
+
+					<!-- AND REMITTANCE_STATUS_CODE != '0'
+
+					AND (
+						(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+						OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+					) -->
+
+					AND (OI.REMITTANCE_STATUS_CODE = '3' OR OI.REMITTANCE_STATUS_CODE = '4')
+
+					<choose>
+						<when test='conditionType == "LIST"'>
+							<!-- AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+							AND OI.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+						</when>
+						<otherwise>
+							AND OI.REMITTANCE_DATE = #{startDate}
+						</otherwise>
+					</choose>
+
+					<if test="where != null and where != '' and query != null and query != ''">
+						<choose>
+							<when test="where == 'ORDER_CODE'">
+								AND OI.ORDER_CODE = #{query}
+							</when>
+							<when test="where == 'USER_NAME'">
+								AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+							</when>
+							<when test="where == 'ITEM_CODE'">
+								AND OI.ITEM_USER_CODE = #{query}
+							</when>
+							<when test="where == 'ITEM_NAME'">
+								AND OI.ITEM_NAME = #{query}
+							</when>
+						</choose>
+					</if>
+
+					AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+			</where>
+
+			UNION ALL
+
+			SELECT
+				'SHIPPING' AS PRODUCT_TYPE,
+				COUNT(*) AS `COUNT`
+			FROM
+				OP_ORDER_SHIPPING OS
+					INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OS.SELLER_ID = #{sellerId}
+				</if>
+
+				<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2') -->
+				AND (REMITTANCE_STATUS_CODE = '3' OR REMITTANCE_STATUS_CODE = '4')
+
+				<choose>
+					<when test='conditionType == "LIST"'>
+						<!-- AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+						AND OS.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+					</when>
+					<otherwise>
+						AND OS.REMITTANCE_DATE = #{startDate}
+					</otherwise>
+				</choose>
+
+				AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+
+			UNION ALL
+
+			SELECT
+				'ADD_PAYMENT' AS PRODUCT_TYPE,
+				COUNT(*) AS `COUNT`
+			FROM
+				OP_ORDER_ADD_PAYMENT OAP
+					INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OAP.SELLER_ID = #{sellerId}
+				</if>
+
+				<!-- AND REMITTANCE_STATUS_CODE != '0'
+				AND REMITTANCE_STATUS_CODE = #{statusCode} -->
+
+				AND (REMITTANCE_STATUS_CODE = '3' OR REMITTANCE_STATUS_CODE = '4')
+
+				<choose>
+					<when test='conditionType == "LIST"'>
+						<!-- AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+						AND OAP.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+					</when>
+					<otherwise>
+						AND OAP.REMITTANCE_DATE = #{startDate}
+					</otherwise>
+				</choose>
+
+				AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+
+		) T
+
+	</select>
+
+	<select id="getRemittanceConfirmDetailListByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceConfirmDetailResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmDetailListByParam */
+		<include refid="CommonMapper.paginationHeader" />
+
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', T_A.BUYER_NAME_ENC, '', 0) AS BUYER_NAME
+			FROM (
+				SELECT T.*
+				FROM (
+					SELECT
+						OI.ORDER_CODE,
+						OI.ORDER_SEQUENCE,
+						CONCAT('ITEM-', OI.ORDER_CODE, '-', OI.ORDER_SEQUENCE, '-', OI.ITEM_SEQUENCE) AS REMITTANCE_KEY,
+						OI.ITEM_USER_CODE,
+						OI.REMITTANCE_STATUS_CODE,
+						'ITEM' AS PRODUCT_TYPE,
+						OI.REMITTANCE_DATE,
+						OI.ITEM_NAME,
+						OI.OPTIONS,
+						OI.COMMISSION_BASE_PRICE,
+						OI.COMMISSION_RATE,
+						OI.COMMISSION_PRICE,
+						OI.COMMISSION_TYPE,
+						OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END) AS SELLER_DISCOUNT_PRICE,
+						OI.SELLER_DISCOUNT_DETAIL,
+						OI.SELLER_POINT,
+						OI.SET_ITEM_FLAG,
+						OI.SET_DISCOUNT_PRICE,
+						OI.SALE_PRICE,
+						(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE ELSE OI.SUPPLY_PRICE END) AS SUPPLY_PRICE,
+						(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE + OI.SELLER_POINT + (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) + OI.SET_DISCOUNT_PRICE ELSE OI.SUPPLY_PRICE - OI.SELLER_POINT - (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) - OI.SET_DISCOUNT_PRICE END) AS REMITTANCE_PRICE,
+						OI.QUANTITY,
+						OP.REMAINING_AMOUNT,
+						OI.PAY_DATE,
+						OI.CONFIRM_DATE,
+						OI.SELLER_ID,
+						U.USER_NAME AS BUYER_NAME_ENC
+					FROM
+						OP_ORDER_ITEM OI
+							INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+							JOIN OP_ORDER_PAYMENT OP ON OI.ORDER_CODE = OP.ORDER_CODE
+							JOIN OP_USER U ON OI.USER_ID = U.USER_ID
+					<where>
+						<choose>
+							<when test='viewTarget == "CANCEL"'>
+								AND OI.CANCEL_FLAG = 'Y'
+							</when>
+							<otherwise>
+
+							</otherwise>
+						</choose>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OI.SELLER_ID = #{sellerId}
+							</if>
+
+							<!-- AND REMITTANCE_STATUS_CODE != '0'
+
+							AND (
+								(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+								OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+							) -->
+							AND (OI.REMITTANCE_STATUS_CODE = '3' OR OI.REMITTANCE_STATUS_CODE = '4')
+
+							<choose>
+								<when test='conditionType == "LIST"'>
+									<!-- AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+									AND OI.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+								</when>
+								<otherwise>
+									AND OI.REMITTANCE_DATE = #{startDate}
+								</otherwise>
+							</choose>
+
+							AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+
+							<if test="where != null and where != '' and query != null and query != ''">
+								<choose>
+									<when test="where == 'ORDER_CODE'">
+										AND OI.ORDER_CODE = #{query}
+									</when>
+									<when test="where == 'USER_NAME'">
+										AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+									</when>
+									<when test="where == 'ITEM_CODE'">
+										AND OI.ITEM_USER_CODE = #{query}
+									</when>
+									<when test="where == 'ITEM_NAME'">
+										AND OI.ITEM_NAME = #{query}
+									</when>
+								</choose>
+							</if>
+					</where>
+
+					UNION ALL
+
+					SELECT
+						OS.ORDER_CODE,
+						OS.ORDER_SEQUENCE,
+						CONCAT('SHIPPING-', OS.ORDER_CODE, '-', OS.ORDER_SEQUENCE, '-', OS.SHIPPING_SEQUENCE) AS REMITTANCE_KEY,
+						'' AS ITEM_USER_CODE,
+						OS.REMITTANCE_STATUS_CODE,
+						'SHIPPING' AS PRODUCT_TYPE,
+						OS.REMITTANCE_DATE,
+						'배송비' AS ITEM_NAME,
+						'' AS OPTIONS,
+						(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS COMMISSION_BASE_PRICE,
+						0 AS COMMISSION_RATE,
+						0 AS COMMISSION_PRICE,
+						'0' AS COMMISSION_TYPE,
+						0 AS SELLER_DISCOUNT_PRICE,
+						'' AS SELLER_DISCOUNT_DETAIL,
+						0 AS SELLER_POINT,
+						'' AS SET_ITEM_FLAG,
+						0 AS SET_DISCOUNT_PRICE,
+						(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS SALE_PRICE,
+						(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS SUPPLY_PRICE,
+						(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS REMITTANCE_PRICE,
+						1 AS QUANTITY,
+						0 AS REMAINING_AMOUNT,
+						'' AS PAY_DATE,
+						'' AS CONFIRM_DATE,
+						0 AS SELLER_ID,
+						'' AS BUYER_NAME_ENC
+					FROM
+						OP_ORDER_SHIPPING OS
+							INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OS.SELLER_ID = #{sellerId}
+						</if>
+
+						<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2') -->
+						AND (REMITTANCE_STATUS_CODE = '3' OR REMITTANCE_STATUS_CODE = '4')
+
+						<choose>
+							<when test='conditionType == "LIST"'>
+								<!-- AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+								AND OS.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+							</when>
+							<otherwise>
+								AND OS.REMITTANCE_DATE = #{startDate}
+							</otherwise>
+						</choose>
+
+						AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+					</where>
+
+					UNION ALL
+
+					SELECT
+						OAP.ORDER_CODE,
+						'' AS ORDER_SEQUENCE,
+						CONCAT('ADD_PAYMENT-', OAP.ORDER_CODE, '-' , OAP.ADD_PAYMENT_ID) AS REMITTANCE_KEY,
+						'' AS ITEM_USER_CODE,
+						OAP.REMITTANCE_STATUS_CODE,
+						'ADD_PAYMENT' AS PRODUCT_TYPE,
+						OAP.REMITTANCE_DATE,
+						OAP.SUBJECT AS ITEM_NAME,
+						'' AS OPTIONS,
+						(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS COMMISSION_BASE_PRICE,
+						0 AS COMMISSION_RATE,
+						0 AS COMMISSION_PRICE,
+						'0' AS COMMISSION_TYPE,
+						0 AS SELLER_DISCOUNT_PRICE,
+						'' AS SELLER_DISCOUNT_DETAIL,
+						0 AS SELLER_POINT,
+						'' AS SET_ITEM_FLAG,
+						0 AS SET_DISCOUNT_PRICE,
+						(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS SALE_PRICE,
+						(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS SUPPLY_PRICE,
+						(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS REMITTANCE_PRICE,
+						1 AS QUANTITY,
+						0 AS REMAINING_AMOUNT,
+						'' AS PAY_DATE,
+						'' AS CONFIRM_DATE,
+						0 AS SELLER_ID,
+						'' AS BUYER_NAME_ENC
+					FROM
+						OP_ORDER_ADD_PAYMENT OAP
+							INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OAP.SELLER_ID = #{sellerId}
+						</if>
+
+						<!-- AND REMITTANCE_STATUS_CODE != '0'
+						AND REMITTANCE_STATUS_CODE = #{statusCode} -->
+
+						AND (REMITTANCE_STATUS_CODE = '3' OR REMITTANCE_STATUS_CODE = '4')
+
+						<choose>
+							<when test='conditionType == "LIST"'>
+								<!-- AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+								AND OAP.REMITTANCE_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+							</when>
+							<otherwise>
+								AND OAP.REMITTANCE_DATE = #{startDate}
+							</otherwise>
+						</choose>
+
+						AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+					</where>
+
+				) T ORDER BY T.ORDER_CODE DESC, T.PRODUCT_TYPE
+
+			<include refid="CommonMapper.paginationFooter" />
+		) T_A
+	</select>
+
+	<sql id="defaultRemittanceExpectedQueryForShipping">
+		FROM OP_ORDER_SHIPPING OS
+			INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OS.SELLER_ID = #{sellerId}
+			</if>
+
+			AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+			AND OS.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+			AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+		</where>
+	</sql>
+
+	<sql id="defaultRemittanceExpectedQueryForAddPayment">
+		FROM OP_ORDER_ADD_PAYMENT OAP
+			INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OAP.SELLER_ID = #{sellerId}
+			</if>
+
+			AND (OAP.REMITTANCE_STATUS_CODE = '1' OR OAP.REMITTANCE_STATUS_CODE = '2')
+			AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+			AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+		</where>
+	</sql>
+
+	<sql id="defaultRemittanceExpectedQueryForItem">
+		FROM OP_ORDER_ITEM OI
+			INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OI.SELLER_ID = #{sellerId}
+			</if>
+
+			AND OI.REMITTANCE_STATUS_CODE != '0'
+
+			AND (
+				(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+				OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+			)
+
+			AND OI.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+			AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+		</where>
+	</sql>
+
+	<sql id="baseRemittanceExpectedListQuery">
+		SELECT
+			S.*,
+			T.ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+			T.ITEM_TOTAL_COMMISSION_AMOUNT,
+			T.ITEM_TOTAL_SUPPLY_AMOUNT,
+			T.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+			T.ITEM_TOTAL_SELLER_POINT_AMOUNT,
+		    T.ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+			T.SHIPPING_TOTAL_AMOUNT,
+			T.ADD_PAYMENT_TOTAL_AMOUNT
+		FROM (
+			SELECT
+				M1.SELLER_ID,
+				SUM(M1.ITEM_TOTAL_COMMISSION_BASE_AMOUNT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+				SUM(M1.ITEM_TOTAL_COMMISSION_AMOUNT) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+				SUM(M1.ITEM_TOTAL_SUPPLY_AMOUNT) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+				SUM(M1.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+				SUM(M1.ITEM_TOTAL_SELLER_POINT_AMOUNT) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+				SUM(M1.ITEM_TOTAL_SET_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+				SUM(M1.SHIPPING_TOTAL_AMOUNT) AS SHIPPING_TOTAL_AMOUNT,
+				SUM(M1.ADD_PAYMENT_TOTAL_AMOUNT) AS ADD_PAYMENT_TOTAL_AMOUNT
+			FROM (
+				SELECT
+					M.SELLER_ID,
+					SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+					SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+					SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SUPPLY_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+					SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+					SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_POINT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+					SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SET_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+					SUM(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS SHIPPING_TOTAL_AMOUNT,
+					SUM(CASE WHEN M.PRODUCT_TYPE = 'ADD_PAYMENT' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ADD_PAYMENT_TOTAL_AMOUNT
+				FROM (
+
+					SELECT
+						OI.SELLER_ID,
+						'ITEM' AS PRODUCT_TYPE,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_BASE_PRICE ELSE -OI.COMMISSION_BASE_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_BASE_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_PRICE ELSE -OI.COMMISSION_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SUPPLY_PRICE ELSE -OI.SUPPLY_PRICE END) * OI.QUANTITY) AS TOTAL_SUPPLY_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN 1 ELSE -1 END) * (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) * OI.QUANTITY) AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SELLER_POINT ELSE -OI.SELLER_POINT END) * OI.QUANTITY) AS TOTAL_SELLER_POINT_AMOUNT,
+						SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SET_DISCOUNT_PRICE ELSE -OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY) AS TOTAL_SET_DISCOUNT_AMOUNT
+					FROM OP_ORDER_ITEM OI
+						INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OI.SELLER_ID = #{sellerId}
+						</if>
+
+						AND OI.REMITTANCE_STATUS_CODE != '0'
+
+						AND (
+							(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+							OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+						)
+
+						AND OI.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+						AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+					</where>
+
+					GROUP BY OI.SELLER_ID
+
+					UNION ALL
+
+					SELECT
+						OS.SELLER_ID,
+						'SHIPPING' AS PRODUCT_TYPE,
+						SUM(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+						0 AS TOTAL_COMMISSION_AMOUNT,
+						0 AS TOTAL_SUPPLY_AMOUNT,
+						0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+						0 AS TOTAL_SELLER_POINT_AMOUNT,
+						0 AS TOTAL_SET_DISCOUNT_AMOUNT
+
+					FROM OP_ORDER_SHIPPING OS
+						INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OS.SELLER_ID = #{sellerId}
+						</if>
+
+						AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+						AND OS.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+						AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+					</where>
+
+					GROUP BY OS.SELLER_ID
+
+					UNION ALL
+
+					SELECT
+						OAP.SELLER_ID,
+						'ADD_PAYMENT' AS PRODUCT_TYPE,
+						SUM(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+						0 AS TOTAL_COMMISSION_AMOUNT,
+						0 AS TOTAL_SUPPLY_AMOUNT,
+						0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+						0 AS TOTAL_SELLER_POINT_AMOUNT,
+						0 AS TOTAL_SET_DISCOUNT_AMOUNT
+
+					FROM OP_ORDER_ADD_PAYMENT OAP
+						INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OAP.SELLER_ID = #{sellerId}
+						</if>
+
+						AND (OAP.REMITTANCE_STATUS_CODE = '1' OR OAP.REMITTANCE_STATUS_CODE = '2')
+						AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+						AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+					</where>
+
+					GROUP BY OAP.SELLER_ID
+
+				) M	GROUP BY M.SELLER_ID, M.PRODUCT_TYPE
+			) M1 GROUP BY M1.SELLER_ID
+		) T INNER JOIN OP_SELLER S ON T.SELLER_ID = S.SELLER_ID
+	</sql>
+
+	<select id="getRemittanceExpectedCountByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceExpectedCountByParam */
+		SELECT COUNT(1) FROM (
+			SELECT
+				S.*,
+				(SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV L WHERE L.LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM,
+				T.REMITTANCE_DATE,
+				T.REMITTANCE_EXPECTED_DATE,
+				T.ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+				T.ITEM_TOTAL_COMMISSION_AMOUNT,
+				T.ITEM_TOTAL_SUPPLY_AMOUNT,
+				T.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+				T.ITEM_TOTAL_SELLER_POINT_AMOUNT,
+			    T.ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+				T.SHIPPING_TOTAL_AMOUNT,
+				T.ADD_PAYMENT_TOTAL_AMOUNT
+			FROM (
+				SELECT
+					M1.SELLER_ID,
+					M1.REMITTANCE_DATE,
+					M1.REMITTANCE_EXPECTED_DATE,
+					SUM(M1.ITEM_TOTAL_COMMISSION_BASE_AMOUNT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+					SUM(M1.ITEM_TOTAL_COMMISSION_AMOUNT) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+					SUM(M1.ITEM_TOTAL_SUPPLY_AMOUNT) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+					SUM(M1.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+					SUM(M1.ITEM_TOTAL_SELLER_POINT_AMOUNT) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+					SUM(M1.ITEM_TOTAL_SET_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+					SUM(M1.SHIPPING_TOTAL_AMOUNT) AS SHIPPING_TOTAL_AMOUNT,
+					SUM(M1.ADD_PAYMENT_TOTAL_AMOUNT) AS ADD_PAYMENT_TOTAL_AMOUNT
+				FROM (
+					SELECT
+						M.SELLER_ID,
+						M.REMITTANCE_DATE,
+						M.REMITTANCE_EXPECTED_DATE,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SUPPLY_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_POINT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SET_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS SHIPPING_TOTAL_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ADD_PAYMENT' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ADD_PAYMENT_TOTAL_AMOUNT
+					FROM (
+
+						SELECT
+							OI.SELLER_ID,
+							'ITEM' AS PRODUCT_TYPE,
+							OI.REMITTANCE_DATE,
+							OI.REMITTANCE_EXPECTED_DATE,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_BASE_PRICE ELSE -OI.COMMISSION_BASE_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_PRICE ELSE -OI.COMMISSION_PRICE END) * OI.QUANTITY) AS TOTAL_COMMISSION_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SUPPLY_PRICE ELSE -OI.SUPPLY_PRICE END) * OI.QUANTITY) AS TOTAL_SUPPLY_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN 1 ELSE -1 END) * (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) * OI.QUANTITY) AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SELLER_POINT ELSE -OI.SELLER_POINT END) * OI.QUANTITY) AS TOTAL_SELLER_POINT_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SET_DISCOUNT_PRICE ELSE -OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY) AS TOTAL_SET_DISCOUNT_AMOUNT
+						FROM OP_ORDER_ITEM OI
+							INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+							JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						<where>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OI.SELLER_ID = #{sellerId}
+							</if>
+
+							<if test="shLocgovCode != null and shLocgovCode != ''">
+								AND S.LOCGOV_CODE = #{shLocgovCode}
+							</if>
+
+							<if test="shWdr != null and shWdr != ''">
+								<if test="shLocgovCode == null or shLocgovCode == ''">
+									AND S.LOCGOV_CODE IN (
+															SELECT LOCGOV_CODE
+																FROM G_LOCGOV
+																WHERE UPPER_LOCGOV_CODE = #{shWdr}
+															)
+								</if>
+							</if>
+
+							<choose>
+								<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+									AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								</when>
+								<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+									AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+							</choose>
+
+							<!-- AND OI.REMITTANCE_STATUS_CODE != '0'
+							AND (
+								(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+								OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+							)
+							AND OI.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate} -->
+							AND OI.REMITTANCE_EXPECTED_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+							AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+							AND OI.REMITTANCE_ID IS NULL
+							AND OI.ORDER_STATUS = '40'
+						</where>
+
+						GROUP BY OI.SELLER_ID, OI.REMITTANCE_DATE, OI.REMITTANCE_EXPECTED_DATE
+
+						UNION ALL
+
+						SELECT
+							OS.SELLER_ID,
+							'SHIPPING' AS PRODUCT_TYPE,
+							OS.REMITTANCE_DATE,
+							OS.REMITTANCE_EXPECTED_DATE,
+							SUM(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							0 AS TOTAL_COMMISSION_AMOUNT,
+							0 AS TOTAL_SUPPLY_AMOUNT,
+							0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							0 AS TOTAL_SELLER_POINT_AMOUNT,
+							0 AS TOTAL_SET_DISCOUNT_AMOUNT
+
+						FROM OP_ORDER_SHIPPING OS
+						INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+						JOIN OP_SELLER S ON OS.SELLER_ID = S.SELLER_ID
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OS.SELLER_ID = #{sellerId}
+						</if>
+
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND S.LOCGOV_CODE = #{shLocgovCode}
+						</if>
+
+						<if test="shWdr != null and shWdr != ''">
+							<if test="shLocgovCode == null or shLocgovCode == ''">
+								AND S.LOCGOV_CODE IN (
+														SELECT LOCGOV_CODE
+															FROM G_LOCGOV
+															WHERE UPPER_LOCGOV_CODE = #{shWdr}
+														)
+							</if>
+						</if>
+
+						<choose>
+							<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+								AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+							</when>
+							<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+								AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+							</when>
+						</choose>
+
+						<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+						AND OS.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate} -->
+						AND OS.REMITTANCE_EXPECTED_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+						AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+						AND OS.REMITTANCE_ID IS NULL
+					</where>
+
+						GROUP BY OS.SELLER_ID, OS.REMITTANCE_DATE, OS.REMITTANCE_EXPECTED_DATE
+
+						UNION ALL
+
+						SELECT
+							OAP.SELLER_ID,
+							'ADD_PAYMENT' AS PRODUCT_TYPE,
+							OAP.REMITTANCE_DATE,
+							OAP.REMITTANCE_EXPECTED_DATE,
+							SUM(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							0 AS TOTAL_COMMISSION_AMOUNT,
+							0 AS TOTAL_SUPPLY_AMOUNT,
+							0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							0 AS TOTAL_SELLER_POINT_AMOUNT,
+							0 AS TOTAL_SET_DISCOUNT_AMOUNT
+
+						FROM OP_ORDER_ADD_PAYMENT OAP
+						INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+						JOIN OP_SELLER S ON OAP.SELLER_ID = S.SELLER_ID
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OAP.SELLER_ID = #{sellerId}
+						</if>
+
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND S.LOCGOV_CODE = #{shLocgovCode}
+						</if>
+
+						<if test="shWdr != null and shWdr != ''">
+							<if test="shLocgovCode == null or shLocgovCode == ''">
+								AND S.LOCGOV_CODE IN (
+														SELECT LOCGOV_CODE
+															FROM G_LOCGOV
+															WHERE UPPER_LOCGOV_CODE = #{shWdr}
+														)
+							</if>
+						</if>
+
+						<choose>
+							<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+								AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+							</when>
+							<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+								AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+							</when>
+						</choose>
+
+						<!-- AND (OAP.REMITTANCE_STATUS_CODE = '1' OR OAP.REMITTANCE_STATUS_CODE = '2')
+						AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate} -->
+						AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+						AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+						AND OAP.REMITTANCE_ID IS NULL
+					</where>
+
+						GROUP BY OAP.SELLER_ID, OAP.REMITTANCE_DATE, OAP.REMITTANCE_EXPECTED_DATE
+
+					) M	GROUP BY M.SELLER_ID, M.PRODUCT_TYPE, M.REMITTANCE_EXPECTED_DATE
+				) M1 GROUP BY M1.SELLER_ID, M1.REMITTANCE_EXPECTED_DATE
+			) T INNER JOIN OP_SELLER S ON T.SELLER_ID = S.SELLER_ID
+		) T
+	</select>
+
+	<select id="getRemittanceExpectedListByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceExpectedResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceExpectedListByParam */
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				S.*,
+				(SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV L WHERE L.LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM,
+				<!-- T.REMITTANCE_DATE, 정산되지 않은 항목만 조회하므로 수정 -->
+				'' AS REMITTANCE_DATE,
+				T.OR_CNT,
+				T.REMITTANCE_EXPECTED_DATE,
+				T.ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+				T.ITEM_TOTAL_COMMISSION_AMOUNT,
+				T.ITEM_TOTAL_SUPPLY_AMOUNT,
+				T.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+				T.ITEM_TOTAL_SELLER_POINT_AMOUNT,
+			    T.ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+				T.SHIPPING_TOTAL_AMOUNT,
+				T.ADD_PAYMENT_TOTAL_AMOUNT
+			FROM (
+				SELECT
+					M1.SELLER_ID,
+					M1.OR_CNT,
+					M1.REMITTANCE_DATE,
+					M1.REMITTANCE_EXPECTED_DATE,
+					SUM(M1.ITEM_TOTAL_COMMISSION_BASE_AMOUNT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+					SUM(M1.ITEM_TOTAL_COMMISSION_AMOUNT) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+					SUM(M1.ITEM_TOTAL_SUPPLY_AMOUNT) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+					SUM(M1.ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+					SUM(M1.ITEM_TOTAL_SELLER_POINT_AMOUNT) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+					SUM(M1.ITEM_TOTAL_SET_DISCOUNT_AMOUNT) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+					SUM(M1.SHIPPING_TOTAL_AMOUNT) AS SHIPPING_TOTAL_AMOUNT,
+					SUM(M1.ADD_PAYMENT_TOTAL_AMOUNT) AS ADD_PAYMENT_TOTAL_AMOUNT
+				FROM (
+					SELECT
+						M.SELLER_ID,
+						M.OR_CNT,
+						M.REMITTANCE_DATE,
+						M.REMITTANCE_EXPECTED_DATE,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_COMMISSION_AMOUNT ELSE 0 END) AS ITEM_TOTAL_COMMISSION_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SUPPLY_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SUPPLY_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SELLER_POINT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SELLER_POINT_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ITEM' THEN TOTAL_SET_DISCOUNT_AMOUNT ELSE 0 END) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'SHIPPING' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS SHIPPING_TOTAL_AMOUNT,
+						SUM(CASE WHEN M.PRODUCT_TYPE = 'ADD_PAYMENT' THEN TOTAL_COMMISSION_BASE_AMOUNT ELSE 0 END) AS ADD_PAYMENT_TOTAL_AMOUNT
+					FROM (
+
+						SELECT
+							OI.SELLER_ID,
+							COUNT(OI.SELLER_ID) as OR_CNT,
+							'ITEM' AS PRODUCT_TYPE,
+							OI.REMITTANCE_DATE,
+							OI.REMITTANCE_EXPECTED_DATE,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_BASE_PRICE ELSE -OI.COMMISSION_BASE_PRICE END) * OI.QUANTITY + OI.ETC_AMT) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.COMMISSION_PRICE ELSE -OI.COMMISSION_PRICE END) * OI.QUANTITY + OI.ETC_AMT) AS TOTAL_COMMISSION_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SUPPLY_PRICE ELSE -OI.SUPPLY_PRICE END) * OI.QUANTITY + OI.ETC_AMT) AS TOTAL_SUPPLY_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN 1 ELSE -1 END) * (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) * OI.QUANTITY) AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SELLER_POINT ELSE -OI.SELLER_POINT END) * OI.QUANTITY) AS TOTAL_SELLER_POINT_AMOUNT,
+							SUM((CASE WHEN OI.CANCEL_FLAG = 'N' THEN OI.SET_DISCOUNT_PRICE ELSE -OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY) AS TOTAL_SET_DISCOUNT_AMOUNT
+						FROM OP_ORDER_ITEM OI
+							INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+							JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						<where>
+							<if test="defaultOpmanagerSellerId > 0">
+								AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+							</if>
+
+							<if test="sellerId > 0">
+								AND OI.SELLER_ID = #{sellerId}
+							</if>
+
+							<if test="shLocgovCode != null and shLocgovCode != ''">
+								AND S.LOCGOV_CODE = #{shLocgovCode}
+							</if>
+
+							<if test="shWdr != null and shWdr != ''">
+								<if test="shLocgovCode == null or shLocgovCode == ''">
+									AND S.LOCGOV_CODE IN (
+															SELECT LOCGOV_CODE
+																FROM G_LOCGOV
+																WHERE UPPER_LOCGOV_CODE = #{shWdr}
+															)
+								</if>
+							</if>
+
+							<choose>
+								<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+									AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								</when>
+								<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+									AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+								</when>
+							</choose>
+
+							<!-- AND OI.REMITTANCE_STATUS_CODE != '0'
+
+							AND (
+								(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+								OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+							) -->
+
+							<!-- AND OI.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate} -->
+							AND OI.REMITTANCE_EXPECTED_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+							AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+							AND OI.REMITTANCE_ID IS NULL
+							AND OI.ORDER_STATUS = '40'
+						</where>
+
+						GROUP BY OI.SELLER_ID, OI.REMITTANCE_DATE, OI.REMITTANCE_EXPECTED_DATE
+
+						UNION ALL
+
+						SELECT
+							OS.SELLER_ID,
+							COUNT(OS.SELLER_ID) as OR_CNT,
+							'SHIPPING' AS PRODUCT_TYPE,
+							OS.REMITTANCE_DATE,
+							OS.REMITTANCE_EXPECTED_DATE,
+							SUM(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							0 AS TOTAL_COMMISSION_AMOUNT,
+							0 AS TOTAL_SUPPLY_AMOUNT,
+							0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							0 AS TOTAL_SELLER_POINT_AMOUNT,
+							0 AS TOTAL_SET_DISCOUNT_AMOUNT
+
+						FROM OP_ORDER_SHIPPING OS
+						INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+						JOIN OP_SELLER S ON OS.SELLER_ID = S.SELLER_ID
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OS.SELLER_ID = #{sellerId}
+						</if>
+
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND S.LOCGOV_CODE = #{shLocgovCode}
+						</if>
+
+						<if test="shWdr != null and shWdr != ''">
+							<if test="shLocgovCode == null or shLocgovCode == ''">
+								AND S.LOCGOV_CODE IN (
+														SELECT LOCGOV_CODE
+															FROM G_LOCGOV
+															WHERE UPPER_LOCGOV_CODE = #{shWdr}
+														)
+							</if>
+						</if>
+
+						<choose>
+							<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+								AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+							</when>
+							<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+								AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+							</when>
+						</choose>
+
+						<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2') -->
+
+						<!-- AND OS.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate} -->
+						AND OS.REMITTANCE_EXPECTED_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+						AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+						AND OS.REMITTANCE_ID IS NULL
+					</where>
+
+						GROUP BY OS.SELLER_ID, OS.REMITTANCE_DATE, OS.REMITTANCE_EXPECTED_DATE
+
+						UNION ALL
+
+						SELECT
+							OAP.SELLER_ID,
+							COUNT(OAP.SELLER_ID) as OR_CNT,
+							'ADD_PAYMENT' AS PRODUCT_TYPE,
+							OAP.REMITTANCE_DATE,
+							OAP.REMITTANCE_EXPECTED_DATE,
+							SUM(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL_COMMISSION_BASE_AMOUNT,
+							0 AS TOTAL_COMMISSION_AMOUNT,
+							0 AS TOTAL_SUPPLY_AMOUNT,
+							0 AS TOTAL_SELLER_DISCOUNT_AMOUNT,
+							0 AS TOTAL_SELLER_POINT_AMOUNT,
+							0 AS TOTAL_SET_DISCOUNT_AMOUNT
+
+						FROM OP_ORDER_ADD_PAYMENT OAP
+						INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+						JOIN OP_SELLER S ON OAP.SELLER_ID = S.SELLER_ID
+					<where>
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OAP.SELLER_ID = #{sellerId}
+						</if>
+
+						<if test="shLocgovCode != null and shLocgovCode != ''">
+							AND S.LOCGOV_CODE = #{shLocgovCode}
+						</if>
+
+						<if test="shWdr != null and shWdr != ''">
+							<if test="shLocgovCode == null or shLocgovCode == ''">
+								AND S.LOCGOV_CODE IN (
+														SELECT LOCGOV_CODE
+															FROM G_LOCGOV
+															WHERE UPPER_LOCGOV_CODE = #{shWdr}
+														)
+							</if>
+						</if>
+
+						<choose>
+							<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+								AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+							</when>
+							<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+								AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+							</when>
+						</choose>
+
+						<!-- AND (OAP.REMITTANCE_STATUS_CODE = '1' OR OAP.REMITTANCE_STATUS_CODE = '2') -->
+						<!-- AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate} -->
+						AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+						AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+						AND OAP.REMITTANCE_ID IS NULL
+					</where>
+
+						GROUP BY OAP.SELLER_ID, OAP.REMITTANCE_DATE, OAP.REMITTANCE_EXPECTED_DATE
+
+					) M	GROUP BY M.SELLER_ID, M.PRODUCT_TYPE, M.REMITTANCE_EXPECTED_DATE
+				) M1 GROUP BY M1.SELLER_ID, M1.REMITTANCE_EXPECTED_DATE
+			) T INNER JOIN OP_SELLER S ON T.SELLER_ID = S.SELLER_ID
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getRemittanceItemExpectedDetailCountByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceItemExpectedDetailCountByParam */
+		SELECT COUNT(1)
+
+			FROM OP_ORDER_ITEM OI
+				INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OI.SELLER_ID = #{sellerId}
+				</if>
+
+				<!-- AND OI.REMITTANCE_STATUS_CODE != '0'
+				AND (
+					(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+					OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+				) -->
+
+				AND OI.REMITTANCE_EXPECTED_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+				AND OI.REMITTANCE_ID IS NULL
+				AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+			</where>
+
+	</select>
+
+	<select id="getRemittanceItemExpectedDetailListByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="saleson.shop.order.OrderMapper.OrderItemResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceItemExpectedDetailListByParam */
+		<include refid="CommonMapper.paginationHeader" />
+
+			SELECT
+				OI.*
+
+			FROM OP_ORDER_ITEM OI
+				INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OI.SELLER_ID = #{sellerId}
+				</if>
+
+				<!-- AND OI.REMITTANCE_STATUS_CODE != '0'
+				AND (
+					(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+					OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+				) -->
+
+				AND OI.REMITTANCE_EXPECTED_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+				AND OI.REMITTANCE_ID IS NULL
+				AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+			</where>
+			ORDER BY OI.ORDER_CODE DESC
+
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getRemittanceShippingExpectedDetailCountByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceShippingExpectedDetailCountByParam */
+		SELECT COUNT(1)
+
+			FROM OP_ORDER_SHIPPING OS
+				INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OS.SELLER_ID = #{sellerId}
+				</if>
+
+				AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+				AND OS.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+				AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+
+	</select>
+
+	<select id="getRemittanceShippingExpectedDetailListByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="saleson.shop.order.OrderMapper.OrderShippingResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceShippingExpectedDetailListByParam */
+		<include refid="CommonMapper.paginationHeader" />
+
+			SELECT
+				OS.*
+			FROM OP_ORDER_SHIPPING OS
+				INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OS.SELLER_ID = #{sellerId}
+				</if>
+
+				AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+				AND OS.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+				AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+			ORDER BY OS.ORDER_CODE DESC
+
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getRemittanceAddPaymentExpectedDetailCountByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceAddPaymentExpectedDetailCountByParam */
+		SELECT COUNT(1)
+			FROM OP_ORDER_ADD_PAYMENT OAP
+				INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OAP.SELLER_ID = #{sellerId}
+				</if>
+
+				AND (OAP.REMITTANCE_STATUS_CODE = '1' OR OAP.REMITTANCE_STATUS_CODE = '2')
+				AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+				AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+
+	</select>
+
+	<select id="getRemittanceAddPaymentExpectedDetailListByParam" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="saleson.shop.order.addpayment.OrderAddPaymentMapper.OrderAddPaymentResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceAddPaymentExpectedDetailListByParam */
+		<include refid="CommonMapper.paginationHeader" />
+
+			SELECT
+				OAP.*
+			FROM OP_ORDER_ADD_PAYMENT OAP
+				INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OAP.SELLER_ID = #{sellerId}
+				</if>
+
+				AND (OAP.REMITTANCE_STATUS_CODE = '1' OR OAP.REMITTANCE_STATUS_CODE = '2')
+				AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+				AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+			ORDER BY OAP.ORDER_CODE DESC
+
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<update id="updateRemittanceItemExpected" parameterType="saleson.shop.remittance.support.EditItemRemittance">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittanceItemExpected */
+		UPDATE OP_ORDER_ITEM SET
+
+		<if test='conditionType == "CONFIRM" or conditionType == "UPDATE"'>
+			SUPPLY_PRICE = #{supplyPrice},
+		</if>
+
+		<choose>
+			<when test='conditionType == "CONFIRM" or conditionType == "LIST"'>
+				<!-- REMITTANCE_DATE = #{remittanceExpectedDate},
+				REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate} -->
+				REMITTANCE_DATE = #{remittanceDate},
+
+				REMITTANCE_STATUS_CODE = '3'
+			</when>
+			<otherwise>
+				REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate},
+				REMITTANCE_DATE = ''
+			</otherwise>
+		</choose>
+
+		<where>
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND SELLER_ID = #{sellerId}
+					AND REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					ORDER_CODE = #{orderCode}
+					AND ORDER_SEQUENCE = #{orderSequence}
+					AND ITEM_SEQUENCE = #{itemSequence}
+				</otherwise>
+			</choose>
+			AND REMITTANCE_STATUS_CODE != '9'
+		</where>
+	</update>
+
+	<update id="updateRemittanceShippingExpected" parameterType="saleson.shop.remittance.support.EditShippingRemittance">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittanceShippingExpected */
+		UPDATE OP_ORDER_SHIPPING SET
+
+		<choose>
+			<when test='conditionType == "CONFIRM" or conditionType == "LIST"'>
+				<!-- REMITTANCE_DATE = #{remittanceExpectedDate},
+				REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate} -->
+				REMITTANCE_DATE = #{remittanceDate},
+
+				REMITTANCE_STATUS_CODE = '3'
+			</when>
+			<otherwise>
+				REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate},
+				REMITTANCE_DATE = ''
+			</otherwise>
+		</choose>
+
+		<where>
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND SELLER_ID = #{sellerId}
+					AND REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					ORDER_CODE = #{orderCode}
+					AND ORDER_SEQUENCE = #{orderSequence}
+					AND SHIPPING_SEQUENCE = #{shippingSequence}
+				</otherwise>
+			</choose>
+
+			AND REMITTANCE_STATUS_CODE != '9'
+		</where>
+	</update>
+
+	<update id="updateRemittanceAddPaymentExpected" parameterType="saleson.shop.remittance.support.EditAddPaymentRemittance">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittanceAddPaymentExpected */
+		UPDATE OP_ORDER_ADD_PAYMENT SET
+
+		<choose>
+			<when test='conditionType == "CONFIRM" or conditionType == "LIST"'>
+				<!-- REMITTANCE_DATE = #{remittanceExpectedDate},
+				REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate} -->
+				REMITTANCE_DATE = #{remittanceDate},
+
+				REMITTANCE_STATUS_CODE = '3'
+			</when>
+			<otherwise>
+				REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate},
+				REMITTANCE_DATE = ''
+			</otherwise>
+		</choose>
+
+		<where>
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND SELLER_ID = #{sellerId}
+					AND REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					ADD_PAYMENT_ID = #{addPaymentId}
+				</otherwise>
+			</choose>
+
+			AND REMITTANCE_STATUS_CODE != '9'
+		</where>
+	</update>
+
+	<insert id="insertRemittanceMaster" parameterType="saleson.shop.remittance.domain.Remittance">
+		/* saleson.shop.remittance.RemittanceMapper.insertRemittanceMaster */
+		INSERT INTO OP_REMITTANCE (
+			REMITTANCE_ID,
+			CONFIRM_DATE,
+			FINISHING_DATE,
+			SELLER_ID,
+			FINISHING_AMOUNT,
+			FINISHING_MANAGER_NAME,
+			BANK_NAME,
+			BANK_IN_NAME,
+			BANK_ACCOUNT_NUMBER,
+			CREATED_DATE
+		) VALUES (
+			#{remittanceId},
+			#{confirmDate},
+			<include refid="CommonMapper.date" />,
+			#{sellerId},
+			#{finishingAmount},
+			#{finishingManagerName},
+			#{bankName},
+			#{bankInName},
+			#{bankAccountNumber},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<insert id="insertRemittanceDetail" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.insertRemittanceDetail */
+		INSERT INTO OP_REMITTANCE_DETAIL (
+			REMITTANCE_ID,
+			ORDER_CODE,
+			REMITTANCE_KEY,
+			ITEM_TYPE,
+			ITEM_USER_CODE,
+			ITEM_NAME,
+			OPTIONS,
+			SALE_PRICE,
+			SELLER_DISCOUNT_PRICE,
+			SELLER_DISCOUNT_DETAIL,
+			SELLER_POINT,
+			SET_ITEM_FLAG,
+			SET_DISCOUNT_PRICE,
+			COMMISSION_BASE_PRICE,
+			COMMISSION_RATE,
+			COMMISSION_PRICE,
+			COMMISSION_TYPE,
+			SUPPLY_PRICE,
+			REMITTANCE_PRICE,
+			QUANTITY,
+			CREATED_DATE
+		)
+		SELECT
+			#{remittanceId},
+			T.ORDER_CODE,
+			T.REMITTANCE_KEY,
+			T.PRODUCT_TYPE,
+			T.ITEM_USER_CODE,
+			T.ITEM_NAME,
+			T.OPTIONS,
+			T.SALE_PRICE,
+			T.SELLER_DISCOUNT_PRICE,
+			T.SELLER_DISCOUNT_DETAIL,
+			T.SELLER_POINT,
+			T.SET_ITEM_FLAG,
+		    T.SET_DISCOUNT_PRICE,
+			T.COMMISSION_BASE_PRICE,
+			T.COMMISSION_RATE,
+			T.COMMISSION_PRICE,
+			T.COMMISSION_TYPE,
+			T.SUPPLY_PRICE,
+			T.REMITTANCE_PRICE,
+			T.QUANTITY,
+			<include refid="CommonMapper.datetime" />
+		FROM (
+
+			SELECT
+				OI.ORDER_CODE,
+				CONCAT('ITEM-', OI.ORDER_CODE, '-', OI.ORDER_SEQUENCE, '-', OI.ITEM_SEQUENCE) AS REMITTANCE_KEY,
+				OI.ITEM_USER_CODE,
+				OI.REMITTANCE_STATUS_CODE,
+				'ITEM' AS PRODUCT_TYPE,
+				OI.REMITTANCE_DATE,
+				OI.ITEM_NAME,
+				OI.OPTIONS,
+				OI.COMMISSION_BASE_PRICE,
+				OI.COMMISSION_RATE,
+				OI.COMMISSION_PRICE,
+				OI.COMMISSION_TYPE,
+				OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END) AS SELLER_DISCOUNT_PRICE,
+				OI.SELLER_DISCOUNT_DETAIL,
+				OI.SELLER_POINT,
+				OI.SET_ITEM_FLAG,
+				OI.SET_DISCOUNT_PRICE,
+				OI.SALE_PRICE,
+				(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE
+						ELSE OI.SUPPLY_PRICE END) AS SUPPLY_PRICE,
+				(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE + OI.SELLER_POINT + (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE
+																															ELSE 0 END)) + OI.SET_DISCOUNT_PRICE
+						ELSE OI.SUPPLY_PRICE - OI.SELLER_POINT - (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE
+																									ELSE 0 END)) - OI.SET_DISCOUNT_PRICE END) AS REMITTANCE_PRICE,
+				OI.QUANTITY
+			FROM
+				OP_ORDER_ITEM OI
+					INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<choose>
+					<when test='viewTarget == "CANCEL"'>
+						AND OI.CANCEL_FLAG = 'Y'
+					</when>
+					<otherwise>
+
+					</otherwise>
+				</choose>
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OI.SELLER_ID = #{sellerId}
+					</if>
+
+					<!-- AND REMITTANCE_STATUS_CODE != '0'
+
+					AND (
+						(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+						OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+					) -->
+
+					AND OI.REMITTANCE_STATUS_CODE = '4'
+
+
+					<choose>
+						<when test='conditionType == "LIST"'>
+							AND OI.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+						</when>
+						<otherwise>
+							AND OI.REMITTANCE_DATE = #{startDate}
+						</otherwise>
+					</choose>
+
+					AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+			</where>
+
+			UNION ALL
+
+			SELECT
+				OS.ORDER_CODE,
+				CONCAT('SHIPPING-', OS.ORDER_CODE, '-', OS.ORDER_SEQUENCE, '-', OS.SHIPPING_SEQUENCE) AS REMITTANCE_KEY,
+				'' AS ITEM_USER_CODE,
+				OS.REMITTANCE_STATUS_CODE,
+				'SHIPPING' AS PRODUCT_TYPE,
+				OS.REMITTANCE_DATE,
+				'배송비' AS ITEM_NAME,
+				'' AS OPTIONS,
+				(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS COMMISSION_BASE_PRICE,
+				0 AS COMMISSION_RATE,
+				0 AS COMMISSION_PRICE,
+				'0' AS COMMISSION_TYPE,
+				0 AS SELLER_DISCOUNT_PRICE,
+				'' AS SELLER_DISCOUNT_DETAIL,
+				0 AS SELLER_POINT,
+				'' AS SET_ITEM_FLAG,
+				0 AS SET_DISCOUNT_PRICE,
+				(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS SALE_PRICE,
+				(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS SUPPLY_PRICE,
+				(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS REMITTANCE_PRICE,
+				1 AS QUANTITY
+			FROM
+				OP_ORDER_SHIPPING OS
+					INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OS.SELLER_ID = #{sellerId}
+				</if>
+
+				<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2') -->
+				AND REMITTANCE_STATUS_CODE = '4'
+
+				<choose>
+					<when test='conditionType == "LIST"'>
+						AND OS.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+					</when>
+					<otherwise>
+						AND OS.REMITTANCE_DATE = #{startDate}
+					</otherwise>
+				</choose>
+
+				AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+
+			UNION ALL
+
+			SELECT
+				OAP.ORDER_CODE,
+				CONCAT('ADD_PAYMENT-', OAP.ORDER_CODE, '-' , OAP.ADD_PAYMENT_ID) AS REMITTANCE_KEY,
+				'' AS ITEM_USER_CODE,
+				OAP.REMITTANCE_STATUS_CODE,
+				'ADD_PAYMENT' AS PRODUCT_TYPE,
+				OAP.REMITTANCE_DATE,
+				OAP.SUBJECT AS ITEM_NAME,
+				'' AS OPTIONS,
+				(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS COMMISSION_BASE_PRICE,
+				0 AS COMMISSION_RATE,
+				0 AS COMMISSION_PRICE,
+				'0' AS COMMISSION_TYPE,
+				0 AS SELLER_DISCOUNT_PRICE,
+				'' AS SELLER_DISCOUNT_DETAIL,
+				0 AS SELLER_POINT,
+				'' AS SET_ITEM_FLAG,
+				0 AS SET_DISCOUNT_PRICE,
+				(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS SALE_PRICE,
+				(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS SUPPLY_PRICE,
+				(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS REMITTANCE_PRICE,
+				1 AS QUANTITY
+			FROM
+				OP_ORDER_ADD_PAYMENT OAP
+					INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OAP.SELLER_ID = #{sellerId}
+				</if>
+
+				<!-- AND REMITTANCE_STATUS_CODE != '0'
+				AND REMITTANCE_STATUS_CODE = #{statusCode} -->
+
+				AND REMITTANCE_STATUS_CODE = '4'
+
+				<choose>
+					<when test='conditionType == "LIST"'>
+						AND OAP.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+					</when>
+					<otherwise>
+						AND OAP.REMITTANCE_DATE = #{startDate}
+					</otherwise>
+				</choose>
+
+				AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+
+		) AS T
+
+	</insert>
+
+	<update id="updateShippingRemittanceFinishingByParam" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateShippingRemittanceFinishingByParam */
+		UPDATE
+			OP_ORDER_SHIPPING OS
+				INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		SET
+			OS.REMITTANCE_ID = #{remittanceId},
+			<!-- OS.REMITTANCE_STATUS_CODE = '9' -->
+			OS.REMITTANCE_STATUS_CODE = '5'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OS.SELLER_ID = #{sellerId}
+			</if>
+
+			<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2') -->
+			AND REMITTANCE_STATUS_CODE = '4'
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND OS.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					AND OS.REMITTANCE_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+		</where>
+	</update>
+
+	<update id="updateAddPaymentRemittanceFinishingByParam" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateAddPaymentRemittanceFinishingByParam */
+		UPDATE
+			OP_ORDER_ADD_PAYMENT OAP
+				INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		SET
+			OAP.REMITTANCE_ID = #{remittanceId},
+			<!-- OAP.REMITTANCE_STATUS_CODE = '9' -->
+			OAP.REMITTANCE_STATUS_CODE = '5'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OAP.SELLER_ID = #{sellerId}
+			</if>
+
+			<!-- AND REMITTANCE_STATUS_CODE != '0'
+			AND REMITTANCE_STATUS_CODE = #{statusCode} -->
+
+			AND REMITTANCE_STATUS_CODE = '4'
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND OAP.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					AND OAP.REMITTANCE_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+		</where>
+	</update>
+
+	<update id="updateItemRemittanceFinishingByParam" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateItemRemittanceFinishingByParam */
+		UPDATE
+			OP_ORDER_ITEM OI
+				INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		SET
+			OI.REMITTANCE_ID = #{remittanceId},
+			<!-- OI.REMITTANCE_STATUS_CODE = '9' -->
+			OI.REMITTANCE_STATUS_CODE = '5'
+		<where>
+			<choose>
+				<when test='viewTarget == "CANCEL"'>
+					AND OI.CANCEL_FLAG = 'Y'
+				</when>
+				<otherwise>
+
+				</otherwise>
+			</choose>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OI.SELLER_ID = #{sellerId}
+			</if>
+
+			<!-- AND REMITTANCE_STATUS_CODE != '0'
+
+			AND (
+				(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+				OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+			) -->
+
+			AND REMITTANCE_STATUS_CODE = '4'
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND OI.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					AND OI.REMITTANCE_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+		</where>
+	</update>
+
+
+
+	<update id="updateShippingRemittanceConfirmCheckByParam" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateShippingRemittanceConfirmCheckByParam */
+		UPDATE
+			OP_ORDER_SHIPPING OS
+				INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		SET
+			OS.REMITTANCE_STATUS_CODE = '4'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OS.SELLER_ID = #{sellerId}
+			</if>
+
+			<!-- AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2') -->
+
+			AND REMITTANCE_STATUS_CODE = '3'
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND OS.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					AND OS.REMITTANCE_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+		</where>
+	</update>
+
+	<update id="updateAddPaymentRemittanceConfirmCheckByParam" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateAddPaymentRemittanceConfirmCheckByParam */
+		UPDATE
+			OP_ORDER_ADD_PAYMENT OAP
+				INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		SET
+			OAP.REMITTANCE_STATUS_CODE = '4'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OAP.SELLER_ID = #{sellerId}
+			</if>
+
+			<!-- AND REMITTANCE_STATUS_CODE != '0'
+			AND REMITTANCE_STATUS_CODE = #{statusCode} -->
+			AND REMITTANCE_STATUS_CODE = '3'
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND OAP.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					AND OAP.REMITTANCE_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+		</where>
+	</update>
+
+	<update id="updateItemRemittanceConfirmCheckByParam" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateItemRemittanceConfirmCheckByParam */
+		UPDATE
+			OP_ORDER_ITEM OI
+				INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+		SET
+			OI.REMITTANCE_STATUS_CODE = '4'
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND OI.SELLER_ID = #{sellerId}
+			</if>
+
+			<!-- AND REMITTANCE_STATUS_CODE != '0'
+
+			AND (
+				(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+				OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+			) -->
+
+			AND REMITTANCE_STATUS_CODE = '3'
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND OI.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<otherwise>
+					AND OI.REMITTANCE_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+		</where>
+	</update>
+
+
+
+	<sql id="baseSellerRemittanceDateQuery">
+		SELECT
+		   IFNULL(
+				DATE_FORMAT(
+					CASE WHEN S.REMITTANCE_TYPE = '1' THEN
+						ADDDATE(NOW(), INTERVAL 1 DAY)
+					WHEN S.REMITTANCE_TYPE = '2' THEN
+						ADDDATE(ADDDATE(NOW(), INTERVAL -(DAYOFWEEK(NOW()) - 2) DAY), INTERVAL 1 WEEK)
+					WHEN S.REMITTANCE_TYPE = '3' THEN
+
+						CASE WHEN
+							DATEDIFF(NOW(), CONCAT(DATE_FORMAT(NOW(), '%Y%m'), '15')) <![CDATA[>]]> 0
+						THEN
+							CONCAT(DATE_FORMAT(NOW(), '%Y%m'), '15')
+						ELSE
+							CONCAT(DATE_FORMAT(ADDDATE(NOW(), INTERVAL 1 MONTH), '%Y%m'), '01')
+						END
+
+					ELSE
+
+						CASE WHEN
+							DATEDIFF(CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY)), NOW()) <![CDATA[>=]]> 0
+						THEN
+							ADDDATE(CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY)), INTERVAL 1 MONTH)
+						ELSE
+							CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY))
+						END
+
+					END
+				, '%Y%m%d'),
+				DATE_FORMAT(ADDDATE(NOW(), INTERVAL 1 DAY), '%Y%m%d')
+			) AS REMITTANCE_DATE
+		FROM
+			OP_SELLER S
+	</sql>
+
+	<select id="getRemittanceDateBySellerId" parameterType="Integer" resultType="String">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceDateBySellerId */
+		SELECT
+		   IFNULL(
+				DATE_FORMAT(
+					<!-- CASE WHEN S.REMITTANCE_TYPE = '1' THEN
+						ADDDATE(NOW(), INTERVAL 1 DAY)
+					WHEN S.REMITTANCE_TYPE = '2' THEN
+						ADDDATE(ADDDATE(NOW(), INTERVAL -(DAYOFWEEK(NOW()) - 2) DAY), INTERVAL 1 WEEK)
+					WHEN S.REMITTANCE_TYPE = '3' THEN
+
+						CASE WHEN
+							DATEDIFF(NOW(), CONCAT(DATE_FORMAT(NOW(), '%Y%m'), '15')) > 0
+						THEN
+							CONCAT(DATE_FORMAT(NOW(), '%Y%m'), '15')
+						ELSE
+							CONCAT(DATE_FORMAT(ADDDATE(NOW(), INTERVAL 1 MONTH), '%Y%m'), '01')
+						END
+					ELSE
+						CASE WHEN
+							DATEDIFF(CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY)), NOW()) >= 0
+						THEN -->
+							ADDDATE(CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY)), INTERVAL 1 MONTH)
+						<!-- ELSE
+							CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY))
+						END
+					END -->
+				, '%Y%m%d'),
+				DATE_FORMAT(ADDDATE(NOW(), INTERVAL 1 DAY), '%Y%m%d')
+			) AS REMITTANCE_DATE
+		FROM
+			OP_SELLER S
+		<where>
+			S.SELLER_ID = #{value}
+		</where>
+	</select>
+
+	<update id="updateResidualShippingRemittanceByRefundCode" parameterType="String">
+		/* saleson.shop.remittance.RemittanceMapper.updateResidualShippingRemittanceByRefundCode */
+		UPDATE OP_ORDER_SHIPPING OS
+		INNER JOIN (
+			SELECT
+				OI.ORDER_CODE,
+				OI.ORDER_SEQUENCE,
+				OI.SHIPPING_SEQUENCE,
+				COUNT(*) AS ITEM_COUNT,
+				SUM(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN 1 ELSE 0 END) AS CANCEL_COUNT
+			FROM OP_ORDER_ITEM OI INNER JOIN (
+
+				SELECT
+					ORDER_CODE,
+					ORDER_SEQUENCE,
+					ITEM_SEQUENCE
+				FROM OP_ORDER_CANCEL_APPLY
+				WHERE
+					REFUND_CODE = #{value}
+
+				UNION ALL
+
+				SELECT
+					ORDER_CODE,
+					ORDER_SEQUENCE,
+					ITEM_SEQUENCE
+				FROM OP_ORDER_RETURN_APPLY
+				WHERE
+					REFUND_CODE = #{value}
+
+			) T ON OI.ORDER_CODE = T.ORDER_CODE AND OI.ORDER_SEQUENCE = T.ORDER_SEQUENCE AND OI.ITEM_SEQUENCE = T.ITEM_SEQUENCE
+			GROUP BY OI.ORDER_CODE, OI.ORDER_SEQUENCE, OI.SHIPPING_SEQUENCE
+		) T ON OS.ORDER_CODE = T.ORDER_CODE AND OS.ORDER_SEQUENCE = T.ORDER_SEQUENCE AND OS.SHIPPING_SEQUENCE = T.SHIPPING_SEQUENCE
+
+		SET OS.REMITTANCE_EXPECTED_DATE = (
+			SELECT
+			   IFNULL(
+					DATE_FORMAT(
+						<!-- CASE WHEN S.REMITTANCE_TYPE = '1' THEN
+							ADDDATE(NOW(), INTERVAL 1 DAY)
+						WHEN S.REMITTANCE_TYPE = '2' THEN
+							ADDDATE(ADDDATE(NOW(), INTERVAL -(DAYOFWEEK(NOW()) - 2) DAY), INTERVAL 1 WEEK)
+						WHEN S.REMITTANCE_TYPE = '3' THEN
+
+							CASE WHEN
+								DATEDIFF(NOW(), CONCAT(DATE_FORMAT(NOW(), '%Y%m'), '15')) > 0
+							THEN
+								CONCAT(DATE_FORMAT(NOW(), '%Y%m'), '15')
+							ELSE
+								CONCAT(DATE_FORMAT(ADDDATE(NOW(), INTERVAL 1 MONTH), '%Y%m'), '01')
+							END
+
+						ELSE
+
+							CASE WHEN
+								DATEDIFF(CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY)), NOW()) >= 0
+							THEN -->
+								ADDDATE(CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY)), INTERVAL 1 MONTH)
+							<!-- ELSE
+								CONCAT(DATE_FORMAT(NOW(), '%Y%m'), IF(LENGTH(S.REMITTANCE_DAY) = 1, CONCAT('0', S.REMITTANCE_DAY), S.REMITTANCE_DAY))
+							END
+
+						END -->
+					, '%Y%m%d'),
+					DATE_FORMAT(ADDDATE(NOW(), INTERVAL 1 DAY), '%Y%m%d')
+				) AS REMITTANCE_DATE
+			FROM
+				OP_SELLER S
+			<where>
+				S.SELLER_ID = OS.SELLER_ID
+			</where>
+		)
+		WHERE
+			OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			AND T.ITEM_COUNT = T.CANCEL_COUNT
+	</update>
+
+	<update id="updateItemRemittanceInfo" parameterType="saleson.shop.order.domain.OrderItem">
+		/* saleson.shop.remittance.RemittanceMapper.updateItemRemittanceInfo */
+		UPDATE OP_ORDER_ITEM SET
+			REMITTANCE_STATUS_CODE = '2',
+			REMITTANCE_DATE = '',
+			REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate},
+			RETURN_POINT_FLAG = 'Y'
+		WHERE
+			ORDER_CODE = #{orderCode}
+			AND ORDER_SEQUENCE = #{orderSequence}
+			AND ITEM_SEQUENCE = #{itemSequence}
+			AND REMITTANCE_STATUS_CODE = '9'
+	</update>
+
+	<update id="updateAddPaymentRemittanceInfo" parameterType="saleson.shop.order.addpayment.domain.OrderAddPayment">
+		/* saleson.shop.remittance.RemittanceMapper.updateAddPaymentRemittanceInfo */
+		UPDATE OP_ORDER_ADD_PAYMENT SET
+			REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate}
+		WHERE
+			ADD_PAYMENT_ID = #{addPaymentId}
+	</update>
+
+	<select id="getOpmanagerRemittanceCountAll" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceCountResult">
+		/* saleson.shop.remittance.RemittanceMapper.getOpmanagerRemittanceCountAll */
+		SELECT
+			'remittance-expected' AS ID,
+			'정산예정 카운트' AS LABEL,
+			COUNT(T.SELLER_ID) AS `COUNT`
+		FROM (
+			SELECT
+				M.SELLER_ID
+			FROM (
+				SELECT
+					OI.SELLER_ID
+				FROM OP_ORDER_ITEM OI
+				<where>
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OI.SELLER_ID = #{sellerId}
+					</if>
+
+					AND OI.REMITTANCE_STATUS_CODE != '0'
+
+					AND (
+						(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+						OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+					)
+
+					AND OI.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+					AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+				</where>
+
+				UNION ALL
+
+				SELECT
+					OS.SELLER_ID
+				FROM OP_ORDER_SHIPPING OS
+				<where>
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OS.SELLER_ID = #{sellerId}
+					</if>
+
+					AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+					AND OS.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+					AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+				</where>
+
+				UNION ALL
+
+				SELECT
+					OAP.SELLER_ID
+				FROM OP_ORDER_ADD_PAYMENT OAP
+				<where>
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OAP.SELLER_ID = #{sellerId}
+					</if>
+
+					AND (OAP.REMITTANCE_STATUS_CODE = '1' OR OAP.REMITTANCE_STATUS_CODE = '2')
+					AND OAP.REMITTANCE_EXPECTED_DATE BETWEEN #{startDate} AND #{endDate}
+					AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+				</where>
+			) M
+			GROUP BY M.SELLER_ID
+		) T
+
+		UNION ALL
+
+		SELECT
+			'remittance-confirm' AS ID,
+			'정산확정 카운트' AS LABEL,
+			COUNT(T.SELLER_ID) AS `COUNT`
+		FROM (
+			SELECT
+				M.SELLER_ID
+			FROM (
+				SELECT
+					OI.SELLER_ID,
+					OI.REMITTANCE_DATE
+				FROM OP_ORDER_ITEM OI
+				<where>
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OI.SELLER_ID = #{sellerId}
+					</if>
+
+					AND REMITTANCE_STATUS_CODE != '0'
+
+					AND (
+						(OI.CANCEL_FLAG = 'N' AND OI.REMITTANCE_STATUS_CODE = '1' AND OI.CLAIM_QUANTITY = 0)
+						OR (OI.CANCEL_FLAG = 'Y' AND OI.REMITTANCE_STATUS_CODE = '2')
+					)
+
+					<choose>
+						<when test='conditionType == "LIST"'>
+							<!-- AND DATE_FORMAT(OI.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+							AND OI.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+						</when>
+						<otherwise>
+							AND OI.REMITTANCE_DATE = #{startDate}
+						</otherwise>
+					</choose>
+
+					AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+				</where>
+
+				UNION ALL
+
+				SELECT
+					OS.SELLER_ID,
+					OS.REMITTANCE_DATE
+				FROM OP_ORDER_SHIPPING OS
+				<where>
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OS.SELLER_ID = #{sellerId}
+					</if>
+
+					AND (REMITTANCE_STATUS_CODE = '1' OR REMITTANCE_STATUS_CODE = '2')
+
+					<choose>
+						<when test='conditionType == "LIST"'>
+							<!-- AND DATE_FORMAT(OS.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+							AND OS.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+						</when>
+						<otherwise>
+							AND OS.REMITTANCE_DATE = #{startDate}
+						</otherwise>
+					</choose>
+
+					AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+				</where>
+
+				UNION ALL
+
+				SELECT
+					OAP.SELLER_ID,
+					OAP.REMITTANCE_DATE
+				FROM OP_ORDER_ADD_PAYMENT OAP
+				<where>
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OAP.SELLER_ID = #{sellerId}
+					</if>
+
+					AND REMITTANCE_STATUS_CODE != '0'
+					AND REMITTANCE_STATUS_CODE = #{statusCode}
+
+					<choose>
+						<when test='conditionType == "LIST"'>
+							<!-- AND DATE_FORMAT(OAP.REMITTANCE_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+							AND OAP.REMITTANCE_DATE BETWEEN #{startDate} AND #{endDate}
+						</when>
+						<otherwise>
+							AND OAP.REMITTANCE_DATE = #{startDate}
+						</otherwise>
+					</choose>
+
+					AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+				</where>
+			) M
+			GROUP BY M.SELLER_ID, M.REMITTANCE_DATE
+		) T
+	</select>
+
+
+
+	<update id="updateItemRemitanceFinishCheck" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateItemRemitanceFinishCheck */
+		UPDATE OP_ORDER_ITEM SET
+			REMITTANCE_STATUS_CODE = '9'
+		WHERE
+			REMITTANCE_ID = #{remittanceId}
+			AND REMITTANCE_STATUS_CODE = '5'
+			AND SELLER_ID = #{sellerId}
+	</update>
+
+	<update id="updateShippingRemitanceFinishCheck" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateShippingRemitanceFinishCheck */
+		UPDATE OP_ORDER_SHIPPING SET
+			REMITTANCE_STATUS_CODE = '9'
+		WHERE
+			REMITTANCE_ID = #{remittanceId}
+			AND REMITTANCE_STATUS_CODE = '5'
+			AND SELLER_ID = #{sellerId}
+	</update>
+
+	<update id="updateAddPaymentRemitanceFinishCheck" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateAddPaymentRemitanceFinishCheck */
+		UPDATE OP_ORDER_ADD_PAYMENT SET
+			REMITTANCE_STATUS_CODE = '9'
+		WHERE
+			REMITTANCE_ID = #{remittanceId}
+			AND REMITTANCE_STATUS_CODE = '5'
+			AND SELLER_ID = #{sellerId}
+	</update>
+
+	<update id="updateRemitanceFinishCheck" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		<!-- UPDATE OP_REMITTANCE SET
+			 = <include refid="CommonMapper.datetime" />
+		WHERE
+			REMITTANCE_ID = #{remittanceId}
+			AND SELLER_ID = #{sellerId} -->
+	</update>
+
+
+	<select id="selectRemittanceDateForDetail" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceConfirmDetailResult">
+		/* saleson.shop.remittance.RemittanceMapper.selectRemittanceDateForDetail */
+		<!-- SELECT REMITTANCE_DATE
+			FROM OP_ORDER_ITEM
+			WHERE SELLER_ID = #{sellerId}
+			AND REMITTANCE_ID = #{remittanceId}
+			AND (REMITTANCE_STATUS_CODE = '5' OR REMITTANCE_STATUS_CODE = '9')
+			LIMIT 1 -->
+
+		SELECT CONFIRM_DATE AS REMITTANCE_DATE
+			FROM OP_REMITTANCE
+			WHERE SELLER_ID = #{sellerId}
+			AND REMITTANCE_ID = #{remittanceId}
+			AND (REMITTANCE_STATUS_CODE = '5' OR REMITTANCE_STATUS_CODE = '9')
+	</select>
+
+
+	<update id="updateRemittanceItemExpectedNew" parameterType="saleson.shop.remittance.support.EditItemRemittance">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittanceItemExpectedNew */
+		UPDATE OP_ORDER_ITEM SET
+			REMITTANCE_ID = #{remittanceId}
+			, REMITTANCE_DATE = #{remittanceDate}
+		<where>
+			<!-- <choose>
+				<when test='conditionType == "LIST"'> -->
+					AND SELLER_ID = #{sellerId}
+					<!-- AND DATE_FORMAT(REMITTANCE_EXPECTED_DATE, '%Y%m%d') = #{remittanceExpectedDate} -->
+					AND REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate}
+				<!-- </when>
+				<otherwise>
+					ORDER_CODE = #{orderCode}
+					AND ORDER_SEQUENCE = #{orderSequence}
+					AND ITEM_SEQUENCE = #{itemSequence}
+				</otherwise>
+			</choose> -->
+			AND REMITTANCE_ID IS NULL
+			AND ORDER_STATUS = '40'
+		</where>
+	</update>
+
+	<update id="updateRemittanceShippingExpectedNew" parameterType="saleson.shop.remittance.support.EditItemRemittance">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittanceShippingExpectedNew */
+		UPDATE OP_ORDER_SHIPPING SET
+			REMITTANCE_ID = #{remittanceId}
+			, REMITTANCE_DATE = #{remittanceDate}
+		<where>
+			<!-- <choose>
+				<when test='conditionType == "LIST"'> -->
+					AND SELLER_ID = #{sellerId}
+					<!-- AND DATE_FORMAT(REMITTANCE_EXPECTED_DATE, '%Y%m%d') = #{remittanceExpectedDate} -->
+					AND REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate}
+				<!-- </when>
+				<otherwise>
+					ORDER_CODE = #{orderCode}
+					AND ORDER_SEQUENCE = #{orderSequence}
+					AND SHIPPING_SEQUENCE = #{shippingSequence}
+				</otherwise>
+			</choose> -->
+
+			AND REMITTANCE_ID IS NULL
+		</where>
+	</update>
+
+	<update id="updateRemittanceAddPaymentExpectedNew" parameterType="saleson.shop.remittance.support.EditItemRemittance">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittanceAddPaymentExpectedNew */
+		UPDATE OP_ORDER_ADD_PAYMENT SET
+			REMITTANCE_ID = #{remittanceId}
+			, REMITTANCE_DATE = #{remittanceDate}
+		<where>
+			<!-- <choose>
+				<when test='conditionType == "LIST"'> -->
+					AND SELLER_ID = #{sellerId}
+					<!-- AND DATE_FORMAT(REMITTANCE_EXPECTED_DATE, '%Y%m%d') = #{remittanceExpectedDate} -->
+					AND REMITTANCE_EXPECTED_DATE = #{remittanceExpectedDate}
+				<!-- </when>
+				<otherwise>
+					ADD_PAYMENT_ID = #{addPaymentId}
+				</otherwise>
+			</choose> -->
+
+			AND REMITTANCE_ID IS NULL
+		</where>
+	</update>
+
+	<insert id="insertRemittanceMasterNew" parameterType="saleson.shop.remittance.domain.Remittance">
+		/* saleson.shop.remittance.RemittanceMapper.insertRemittanceMasterNew */
+		INSERT INTO OP_REMITTANCE (
+			REMITTANCE_ID,
+			CONFIRM_DATE,
+			FINISHING_DATE,
+			SELLER_ID,
+			FINISHING_AMOUNT,
+			FINISHING_MANAGER_NAME,
+			BANK_NAME,
+			BANK_IN_NAME,
+			BANK_ACCOUNT_NUMBER,
+			REMITTANCE_STATUS_CODE,
+			CONFIRM_DATE_SELLER,
+			PAYMENT_DATE,
+			CREATED_DATE
+		) VALUES (
+			#{remittanceId},
+			#{confirmDate},
+			<!-- <include refid="CommonMapper.date" /> -->
+			'00000000',
+			#{sellerId},
+			#{finishingAmount},
+			#{finishingManagerName},
+			#{bankName},
+			#{bankInName},
+			#{bankAccountNumber},
+			'3',
+			'00000000',
+			'00000000',
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<insert id="insertRemittanceDetailNew" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.insertRemittanceDetailNew */
+		INSERT INTO OP_REMITTANCE_DETAIL (
+			REMITTANCE_DETAIL_ID,
+			REMITTANCE_ID,
+			ORDER_CODE,
+			REMITTANCE_KEY,
+			ITEM_TYPE,
+			ITEM_USER_CODE,
+			ITEM_NAME,
+			OPTIONS,
+			SALE_PRICE,
+			SELLER_DISCOUNT_PRICE,
+			SELLER_DISCOUNT_DETAIL,
+			SELLER_POINT,
+			SET_ITEM_FLAG,
+			SET_DISCOUNT_PRICE,
+			COMMISSION_BASE_PRICE,
+			COMMISSION_RATE,
+			COMMISSION_PRICE,
+			COMMISSION_TYPE,
+			SUPPLY_PRICE,
+			REMITTANCE_PRICE,
+			QUANTITY,
+			ETC_AMT,
+			ORDER_SEQUENCE,
+			ITEM_SEQUENCE,
+			CREATED_DATE
+		)
+		SELECT
+			ROWNUM,
+			#{remittanceId},
+			T.ORDER_CODE,
+			T.REMITTANCE_KEY,
+			T.PRODUCT_TYPE,
+			T.ITEM_USER_CODE,
+			T.ITEM_NAME,
+			T.OPTIONS,
+			T.SALE_PRICE,
+			T.SELLER_DISCOUNT_PRICE,
+			T.SELLER_DISCOUNT_DETAIL,
+			T.SELLER_POINT,
+			T.SET_ITEM_FLAG,
+		    T.SET_DISCOUNT_PRICE,
+			T.COMMISSION_BASE_PRICE,
+			T.COMMISSION_RATE,
+			T.COMMISSION_PRICE,
+			T.COMMISSION_TYPE,
+			T.SUPPLY_PRICE,
+			T.REMITTANCE_PRICE,
+			T.QUANTITY,
+			T.ETC_AMT,
+			T.ORDER_SEQUENCE,
+			T.ITEM_SEQUENCE,
+			<include refid="CommonMapper.datetime" />
+		FROM (
+
+			SELECT
+				OI.ORDER_CODE,
+				CONCAT('ITEM-', OI.ORDER_CODE, '-', OI.ORDER_SEQUENCE, '-', OI.ITEM_SEQUENCE) AS REMITTANCE_KEY,
+				OI.ITEM_USER_CODE,
+				OI.REMITTANCE_STATUS_CODE,
+				'ITEM' AS PRODUCT_TYPE,
+				OI.REMITTANCE_DATE,
+				OI.ITEM_NAME,
+				OI.OPTIONS,
+				OI.COMMISSION_BASE_PRICE,
+				OI.COMMISSION_RATE,
+				OI.COMMISSION_PRICE,
+				OI.COMMISSION_TYPE,
+				OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END) AS SELLER_DISCOUNT_PRICE,
+				OI.SELLER_DISCOUNT_DETAIL,
+				OI.SELLER_POINT,
+				OI.SET_ITEM_FLAG,
+				OI.SET_DISCOUNT_PRICE,
+				OI.SALE_PRICE,
+				(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE ELSE OI.SUPPLY_PRICE END) AS SUPPLY_PRICE,
+				(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE + OI.SELLER_POINT + (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) + OI.SET_DISCOUNT_PRICE ELSE OI.SUPPLY_PRICE - OI.SELLER_POINT - (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) - OI.SET_DISCOUNT_PRICE END) AS REMITTANCE_PRICE,
+				OI.QUANTITY,
+				OI.ORDER_SEQUENCE,
+				OI.ITEM_SEQUENCE,
+				OI.ETC_AMT
+			FROM
+				OP_ORDER_ITEM OI
+					INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<choose>
+					<when test='viewTarget == "CANCEL"'>
+						AND OI.CANCEL_FLAG = 'Y'
+					</when>
+					<otherwise>
+
+					</otherwise>
+				</choose>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OI.SELLER_ID = #{sellerId}
+				</if>
+
+				AND OI.REMITTANCE_ID = #{remittanceId}
+				AND OI.ORDER_STATUS = '40'
+				AND OI.SUPPLY_PRICE <![CDATA[>]]> 0
+			</where>
+
+			UNION ALL
+
+			SELECT
+				OS.ORDER_CODE,
+				CONCAT('SHIPPING-', OS.ORDER_CODE, '-', OS.ORDER_SEQUENCE, '-', OS.SHIPPING_SEQUENCE) AS REMITTANCE_KEY,
+				'' AS ITEM_USER_CODE,
+				OS.REMITTANCE_STATUS_CODE,
+				'SHIPPING' AS PRODUCT_TYPE,
+				OS.REMITTANCE_DATE,
+				'배송비' AS ITEM_NAME,
+				'' AS OPTIONS,
+				(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS COMMISSION_BASE_PRICE,
+				0 AS COMMISSION_RATE,
+				0 AS COMMISSION_PRICE,
+				'0' AS COMMISSION_TYPE,
+				0 AS SELLER_DISCOUNT_PRICE,
+				'' AS SELLER_DISCOUNT_DETAIL,
+				0 AS SELLER_POINT,
+				'' AS SET_ITEM_FLAG,
+				0 AS SET_DISCOUNT_PRICE,
+				(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS SALE_PRICE,
+				(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS SUPPLY_PRICE,
+				(CASE WHEN OS.RETURN_FLAG = 'N' THEN OS.REMITTANCE_AMOUNT ELSE -OS.REMITTANCE_AMOUNT END) AS REMITTANCE_PRICE,
+				1 AS QUANTITY,
+				OS.ORDER_SEQUENCE,
+				OS.SHIPPING_SEQUENCE AS ITEM_SEQUENCE,
+				0 AS ETC_AMT
+			FROM
+				OP_ORDER_SHIPPING OS
+					INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OS.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OS.SELLER_ID = #{sellerId}
+				</if>
+
+				AND OS.REMITTANCE_ID = #{remittanceId}
+
+				AND OS.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+
+			UNION ALL
+
+			SELECT
+				OAP.ORDER_CODE,
+				CONCAT('ADD_PAYMENT-', OAP.ORDER_CODE, '-' , OAP.ADD_PAYMENT_ID) AS REMITTANCE_KEY,
+				'' AS ITEM_USER_CODE,
+				OAP.REMITTANCE_STATUS_CODE,
+				'ADD_PAYMENT' AS PRODUCT_TYPE,
+				OAP.REMITTANCE_DATE,
+				OAP.SUBJECT AS ITEM_NAME,
+				'' AS OPTIONS,
+				(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS COMMISSION_BASE_PRICE,
+				0 AS COMMISSION_RATE,
+				0 AS COMMISSION_PRICE,
+				'0' AS COMMISSION_TYPE,
+				0 AS SELLER_DISCOUNT_PRICE,
+				'' AS SELLER_DISCOUNT_DETAIL,
+				0 AS SELLER_POINT,
+				'' AS SET_ITEM_FLAG,
+				0 AS SET_DISCOUNT_PRICE,
+				(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS SALE_PRICE,
+				(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS SUPPLY_PRICE,
+				(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS REMITTANCE_PRICE,
+				1 AS QUANTITY,
+				0 AS ORDER_SEQUENCE,
+				OAP.ADD_PAYMENT_ID AS ITEM_SEQUENCE,
+				0 AS ETC_AMT
+			FROM
+				OP_ORDER_ADD_PAYMENT OAP
+					INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+			<where>
+				<if test="defaultOpmanagerSellerId > 0">
+					AND OAP.SELLER_ID != #{defaultOpmanagerSellerId}
+				</if>
+
+				<if test="sellerId > 0">
+					AND OAP.SELLER_ID = #{sellerId}
+				</if>
+
+				AND OAP.REMITTANCE_ID = #{remittanceId}
+
+				AND OAP.REMITTANCE_AMOUNT <![CDATA[>]]> 0
+			</where>
+
+		) AS T
+
+	</insert>
+
+	<select id="getRemittanceConfirmListByParamNew" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceConfirmResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmListByParamNew */
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				S.*
+				, R.REMITTANCE_STATUS_CODE
+				, R.CONFIRM_DATE
+				, R.CONFIRM_DATE_SELLER
+				, R.PAYMENT_DATE
+				, R.FINISHING_DATE
+				, R.FINISHING_AMOUNT
+				, (SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV L WHERE L.LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM
+				, RD.*
+				, (SELECT COUNT(1) FROM G_REMITTANCE_FILE RF WHERE RF.REMITTANCE_ID = R.REMITTANCE_ID ) AS FILE_CNT
+			FROM (
+				SELECT COUNT(REMITTANCE_ID) AS REMI_DETAIL_CNT
+					, REMITTANCE_ID
+					, SUM(COMMISSION_BASE_PRICE * QUANTITY + ETC_AMT) AS ITEM_TOTAL_COMMISSION_BASE_AMOUNT
+					, SUM(COMMISSION_PRICE  * QUANTITY + ETC_AMT) AS ITEM_TOTAL_COMMISSION_AMOUNT
+					, SUM(SUPPLY_PRICE  * QUANTITY + ETC_AMT) AS ITEM_TOTAL_SUPPLY_AMOUNT
+					, SUM(SELLER_DISCOUNT_PRICE * QUANTITY) AS ITEM_TOTAL_SELLER_DISCOUNT_AMOUNT
+					, SUM(SELLER_POINT * QUANTITY) AS ITEM_TOTAL_SELLER_POINT_AMOUNT
+					, SUM(SET_DISCOUNT_PRICE * QUANTITY) AS ITEM_TOTAL_SET_DISCOUNT_AMOUNT
+				FROM OP_REMITTANCE_DETAIL
+				GROUP BY REMITTANCE_ID
+			) RD
+			JOIN OP_REMITTANCE R ON R.REMITTANCE_ID = RD.REMITTANCE_ID
+			JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+			WHERE 1=1
+			<if test="defaultOpmanagerSellerId > 0">
+				AND R.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND R.SELLER_ID = #{sellerId}
+			</if>
+
+			<choose>
+				<when test='confirm == null or confirm == ""'>
+					AND (R.REMITTANCE_STATUS_CODE = '3' OR R.REMITTANCE_STATUS_CODE = '4')
+				</when>
+				<when test='confirm == "N"'>
+					AND R.REMITTANCE_STATUS_CODE = '3'
+				</when>
+				<when test='confirm == "Y"'>
+					AND R.REMITTANCE_STATUS_CODE = '4'
+				</when>
+			</choose>
+			<choose>
+				<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+					AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+				</when>
+				<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+					AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+				</when>
+			</choose>
+			<choose>
+				<when test='conditionType == "LIST"'>
+					AND R.CONFIRM_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<when test='conditionType == "SELLER_LIST"'>
+					AND R.CONFIRM_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+				</when>
+				<otherwise>
+					AND R.CONFIRM_DATE = #{startDate}
+				</otherwise>
+			</choose>
+
+			<choose>
+				<when test="shLocgovCode != null and shLocgovCode != ''">
+					AND S.LOCGOV_CODE = #{shLocgovCode}
+				</when>
+				<otherwise>
+					<if test="shWdr != null and shWdr != ''">
+						AND S.LOCGOV_CODE IN (
+							SELECT LOCGOV_CODE FROM G_LOCGOV WHERE UPPER_LOCGOV_CODE = #{shWdr}
+						)
+					</if>
+				</otherwise>
+			</choose>
+			ORDER BY R.REMITTANCE_ID DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getRemittanceConfirmCountByParamNew" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmCountByParamNew */
+		SELECT
+				COUNT(1)
+			FROM OP_REMITTANCE R
+			JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+			WHERE 1=1
+			<if test="defaultOpmanagerSellerId > 0">
+				AND R.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND R.SELLER_ID = #{sellerId}
+			</if>
+
+			<choose>
+				<when test='confirm == null or confirm == ""'>
+					AND (R.REMITTANCE_STATUS_CODE = '3' OR R.REMITTANCE_STATUS_CODE = '4')
+				</when>
+				<when test='confirm == "N"'>
+					AND R.REMITTANCE_STATUS_CODE = '3'
+				</when>
+				<when test='confirm == "Y"'>
+					AND R.REMITTANCE_STATUS_CODE = '4'
+				</when>
+			</choose>
+
+			<choose>
+				<when test='conditionType == "LIST"'>
+					<!-- AND DATE_FORMAT(R.CONFIRM_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+					AND R.CONFIRM_DATE BETWEEN #{startDate} AND #{endDate}
+				</when>
+				<when test='conditionType == "SELLER_LIST"'>
+					<!-- AND DATE_FORMAT(R.CONFIRM_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+					AND R.CONFIRM_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+				</when>
+				<otherwise>
+					AND R.CONFIRM_DATE = #{startDate}
+				</otherwise>
+			</choose>
+			<choose>
+				<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+					AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+				</when>
+				<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+					AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+				</when>
+			</choose>
+			<choose>
+				<when test="shLocgovCode != null and shLocgovCode != ''">
+					AND S.LOCGOV_CODE = #{shLocgovCode}
+				</when>
+				<otherwise>
+					<if test="shWdr != null and shWdr != ''">
+						AND S.LOCGOV_CODE IN (
+							SELECT LOCGOV_CODE FROM G_LOCGOV WHERE UPPER_LOCGOV_CODE = #{shWdr}
+						)
+					</if>
+				</otherwise>
+			</choose>
+	</select>
+
+	<select id="getRemittanceConfirmDetailCountByParamNew" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmDetailCountByParamNew */
+		<!-- 배송, 추가금액 테이블 고려하지 않음 -->
+		SELECT
+				COUNT(1)
+				<!-- FROM (
+					SELECT
+						RD.ORDER_CODE
+						, SUBSTR(RD.REMITTANCE_KEY, 0, INSTR(RD.REMITTANCE_KEY , '-', 1)-1) AS ITEM_TYPE
+						, SUBSTR(RD.REMITTANCE_KEY, INSTR(RD.REMITTANCE_KEY , '-', 1)+1, INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY , '-', 1)+1) - INSTR(RD.REMITTANCE_KEY , '-', 1)-1) AS ORDER_CODE
+						, CASE WHEN INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY , '-', 1)+1)+1)+1 = 1		-가 2개만 있을 경우...(추가금액)
+									THEN SUBSTR(RD.REMITTANCE_KEY, INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY , '-', 1)+1) + 1)
+								ELSE SUBSTR(RD.REMITTANCE_KEY, INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY , '-', 1)+1) + 1, INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY , '-', 1)+1)+1) - INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY , '-', 1)+1)-1)
+								END AS ORDER_SEQUENCE		추가금액일 경우 payment_id
+						, CASE WHEN INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY , '-', 1)+1)+1)+1 = 1		-가 2개만 있을 경우...(추가금액)
+									THEN NULL
+								ELSE SUBSTR(RD.REMITTANCE_KEY, INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY, '-', INSTR(RD.REMITTANCE_KEY , '-', 1)+1)+1)+1)
+								END AS ITEM_SEQUENCE		배송금액일 경우 shipping_sequence, 추가금액일 경우 null
+						, RD.REMITTANCE_KEY
+						, RD.ITEM_USER_CODE
+						, RD.SALE_PRICE AS COMMISSION_BASE_PRICE
+						, RD.ITEM_NAME
+						, RD.OPTIONS
+						, RD.SALE_PRICE
+						, RD.QUANTITY
+						, RD.REMITTANCE_PRICE
+						, RD.REMITTANCE_ID -->
+					FROM OP_REMITTANCE_DETAIL RD<!-- ) RD -->
+				JOIN OP_REMITTANCE R ON R.REMITTANCE_ID = RD.REMITTANCE_ID
+				LEFT JOIN OP_ORDER_ITEM OI ON RD.ORDER_CODE = OI.ORDER_CODE AND RD.ITEM_SEQUENCE = OI.ITEM_SEQUENCE AND OI.ORDER_SEQUENCE = RD.ORDER_SEQUENCE AND RD.ITEM_TYPE = 'ITEM'
+				LEFT JOIN OP_USER U ON OI.USER_ID = U.USER_ID
+				WHERE 1 = 1
+					<if test="where != null and where != '' and query != null and query != ''">
+						<choose>
+							<when test="where == 'ORDER_CODE'">
+								AND RD.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test="where == 'USER_NAME'">
+								AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+							</when>
+							<when test="where == 'ITEM_CODE'">
+								AND RD.ITEM_USER_CODE LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test="where == 'ITEM_NAME'">
+								AND RD.ITEM_NAME LIKE CONCAT('%', #{query} , '%')
+							</when>
+						</choose>
+					</if>
+
+					<if test="defaultOpmanagerSellerId > 0">
+						AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+					</if>
+
+					<if test="sellerId > 0">
+						AND OI.SELLER_ID = #{sellerId}
+					</if>
+					AND (R.REMITTANCE_STATUS_CODE = '3' OR R.REMITTANCE_STATUS_CODE = '4')
+
+					AND R.REMITTANCE_ID = #{remittanceId}
+
+	</select>
+
+	<select id="getRemittanceConfirmDetailListByParamNew" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceConfirmDetailResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmDetailListByParamNew */
+
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', T_A.BUYER_NAME_ENC, '', 0) AS BUYER_NAME
+		FROM (
+			<!-- 배송, 추가금액 테이블 고려하지 않음 -->
+			<include refid="CommonMapper.paginationHeader" />
+				SELECT
+					RD.ORDER_CODE
+					, RD.ORDER_SEQUENCE
+					, RD.ITEM_SEQUENCE
+					, RD.REMITTANCE_DETAIL_ID
+					<!-- , RD.ORDER_CODE -->
+					, RD.REMITTANCE_KEY
+					, RD.ITEM_TYPE
+					, RD.ITEM_USER_CODE
+					, RD.ITEM_NAME
+					, RD.OPTIONS
+					, RD.SALE_PRICE
+					, RD.COMMISSION_BASE_PRICE
+					, RD.REMITTANCE_PRICE
+					, RD.QUANTITY
+					, RD.ETC_AMT
+					<!-- , OI.ORDER_SEQUENCE -->
+					, R.REMITTANCE_STATUS_CODE
+					, R.REMITTANCE_ID
+					, R.CONFIRM_DATE AS REMITTANCE_DATE
+					, OI.USER_ID
+					, U.USER_NAME AS BUYER_NAME_ENC
+					, OI.PAY_DATE
+					, OI.CONFIRM_DATE
+					, OI.SELLER_ID
+				FROM OP_REMITTANCE_DETAIL RD
+					JOIN OP_REMITTANCE R ON R.REMITTANCE_ID = RD.REMITTANCE_ID
+					LEFT JOIN OP_ORDER_ITEM OI ON RD.ORDER_CODE = OI.ORDER_CODE AND RD.ITEM_SEQUENCE = OI.ITEM_SEQUENCE AND OI.ORDER_SEQUENCE = RD.ORDER_SEQUENCE AND RD.ITEM_TYPE = 'ITEM'
+					LEFT JOIN OP_USER U ON OI.USER_ID = U.USER_ID
+					WHERE 1 = 1
+						<if test="where != null and where != '' and query != null and query != ''">
+							<choose>
+								<when test="where == 'ORDER_CODE'">
+									AND RD.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
+								</when>
+								<when test="where == 'USER_NAME'">
+									AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								</when>
+								<when test="where == 'ITEM_CODE'">
+									AND RD.ITEM_USER_CODE LIKE CONCAT('%', #{query} , '%')
+								</when>
+								<when test="where == 'ITEM_NAME'">
+									AND RD.ITEM_NAME LIKE CONCAT('%', #{query} , '%')
+								</when>
+							</choose>
+						</if>
+
+						<if test="defaultOpmanagerSellerId > 0">
+							AND OI.SELLER_ID != #{defaultOpmanagerSellerId}
+						</if>
+
+						<if test="sellerId > 0">
+							AND OI.SELLER_ID = #{sellerId}
+						</if>
+
+						AND R.REMITTANCE_ID = #{remittanceId}
+						AND (R.REMITTANCE_STATUS_CODE = '3' OR R.REMITTANCE_STATUS_CODE = '4')
+
+						ORDER BY OI.CONFIRM_DATE DESC
+
+			<include refid="CommonMapper.paginationFooter" />
+		) T_A
+	</select>
+
+
+	<update id="updateRemittanceConfirmCheckByParam" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittanceConfirmCheckByParam */
+		UPDATE
+			OP_REMITTANCE
+		SET
+			REMITTANCE_STATUS_CODE = '4'
+			, CONFIRM_DATE_SELLER = <include refid="CommonMapper.date" />
+		<where>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+
+			<if test="sellerId > 0">
+				AND SELLER_ID = #{sellerId}
+			</if>
+			AND REMITTANCE_STATUS_CODE = '3'
+			AND REMITTANCE_ID = #{remittanceId}
+
+		</where>
+	</update>
+
+
+	<update id="updateRemittancePayProcess" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittancePayProcess */
+		UPDATE
+			OP_REMITTANCE R
+			JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+		SET
+			REMITTANCE_STATUS_CODE = '5'
+			, PAYMENT_DATE = <include refid="CommonMapper.date" />
+		<where>
+			AND S.LOCGOV_CODE = #{locgovCode}
+			AND R.REMITTANCE_STATUS_CODE = '4'
+			AND R.REMITTANCE_ID = #{remittanceId}
+
+		</where>
+	</update>
+
+
+	<update id="updateRemittanceFinishingProcessNew" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.updateRemittanceFinishingProcessNew */
+		UPDATE
+			OP_REMITTANCE R
+			JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+		SET
+			REMITTANCE_STATUS_CODE = '9'
+			, FINISHING_DATE = <include refid="CommonMapper.date" />
+		<where>
+			AND S.SELLER_ID = #{sellerId}
+			AND R.REMITTANCE_STATUS_CODE = '5'
+			AND R.REMITTANCE_ID = #{remittanceId}
+
+		</where>
+	</update>
+
+
+	<select id="getRemittanceFinishingCountByParamNew" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingCountByParamNew */
+		SELECT COUNT(1)
+		FROM
+			OP_REMITTANCE R
+				INNER JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+		<where>
+			<if test="sellerId > 0">
+				AND R.SELLER_ID = #{sellerId}
+			</if>
+			<!-- AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+			<choose>
+				<when test='conditionType == "SELLER_LIST"'>
+					<!-- AND DATE_FORMAT(R.PAYMENT_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+					AND R.PAYMENT_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+				</when>
+				<otherwise>
+					<!-- AND DATE_FORMAT(R.PAYMENT_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+					AND R.PAYMENT_DATE BETWEEN #{startDate} AND #{endDate}
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="shLocgovCode != null and shLocgovCode != ''">
+					AND S.LOCGOV_CODE = #{shLocgovCode}
+				</when>
+				<otherwise>
+					<if test="shWdr != null and shWdr != ''">
+						AND S.LOCGOV_CODE IN (
+												SELECT LOCGOV_CODE
+													FROM G_LOCGOV
+													WHERE UPPER_LOCGOV_CODE = #{shWdr}
+											)
+					</if>
+				</otherwise>
+			</choose>
+			<choose>
+				<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+					AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+				</when>
+				<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+					AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+				</when>
+			</choose>
+			<choose>
+				<when test='searchStatus == "5" or searchStatus == "9"'>
+					AND R.REMITTANCE_STATUS_CODE = #{searchStatus}
+				</when>
+				<otherwise>
+					AND (R.REMITTANCE_STATUS_CODE = '5' OR R.REMITTANCE_STATUS_CODE = '9')
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<select id="getRemittanceFinishingListByParamNew" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingListByParamNew */
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				S.*,
+				(SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV L WHERE L.LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM,
+				R.REMITTANCE_ID,
+				(SELECT COUNT(RD.REMITTANCE_ID) from OP_REMITTANCE_DETAIL RD WHERE RD.REMITTANCE_ID = R.REMITTANCE_ID) as OR_CNT,
+				R.CONFIRM_DATE,
+				R.FINISHING_DATE,
+				R.FINISHING_AMOUNT,
+				R.FINISHING_MANAGER_NAME,
+				R.REMITTANCE_STATUS_CODE,
+				R.CONFIRM_DATE_SELLER,
+				R.PAYMENT_DATE,
+				R.BANK_NAME AS REMITTANCE_BANK_NAME,
+				R.BANK_IN_NAME AS REMITTANCE_BANK_IN_NAME,
+				R.BANK_ACCOUNT_NUMBER AS REMITTANCE_BANK_ACCOUNT_NUMBER,
+				R.CREATED_DATE AS REMITTANCE_CREATED_DATE,
+				(SELECT REMITTANCE_STATUS_CODE FROM OP_ORDER_ITEM WHERE REMITTANCE_ID = R.REMITTANCE_ID  LIMIT 1) AS REMITTANCE_STATUS_CODE,
+				(SELECT SUM(T.TOTAL) AS TOTAL FROM (
+					SELECT
+							(CASE WHEN OI.CANCEL_FLAG = 'Y' THEN -OI.SUPPLY_PRICE + OI.SELLER_POINT + (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) + OI.SET_DISCOUNT_PRICE ELSE OI.SUPPLY_PRICE - OI.SELLER_POINT - (OI.SELLER_DISCOUNT_PRICE + (CASE WHEN OI.SPOT_TYPE = '2' THEN OI.SPOT_DISCOUNT_PRICE ELSE 0 END)) - OI.SET_DISCOUNT_PRICE END) * OI.QUANTITY AS TOTAL
+					FROM
+						OP_ORDER_ITEM OI
+							INNER JOIN OP_ORDER O ON OI.ORDER_CODE = O.ORDER_CODE AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					WHERE OI.REMITTANCE_ID = R.REMITTANCE_ID
+
+					UNION ALL
+
+					SELECT
+						(CASE WHEN OS.RETURN_FLAG = 'Y' THEN -OS.REMITTANCE_AMOUNT ELSE OS.REMITTANCE_AMOUNT END) AS TOTAL
+					FROM
+						OP_ORDER_SHIPPING OS
+							INNER JOIN OP_ORDER O ON OS.ORDER_CODE = O.ORDER_CODE AND OS.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					WHERE OS.REMITTANCE_ID = R.REMITTANCE_ID
+
+					UNION ALL
+
+					SELECT
+						(CASE WHEN OAP.ADD_PAYMENT_TYPE = '1' THEN OAP.REMITTANCE_AMOUNT ELSE -OAP.REMITTANCE_AMOUNT END) AS TOTAL
+					FROM
+						OP_ORDER_ADD_PAYMENT OAP
+							INNER JOIN OP_ORDER O ON OAP.ORDER_CODE = O.ORDER_CODE AND OAP.ORDER_SEQUENCE = O.ORDER_SEQUENCE AND O.DATA_STATUS_CODE = '1'
+					WHERE OAP.REMITTANCE_ID = R.REMITTANCE_ID
+				) T) AS SALES_AMOUNT
+			FROM
+				OP_REMITTANCE R
+					INNER JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+					<!-- JOIN OP_SELLER_USER SU ON S.LOGIN_ID = SU.LOGIN_ID -->
+			<where>
+				<if test="sellerId > 0">
+					AND R.SELLER_ID = #{sellerId}
+				</if>
+				<!-- AND DATE_FORMAT(R.FINISHING_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+				<choose>
+					<when test='conditionType == "SELLER_LIST"'>
+						<!-- AND DATE_FORMAT(R.PAYMENT_DATE, '%Y%m%d') BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99') -->
+						AND R.PAYMENT_DATE BETWEEN CONCAT(LEFT(#{startDate}, 6), '00') AND CONCAT(LEFT(#{endDate}, 6), '99')
+					</when>
+					<otherwise>
+						<!-- AND DATE_FORMAT(R.PAYMENT_DATE, '%Y%m%d') BETWEEN #{startDate} AND #{endDate} -->
+						AND R.PAYMENT_DATE BETWEEN #{startDate} AND #{endDate}
+					</otherwise>
+				</choose>
+				<choose>
+					<when test="shLocgovCode != null and shLocgovCode != ''">
+						AND S.LOCGOV_CODE = #{shLocgovCode}
+					</when>
+					<otherwise>
+						<if test="shWdr != null and shWdr != ''">
+							AND S.LOCGOV_CODE IN (
+													SELECT LOCGOV_CODE
+														FROM G_LOCGOV
+														WHERE UPPER_LOCGOV_CODE = #{shWdr}
+												)
+						</if>
+					</otherwise>
+				</choose>
+				<choose>
+					<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
+						AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+					</when>
+					<when test='where == "COMPANY_NAME" and query != null and query != ""'>
+						AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
+					</when>
+				</choose>
+				<choose>
+					<when test='searchStatus == "5" or searchStatus == "9"'>
+						AND R.REMITTANCE_STATUS_CODE = #{searchStatus}
+					</when>
+					<otherwise>
+						AND (R.REMITTANCE_STATUS_CODE = '5' OR R.REMITTANCE_STATUS_CODE = '9')
+					</otherwise>
+				</choose>
+			</where>
+			ORDER BY R.REMITTANCE_ID DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getRemittanceFinishingDetailCountByParamNew" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="Integer">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingDetailCountByParamNew */
+		SELECT COUNT(*)
+		FROM
+			OP_REMITTANCE_DETAIL RD
+		<where>
+			RD.REMITTANCE_ID = #{remittanceId}
+		</where>
+	</select>
+
+	<select id="getRemittanceFinishingDetailListByParamNew" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceDetailResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingDetailListByParamNew */
+		SELECT *
+			, (
+				SELECT CRYPTO_DEC('normal', USER_NAME, '', 0)
+					FROM (
+						SELECT U.USER_NAME
+						FROM OP_USER U WHERE U.USER_ID = (
+							SELECT USER_ID
+								FROM OP_ORDER_ITEM OI
+								WHERE OI.ORDER_CODE = DTL.ORDER_CODE
+								LIMIT 1
+						)
+					)
+				) AS BUYER_NAME
+			FROM (
+			<include refid="CommonMapper.paginationHeader" />
+				SELECT RD.*
+				, (
+				SELECT PAY_DATE
+					FROM OP_ORDER_ITEM OI
+					WHERE OI.ORDER_CODE = RD.ORDER_CODE
+					LIMIT 1
+				) AS PAY_DATE
+			, (
+				SELECT CONFIRM_DATE
+					FROM OP_ORDER_ITEM OI
+					WHERE OI.ORDER_CODE = RD.ORDER_CODE
+					LIMIT 1
+				) AS CONFIRM_DATE
+				FROM
+					OP_REMITTANCE_DETAIL RD
+				<where>
+					RD.REMITTANCE_ID = #{remittanceId}
+				</where>
+				ORDER BY CONFIRM_DATE DESC
+			<include refid="CommonMapper.paginationFooter" />
+			) DTL
+	</select>
+
+	<insert id="insertRemittanceFile" parameterType="java.util.List">
+		/* saleson.shop.remittance.RemittanceMapper.insertRemittanceFile */
+		INSERT INTO G_REMITTANCE_FILE(
+			REMITTANCE_ID
+			, FILE_SEQ
+			, FILE_NAME
+			, PATH_NAME
+			, ORG_FILE_NAME
+			, FRST_REGISTER_ID
+			, FRST_REGIST_PNTTM
+			, LAST_UPDUSR_ID
+			, LAST_UPDT_PNTTM
+		) VALUES
+
+		<foreach collection="list" item="item" separator=",">
+		(
+			#{item.remittanceId}
+			, #{item.fileSeq}
+			, #{item.fileName}
+			, #{item.pathName}
+			, #{item.orgFileName}
+			, #{item.frstRegisterId}
+			, #{item.frstRegistPnttm}
+			, #{item.frstRegisterId}
+			, #{item.frstRegistPnttm}
+		)
+		</foreach>
+
+
+	</insert>
+
+
+	<select id="getRemittanceFileListForSeller" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="saleson.shop.remittance.domain.RemittanceFile">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFileListForSeller */
+		SELECT
+			R.REMITTANCE_ID
+			, R.REMITTANCE_STATUS_CODE
+			, FILE_SEQ
+			, ORG_FILE_NAME
+			, PATH_NAME
+			, FILE_NAME
+			, RF.LAST_UPDUSR_ID
+			, RF.LAST_UPDT_PNTTM
+			FROM OP_REMITTANCE R
+				JOIN G_REMITTANCE_FILE RF ON RF.REMITTANCE_ID = R.REMITTANCE_ID
+				JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+			WHERE R.REMITTANCE_ID = #{remittanceId}
+				<if test="sellerId != null and sellerId > 0">
+				AND R.SELLER_ID = #{sellerId}
+				</if>
+				<if test="locgovCode != null and locgovCode != ''">
+				AND S.LOCGOV_CODE = #{locgovCode}
+				</if>
+				<if test="uploadDate != null and uploadDate != ''">
+				AND RF.FRST_REGIST_PNTTM BETWEEN CONCAT(#{uploadDate}, '000000') AND CONCAT(#{uploadDate}, '235959')
+				</if>
+			ORDER BY LAST_UPDT_PNTTM DESC
+
+	</select>
+
+
+	<select id="getRemittanceFileMaxSequence" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="saleson.shop.remittance.domain.RemittanceFile">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFileMaxSequence */
+		SELECT
+			R.REMITTANCE_ID
+			, R.REMITTANCE_STATUS_CODE
+			, IFNULL(MAX(RF.FILE_SEQ), 0) AS FILE_SEQ
+			FROM OP_REMITTANCE R
+				LEFT JOIN G_REMITTANCE_FILE RF ON RF.REMITTANCE_ID = R.REMITTANCE_ID
+				LEFT JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+			WHERE R.REMITTANCE_ID = #{remittanceId}
+				<if test="sellerId != null and sellerId != 0">
+					AND R.SELLER_ID = #{sellerId}
+				</if>
+				<if test="locgovCode != null and locgovCode != ''">
+					AND S.LOCGOV_CODE = #{locgovCode}
+				</if>
+			GROUP BY R.REMITTANCE_ID
+
+	</select>
+
+
+	<select id="getRemittanceFile" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="saleson.shop.remittance.domain.RemittanceFile">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFile */
+		SELECT
+			R.REMITTANCE_ID
+			, R.REMITTANCE_STATUS_CODE
+			, RF.FILE_NAME
+			, RF.ORG_FILE_NAME
+			, RF.PATH_NAME
+			FROM OP_REMITTANCE R
+				LEFT JOIN G_REMITTANCE_FILE RF ON RF.REMITTANCE_ID = R.REMITTANCE_ID
+				LEFT JOIN OP_SELLER S ON R.SELLER_ID = S.SELLER_ID
+			WHERE R.REMITTANCE_ID = #{remittanceId}
+				AND RF.FILE_SEQ = #{fileSeq}
+				<if test="sellerId != null and sellerId != 0">
+					AND R.SELLER_ID = #{sellerId}
+				</if>
+				<if test="locgovCode != null and locgovCode != ''">
+					AND S.LOCGOV_CODE = #{locgovCode}
+				</if>
+
+	</select>
+
+	<delete id="deleteRemittanceFile" parameterType="saleson.shop.remittance.support.RemittanceParam">
+		/* saleson.shop.remittance.RemittanceMapper.deleteRemittanceFile */
+		DELETE G_REMITTANCE_FILE
+			WHERE REMITTANCE_ID = #{remittanceId}
+				AND FILE_SEQ = #{fileSeq}
+	</delete>
+
+
+	<select id="getRemittanceInfoById" parameterType="saleson.shop.remittance.support.RemittanceParam" resultMap="RemittanceResult">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceInfoById */
+		SELECT
+			R.REMITTANCE_ID
+			, R.SELLER_ID
+			, R.REMITTANCE_STATUS_CODE
+			FROM OP_REMITTANCE R
+			WHERE R.REMITTANCE_ID = #{remittanceId}
+
+	</select>
+
+
+	<select id="getSellerByRemittanceInfo" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="saleson.shop.user.domain.SellerUser">
+		/* saleson.shop.remittance.RemittanceMapper.getSellerByRemittanceInfo */
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
+			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		FROM (
+			SELECT
+				S.COMPANY_NAME AS USER_NAME
+				, SU.MBER_CI AS MBER_CI_ENC
+				, S.PHONE_NUMBER AS PHONE_NUMBER_ENC
+				, SU.RECEIVE_SMS
+			FROM OP_REMITTANCE R
+				, OP_SELLER S
+				, OP_SELLER_USER SU
+			WHERE 1=1
+				AND R.REMITTANCE_ID = #{remittanceId}
+				AND S.SELLER_ID = R.SELLER_ID
+				AND SU.LOGIN_ID = S.LOGIN_ID
+				AND S.LOCGOV_CODE = #{locgovCode}
+		) T_A
+
+	</select>
+
+
+	<select id="getRemittanceExpectedMsgSellerList" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="saleson.shop.user.domain.SellerUser">
+		/* saleson.shop.remittance.RemittanceMapper.getRemittanceExpectedMsgSellerList */
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
+			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		FROM (
+			SELECT
+				S.COMPANY_NAME AS USER_NAME
+				, SU.MBER_CI AS MBER_CI_ENC
+				, S.PHONE_NUMBER AS PHONE_NUMBER_ENC
+				, SU.RECEIVE_SMS
+			FROM OP_ORDER_ITEM OI
+				, OP_SELLER S
+				, OP_SELLER_USER SU
+			WHERE 1=1
+				AND OI.ORDER_STATUS = '40'
+				AND OI.REMITTANCE_ID IS NULL
+				AND OI.REMITTANCE_EXPECTED_DATE = #{startDate}
+				AND S.SELLER_ID = OI.SELLER_ID
+				AND SU.LOGIN_ID = S.LOGIN_ID
+			GROUP BY OI.SELLER_ID
+		) T_A
+	</select>
+
+	<select id="getRemittanceConfirmItemDetails" parameterType="saleson.shop.remittance.support.RemittanceParam" resultType="saleson.shop.remittance.domain.RemittanceDetail">
+
+	/* saleson.shop.remittance.RemittanceMapper.getRemittanceConfirmItemDetails*/
+	SELECT ITEM_NAME,
+	       OPTIONS
+	  FROM OP_REMITTANCE_DETAIL
+	 WHERE REMITTANCE_ID = #{remittanceId}
+	</select>
+
+
+
+</mapper>

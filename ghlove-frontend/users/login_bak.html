@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>로그인 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+    <!-- ali Section Style :: 이건 꼭 쓰세요:) -->
+    <link rel="stylesheet" href="/static/css/login-total.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css">
+    <link rel="stylesheet" href="/static/css/change-pw.css"><!--새 비밀번호 확인-->
+    <link rel="stylesheet" href="/static/css/authentication-modal.css">
+
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+
+            <!-- 비밀번호 변경 팝업 -->
+            <template id="pwdAreaModal">
+                <form action="/" id="agreeForm" name="passwordChangeForm" @submit.prevent>
+                    <!-- 3개월 경과 : 본인인증  -->
+                    <div class="black-bg" id="pwdChangeNotiModal">
+                        <div class="overlayer">
+                            <div class="overlayer-header">비밀번호 변경</div>
+                            <div class="overlayer-body">
+                                <h2> 동일 비번 사용기간이<br><span class="pointRed">3개월</span>이 경과 되었습니다.</h2>
+                                <p>
+                                    3개월 경과 시 동일한 비밀번호를 사용하실 수 없습니다.<br>
+                                    본인 인증을 진행해주시기 바랍니다.
+                                </p>
+                                <!-- 버튼그룹 -->
+                                <div class="btn-box">
+                                    <button type="button" class="blueBtn u-confirm" @click="openMobileAuth()">
+                                        본인인증
+                                        <span>
+                                            <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                        </span>
+                                    </button>
+                                </div>
+                                <p>
+                                    본인인증 후에 비밀번호 변경페이지로 이동합니다.<br>&nbsp;
+                                </p>
+                                <div class="line"></div>
+                                <p class="s-txt">
+                                    고향사랑 e음 에서는 3개월 단위로<br>비밀번호 변경 서비스를 진행하고 있습니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- //3개월 경과 : 본인인증 -->
+                    <!-- 3개월 경과 : 인증완료 후 비밀번호 변경  -->
+                    <div class="black-bg" id="pwdChangeModal">
+                        <div class="overlayer">
+                            <div class="overlayer-header">비밀번호 변경</div>
+                            <div class="overlayer-body">
+                                <h2> 동일 비번 사용기간이<br><span class="pointRed">3개월</span>이 경과 되었습니다.</h2>
+                                <p>
+                                    본인 인증이 완료 되었습니다. 비밀번호를 초기화 합니다.<br>
+                                    새로운 비밀번호를 입력해 주세요.
+                                </p>
+                                <div class="line"></div>
+                                <div class="info-field-group">
+                                    <div class="info-field-items newpw">
+                                        <label for="userNewPW" class="flied-title">새 비밀번호 입력</label>
+                                        <input type="password" name="userNewPW" id="userNewPW" value="" minlength="8" maxlength="20" v-model="pwdParam.password" autocomplete="new-password">
+                                    </div>
+                                    <div class="info-field-items newpw">
+                                        <label for="userNewPwC" class="flied-title">새 비밀번호 확인</label>
+                                        <input type="password" name="userNewPwConfirm" id="userNewPwConfirm" value="" v-model="pwdParam.corfirmPassword" autocomplete="new-password" minlength="8" maxlength="20" @keyup="checkPwd($event);">
+                                    </div>
+                                    <div class="info-field-items">
+                                        <div class="pw-validation-area">
+                                            <ul>
+                                                <li>
+                                                    <span class="pw-validation"></span>
+                                                    <span class="txt_box">
+                                                        <span class="txt_items">
+                                                            비밀번호 보안도 :
+                                                            <strong
+                                                                :class="[redPoint.weekPwd? 'pointRed' : '']">약함</strong>
+                                                            /
+                                                            <strong
+                                                                :class="[redPoint.strongPwd? 'pointRed' : '']">강함</strong>
+                                                        </span>
+                                                        <span class="txt_items">( 4가지 체크 완료 시 V 표시 )</span>
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <span class="pw-validation"></span>1. 숫자, 기호, 영문자 포함
+                                                </li>
+                                                <li>
+                                                    <span class="pw-validation"></span>2. 3개 이상 연속 문자/숫자 제외
+                                                </li>
+                                                <li>
+                                                    <span class="pw-validation"></span>3. 아이디를 포함할 수 없음
+                                                </li>
+                                                <li>
+                                                    <span class="pw-validation"></span>4. 최소 9~20자
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 버튼그룹 -->
+                                <div class="btn-box many">
+                                    <button type="button" class="blueBtn cancellation" @click="changPwdLater()">
+                                        다음에변경(3개월)
+                                        <span>
+                                            <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                        </span>
+                                    </button>
+                                    <button type="button" class="blueBtn u-confirm" @click="changPwd()">
+                                        확인
+                                        <span>
+                                            <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- //3개월 경과 : 인증완료 후 비밀번호 변경 -->
+                </form>
+            </template>
+
+            <!-- 본인인증 -->
+            <layout-auth @signdata="doSignData()"></layout-auth>
+
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            
+            
+            <!-- 아이디 로그인 -->
+            <section class="login-total center" v-if="tabId=='1'" id="contents">
+                <!-- 아이디 로그인 -->
+                <div class="login-box general">
+                    <div class="loginType">
+                        <ul>
+                            <li class="currentB"><a href="javascript:void(0)" @click="setTab(1)">일반로그인</a></li>
+                            <li><a href="javascript:void(0)" @click="setTab(2)"> 간편/금융 인증</a></li>
+                            <li><a href="javascript:void(0)" @click="setTab(3)">디지털원패스</a></li>
+                        </ul>
+                    </div>
+                    <div class="login-title-box">
+                        <img src="/static/images/icon/cli-icon-bullet.png" alt="">
+                        <div class="login-title">일반 <strong>로그인</strong></div>
+                    </div>
+
+                    <form action="/" name="" id="login-genaral" @submit.prevent="submit" @keydown="enterInput($event)">
+                        <div class="login-field-group">
+                            <span class="login-field-items">
+                                <input type="text" placeholder="아이디" id="id" v-model="loginRequest.loginId">
+                            </span>
+                            <span class="login-field-items">
+                                <input type="password" placeholder="비밀번호" id="pw" v-model="loginRequest.password">
+                            </span>
+                            <span class="login-field-check saveId">
+                                <input type="checkbox" id="id_save" v-model="saveId">
+                                <label for="id_save"><span class="marker"></span>아이디저장</label>
+                            </span>
+                        </div>
+                        <div class="login-field-group">
+                            <button class="login" type="button" @click="submitBefore">
+                                로그인
+                            </button>
+                        </div>
+                        <div class="login-field-group">
+                            <div class="login-check-wrap">
+                                <span class="login-field-check">
+                                    <input type="checkbox" id="id_save" v-model="saveId">
+                                    <label for="id_save"><span class="marker"></span>아이디저장</label>
+                                </span>
+                                <span class="find-wrap">
+                                    <a href="/users/join.html">회원가입</a>
+                                    <span>|</span>
+                                    <a href="javascript:$s.redirect($s.pages.FIND_ID_PW);">아이디/비밀번호찾기</a>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+
+             <!-- 간편/금융 인증 로그인 -->
+            <section class="login-total center" v-if="tabId=='2'">
+                <h2 class="hidden">고향사랑e음</h2>
+                <!-- 간편인증 로그인 -->
+                <div class="login-box digital">
+                    <div class="loginType">
+                        <ul>
+                            <li><a href="javascript:void(0)" @click="setTab(1)">일반로그인</a></li>
+                            <li class="currentB"><a href="javascript:void(0)" @click="setTab(2)">간편인증</a></li>
+                            <li><a href="javascript:void(0)" @click="setTab(3)">디지털원패스</a></li>
+                        </ul>
+                    </div>
+                    <div class="login-title-box">
+                        <img src="/static/images/icon/cli-icon-bullet.png" alt="">
+                        <div class="login-title">간편인증 <strong>로그인</strong></div>
+                        <p>- 회원전용 -</p>
+                    </div>
+
+                    <form action="/" id="login-genaral" name="" @submit.prevent>
+                        <div class="login-field-group simple-login" id="authBtn" onclick="openSimpeAuthBefore();">
+                            <div class="simple-login-wrap">
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/kakao.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/kb.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/payco.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/pass.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/samsung.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/naver.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/shinhan.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/toss.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/nh.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/hana.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/dream.png" alt=""></span>
+                                <span class="sim_auth"><img src="/static/images/icon/sim_auth/banks.png" alt=""></span>
+                            </div>
+                        </div>
+
+                        <div class="login-field-group">
+                            <button class="logins" type="button" onclick="openSimpeAuthBefore();">
+                                <span>간편인증 로그인</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+
+             <!-- 디지털원패스 로그인 -->
+            <section class="login-total center" v-if="tabId=='3'">
+                <h2 class="hidden">고향사랑e음</h2>
+                <!-- 디지털 원패스 로그인 -->
+                <div class="login-box digital">
+                    <div class="loginType">
+                        <ul>
+                            <li><a href="javascript:void(0)" @click="setTab(1)">일반로그인</a></li>
+                            <li><a href="javascript:void(0)" @click="setTab(2)">간편인증</a></li>
+                            <li class="currentB"><a href="javascript:void(0)" @click="setTab(3)">디지털원패스</a></li>
+                        </ul>
+                    </div>
+                    <div class="login-title-box">
+                        <img src="/static/images/icon/cli-icon-bullet.png" alt="">
+                        <div class="login-title">디지털원패스 <strong>로그인</strong></div>
+                        <p>
+                              하나의 아이디로 안전하고 편리하게<br>
+                              여러 전자정부 서비스를 이용할 수 있는 서비스입니다.
+                        </p>
+                    </div>
+
+                    <form action="/" id="login-digital" name="" @submit.prevent="onepassLoginBefore" @keydown="enterInputOnepass($event)">
+                        <div class="login-field-group">
+                            <span class="login-field-items">
+                                <input type="text" id="onepassLoginId" placeholder="아이디" v-model="onepassLoginRequest.loginId" @keyup="changeOnePassId()">
+                            </span>
+                        </div>
+                        <div class="login-field-group">
+                            <button class="logind" type="button" @click="onepassLoginBefore()">
+                                <img src="/static/images/icon/cli-icon_digital.png" alt="디지털원패스 로그인">
+                                <span>디지털원패스 로그인</span>
+                            </button>
+                        </div>
+                        <div class="login-field-group">
+                            <div class="login-check-wrap">
+                                <span class="login-field-check">
+                                    <input type="checkbox" id="check" v-model="saveOnePassId">
+                                    <label for="check"><span class="marker"></span>아이디저장</label>
+                                </span>
+                                <span class="find-wrap">
+                                    <a href="https://www.onepass.go.kr/regist/agree" target="_blank" title="새창 열림">디지털원패스 회원가입</a>
+                                    <span>|</span>
+                                    <a href="https://www.onepass.go.kr/membership/find/id" target="_blank" title="새창 열림">아이디 찾기</a>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </section>
+
+            
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <!-- SNS 계정 연동 -->
+    <script src="/modules/crypto-js.min.js"></script>
+    <script src="/modules/hmac-sha256.min.js"></script>
+    <script src="/modules/enc-base64.min.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js"
+        charset="utf-8"></script>
+    <script src="/static/js/sns.js"></script>
+
+    <!--     <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery-1.10.2.js"></script> -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery.blockUI.js"></script>
+    <!-- <script type="text/javascript" src="/MagicLine4Web/ML4Web/js/ext/json2.js"></script> -->
+    <!-- ML4WEB JS -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/ML_Config.js"></script>
+    <!-- 간편인증 JS -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ML4Web_Config.js"></script>
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/magicline-js-api.min.js"></script>
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+<script>
+    var popup = null;
+    var url = "https://easysign.anyid.go.kr:443/esign";		// 중계 인증창 호출 url 운영
+    var status = "toolbar=no,scrollbars=no,location=no,resizable=no,status=no,menubar=no,width=838,height=611";	// option
+    var devUrl = "https://testeasysign.anyid.go.kr/esign";
+    function openSimpeAuthBefore(){
+        if($s.config.isUseNetFunnel) {
+            NetFunnel_Action({action_id:'login'}, function(ev,ret) {
+                openSimpeAuth();
+            });
+        }else{
+            openSimpeAuth();
+        }
+    }
+    function openSimpeAuth(){
+        if(popup == null || popup.closed == true) {
+            popup = window.open(url,"simpleAuth",status);    //팝업 호출
+            getAccessInfo("simpleAuth");
+        }
+    }
+
+        initVal = false;
+        initCount = 0;
+        function receiveMsg(event) {
+            var jsonData = JSON.parse(event.data);
+            if (jsonData.initFlag == "true") {
+                // console.log("@@@@@ jsonData.initFlag  =  "+jsonData.initFlag);
+                initVal = true;
+            }
+
+            if (jsonData.status == "success") {
+                $s.api.getSimpleAuthResult(jsonData);
+            }
+        }
+
+	function getAccessInfo(data){
+        $s.api.postSubmitNoAuth("/api/auth/getAccessInfo", data, function(response){
+            sendData(response);
+        });
+	}
+	function sendData(data){
+		setTimeout(function(){
+			if(initVal){
+				if(data.fn == "simpleAuth"){
+					popup.postMessage('{"simpleType":"simpleAuth", "accKey":"'+data.accKey+'", "accToken":"'+data.accToken+'"}',"*");
+				} else if(data.fn == "simpleSign"){
+					popup.postMessage('{"simpleType":"simpleSign", "accKey":"'+data.accKey+'", "accToken":"'+data.accToken+'","signTarget":"'+data.signTarget+'"}',"*");
+				} else if(data.fn == "simpleAuthNonMember"){
+					popup.postMessage('{"simpleType":"simpleAuth", "accKey":"'+data.accKey+'", "accToken":"'+data.accToken+'"}',"*");
+				} else if(data.fn == "simpleSignNonMember"){
+					popup.postMessage('{"simpleType":"simpleSignNonMember", "accKey":"'+data.accKey+'", "accToken":"'+data.accToken+'","signTarget":"'+data.signTarget+'"}',"*");
+				}
+				initVal = false;
+				initCount = 0;
+			} else {
+				if(initCount > 20){
+					initCount = 0;
+					return;
+				}
+				sendData(data);
+				initCount++;
+			}
+		},300);
+	}
+	window.addEventListener("message", receiveMsg, false);
+</script>
+
+    <script type="text/babel">
+		// Vue.use(NetFunnel);
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-auth': httpVueLoader('/components/layouts/auth/auth.vue')
+            },
+            data: {
+                loginRequest: {
+					loginType: 'ROLE_USER',
+					loginId: '',
+					password: ''
+				},
+                onepassLoginRequest: {
+					loginType: 'ROLE_USER',
+					loginId: '',
+				},
+                pwdParam : {
+                    loginId : '',
+                    password : '',
+                    corfirmPassword : '',
+                    mberCi : '',
+                    mberDn : ''
+                },
+                redPoint : {
+                    weekPwd : true,
+                    strongPwd : false
+                },
+				saveId: false,
+				target: $s.pages.INDEX,
+                tabId : 1,
+                saveOnePassId : false,
+                authType : ''
+            },
+            methods: {
+                enterInput: function (e) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        vm.submitBefore();
+                    }
+                },
+                enterInputOnepass: function (e) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        vm.onepassLoginBefore();
+                    }
+                },
+				submitBefore: function() {
+                    if(!vm.loginRequest.loginId){
+                        $s.alert('아이디를 입력해 주세요');
+                        return false;
+                    }
+
+                    if(!vm.loginRequest.password){
+                        $s.alert('비밀번호를 입력해 주세요');
+                        return false;
+                    }
+
+                    if($s.config.isUseNetFunnel) {
+                        NetFunnel_Action({action_id:'login'}, function(ev,ret) {
+                            vm.submit();
+                        });
+                    }else{
+                        vm.submit();
+                    }
+				},
+				submit: function (response) {
+                    var param = {};
+                    if(!response){
+                        param = vm.loginRequest;
+                    }else{
+                        param = response;
+                    }
+
+                    // 인증
+                    $s.api.getAuthToken(param, function (response) {
+
+                        var savedLoginId = vm.saveId ? vm.loginRequest.loginId : '';
+                        $s.core.setData($s.const.SAVED_LOGIN_ID, savedLoginId);
+
+                        var order = $s.core.getSession($s.const.BUY_ORDER);
+                        if (order != null) {
+                            $s.core.removeSession($s.const.BUY_ORDER);
+
+                            vm.order = JSON.parse(order);
+                            vm.order.noMemberLogin = true;
+							/*
+                            $s.api.buyOrder(vm.order, function () {}
+                            , function(error) {
+                                console.error(error);	// 실패시 이전 주문정보 조회 (redirect 진행)
+                            });*/
+                        }
+
+                        $(".black-bg").removeClass('show');
+                        $s.redirect(vm.target);
+
+                    }, function (error) {
+
+                        var message = '아이디/비밀번호를 정확히 입력해 주세요.';
+
+                        if (error.response.data.code == 'UNAUTHORIZED_LOCK') {
+                            message = error.response.data.message;
+                        }
+
+                        $s.alert(message, function () {
+                            // vm.loginRequest.loginId = '';
+                            // vm.loginRequest.password = '';
+                            $s.closeAlert();
+                        });
+
+                    });
+                },
+                onepassLoginBefore : function(){
+                    if (!vm.onepassLoginRequest.loginId) {
+                        $s.alert("아이디를 정확히 입력해 주세요.");
+                        return false;
+                    }
+
+                    if($s.config.isUseNetFunnel) {
+                        NetFunnel_Action({action_id:'login'}, function(ev,ret) {
+                            vm.onepassLogin();
+                        });
+                    }else{
+                        vm.onepassLogin();
+                    }
+                },
+                onepassLogin: function () {
+
+                    $s.api.onepassLogin(function(response) {
+
+                        var savedOnePassLoginId = vm.saveOnePassId ? vm.onepassLoginRequest.loginId : '';
+                        $s.core.setData($s.const.SAVED_ONEPASS_LOGIN_ID, savedOnePassLoginId);
+
+                        var form = document.createElement("form");
+                        form.setAttribute("charset", "UTF-8");
+                        form.setAttribute("method", "Post");
+                        form.setAttribute("action", response.data.LOGIN_DEST);
+
+                        var hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", response.data.LOGIN_INPUT_NAME);
+                        hiddenField.setAttribute("value", response.data.LOGIN);
+                        form.appendChild(hiddenField);
+
+                        hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", "user_id");
+                        hiddenField.setAttribute("value", vm.onepassLoginRequest.loginId);
+                        form.appendChild(hiddenField);
+
+                        // hiddenField = document.createElement("input");
+                        // hiddenField.setAttribute("type", "hidden");
+                        // hiddenField.setAttribute("name", "returnUrl");
+                        // hiddenField.setAttribute("value", "");
+                        // form.appendChild(hiddenField);
+
+                        document.body.appendChild(form);
+                        form.submit();
+
+                    }, function (error) {
+                        $s.alert(error.response.data.message);
+                    });
+                },
+                onepassCancel: function () {
+                    const params = {
+                        userKey: this.getCookieValue("userKey"),
+                        intfToken: this.getCookieValue("intfToken")
+                    }
+
+                    $s.confirm('디지털원패스 회원 연동해지를 하시겠습니까?', function () {
+                        $s.api.postSubmitNoAuth("/api/auth/onepass-cancel", params, function(response){
+                            if (response.info.status == "00") {
+                                $s.alert(response.info.message, function() {
+                                    if (response.info.value == "00") {
+                                        $s.logout();
+                                    }
+                                    $s.closeAlert();
+                                });
+                            } else {
+                                $s.alert("연동해지에 실패했습니다.");
+                            }
+                        });
+                    });
+                },
+                getCookieValue: function (key) {
+                    let cookieKey = key + "=";
+                    let result = "";
+                    const cookieArr = document.cookie.split(";");
+
+                    for(let i = 0; i < cookieArr.length; i++) {
+                        if(cookieArr[i][0] === " ") {
+                        cookieArr[i] = cookieArr[i].substring(1);
+                        }
+
+                        if(cookieArr[i].indexOf(cookieKey) === 0) {
+                        result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
+                        return result;
+                        }
+                    }
+                    return result;
+                },
+                setTab : function(tabId){
+                    vm.tabId = tabId;
+                },
+                checkAuth : function(data){
+                    var params = {};
+                    params.mberCi = data.mberCi;
+
+                    $s.api.postSubmitNoAuth("/api/user/checkMobileAuth", params, function(response){
+                        if(response.info.loginId){
+                            params.loginId = vm.loginRequest.loginId;
+                            vm.pwdParam.loginId = vm.loginRequest.loginId;
+                            vm.pwdParam.mberCi = data.mberCi;
+                            $("#pwdChangeModal").addClass("show");
+                        }else{
+                            $s.alert('해당 사용자가 없습니다.');
+                        }
+                    });
+                },
+                changPwd : function(pwdParam, loginRequest){
+
+                    if (vm.pwdParam.password == '') { $s.alert("비밀번호를 설정해주세요"); return false;}
+
+                    //비밀번호 확인 ,me-030
+                    if (!vm.checkPwd() || vm.pwdParam.corfirmPassword == '' || (vm.pwdParam.password != vm.pwdParam.corfirmPassword)
+                        || vm.pwdParam.password.search(/\s/) != -1  || vm.pwdParam.corfirmPassword.search(/\s/) != -1 ) {
+                        $s.alert("비밀번호를 확인해주세요");
+                        return false;
+                    }
+
+                    //휴대폰 본인인증
+                    var url = '/api/user/changeUserPasswordForNoLogin';
+                    //공인인증
+                    if(vm.authType == 'sign'){
+                        url = '/api/user/changeUserPwdForSignNoLogin';
+                    }
+
+                    $s.api.postSubmitNoAuth(url, vm.pwdParam, function(response){
+                        var loginRequest = {};
+                        loginRequest.loginType = 'ROLE_USER';
+                        loginRequest.loginId = vm.pwdParam.loginId;
+                        loginRequest.password = vm.pwdParam.corfirmPassword;
+                        vm.target = $s.pages.INDEX;
+                        vm.submit(loginRequest);
+                    });
+
+                },
+                openMobileAuth: function () {
+                    $("#pwdChangeNotiModal").removeClass("show");
+                    $("#authModal").addClass("show");
+                },
+                changPwdLater: function () {
+                    $s.api.postSubmitNoAuth('/api/user/changeUserPasswordLater', vm.pwdParam, function (response) {
+                        location.href = $s.pages.INDEX;
+                    });
+                },
+                checkPwd: function (event) {
+                    // var val = event.target.value;
+                    var val = vm.pwdParam.corfirmPassword;
+                    var password = vm.pwdParam.password;
+
+                    var isPwdOk = false;
+
+                    vm.redPoint.weekPwd = false;
+                    vm.redPoint.strongPwd = false;
+
+                    var isPwdVail1 = false; // 숫자, 기호, 영문자 포함
+                    var isPwdVail2 = false; // 3개이상 연속 문자/숫자 제외
+                    var isPwdVail3 = false; // 아이디 포함
+                    var isPwdVail4 = false; // 길이
+
+                    var number = val.search(/[0-9]/g);
+                    var english = val.search(/[a-zA-Z]/g);
+                    var sword = val.search(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g);
+
+                    // 숫자나 기호, 영문자 포함
+                    if(number < 0 || english < 0 || sword < 0){
+                        $("span.pw-validation").eq(1).removeClass("vali-confirm");
+                    }else{
+                        $("span.pw-validation").eq(1).addClass("vali-confirm");
+                        isPwdVail1 = true;
+                    }
+
+                    if(/(\w)\1\1/.test(val) || password =='' || val =='' || !this.isContinued(val)){
+                        $("span.pw-validation").eq(2).removeClass("vali-confirm");
+                    }else{
+                        $("span.pw-validation").eq(2).addClass("vali-confirm");
+                        isPwdVail2 = true;
+                    }
+
+                    var loginId = vm.pwdParam.loginId;
+                    if(val.indexOf(loginId) > -1){
+                        $("span.pw-validation").eq(3).removeClass("vali-confirm");
+                    }else{
+                        $("span.pw-validation").eq(3).addClass("vali-confirm");
+                        isPwdVail3 = true;
+                    }
+
+                    if (!(val.length >= 8 && val.length <= 20)) {
+                        $("span.pw-validation").eq(4).removeClass("vali-confirm");
+                    } else {
+                        isPwdVail4 = true;
+                        $("span.pw-validation").eq(4).addClass("vali-confirm");
+                    }
+
+                    if(!isPwdVail1 || !isPwdVail2 || !isPwdVail3 || !isPwdVail4){
+                        $("span.pw-validation").eq(0).removeClass("vali-confirm");
+                        vm.redPoint.weekPwd = true;
+                        vm.redPoint.strongPwd = false;
+                    }else{
+                        $("span.pw-validation").eq(0).addClass("vali-confirm");
+                        vm.redPoint.weekPwd = false;
+                        vm.redPoint.strongPwd = true;
+                        isPwdOk = true;
+                    }
+                    return isPwdOk;
+                },
+                isContinued: function (obj) {
+                    // 연속된 문자 확인
+                    var ascSeqCharCnt = 0; // 오름차순 연속 문자 카운트
+                    var descSeqCharCnt = 0; // 내림차순 연속 문자 카운트
+
+                    var char_0;
+                    var char_1;
+                    var char_2;
+
+                    var diff_0_1;
+                    var diff_1_2;
+
+                    for (var i = 0; i < obj.length; i++) {
+                        // charAt(): 문자값 반환
+                        char_0 = obj.charAt(i);
+                        char_1 = obj.charAt(i + 1);
+                        char_2 = obj.charAt(i + 2);
+
+                        // charCodeAt(): 유니코드값 반환
+                        diff_0_1 = char_0.charCodeAt(0) - char_1.charCodeAt(0);
+                        diff_1_2 = char_1.charCodeAt(0) - char_2.charCodeAt(0);
+
+                        if (diff_0_1 === 1 && diff_1_2 === 1) {
+                            ascSeqCharCnt += 1;
+                        }
+
+                        if (diff_0_1 === -1 && diff_1_2 === -1) {
+                            descSeqCharCnt += 1;
+                        }
+                    }
+                    if (ascSeqCharCnt >= 1 || descSeqCharCnt >= 1) {
+                        return false;
+                    }
+                    return true;
+                },
+                changeOnePassId: function () {
+                    var onepassId = vm.onepassLoginRequest.loginId;
+                    if (onepassId != '') {
+                        vm.onepassLoginRequest.loginId = onepassId.substring(0, 1).toLowerCase() + onepassId.substring(1, onepassId.length);
+                    }
+                },
+                doSignData: function () {
+                    magicline.uiapi.MakeSignData("LOGIN", null, mlCallBack);
+                },
+                checkSign: function () {
+                    $s.api.postSubmitNoAuth("/api/user/checkSign", vm.pwdParam, function (response) {
+                        if (response.info.loginId) {
+                            // vm.params.loginId = vm.loginRequest.loginId;
+                            vm.pwdParam.loginId = response.info.loginId;
+                            $("#pwdChangeModal").addClass("show");
+                        } else {
+                            $s.alert('해당 사용자가 없습니다.');
+                        }
+                    });
+                }
+            },
+            computed: {
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+
+                    Saleson.init();
+                    vm.setTab(1);
+
+                    var savedLoginId = $s.core.getData($s.const.SAVED_LOGIN_ID);
+                    var target = $s.core.getParameter("target");
+
+                    if (savedLoginId != null && savedLoginId != "") {
+                        vm.saveId = true;
+                        vm.loginRequest.loginId = savedLoginId;
+                    }
+
+                    if (target != null && target != '') {
+                        vm.target = decodeURIComponent(target);
+                    }
+
+                    var savedOnePassLoginId = $s.core.getData($s.const.SAVED_ONEPASS_LOGIN_ID);
+                    if (savedOnePassLoginId != null && savedOnePassLoginId != '') {
+                        vm.saveOnePassId = true;
+                        vm.onepassLoginRequest.loginId = savedOnePassLoginId;
+                    }
+
+                });
+
+            }
+        });
+        window.app = vm;
+    </script>
+
+
+    <script>
+
+	    $(document).ready(function(){
+	        window.addEventListener("message",mobileAuthResponse);
+	    });
+
+        // 휴대폰 인증 후 실행 method
+        function mobileAuthResponse(response) {
+        	
+
+            // 본인인증 시
+            if (response.data.userName != undefined) {
+	            $("#authModal").removeClass("show");
+
+	            vm.authType = 'mobile';
+
+	            vm.checkAuth(response.data);
+        	}
+        }
+
+        // MagicLine 결과값 수신 CallBack
+        // code    : 전자서명 결과값
+        // message : 전자서명 메시지
+        function mlCallBack(code, message) {
+            if (code == 0) {
+                var formData = {
+                    "signOrigin": "LOGIN",
+                    "sign": encodeURIComponent(message.encMsg),
+                    "csCheckType": "1",
+                    "signData": "LOGIN"
+                }
+
+                $s.api.postSubmit('/api/magicline/signedFormRGhlove', formData,
+                    function (response) {
+                        if (response.status === "OK") {
+                            if (response.result === "SUCCESS") {
+                                // 		DN		: "cn=850테스트유효001,ou=people,ou=상호연동테스트,o=Government of Korea,c=KR"
+                                // 		message : ""
+                                // 		result	: "SUCCESS"
+                                // console.log("DN", response.DN);
+                                // console.log("message", response.message);
+                                // console.log("result", response.result);
+                                vm.pwdParam.mberDn = response.DN;
+                                if (response.DN == "") {
+                                    $s.alert("서명 검증에 실패 하였습니다.");
+                                } else {
+                                    vm.authType = 'sign'
+                                    vm.checkSign();
+                                }
+
+                            } else {
+                                // 		DN		: ""
+                                // 		message : "서명 검증에 실패 하였습니다."
+                                // 		result	: "FALI"
+                                $s.alert(response.message);
+                            }
+                        }
+                    }, function (error) {
+                        $s.alert(error.response.data.description);
+                    });
+
+            } else {
+                alert("결과값 수신에 실패하였습니다.");
+                return;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

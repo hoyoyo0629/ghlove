@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Expires" content="-1">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-Control" content="No-Cache">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>로그인 > 아이디/비밀번호찾기 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+    <!-- ali Section Style :: 이건 꼭 쓰세요:) -->
+    <link rel="stylesheet" href="/static/css/login-idse.css">
+    <link rel="stylesheet" href="/static/css/authentication-modal.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+
+            <!-- 본인인증 -->
+            <layout-auth @signdata="signdata()"></layout-auth>
+
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+
+
+            <section class="find-idpw center" id="contents">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        로그인
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        아이디/비밀번호 찾기
+                    </span>
+                    <h2 class="page-title-txt">아이디 / 비밀번호 찾기</h2>
+                </div>
+
+
+                <!-- 아이디 / 비밀번호 찾기 -->
+                <div class="find-tab-area">
+                    <div class="accept-terms-area">
+                        <div class="tab-container">
+                            <div class="tab_tit">
+                                <ul class="tab-menu">
+                                    <li>
+                                        <button type="button" :class="idTabFlag ? 'active' : ''" data-toggle="tab"
+                                            @click="swapTab('id')">아이디찾기
+                                            <span v-if="idTabFlag" class="sr-only">선택됨</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" :class="passwordTabFlag ? 'active' : ''"
+                                            data-toggle="tab" @click="swapTab('password')">비밀번호찾기
+                                            <span v-if="passwordTabFlag" class="sr-only">선택됨</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content">
+                                <div id="tab1" class="tab-pane fade" :class="tabIdClass">
+                                    <h3 class="sr-only">아이디찾기</h3>
+                                    <!-- 아이디찾기 초기 화면  -->
+                                    <template v-if="this.id.step=='1'">
+                                        <form class="needs-validation" @submit.prevent="findId">
+                                            <fieldset>
+                                                <div class="form_wrap_line">
+                                                    <div class="form-group">
+                                                        <p>금융인증서와 본인 명의의 휴대폰 중<br><strong>선택하여 인증을 진행합니다.</strong></p>
+                                                    </div>
+                                                    <div class="btn-group">
+                                                        <button id="idAuthBtn" type="button" class="blueBtn u-confirm"
+                                                            @click="authLayer()">본인인증</button>
+                                                    </div>
+                                                    <div class="line top-nomargin"></div>
+                                                    <ul>
+                                                        <li>아이디찾기는 금융인증서와 본인 명의의 휴대폰만 가능합니다.</li>
+                                                        <li>본인인증을 진행하지 않은 계정은 아이디 찾기가 불가합니다.</li>
+                                                        <li>계정을 찾을 수 없는 경우 고향사랑e음 고객센터(1522-2431)로 문의 바랍니다. </li>
+                                                    </ul>
+                                                </div>
+
+                                            </fieldset>
+                                        </form>
+                                    </template>
+                                    <!-- 아이디찾기 결과 : 아이디 있음 => UI_P01020101.html  -->
+                                    <template v-if="this.id.step == '2'">
+                                        <div class="find_result">
+                                            <div class="form-group">
+                                                <p><strong>회원님의 아이디</strong>를<br>확인하세요.</p>
+                                            </div>
+                                            <div class="resultID-box">아이디 : <strong>{{id.result.loginId}}</strong></div>
+                                            <div class="btn-box many">
+                                                <button type="button" class="blueBtn cancellation" @click="goLogin()">
+                                                    로그인
+                                                    <span>
+                                                        <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                                    </span>
+                                                </button>
+                                                <button type="button" class="blueBtn joinBtn" @click="swapTab('password')">
+                                                    비밀번호 찾기
+                                                    <span>
+                                                        <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- 아이디찾기 결과 : 아이디 없음  => UI_P01020102.html -->
+                                    <template v-if="this.id.step == '3'">
+                                        <div class="find_result">
+                                            <div class="form-group">
+                                                <p><strong>회원가입을 하시면 다양한 혜택</strong>을<br>받으실 수 있습니다.</p>
+                                                <a href="javascript:void(0);" class="refind" @click="swapTab('id')">아이디 찾기 다시 시도</a>
+                                            </div>
+                                            <div class="resultID-box">아이디가 존재하지 않습니다.</div>
+                                            <div class="btn-box many">
+                                                <button type="button" class="blueBtn cancellation" @click="goLogin()">
+                                                    로그인
+                                                    <span>
+                                                        <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                                    </span>
+                                                </button>
+                                                <button type="button" class="blueBtn joinBtn" @click="goJoin()">
+                                                    회원가입
+                                                    <span>
+                                                        <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                                    </span>
+                                                </button>
+                                            </div>
+                                            <div class="line"></div>
+                                            <ul>
+                                                <li>계정을 찾을 수 없는 경우 고향사랑e음 고객센터(1522-2431)로 문의 바랍니다.</li>
+                                            </ul>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div id="tab2" class="tab-pane fade" :class="tabPasswordClass">
+                                    <h3 class="sr-only">비밀번호찾기</h3>
+                                    <!-- 비밀번호 찾기 => UI_P01020202-->
+                                    <template v-if="this.password.step == '1'">
+                                        <form class="needs-validation" @submit.prevent="findPasswordStep1">
+                                            <fieldset>
+                                                <div class="form_wrap_line">
+                                                    <div class="form-group">
+                                                        <p><strong>본인인증</strong>을 통해 비밀번호를<br> 변경하실 수 있습니다.</p>
+                                                    </div>
+                                                    <div class="line"></div>
+                                                    <div class="info-field-group">
+                                                        <div class="info-field-items">
+                                                            <label for="userName" class="flied-title">이름</label>
+                                                            <span class="form-field">
+                                                                <input type="text" name="userName" id="userName" v-model="password.param.userName">
+                                                            </span>
+                                                        </div>
+                                                        <div class="info-field-items userEmail">
+                                                            <label for="userEmail" class="flied-title">아이디</label>
+                                                            <span class="form-field">
+                                                                <span class="m-field">
+                                                                    <input type="text" name="userEmail" id="userEmail" v-model="password.param.loginId" autocomplete="off"
+                                                                        placeholder="">
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="line"></div>
+                                                    <div class="btn-group nomargin">
+                                                        <button id="pwAuthBtn" type="button" class="blueBtn u-confirm"
+                                                            @click="authLayerPwd()">본인인증</button>
+                                                    </div>
+
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </template>
+
+                                    <!-- 비밀번호찾기 재설정 : 아이디 있음 => UI_P01020202-->
+                                    <template v-if="this.password.step == '2'">
+                                        <form id="findPasswordStep2Form" class="needs-validation"
+                                            @submit.prevent="findPasswordStep2">
+                                            <fieldset>
+                                                <div class="form_wrap_line info-field-items">
+                                                    <div class="form-group">
+                                                        <ul>
+                                                            <li>인증이 완료 되었습니다. 비밀번호를 초기화 합니다.</li>
+                                                        </ul>
+                                                        <p><strong>새로운 비밀번호</strong>를<br>입력해 주세요.</p>
+                                                    </div>
+                                                    <div class="line"></div>
+                                                    <div class="info-field-items">
+                                                        <label for="userPw" class="flied-title">새 비밀번호 입력</label>
+                                                        <span class="form-field">
+                                                            <input type="password" v-model="password.param.password"
+                                                                name="userPw" id="userPw" value="" required>
+                                                        </span>
+                                                    </div>
+                                                    <div class="info-field-items">
+                                                        <label for="userPwC" class="flied-title">새 비밀번호 확인</label>
+                                                        <span class="form-field">
+                                                            <input type="password"
+                                                                v-model="password.param.corfirmPassword"
+                                                                name="userPwC" id="userPwC" value="" required @keyup="checkPwd();">
+                                                        </span>
+                                                    </div>
+                                                    <div class="info-field-items vali-group">
+                                                        <div class="form-field">
+                                                            <div class="pw-validation-area">
+                                                                <ul>
+                                                                    <li>
+                                                                        <span class="pw-validation"></span>
+                                                                        <span class="txt_box">
+                                                                            <span class="txt_items">
+                                                                                비밀번호 보안도 :
+                                                                                <strong :class="[password.redPoint.weekPwd?'pointRed' : '']">약함</strong>
+                                                                                /
+                                                                                <strong :class="[password.redPoint.strongPwd?'pointRed':'']">강함</strong>
+                                                                            </span>
+
+                                                                            <span class="txt_items">( 4가지 체크 완료 시 V 표시 )</span>
+                                                                        </span>
+
+                                                                    </li>
+                                                                    <li>
+                                                                        <span
+                                                                            class="pw-validation"></span>1. 숫자, 기호, 영문자 포함
+                                                                    </li>
+                                                                    <li>
+                                                                        <span class="pw-validation"></span>2. 3개 이상 연속 문자/숫자 제외
+                                                                    </li>
+                                                                    <li>
+                                                                        <span class="pw-validation"></span>3. 아이디를 포함할 수 없음
+                                                                    </li>
+                                                                    <li>
+                                                                        <span
+                                                                            class="pw-validation"></span>4. 최소 9~20자
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="btn-group">
+                                                        <button type="button" class="blueBtn u-confirm"
+                                                            @click="changePwd()">확인</button>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </template>
+
+                                    <!-- 비회원 비밀번호 찾기 결과 : 아이디 없음  -->
+                                    <template v-if="this.password.step =='3'">
+                                        <div class="find_result">
+                                            <p>회원 가입을 원하시면<br><strong>회원가입 페이지로 이동해주세요.</strong></p>
+                                            <a href="javascript:void(0);" class="refind" @click="swapTab('password')">다시시도하기</a>
+                                            <div class="resultID-box">
+                                                입력하신 정보와 일치하는 계정이 없습니다.<br>정보를 다시 확인해 주세요.
+                                            </div>
+                                            <div class="btn-box btn-group">
+                                                <button type="button" class="blueBtn cancellation" @click="goMain()">
+                                                    확인
+                                                    <span>
+                                                        <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                                    </span>
+                                                </button>
+                                                <button type="button" class="blueBtn joinBtn" @click="goJoin()">
+                                                    회원가입
+                                                    <span>
+                                                        <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <!-- SNS 계정 연동 -->
+    <script src="/modules/crypto-js.min.js"></script>
+    <script src="/modules/hmac-sha256.min.js"></script>
+    <script src="/modules/enc-base64.min.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js" charset="utf-8"></script>
+    <script src="/static/js/sns.js"></script>
+
+
+    <!--     <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery-1.10.2.js"></script> -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/jquery.blockUI.js"></script>
+    <!-- <script type="text/javascript" src="/MagicLine4Web/ML4Web/js/ext/json2.js"></script> -->
+    <!-- ML4WEB JS -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/ML_Config.js"></script>
+    <!-- 간편인증 JS -->
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ML4Web_Config.js"></script>
+    <script type="text/javascript" src="/pkiContent/MagicLine4Web/ML4Web/js/ext/magicline-js-api.min.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <!-- 금융인증서 관련 js-->
+    <script src="/static/js/financ.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-auth': httpVueLoader('/components/layouts/auth/auth.vue')
+            },
+            data: {
+                tab: 'id',
+                id: {
+                    param: {
+                    },
+                    result: {
+                        sucessFlag: false,
+                        loginId: ''
+                    },
+                    step : '1'
+                },
+                password: {
+                    param: {
+                        userName: '',
+                        loginId: '',
+                        password: '',
+                        corfirmPassword: '',
+                        mberCi : '',
+                        mberDn : '',
+                        mberFinDn : ''
+                    },
+                    result: {
+                        // sucessFlag: false,
+                        loginId: ''
+                    },
+                    step : '1',
+                    redPoint : {
+                        weekPwd : true,
+                        strongPwd : false
+                    }
+                },
+                authType : '',
+                findType : '',
+                financ: {
+                    param : {
+                        orgCode : $s.config.orgCode,
+                        apiKey : $s.config.apiKey,
+                        clientOrigin : '',
+                        uniqVal : '',
+                        lang : '',
+                        clientType : '',
+                        saveInLocalStroage : '',
+                        showAutoConn : false,
+                        useAutoConnInfo : '',
+                        raIssueAppFunc : ''
+                    },
+                    result : {
+                        certNum : '',
+                        signedVal : ''
+                    }
+                },
+            },
+            methods: {
+                swapTab: function (tab) {
+                    vm.init();
+                    vm.tab = tab;
+                },
+                init: function () {
+
+                    vm.id.param.userName = '';
+                    vm.id.result.loginId = '';
+
+                    vm.id.step = '1';
+
+                    vm.password.param.loginId = '';
+                    vm.password.param.userName = '';
+                    vm.password.param.password = '';
+                    vm.password.param.corfirmPassword = '';
+
+                    vm.password.param.mberCi = '';
+                    vm.password.param.mberDn = '';
+                    vm.password.param.mberFinDn = '';
+
+                    vm.password.result.loginId = '';
+
+                    vm.password.step = '1';
+                    vm.password.redPoint.weekPwd = true;
+                    vm.password.redPoint.strongPwd = false;
+
+                    vm.authType = '';
+
+                },
+                signdata : function(){
+                    magicline.uiapi.MakeSignData( "LOGIN", null, mlCallBack);
+                },
+                mobileAuth : function(data){
+                    let params = {};
+                    params.mberCi = data.mberCi;
+                    // params.mberDi = data.mberDi;
+
+                    $s.api.postSubmitNoAuth("/api/user/checkMobileAuth", params, function(response){
+                        if(response.info.loginId){
+                            if('Y' == response.info.userKeyYN){
+                                vm.id.step = '1';
+                                $s.alert('디지털원패스 회원입니다. 디지털원패스로 로그인 하시기 바랍니다.');
+                            }else{
+                                vm.id.step = '2';
+                                vm.id.result.loginId = response.info.loginId;
+                            }
+                        }else{
+                            vm.id.step = '3';
+                            vm.id.result.loginId = '';
+                        }
+                    });
+                },
+                pwdMobileAuth : function(data){
+                    vm.password.param.mberCi = data.mberCi;
+
+                    $s.api.postSubmitNoAuth("/api/user/checkMobileAuthPwd", vm.password.param, function(response){
+                        // vm.password.step1 = false;
+                        if(response.info.loginId){
+                            if('Y' == response.info.userKeyYN){
+                                vm.password.step = '1';
+                                $s.alert('디지털원패스 회원입니다. 디지털원패스로 로그인 하시기 바랍니다.');
+                            }else{
+                                // vm.password.result.sucessFlag = true;
+                                vm.password.result.loginId = response.info.loginId;
+                                vm.password.step = '2';
+                            }
+                        }else {
+                            // vm.password.result.sucessFlㅁ%ag = false;
+                            vm.password.result.loginId = '';
+                            vm.password.step = '3';
+                            $s.alert("아이디 또는 비밀번호를 확인 하세요.");
+                        }
+                    });
+                },
+                changePwd : function(){
+
+                    if(vm.authType == 'mobile'){
+                        if(vm.password.param.userName == '' || vm.password.param.loginId == '' || vm.password.param.mberCi == ''){
+                            $s.alert("본인인증을 진행해 주세요.");
+                            return false;
+                        }
+                    }else{
+                        if(vm.password.param.userName == '' || vm.password.param.loginId == '' || (vm.password.param.mberDn == '' &&  vm.password.param.mberFinDn == '')){
+                            $s.alert("본인인증을 진행해 주세요.");
+                            return false;
+                        }
+                    }
+
+                    if (!vm.checkPwd() || vm.password.param.corfirmPassword == '' || (vm.password.param.password != vm.password.param.corfirmPassword)
+                            || vm.password.param.password.search(/\s/) != -1  || vm.password.param.corfirmPassword.search(/\s/) != -1) {
+                        $s.alert("비밀번호를 확인해주세요");
+                        return false;
+                    }
+
+                    //휴대폰 본인인증
+                    var url = '/api/user/changeUserPasswordForNoLogin';
+                    //공인인증
+                    if(vm.authType == 'sign'){
+                        url = '/api/user/changeUserPwdForSignNoLogin';
+                    }
+
+                    $s.api.postSubmitNoAuth(url, vm.password.param, function(response){
+                        // console.log('response ' + JSON.stringify(response));
+                        $s.alert("비밀번호가 변경되었습니다.", function () {
+                            vm.login();
+                            $s.closeAlert();
+                        });
+					}, function (error) {
+						$s.alert(error.response.data.message);
+					});
+                },
+                login : function(){
+                    var params = {};
+                    params.loginType = 'ROLE_USER';
+                    params.loginId = vm.password.param.loginId;
+                    params.password = vm.password.param.password;
+                    params.financ = '';
+
+                    $s.api.getAuthToken(params, function () {
+                    var order = $s.core.getSession($s.const.BUY_ORDER);
+                        if (order != null) {
+                            $s.core.removeSession($s.const.BUY_ORDER);
+
+                            vm.order = JSON.parse(order);
+                            vm.order.noMemberLogin = true;
+
+                            $s.api.buyOrder(vm.order, function () {}
+                            , function(error) {
+                                $s.error(error);	// 실패시 이전 주문정보 조회 (redirect 진행)
+                            });
+                        }
+                        $s.redirect($s.pages.INDEX);
+                    }, function (error) {
+                        var message = '아이디 또는 비밀번호를 확인 하세요.';
+                        if (error.response.data.code == 'UNAUTHORIZED_LOCK') {
+                                message = error.response.data.message;
+                        }
+                    });
+                },
+                authLayer : function(){
+                    var child = Vue.child('layout-auth');
+                    if(child != null){
+                        vm.findType = 'idSearch';
+                        child.nextStep();
+                    }
+                },
+                authLayerPwd : function(){
+                    if(vm.password.param.userName == '' || vm.password.param.loginId == ''){
+                        var focusId = vm.password.param.userName == '' ? 'userName' : 'userEmail';
+
+                        $s.alert("이름과 아이디를 입력하세요.",focusId);
+                        return false;
+                    }
+
+                    var child = Vue.child('layout-auth');
+                    if(child != null){
+                        vm.findType = 'passwordSearch';
+                        child.nextStep();
+                    }
+                },
+                goLogin : function(){
+                    location.href= $s.pages.LOGIN;
+                },
+                goJoin : function(){
+                    location.href= $s.pages.JOIN;
+                },
+                goMain : function(){
+                    location.href= $s.pages.INDEX;
+                },
+                checkPwd : function(){
+                    var val = vm.password.param.corfirmPassword;
+ 					var password = vm.password.param.password;
+                    var isPwdOk = false;
+
+                    vm.password.redPoint.weekPwd = false;
+                    vm.password.redPoint.strongPwd = false;
+
+                    var isPwdVail1 = false; // 숫자, 기호, 영문자 포함
+                    var isPwdVail2 = false; // 3개이상 연속 문자/숫자 제외
+                    var isPwdVail3 = false; // 아이디 포함
+                    var isPwdVail4 = false; // 길이
+
+                    var number = val.search(/[0-9]/g);
+                    var english = val.search(/[a-zA-Z]/g);
+                    var sword = val.search(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g);
+
+                    // 숫자나 기호, 영문자 포함
+                    if(number < 0 || english < 0 || sword < 0){
+                        $("span.pw-validation").eq(1).removeClass("vali-confirm");
+                    }else{
+                        $("span.pw-validation").eq(1).addClass("vali-confirm");
+                        isPwdVail1 = true;
+                    }
+
+                    if(/(\w)\1\1/.test(val) || password =='' || val =='' || !vm.isContinued(val)){
+                        $("span.pw-validation").eq(2).removeClass("vali-confirm");
+                    }else{
+                        $("span.pw-validation").eq(2).addClass("vali-confirm");
+                        isPwdVail2 = true;
+                    }
+
+                    var loginId = vm.password.result.loginId;
+                    if(val.indexOf(loginId) > -1){
+                        $("span.pw-validation").eq(3).removeClass("vali-confirm");
+                    }else{
+                        $("span.pw-validation").eq(3).addClass("vali-confirm");
+                        isPwdVail3 = true;
+                    }
+
+                    if(!(val.length >= 9 && val.length <=20)){
+                        $("span.pw-validation").eq(4).removeClass("vali-confirm");
+                    }else{
+                        isPwdVail4 = true;
+                        $("span.pw-validation").eq(4).addClass("vali-confirm");
+                    }
+
+                    if(!isPwdVail1 || !isPwdVail2 || !isPwdVail3 || !isPwdVail4){
+                        $("span.pw-validation").eq(0).removeClass("vali-confirm");
+                        vm.password.redPoint.weekPwd = true;
+                        vm.password.redPoint.strongPwd = false;
+                    }else{
+                        $("span.pw-validation").eq(0).addClass("vali-confirm");
+                        vm.password.redPoint.weekPwd = false;
+                        vm.password.redPoint.strongPwd = true;
+                        isPwdOk = true;
+                    }
+                    return isPwdOk;
+
+                },
+                isContinued : function(obj){
+                    // 연속된 문자 확인
+                    var ascSeqCharCnt = 0; // 오름차순 연속 문자 카운트
+                    var descSeqCharCnt = 0; // 내림차순 연속 문자 카운트
+
+                    var char_0;
+                    var char_1;
+                    var char_2;
+
+                    var diff_0_1;
+                    var diff_1_2;
+
+                    for(var i = 0; i < obj.length; i++){
+                        // charAt(): 문자값 반환
+                        char_0 = obj.charAt(i);
+                        char_1 = obj.charAt(i+1);
+                        char_2 = obj.charAt(i+2);
+
+                        // charCodeAt(): 유니코드값 반환
+                        diff_0_1 = char_0.charCodeAt(0) - char_1.charCodeAt(0);
+                        diff_1_2 = char_1.charCodeAt(0) - char_2.charCodeAt(0);
+
+                        if(diff_0_1 === 1 && diff_1_2 === 1){
+                        ascSeqCharCnt += 1;
+                        }
+
+                        if(diff_0_1 === -1 && diff_1_2 === -1){
+                        descSeqCharCnt += 1;
+                        }
+                    }
+                    if(ascSeqCharCnt >= 1 || descSeqCharCnt >= 1){
+                        return false;
+                    }
+                    return true;
+                },
+                checkSignForId : function(data){
+                    var param = {};
+                    param.mberDn = data.DN;
+                    $s.api.postSubmitNoAuth("/api/user/checkSign", param, function(response){
+                        if(response.info.loginId){
+                            if('Y' == response.info.userKeyYN){
+                                vm.id.step = '1';
+                                $s.alert('디지털원패스 회원입니다. 디지털원패스로 로그인 하시기 바랍니다.');
+                            }else{
+                                vm.id.step = '2';
+                                vm.id.result.loginId = response.info.loginId;
+                            }
+                        }else{
+                            vm.id.step = '3';
+                            vm.id.result.loginId = '';
+                        }
+                    });
+                },
+                checkSignPwd : function(data){
+                    vm.password.param.mberDn = data.DN;
+
+                    $s.api.postSubmitNoAuth("/api/user/checkSign", vm.password.param, function(response){
+                        // vm.password.step1 = false;
+                        if(response.info.loginId){
+                            if('Y' == response.info.userKeyYN){
+                                vm.password.step = '1';
+                                $s.alert('디지털원패스 회원입니다. 디지털원패스로 로그인 하시기 바랍니다.');
+                            }else{
+                                // vm.password.result.sucessFlag = true;
+                                vm.password.result.loginId = response.info.loginId;
+                                vm.password.step = '2';
+                            }
+                        }else {
+                            // vm.password.result.sucessFlag = false;
+                            vm.password.result.loginId = '';
+                            vm.password.step = '3';
+                            $s.alert("아이디 또는 비밀번호를 확인 하세요.");
+                        }
+                    });
+                }
+            },
+            computed: {
+                idTabFlag: function () {
+                    return this.tab == 'id';
+                },
+                passwordTabFlag: function () {
+                    return this.tab == 'password';
+                },
+                tabIdClass : function(){
+                    return this.idTabFlag? 'show active' : '';
+                },
+                tabPasswordClass : function(){
+                    return this.passwordTabFlag? 'show active' : '';
+                }
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    Saleson.init();
+                    var tab = $s.core.getParameter("tab") ? $s.core.getParameter("tab") : 'id';
+                    vm.swapTab(tab);
+                });
+            }
+        });
+
+    </script>
+
+    <script>
+	    $(document).ready(function(){
+	        window.addEventListener("message",mobileAuthResponse);
+	    });
+
+        // 휴대폰 인증 후 실행 method
+        function mobileAuthResponse(response) {
+
+            // 본인인증 시
+            if (response.data.userName != undefined) {
+            	$("#authModal").removeClass("show");
+
+	            vm.authType = 'mobile';
+
+	            if(vm.tab == 'id'){
+	                vm.mobileAuth(response.data);
+	            }else{
+	                vm.pwdMobileAuth(response.data);
+	            }
+            }
+
+        }
+
+        // MagicLine 결과값 수신 CallBack
+        // code    : 전자서명 결과값
+        // message : 전자서명 메시지
+        function mlCallBack(code, message){
+            if(code == 0){
+                var formData = {
+                    "signOrigin" : "LOGIN",
+                    "sign" : encodeURIComponent( message.encMsg ),
+                    "csCheckType" : "1",
+                    "signData" : "LOGIN"
+                }
+
+                $s.api.postSubmit('/api/magicline/signedFormRGhlove', formData,
+                    function (response){
+                        if (response.status === "OK") {
+                            if (response.result === "SUCCESS") {
+                                // 		DN		: "cn=850테스트유효001,ou=people,ou=상호연동테스트,o=Government of Korea,c=KR"
+                                // 		message : ""
+                                // 		result	: "SUCCESS"
+                                // console.log("DN", response.DN);
+                                // console.log("message", response.message);
+                                // console.log("result", response.result);
+
+                                if (response.DN == ""){
+                                    $s.alert("서명 검증에 실패 하였습니다.");
+                                } else {
+                                    vm.authType = 'sign';
+
+                                    //아이디 찾기 본인인증 시
+                                    if(vm.tab == 'id'){
+                                        vm.checkSignForId(response);
+                                    }else{
+                                        //비밀번호 찾기 본인인증 시
+                                        vm.checkSignPwd(response);
+                                    }
+                                }
+
+                            } else {
+                                // 		DN		: ""
+                                // 		message : "서명 검증에 실패 하였습니다."
+                                // 		result	: "FALI"
+                                $s.alert(response.message);
+                            }
+                        }
+                    }, function (error) {
+                        $s.alert(error.response.data.description);
+                });
+
+            }else{
+                alert("결과값 수신에 실패하였습니다.");
+                return;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

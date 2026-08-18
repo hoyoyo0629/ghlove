@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>“통영시 유소년 축구단 운영비 지원 사업”추진 원활 : 고향사랑e음 고향소식</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+  </head>
+
+  <body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page">
+      <div id="wrap">
+
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <img src="/newsletter/static/images/vol001/detail_13.png" alt="목에 메달을 걸고 있는 11명의 유소년 선수들의 사진.">
+              <!-- <div class="banner_link_btn">
+                <a href="#;">자세히 보기&nbsp;&nbsp;+</a>
+              </div> -->
+            </div>
+            <div class="tit_area">
+              <h4>경상남도 통영시</h4>
+              <h3>
+                <span class="blue">“통영시 유소년 축구단 운영비 지원 사업”</span>
+                <br/>추진 원활
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar">
+          </div>
+          <section id="" class="detail_contents_area">
+            <ul class="deco-arrow blue-deco blue">
+              <li>
+                경남 통영시는 2023년 선정 기금사업인 ‘통영시 유소년 축구단 운영비 지원 사업’이 각종 대회에 참석한 U-12, U-15 선수단의 사기를 고취하여 좋은 성적을 내고 있다.
+              </li>
+              <li>
+                각종 축구 대회에 참여하여 풍부한 경험을 쌓고 있는 통영시 유소년 축구단은 제2의 김민재와 같은 축구 국가대표를 꿈꾸며 열심히 노력하고 있으며, 인구소멸 우려지역인 통영시에 큰 희망이 되고 있다.
+              </li>
+              <li>
+                  천영기 통영시장은 통영의 축구 꿈나무들을 위해 통영시에 기부해 주신 고향사랑기금 기부자 모두에게 진심으로 감사드린다고 말했다.
+              </li>
+            </ul>
+            <div class="blue-bar bar"></div>
+            <ul class="deco-circle blue-deco ">
+              <li>
+                사 업 명: 통영시 유소년 축구단 운영비 지원 사업
+              </li>
+              <li>
+                사 업 비: 30,000,000원 (통영시 고향사랑기금 100%)
+              </li>
+              <li>
+                사업내용: 고향사랑기금으로 유소년 축구단 선수들에게 유니폼, 축구공, 축구화, 간식 등 지원함으로써 청소년 육성 및 보호
+              </li>
+              <li>
+                문    의: 세무과 세정팀 담당 장혜량 (☏ <a href="tel:0556504316" class="tel">055-650-4316</a>)
+              </li>
+            </ul>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

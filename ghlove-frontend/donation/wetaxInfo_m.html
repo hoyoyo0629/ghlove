@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기부금 결제안내-고향사랑e음</title>
+    <link rel="stylesheet" href="/static/css/defualt_ali.css">
+    <link rel="stylesheet" href="/static/css/wetaxInfo.css">
+</head>
+
+<body>
+    <div class="info_wrap">
+        <!-- <input tyle="text" id="mEpayNo" class="mEpayNum pointRed" readonly> -->
+        <span class="image_box">
+            <img src="/static/images/popup/wetaxInfo_pop.png"
+                alt="발급된 전자납부번호를 『스마트위택스 앱』 조회창에 바로 붙여넣기 후 납부하시고 납부가 완료되면 앱을 닫아주세요.">      
+        </span>
+        <!-- 버튼그룹 -->
+        <div class="btn-box">
+            <button type="button" class="wetaxBtn" onclick="self.close()">
+               <img src="/static/images/icon/wetax_btn.png" alt="위택스 열기 없으면 설치화면으로 이동 ">
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script>
+        var parent_val = opener.$("#epayNo").val(); 
+        $("#mEpayNo").val(parent_val);
+    </script>
+</body>
+
+
+</html>

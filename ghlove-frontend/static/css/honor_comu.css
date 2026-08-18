@@ -1,0 +1,831 @@
+.page-title-txt .honor{
+    font-size:35px;
+}
+
+.board_icon {
+    transform: translate(0, -2px);
+    margin-right: 5px;
+    display: none;
+}
+
+.s-contents.list-wrapper {
+    margin-bottom: 150px;
+    margin-bottom: calc(var(--margin-padding-8)*5);
+}
+
+
+.list-search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-search-header .list-count-box {
+    color: var(--gray3);
+    margin-bottom: 16px;
+}
+
+.list-search-header .search-select {
+    width: 75%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.list-search-header .search-select .m-field {
+    display: flex;
+    justify-content: space-between;
+}
+
+.list-search-header .search-select .form-item {
+    margin-left: calc(var(--margin-padding-8));
+}
+
+.form-item {
+    position: relative;
+}
+
+.search-field .button.search {
+    position: absolute;
+    z-index: 999;
+    right: 0;
+    top: 11px;
+    box-shadow: none;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    padding: 0 11px 0 7px;
+}
+
+
+/* 게시판 리스트 */
+.list-search-body {
+    margin: calc(var(--margin-padding-8)*4) 0;
+}
+
+.list-search-body .honor-list-wrap {
+    border: solid var(--gray2);
+    border-width: 2px 0 0px;
+    font-weight: 500;
+}
+
+.list-search-body li.list-items,
+.list-title {
+    padding: calc(var(--margin-padding-8)*3) calc(var(--margin-padding-8)*2);
+    border-bottom: 1px solid var(--gray5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: var(--gray3);
+}
+
+.list-title {
+    background-color: var(--gray5);
+    border-bottom: 1px solid var(--gray3);
+    color: var(--gray2);
+    font-size: 15px;
+}
+
+.list-search-body .list-none {
+    padding: 100px 0;
+    border-bottom: 1px solid var(--gray5);
+    text-align: center;
+    color: var(--gray3);
+}
+
+
+.list-search-body.honor .col_group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-search-body.honor .date-col {
+    text-align: center;
+    min-width: 100px;
+    margin: 0 8px;
+}
+
+
+.list-search-body.honor .date-col.cmt_count,
+.list-search-body.honor .date-col.idx,
+.list-search-body.honor .date-col.w_user,
+.list-search-body.honor .date-col.view_c,
+.list-search-body.honor .date-col.like_c {
+    min-width: 60px;
+
+}
+
+.list-search-body.honor .date-col.list_tit {
+    width: 100%;
+    text-align: left;
+    word-break: normal;
+
+}
+
+.list-search-body.honor .list-title .date-col.list_tit {
+    text-align: center;
+}
+
+.list-search-body.honor .notice-header-txt {
+    line-height: 1.5em;
+}
+
+/* .list-search-body.honor .notice-header-txt + .cmt_count {
+    margin-left: 10px;
+    
+}
+.list-search-body.honor .notice-header-txt + .cmt_count .board_icon {
+    margin-right: 2px;
+    display: inline-block;
+}
+.list-search-body.honor .cmt_count {
+    text-align: left;
+} */
+.honor{
+    margin-bottom: 150px;
+}
+.honor .center {
+    background-color: var(--main-color1);
+    padding: 0px;
+}
+
+.honor .h_total,
+.honor .h_total .honor_grade,
+.honor .h_total .honor_grade .grade_standard,
+.honor .h_card_wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.honor .h_total{
+    gap: 20px;
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 40px;
+}
+.honor .h_total .honor_grade,
+.honor .h_total .honor_grade .grade_standard{
+    gap: 6px;
+}
+.honor .h_total .honor_grade .grade_standard{
+    font-weight: 600;
+}
+.honor .h_total .honor_grade img{
+    width: 40px;
+}
+.honor .h_total .t_count{
+    color:var(--gray4);
+}
+
+.honor .h_card_wrap {
+    flex-wrap: wrap;
+    gap: 5%;
+}
+
+.honor .h_card_wrap .h_card {
+    width: 300px;
+    height: 436px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    /* background-size: 300px auto; */
+    background-position: center top;
+    padding: 48px 0px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+.honor .h_card_wrap .h_card.honor0 {
+    padding: 40px 25px;
+    background-image: url('/static/images/honors/honor0.png');
+}
+
+.honor .h_card_wrap .h_card.honor1 {
+    background-image: url('/static/images/honors/honor1.png');
+}
+
+.honor .h_card_wrap .h_card.honor2 {
+    background-image: url('/static/images/honors/honor2.png');
+}
+
+.honor .h_card_wrap .h_card.honor3 {
+    background-image: url('/static/images/honors/honor3.png');
+}
+
+.honor .h_card_wrap .h_card .h_year {
+    font-size: 22px;
+    color: var(--main-color1);
+    font-weight: bold;
+    margin-bottom: 7px;
+    letter-spacing: -1.5px;
+}
+
+.honor .h_card_wrap .h_card .h_tit {
+    font-size: 40px;
+    font-family: var(--fs-kangwonGyoT);
+    color: var(--sub-color1);
+    /* line-height: 30px; */
+}
+
+.honor .h_card_wrap .h_card .h_loc {
+    font-size: 18px;
+    color: var(--gray2);
+}
+
+.honor .h_card_wrap .h_card.honor0 .s-txt {
+    text-align: left;
+}
+
+
+
+.honor .medal_area {
+    /*height: 85px;*/
+    padding: 30px 0px 0px 0px;
+    margin-bottom: 40px;
+}
+.honor .medal_area ul {
+    width: 84%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+}
+.honor .medal_area ul li {
+    float: left;
+    text-indent: -9999px;
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: -1px;
+}
+.honor .medal_area ul li + li {
+    margin-left: 2%;
+}
+.honor .medal_area ul li .img {
+    display: block;
+    margin: 10px auto;
+}
+
+
+.honor .medal_area ul li.medal_silver .img {
+    background: url(/static/images/icon/honor_grade2.png) no-repeat 0 / 100%;
+    width: 40px;
+    height: 40px;
+}
+
+.honor .medal_area ul li.medal_bronze .img {
+    background: url(/static/images/icon/honor_grade3.png) no-repeat 0 / 100%;
+    width: 40px;
+    height: 40px;
+}
+.honor .medal_area ul li.medal_gold .img {
+    background: url(/static/images/icon/honor_grade1.png) no-repeat 0 / 100%;
+    width: 40px;
+    height: 40px;
+}
+
+
+.honor .page-title-txt {
+    line-height: 1.5em;
+}
+
+
+
+.honor_card_area {
+    /*background-color: #dfedff;*/
+    display: block;
+    overflow: hidden;
+}
+
+.honor_card_area .logo {
+    background: url(/static/images/cli-logo.png) no-repeat 0 / 100%;
+    width: 110px;
+    height: 23px;
+    text-indent: -9999px;
+    display: inline-block;
+}
+.honor_card_area .titArea {
+    margin: 5% auto;
+    text-align: center;
+}
+.honor_card_area h3 {
+    display: inline-block;
+    margin-left: 2%;
+    vertical-align: bottom;
+    line-height: 20px;
+}
+.honor_card_area .lineBox {
+    text-align: center;
+    border: 3px solid;
+    border-radius: 20px;
+    padding: 20px 30px;
+    width: 75%;
+    margin: 0 auto;
+    background-color: var(--gray5);
+    border-color: #00D9DF;
+}
+.honor_card_area h5 {
+    font-size: 44px;
+    color: #00215A;
+    line-height: 50px;
+    font-family: GangwonEduPowerExtraBoldA;
+    word-break: break-all;
+}
+/*
+.honor_card_area .lineBox .qrArea {
+    margin: 7% auto;
+}*/
+
+.honor_card_area .lineBox .subTitle {
+	width: 50%;
+	text-align: left;
+	margin-top: 11px;
+	font-size: 20px;
+	color: #00215A;
+}
+
+.honor_card_area .lineBox .subTitle img {
+	width: 30px;
+	padding-bottom: 5.5px;
+	margin-right: 5.5px;
+}
+
+.honor_card_area .lineBox .subTitle span {
+	display: inline-block;
+	vertical-align: bottom;
+	height: 30px;
+}
+
+.honor_card_area .lineBox .countdownLine {
+	width: 63px;
+	height: 0px;
+	background-color: #00D9DF;
+	margin-bottom: 5.5px;
+	margin-left: auto;
+	border-width: 1px;
+	border-color: #00D9DF;
+	border-style: solid;
+}
+
+.honor_card_area .lineBox .countdownBox {
+	/*width: 100%;*/
+	height: 77px;
+}
+
+.honor_card_area .lineBox .qrArea span img {
+    width: 100%;
+}
+.honor_card_area .lineBox .countdownBox .countdownTimer {
+	color: #111111;
+	float: right;
+	text-align: right;
+	/*font-size: 12px;*/
+	font-size: 19px;
+	line-height: 25px;
+}
+/*.honor_card_area .lineBox .countdownTimer span {
+    color: var(--main-color2);
+}
+*/
+.honor_card_area .lineBox .userInfo {
+    /*margin: 9% auto;*/
+    color: var(--main-color1);
+    /*width: 77%;*/
+    display: block;
+    overflow: hidden;
+    color: #111111;
+}
+.honor_card_area .lineBox .userInfo .name {
+    font-weight: bold;
+    font-size: 33px;
+    margin: 15px auto 0px auto;
+}
+.honor_card_area .lineBox .userInfo ul {
+    margin-top: 2%;
+    font-size: 17px;
+}
+.honor_card_area .lineBox .userInfo ul li {
+    text-align: left;
+    line-height: 1.5em;
+}
+.honor_card_area .lineBox .userInfo ul li .miniTit {
+    /*width: 30%;*/
+    display: inline-block;
+    /*float: left;
+    text-align: right;*/
+    margin-right: 3px;
+    font-weight: bold;
+}
+.honor_card_area .lineBox .userInfo ul li .userTxt {
+    /*font-weight: bold;*/
+    /*margin-left: 4%;*/
+    display: inline-block;
+    /*width: 65%;
+    float: left;*/
+}
+.honor_card_area .lineBox .userInfo .verticalLine {
+    width: 0px;
+    height: 40px;
+    background-color: #00D9DF;
+	border-width: 2px;
+	border-color: #00D9DF;
+	border-style: solid;
+	margin: auto;
+}
+.honor_card_area .lineBox .userInfo .lclgvInfo {
+    font-size: 20px;
+    text-align: center;
+    color: #5A5A5A;
+    margin-bottom: 18px;
+}
+
+.honor_card_area .lineBox .btmTit {
+    font-weight: bold;
+}
+
+.honor_card_area .reloadBtm {
+    background-color: #00D9DF;
+    width: 65%;
+    margin: 28px auto 83px;
+    height: 71px;
+    display: table;
+    border-radius: 10px;
+}
+.honor_card_area .reloadBtm a {
+    display: table-cell;
+    vertical-align: middle;
+    color: #00215A;
+    font-weight: bold;
+    font-size: 26px;
+	width: 100%;
+    height: 100%;
+    text-align: center;
+}
+/*
+.honor_card_area .swiper-button-next {
+    right: 6%;
+}
+.honor_card_area .swiper-button-prev {
+    left: 6%;
+}
+*/
+/*
+.honor .m_ver {
+    display: none;
+}
+*/
+
+.bold {
+	font-weight: bold;
+}
+
+.swiper-button-prev {
+	background-image: url(/static/images/honors/honor_arrow_l.png);
+    left: 10px;
+    right: auto;
+    width: 41px;
+    height: 100px;
+	background-size: 41px 100px;
+}
+
+.swiper-button-next {
+	background-image: url(/static/images/honors/honor_arrow_r.png);
+    left: auto;
+    right: 10px;
+    width: 41px;
+    height: 100px;
+	background-size: 41px 100px;
+}
+
+
+@media screen and (max-width:1280px) {
+    .s-contents.list-wrapper {
+        box-shadow: none;
+        border: none;
+        padding: 20px;
+    }
+
+    .list-search-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .list-search-header .search-select {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .list-search-header .search-select .m-field,
+    .list-search-header .search-select .form-item.category {
+        width: 100%;
+    }
+
+    .list-search-header .search-select .form-item,
+    .list-search-header .search-select .form-item.search-field select {
+        width: 49.5%;
+        margin: 0 0 1%;
+    }
+
+    .list-search-header .search-select .form-item.search-field input {
+        width: 100%;
+    }
+    /*
+    .honor .pc_ver {
+        display: block;
+    }
+    .honor .m_ver {
+        display: none;
+    }
+    */
+}
+
+.pop_txt {
+	font-size: 20px;
+	line-height: 1.2em;
+}
+
+.pop_txt h2{
+	font-size: 30px;
+}
+
+.modal .pop_txt p {
+	font-size: 20px;
+	line-height: 1.2em;
+}
+/*
+.modal .btn-group {
+	margin-top: 0px;
+}
+*/
+.modal-content {
+	padding: 32px;
+}
+
+@media screen and (max-width:1030px) { /* 모바일 */
+    .board_icon {
+        display: inline-block;
+    }
+
+    .list-search-body.honor .date-col.idx,
+    .list-title {
+        display: none;
+    }
+
+    .list-search-body li.list-items {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .list-search-body li.list-items>div,
+    .list-title {
+        padding: calc(var(--margin-padding-8)*1) 0;
+    }
+
+    .list-search-body.honor .col_group {}
+
+    .list-search-body.honor .date-col {
+        text-align: left;
+    }
+	/*
+    .honor .m_ver{display:block;}
+    .honor .pc_ver{display:none;}
+    */
+}
+
+@media screen and (max-width:960px) {
+
+    .list-search-body.data,
+    .list-search-body.qna {
+        overflow-y: hidden;
+        overflow-x: scroll;
+    }
+
+    .list-search-body.data::-webkit-scrollbar,
+    .list-search-body.qna::-webkit-scrollbar {
+        height: 10px;
+    }
+}
+
+@media screen and (max-width:860px) {
+    .list-search-header {
+        flex-direction: column;
+    }
+
+    .list-search-header .list-count-box {
+        margin-bottom: calc(var(--margin-padding-8)*2);
+    }
+
+    .list-search-header .search-select {
+        justify-content: space-between;
+    }
+
+    .list-search-header .search-select .form-item {
+        /* width: 24%; */
+
+    }
+
+    .list-search-header .search-select input,
+    .list-search-header .search-select select {
+        width: 100%;
+    }
+}
+
+
+@media screen and (max-width:768px) {
+    .s-contents.list-wrapper {
+        padding: 50px 7%;
+        font-size: 14px;
+    }
+
+    .list-search-header .search-select .m-field .form-item:first-child select {
+        /* margin-right: 6px; */
+        width: 98%;
+    }
+
+    .list-search-body li.list-items {
+        padding: calc(var(--margin-padding-8)*2) calc(var(--margin-padding-8)*0);
+    }
+
+    /* .list-search-body.honor .date-col{
+        margin: 0;
+    } */
+    .list-search-body li.list-items .notice-icon {
+        font-size: 14px;
+        padding: 8px 4%;
+    }
+
+    /* FAQ */
+    .list-search-body.faq .header-faq {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        padding-left: 24px;
+    }
+
+    .list-search-body.faq .header-faq>div {
+        width: 100%;
+    }
+
+    .list-search-body.faq .header-faq .status_c {
+        padding: 0;
+    }
+
+    .list-search-body.faq .header-faq .faq_txt {
+        width: 100%;
+        padding: 12px 0;
+    }
+
+    .list-search-body.faq .header-faq .col_group {
+        justify-content: flex-end;
+    }
+
+    .list-search-body.faq .header-faq .status_c.category {
+        text-align: left;
+    }
+
+    .list-search-body.faq .header-faq .status_c.date {
+        min-width: 120px;
+    }
+
+    .list-search-header .search-select .form-item,
+    .list-search-header .search-select .form-item.search-field,
+    .list-search-header .search-select .form-item.search-field select {
+        width: 100%;
+    }
+    .honor{
+        margin-bottom: 0px;
+    }
+    .honor .center {
+        width: 100%;
+        /*margin: 0;*/
+        padding: 0px;
+    }
+    .honor .h_total .honor_grade{
+        flex-direction: column;
+    }
+    .honor .h_card_wrap {
+        gap: 18px
+    }
+
+    .honor .h_card_wrap .h_card {
+        width: 156px;
+        height: 260px;
+        background-size: 166px auto;
+        padding: 25px 0;
+    }
+
+    .honor .h_card_wrap .h_card.honor0 {
+        padding: 20px 15px;
+    }
+
+    .honor .h_card_wrap .h_card .h_year {
+        font-size: 12px;
+    }
+
+    .honor .h_card_wrap .h_card .h_tit {
+        font-size: 22px;
+    }
+
+    .honor .h_card_wrap .h_card .h_loc {
+        font-size: 11px;
+    }
+
+    .honor .h_card_wrap .h_card.honor0 .s-txt {
+        font-size: 9px;
+    }
+    .honor .swiper-wrapper {
+        width: 100%;
+    }
+    .honor_card_area h3 {
+        font-size: 100%;
+    }
+}
+
+@media screen and (max-width:550px) {
+    .list-search-header .list-count-box {
+        font-size: 14px;
+    }
+
+    .list-search-header .search-select {
+        flex-direction: column;
+    }
+
+	.honor_card_area h5 {
+	    font-size: 7.2vw;
+	    line-height: 9vw;
+	}
+
+	.honor_card_area .lineBox .subTitle {
+		width: 50%;
+		text-align: left;
+		margin-top: 2vw;
+		font-size: 3.6vw;
+	}
+
+	.honor_card_area .lineBox .subTitle img {
+		width: 5.4vw;
+		padding-bottom: 1vw;
+		margin-right: 1vw;
+	}
+
+	.honor_card_area .lineBox .subTitle span {
+		height: 5.4vw;
+	}
+	.honor_card_area .lineBox .countdownLine {
+		width: 11.3vw;
+	}
+	.honor_card_area .lineBox .countdownBox {
+		height: 14vw;
+	}
+	.honor_card_area .lineBox .countdownBox .countdownTimer {
+		font-size: 3.4vw;
+		line-height: 4.5vw;
+	}
+	.honor_card_area .lineBox .userInfo .name {
+	    font-size: 6vw;
+	    margin: 2.7vw auto 0px auto;
+	}
+	.honor_card_area .lineBox .userInfo ul {
+	    font-size: 3.1vw;
+	}
+	.honor_card_area .lineBox .userInfo .verticalLine {
+	    height: 7.2vw;
+	}
+	.honor_card_area .lineBox .userInfo .lclgvInfo {
+	    font-size: 3.6vw;
+	}
+	.honor_card_area .reloadBtm {
+	    margin: 5.1vw auto 15vw;
+	    height: 12.8vw;
+	}
+	.honor_card_area .reloadBtm a {
+	    font-size: 4.6vw;
+	}
+	.swiper-button-prev {
+	    width: 7.4vw;
+	    height: 18.2vw;
+		background-size: 7.4vw 18.2vw;
+	}
+	.swiper-button-next {
+	    width: 7.4vw;
+	    height: 18.2vw;
+		background-size: 7.4vw 18.2vw;
+	}
+	.pop_txt {
+		font-size: 3.6vw;
+	}
+	
+	.pop_txt h2{
+		font-size: 5.4vw;
+	}
+	
+	.modal .pop_txt p {
+		font-size: 3.6vw;
+	}
+	.modal-content {
+		padding: 5.8vw;
+	}
+}
+
+
+

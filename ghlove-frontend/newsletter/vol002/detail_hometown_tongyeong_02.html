@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>제2회 고향사랑의 날 기념식과 박람회 : 고향사랑e음 기부제 소식</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type="text/babel">
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+  </head>
+
+<body>
+  <div id="saleson" v-cloak>
+    <newsletter-header :ver="'vol002'"></newsletter-header>
+
+    <div class="newsletter_detail_page hometown10">
+      <div id="wrap">
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <div class="banner_img_wrap">
+                <div class="img_wrap">
+                  <img src="/newsletter/static/images/vol002/hometown/tongyeong/02/detail_1.jpg" alt="안심우체통이 설치된 대문의 낮 사진">
+                </div>
+                <div class="img_wrap">
+                  <img src="/newsletter/static/images/vol002/hometown/tongyeong/02/detail_2.jpg" alt="밝게 빛나는 안심우체통이 설치된 대문의 밤 사진">
+                </div>
+              </div>
+              <!-- <div class="banner_link_btn">
+                <a href="#;" target="_blank">자세히 보기&nbsp;&nbsp;+</a>
+              </div> -->
+            </div>
+            <div class="tit_area">
+              <h4>경상남도 통영시</h4>
+              <h3>
+                통영시 고향사랑기금으로<br/>
+                <span class="blue">안심우편함 설치</span>
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar"></div>
+          <div id="" class="detail_contents_area">
+            <ul class="deco-arrow blue-deco blue">
+              <li>
+                경남 통영시는 2024년 고향사랑기금 시범사업인 ‘태양열 우편함 안심골목길 조성 사업’을 완료하였으며, 밝고 안전한 골목길을 조성하여 안전취약계층인 주민들이 밤에도 안전하게 통행할 수 있도록 하였다.
+              </li>
+              <li>
+                이번 시범사업은 안심우편함을 설치한 마을 주민들의 호응도가 높아 2025년에도
+   예산을 증액하여 더 많은 안심우편함을 설치하기로 결정하였다.
+   통영시는 기부자들이 고향을 밝힐 수 있는 고향사랑기부제에 대한 관심을
+   더 많이 가질 것으로 예상하고 있다.
+              </li>
+              <li>
+                천영기 통영시장은 어두운 골목을 밝히는 안심우편함처럼, 더 많은 주민들의
+   복리 증진을 위해 고향사랑기부제가 통영시를 밝혀나가기를 바란다고 말했다.
+   </li>
+            </ul>
+            <div class="bar blue-bar"></div>
+            <ul class="deco-circle blue-deco ">
+              <li>
+                사 업 명 : 고향사랑e음 온라인기부 &#47; 농협 오프라인 기부
+              </li>
+              <li>
+                사 업 비 : 10,000,000원(통영시 고향사랑기금 100%)
+
+              </li>
+              <li>
+                사업내용 :야심한 밤, 새벽 등 어두운 골목길에 주택마다 센서로 작동하는 태양광
+                우편함을 설치하여 범죄를 예방하고 안심하고 다닐 수 있는 골목길 조성
+              </li>
+              <li>
+                문&nbsp;&nbsp;&nbsp;&nbsp;의 : 세무과 담당 장혜량 (☏ <a href="tel:0556504316" class="tel">055-650-4316</a>) 
+              </li>
+            </ul>
+          </section>
+        </div>
+        <a href="#wrap" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+        
+      </div>
+    </div>
+
+    </div>
+
+  </div>
+</body>
+</html>

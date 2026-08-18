@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.order.givepoint.OrderGivePointMapper">
+
+	    <!-- 사용자 아이디로 기부 잔여포인트 조회 -->
+    <select id="getGiveBlcePointListByUserId" parameterType="long" resultType="saleson.shop.order.givepoint.support.OrderGivePoint" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.getGiveBlcePointListByUserId */
+        	<!-- SELECT
+				CNTR_SN
+				, CNTR_LOCGOV_CODE
+				, PSITN_LOCGOV_CODE
+				, SUM(CNTR_POINT) AS CNTR_POINT
+				, SUM(CNTR_BLCE_POINT) AS CNTR_BLCE_POINT
+				, POINT_END_DE
+				FROM G_CNTR
+				WHERE USER_ID = #{value}
+				AND DELETE_AT = 'N'
+				AND POINT_END_DE <![CDATA[ >= ]]> TO_CHAR(CURDATE(), 'YYYYMMDD')
+				GROUP BY CNTR_LOCGOV_CODE 사용내역 조회 방법 변경 -->
+
+	SELECT
+			CNTR.CNTR_SN
+			, CNTR.CNTR_LOCGOV_CODE
+			, CNTR.PSITN_LOCGOV_CODE
+			, SUM(CNTR.CNTR_POINT) AS CNTR_POINT
+			, IFNULL(SUM(CNTR.CNTR_BLCE_POINT), 0) AS CNTR_BLCE_POINT
+		FROM (
+			SELECT
+				C.CNTR_SN
+				, C.CNTR_LOCGOV_CODE
+				, C.PSITN_LOCGOV_CODE
+				, C.CNTR_POINT
+				<!-- , SUM(C.CNTR_BLCE_POINT) AS CNTR_BLCE_POINT -->
+				<!-- , C.POINT_END_DE  -->
+				, (C.CNTR_POINT - SUM(ABS(IFNULL(CUP.CNTR_USE_POINT, 0)))) AS CNTR_BLCE_POINT
+				<!-- , IFNULL(SUM(CUP.CNTR_USE_POINT), 0) AS CNTR_USE_POINT -->
+			FROM G_CNTR C
+				, G_CNTR_USE_POINT CUP
+			WHERE 1=1
+				AND C.CNTR_SN = CUP.CNTR_SN(+)
+				AND C.USER_ID = #{value}
+				AND C.DELETE_AT = 'N'
+				AND C.STTEMNT_PAY_DE IS NOT NULL
+				AND C.CNTR_STTUS_CODE = '200'
+				AND C.POINT_END_DE <![CDATA[ >= ]]> TO_CHAR(CURDATE(), 'YYYYMMDD') <!-- 한달전 만료일 무제한으로 변경되었다고 하여 주석처리 24.03.08. 만료일 체크 복구 24.04.12. -->
+			GROUP BY C.CNTR_SN
+		) CNTR
+		GROUP BY CNTR.CNTR_LOCGOV_CODE
+
+
+    </select>
+
+	<!-- 사용자 아이디, 지자체 코드로 기부잔여포인트 조회 -->
+    <select id="getGiveBlcePointListByUserIdAndLocgov" parameterType="saleson.shop.order.givepoint.support.OrderGivePoint" resultType="saleson.shop.order.givepoint.support.OrderGivePoint" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.getGiveBlcePointListByUserIdAndLocgov */
+        	<!-- SELECT
+        		CNTR_SN
+				, CNTR_LOCGOV_CODE
+				, PSITN_LOCGOV_CODE
+				, CNTR_POINT
+				, CNTR_BLCE_POINT
+				, POINT_END_DE
+				FROM G_CNTR
+				WHERE USER_ID = #{userId}
+				AND DELETE_AT = 'N'
+				AND POINT_END_DE <![CDATA[ >= ]]> TO_CHAR(CURDATE(), 'YYYYMMDD')
+				AND CNTR_LOCGOV_CODE = #{cntrLocgovCode}
+				<if test="!addZero">
+					AND CNTR_BLCE_POINT <![CDATA[ > ]]> 0
+				</if> -->
+
+		SELECT *
+			FROM (
+				SELECT
+	        		C.CNTR_SN
+						, C.CNTR_LOCGOV_CODE
+						, C.PSITN_LOCGOV_CODE
+						, C.CNTR_POINT
+						<!-- , C.CNTR_BLCE_POINT -->
+						, C.POINT_END_DE
+						, (C.CNTR_POINT - SUM(ABS(IFNULL(CUP.CNTR_USE_POINT, 0)))) AS CNTR_BLCE_POINT
+				FROM G_CNTR C
+					, G_CNTR_USE_POINT CUP
+				WHERE 1=1
+					AND C.CNTR_SN = CUP.CNTR_SN(+)
+					AND C.USER_ID = #{userId}
+					AND C.DELETE_AT = 'N'
+					AND C.STTEMNT_PAY_DE IS NOT NULL
+					AND C.CNTR_STTUS_CODE = '200'
+					AND C.POINT_END_DE <![CDATA[ >= ]]> TO_CHAR(CURDATE(), 'YYYYMMDD') <!-- 한달전 만료일 무제한으로 변경되었다고 하여 주석처리 24.03.08. 만료일 체크 복구 24.04.12. -->
+					AND C.CNTR_LOCGOV_CODE = #{cntrLocgovCode}
+				GROUP BY C.CNTR_SN
+			) CNTR
+			WHERE 1=1
+			<if test="!addZero">
+				AND CNTR.CNTR_BLCE_POINT <![CDATA[ > ]]> 0
+			</if>
+    </select>
+
+
+	    <!-- 기부일련번호로 기부잔여포인트 조회 -->
+    <select id="getGiveBlcePointListByCntrSn" parameterType="saleson.shop.order.givepoint.support.OrderGivePoint" resultType="saleson.shop.order.givepoint.support.OrderGivePoint" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.getGiveBlcePointListByCntrSn */
+        	<!-- SELECT
+        		CNTR_SN
+				, CNTR_LOCGOV_CODE
+				, PSITN_LOCGOV_CODE
+				, CNTR_POINT
+				, CNTR_BLCE_POINT
+				, POINT_END_DE
+				FROM G_CNTR
+				WHERE CNTR_SN = #{cntrSn}
+				AND DELETE_AT = 'N'
+				AND POINT_END_DE <![CDATA[ >= ]]> TO_CHAR(CURDATE(), 'YYYYMMDD')
+				<if test="!addZero">
+					AND CNTR_BLCE_POINT <![CDATA[ > ]]> 0
+				</if> -->
+
+			SELECT *
+				FROM (
+					SELECT
+		        		C.CNTR_SN
+						, C.CNTR_LOCGOV_CODE
+						, C.PSITN_LOCGOV_CODE
+						, C.CNTR_POINT
+						<!-- , C.CNTR_BLCE_POINT -->
+						, (C.CNTR_POINT - SUM(ABS(IFNULL(CUP.CNTR_USE_POINT, 0)))) AS CNTR_BLCE_POINT
+						, C.POINT_END_DE
+					FROM G_CNTR C
+						, G_CNTR_USE_POINT CUP
+					WHERE 1=1
+						AND C.CNTR_SN = CUP.CNTR_SN(+)
+						AND C.CNTR_SN = #{cntrSn}
+						AND C.DELETE_AT = 'N'
+						AND C.STTEMNT_PAY_DE IS NOT NULL
+						AND C.CNTR_STTUS_CODE = '200'
+						<if test="!addExpired">
+						AND C.POINT_END_DE <![CDATA[ >= ]]> TO_CHAR(CURDATE(), 'YYYYMMDD') <!-- 한달전 만료일 무제한으로 변경되었다고 하여 주석처리 24.03.08. 만료일 체크 복구 24.04.12. -->
+						</if>
+					GROUP BY C.CNTR_SN
+				) CNTR
+				WHERE 1=1
+				<if test="!addZero">
+					AND CNTR.CNTR_BLCE_POINT <![CDATA[ > ]]> 0
+				</if>
+
+
+
+    </select>
+
+	    <!-- 기부잔여포인트 업데이트 -->
+    <update id="updateGiveBlcePoint" parameterType="saleson.shop.order.givepoint.support.OrderGivePoint" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.updateGiveBlcePoint */
+        	UPDATE G_CNTR
+        		SET CNTR_BLCE_POINT = #{cntrBlcePoint}
+        		, LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />
+        		, LAST_UPDUSR_ID = #{userId}
+        		WHERE CNTR_SN = #{cntrSn}
+
+    </update>
+
+	    <!-- 기부포인트 사용내역 추가 -->
+    <insert id="insertGiveUsePoint" parameterType="saleson.shop.order.givepoint.support.OrderGivePoint">
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.insertGiveUsePoint */
+	    INSERT INTO G_CNTR_USE_POINT (
+				CNTR_SN,
+				USE_SN,
+				POINT_USE_DE,
+				CNTR_USE_POINT,
+				USER_ID,
+				PSITN_LOCGOV_CODE,
+				CNTR_LOCGOV_CODE,
+				USE_SE_CODE,
+				USE_CN,
+				ORDER_CODE,
+				URL_ADRES,
+				FRST_REGISTER_ID,
+				FRST_REGIST_PNTTM,
+				LAST_UPDUSR_ID,
+				LAST_UPDT_PNTTM
+			) VALUES
+				(
+		        	#{cntrSn},
+					(SELECT IFNULL(MAX(USE_SN), 0) + 1 FROM G_CNTR_USE_POINT WHERE CNTR_SN = #{cntrSn}),
+					<include refid="CommonMapper.date" />,
+					#{cntrUsePoint},
+					#{userId},
+					#{psitnLocgovCode},
+					#{cntrLocgovCode},
+					#{useSeCode},
+					#{useCn},
+					#{orderCode},
+					#{urlAdres},
+					<choose>
+						<when test="frstRegisterId > 0">
+							#{frstRegisterId},
+						</when>
+						<otherwise>
+							#{userId},
+						</otherwise>
+					</choose>
+					<include refid="CommonMapper.datetime" />,
+					<choose>
+						<when test="lastUpdusrId > 0">
+							#{lastUpdusrId},
+						</when>
+						<otherwise>
+							#{userId},
+						</otherwise>
+					</choose>
+					<include refid="CommonMapper.datetime" />
+        		)
+    </insert>
+
+	<!-- 기부포인트 사용내역 수정 -->
+    <update id="updateGiveUsePoint" parameterType="saleson.shop.order.givepoint.support.OrderGivePoint" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.updateGiveUsePoint */
+        	UPDATE G_CNTR_USE_POINT
+        		SET CNTR_USE_POINT = #{cntrUsePoint}
+        		<!-- , USE_CN = #{useCn} -->
+        		, LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />
+        		, LAST_UPDUSR_ID =
+				<choose>
+					<when test="lastUpdusrId > 0">
+						#{lastUpdusrId}
+					</when>
+					<otherwise>
+						#{userId}
+					</otherwise>
+				</choose>
+        		WHERE ORDER_CODE = #{orderCode}
+        		AND CNTR_LOCGOV_CODE = #{cntrLocgovCode}
+        		AND CNTR_SN = #{cntrSn}
+        		AND USE_SN = #{useSn}
+
+    </update>
+
+	    <!-- 기부포인트 사용내역 조회 -->
+    <select id="getGiveUsePoint" parameterType="saleson.shop.order.givepoint.support.OrderGivePoint" resultType="saleson.shop.order.givepoint.support.OrderGivePoint">
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.getGiveUsePoint */
+        	SELECT
+        		CUP.CNTR_SN
+        		, CUP.USE_SN
+        		, CUP.CNTR_USE_POINT
+        		, CUP.USER_ID
+        		, CUP.CNTR_LOCGOV_CODE
+        		, CUP.ORDER_CODE
+        		, C.POINT_END_DE
+        		FROM G_CNTR_USE_POINT CUP
+        			JOIN G_CNTR C ON CUP.CNTR_SN = C.CNTR_SN
+									AND C.DELETE_AT = 'N'
+									AND C.STTEMNT_PAY_DE IS NOT NULL
+									AND C.CNTR_STTUS_CODE = '200'
+        		WHERE ORDER_CODE = #{orderCode}
+				<if test="cntrLocgovCode != null and cntrLocgovCode != ''">
+        		AND CUP.CNTR_LOCGOV_CODE = #{cntrLocgovCode}
+        		</if>
+        		ORDER BY CUP.CNTR_SN DESC, CUP.USE_SN DESC
+    </select>
+
+	    <!-- 기부포인트 사용내역 삭제 -->
+    <delete id="deleteGiveUsePoint" parameterType="saleson.shop.order.givepoint.support.OrderGivePoint" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.deleteGiveUsePoint */
+        	DELETE G_CNTR_USE_POINT
+        		WHERE ORDER_CODE = #{orderCode}
+        		AND CNTR_LOCGOV_CODE = #{cntrLocgovCode}
+        		AND CNTR_SN = #{cntrSn}
+        		AND USE_SN = #{useSn}
+
+    </delete>
+
+
+    <!-- 기부포인트 내역 조회 -->
+    <select id="getCntrPointList" parameterType="List" resultType="saleson.shop.order.givepoint.support.OrderGivePoint">
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.getCntrPointList */
+    		SELECT
+				CNTR_SN
+        		, CNTR_DE
+        		, USER_ID
+        		, CNTR_LOCGOV_CODE
+        		, CNTR_POINT
+        		, CASE WHEN CNTR_BLCE_POINT <![CDATA[ >= ]]> 0
+        					THEN CNTR_BLCE_POINT
+        				<!-- ELSE NULL -->
+        				ELSE 0
+        				END AS CNTR_BLCE_POINT
+        	FROM (
+	        	SELECT
+	        		CNTR_SN
+	        		, CNTR_DE
+	        		, USER_ID
+	        		, CNTR_LOCGOV_CODE
+	        		, CNTR_POINT
+	        		<!-- , CNTR_BLCE_POINT -->
+	        		, (CNTR_POINT - IFNULL((SELECT SUM(CNTR_USE_POINT) FROM G_CNTR_USE_POINT WHERE CNTR_SN = CNTR.CNTR_SN), 0)) AS CNTR_BLCE_POINT
+	        		FROM G_CNTR CNTR
+	        		WHERE CNTR_SN IN
+					<foreach collection="list" item="usePoint" open="(" close=")" separator=",">
+	        			#{usePoint.cntrSn}
+	        		</foreach>
+	        		ORDER BY CNTR_SN DESC
+       		)
+    </select>
+
+    <!-- 주문금액합계 조회 -->
+    <select id="getGivePayOrder" parameterType="string" resultType="saleson.shop.order.givepoint.support.OrderGivePoint">
+	    /* saleson.shop.order.givepoint.OrderGivePointMapper.getGivePayOrder */
+	    SELECT
+				SUM(A.SALE_PRICE * A.QUANTITY * 1.0) AS SUM_PRICE,
+				MAX(LOCGOV_CODE) AS CNTR_LOCGOV_CODE ,
+				MAX(USER_ID) AS USER_ID
+		FROM	OP_ORDER_ITEM A
+		WHERE	1=1
+		AND		A.ORDER_CODE = #{orderCode}
+	</select>
+
+	<!-- 주문금액합계 조회 -->
+    <select id="selectItemStockInfo" parameterType="string" resultType="saleson.shop.offgive.support.OffStockInfo">
+	    /* saleson.shop.order.givepoint.OrderGivePointMapper.selectItemStockInfo */
+	    SELECT
+				A.ORDER_CODE,
+				B.ITEM_ID,
+				A.QUANTITY AS BUY_QUANTITY,
+				A.OPTIONS,
+				B.STOCK_FLAG,
+				B.STOCK_QUANTITY,
+				B.ITEM_OPTION_TYPE
+		FROM	OP_ORDER_ITEM A
+				INNER JOIN
+				OP_ITEM B
+				ON A.ITEM_ID = B.ITEM_ID
+		WHERE	1=1
+		AND		A.ORDER_CODE = #{orderCode}
+	</select>
+
+	<!-- 아이템 재고 차감 수정 -->
+    <update id="updateItemStock" parameterType="saleson.shop.offgive.support.OffStockInfo" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.updateItemStock */
+    	UPDATE	OP_ITEM
+    	SET		STOCK_QUANTITY = STOCK_QUANTITY - #{buyQuantity},
+    			UPDATED_USER_ID = '0',
+    			UPDATED_DATE = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		WHERE	ITEM_ID = #{itemId}
+		AND		STOCK_FLAG = 'Y'
+		AND		STOCK_QUANTITY > 0
+    </update>
+
+    <!-- 아이템 옵션 재고 차감 수정 -->
+    <update id="updateItemOptionStock" parameterType="saleson.shop.offgive.support.OffStockInfo" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.updateItemOptionStock */
+		UPDATE	OP_ITEM_OPTION
+		SET		OPTION_STOCK_QUANTITY = OPTION_STOCK_QUANTITY - #{buyQuantity}
+		WHERE	ITEM_ID = #{itemId}
+		AND		OPTION_STOCK_FLAG = 'Y'
+		AND		OPTION_STOCK_QUANTITY > 0
+		AND		OPTION_NAME1 like '%' || #{optionName1} || '%'
+		AND		OPTION_NAME2 like '%' || #{optionName2} || '%'
+		AND		OPTION_NAME3 like '%' || #{optionName3} || '%'
+
+
+    </update>
+
+    <!-- 구매아이템 목록 조회 -->
+    <select id="selectBuyItemList" parameterType="string" resultType="saleson.shop.order.domain.BuyItem">
+	    /* saleson.shop.order.givepoint.OrderGivePointMapper.selectBuyItemList */
+		SELECT
+				A.ORDER_CODE,
+				A.ITEM_ID,
+				A.ITEM_NAME,
+				A.SELLER_ID,
+				A.OPTIONS AS OPTIONS_DISPLAY
+		FROM	OP_ORDER_ITEM A
+		WHERE	A.ORDER_CODE = #{orderCode}
+	</select>
+
+
+	<!-- 오프라인 주문건 중 미처리 목록 조회 -->
+    <select id="selectOffOrderList" resultType="saleson.shop.offgive.support.OffStockInfo">
+	    /* saleson.shop.order.givepoint.OrderGivePointMapper.selectOffOrderList */
+		SELECT
+				A.CNTR_SN,
+				MAX(B.ORDER_CODE) AS ORDER_CODE
+		FROM	G_CNTR A
+				INNER JOIN
+				OP_ORDER_ITEM B
+				ON A.CNTR_SN = B.FILLER9
+				AND A.CNTR_STTUS_CODE = 200
+				AND B.OFF_PROC_YN = 'N'
+		GROUP BY A.CNTR_SN
+	</select>
+
+	<!-- 오프라인 답례품 처리 여부 업데이트 : Y -->
+    <update id="updateOrderOffProcYn" parameterType="saleson.shop.offgive.support.OffStockInfo" >
+    /* saleson.shop.order.givepoint.OrderGivePointMapper.updateItemOptionStock */
+		UPDATE	OP_ORDER_ITEM
+		SET		OFF_PROC_YN = 'Y'
+		WHERE	ORDER_CODE = #{orderCode}
+	</update>
+
+</mapper>

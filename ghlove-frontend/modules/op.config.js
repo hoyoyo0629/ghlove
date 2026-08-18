@@ -1,0 +1,12 @@
+var API_DOMAIN = 'http://localhost:9080';
+var CDN_DOMAIN = 'http://localhost:8080';
+var VIRTUAL_DOMAIN = 'http://localhost:3000';
+var OZ_DOMAIN = 'http://localhost:12000';
+var SERVER_POSITION = 'local';
+var IS_USE_NET_FUNNEL = false;
+var IS_USE_ONEPASS = false;
+var KAKAO_JAVASCRIPT_KEY = 'dd50d625a46ffbfef8c8b7377dbb4eb3';
+var KAKAO_REDIRECT_URL = VIRTUAL_DOMAIN + '/users/login.html';
+var KAKAO_REDIRECT_URL2 = VIRTUAL_DOMAIN + '/users/join.html';
+var KAKAO_SETTLE_ID = '6985c6dc-1bdb-4021-946f-1e096e5f4835';
+//var DUPLICATION_CALL_LIMIT = 5000;			// 중복 호출 가능 최소 시간(milliseconds)

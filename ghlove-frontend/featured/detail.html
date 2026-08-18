@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="ko">
+<head id="saleson-head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="../../../../favicon.ico">
+    <title>고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+<body>
+<div id="saleson" v-cloak>
+    <layout-header gnb-menu-target="featured"></layout-header>
+
+    <section class="contents featured_detail_contents">
+        <div class="featured_top">
+            <div class="tit_wrap">
+                <h2 class="tit">{{featured.featuredName}}</h2>
+            </div>
+            <div class="item_banner">
+                <div class="container">
+                    <img :src="bannerImage" alt="banner" @error="errorImage">
+                </div>
+            </div>
+            <div class="feautred_select"
+                 v-if="(featured.prodState === '2' || featured.prodState === '3') && itemTypeList.length > 1">
+                <div class="container">
+                    <select title="구분" class="custom-select box" @change="categoryChange($event)">
+                        <option value="all">전체</option>
+                        <option :value="itemType.ITEM_TYPE_ID" v-for="itemType in itemTypeList">
+                            {{itemType[itemTypeNameKey]}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="item_list thumb">
+            <div class="container">
+                <div v-html="appendCdnDomain(unescapeHtml(featured.featuredContent))"></div>
+                <div class="row" v-if="itemListMap">
+                    <template v-for="itemType in itemTypeList">
+                        <div class="col-6 col-md-4 col-lg-3 list_area" :id="itemType.ITEM_TYPE_ID"
+                             v-show="itemType.ITEM_TYPE_ID === itemTypeId || itemTypeId === 'all'"
+                             v-for="data in itemListMap[itemType[itemTypeIdKey]]">
+                            <div class="img_area">
+                                <a href="javascript:void(0)" @click="redirectByItem(data)">
+                                    <img :src="itemImage(data.itemImage)"
+                                         :alt="unescapeHtml(data.itemName)" @error="errorImage">
+                                </a>
+                                <div class="sale_per" v-if="data.discountRate > 0">{{data.discountRate}}<span>%</span>
+                                </div>
+                                <div class="sold_out" v-if="data.itemSoldOutFlag === 'Y'">
+                                    <p>품절</p>
+                                </div>
+                                <div class="over_btn"
+                                     v-if="(data.stockFlag === 'N' || (data.stockFlag === 'Y' && data.stockQuantity > 0) ) && data.itemSoldOutFlag === 'N'">
+                                    <a href="javascript:void(0)" @click="redirectByItem(data)" class="over_link"></a>
+                                    <a href="javascript:" class="btn_cart" title="장바구니 담기"
+                                       v-if="data.itemOptionFlag !== 'Y' && data.itemType !== '3'"
+                                       :id="'cart_' + data.itemId"
+                                       @click.prevent="addToCart(data.itemId, data.orderMinQuantity)"></a>
+                                    <a href="javascript:" :class="'btn_wish' + (data.wishlistFlag?' on' : '')" title="관심상품 담기"
+                                       :id="'wish_' + data.itemId" @click.prevent="addToWishList(data.itemId)"></a>
+                                </div>
+                            </div>
+                            <div class="txt_area">
+                                <p class="brand">{{data.brand}}</p>
+                                <p class="title"><a href="javascript:void(0)" @click="redirectByItem(data)">{{unescapeHtml(data.itemName)}}</a>
+                                </p>
+                                <div class="price_area">
+                                    <p class="before" v-if="data.totalDiscountAmount > 0 && data.discountRate > 0">
+                                        <span>{{formatNumber(data.salePrice)}}</span>원</p>
+                                    <div class="sale_area">
+                                        <p class="price"><span>{{formatNumber(data.presentPrice)}}</span>원</p>
+                                    </div>
+                                </div>
+                                <div class="badge-wrap">
+                                    <span class="badge badge_txt" v-if="data.itemLabel == '2'">
+                                        <em>NEW</em>
+                                    </span>
+                                    <span class="badge badge_txt" v-if="data.itemLabel == '3'">
+                                        <em>SALE</em>
+                                    </span>
+                                    <span class="badge badge_txt" v-if="data.itemType1 === '1'">
+                                        <em>인기상품</em>
+                                    </span>
+                                    <span class="badge badge_txt" v-if="data.itemType2 === '1'">
+                                        <em>BEST상품</em>
+                                    </span>
+                                    <span class="badge badge_txt" v-if="data.itemType4 === '1'">
+                                        <em>추천상품</em>
+                                    </span>
+                                    <span class="badge badge_txt" v-if="data.itemType5 === '1'">
+                                        <em>기본상품</em>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" v-show="featured.replyUsedFlag === 'Y'">
+            <div class="item_qna">
+                <div class="total_top">
+                    <div class="total_area">
+                        <p class="total">전체 <span>{{resultReply.totalElements}}</span></p>
+                        <button type="button" class="btn_inquiry">댓글쓰기</button>
+                    </div>
+                    <div class="inquiry_write">
+                        <div class="form_wrap_box">
+                            <div class="form-group">
+                                <div class="row no-gutters">
+                                    <div class="col-12">
+                                        <textarea class="form-control" cols="30" rows="10"
+                                                  placeholder="내용을 입력해주세요" id="replyContent"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row no-gutters btn-group right">
+                                <div class="col col-md-2">
+                                    <button type="button" class="btn btn_lg btn_light btn_cancel">취소</button>
+                                </div>
+                                <div class="col col-md-2">
+                                    <button type="button" class="btn btn_lg btn_primary" @click="replySubmit">
+                                        등록
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list_wrap faq_list"
+                     v-if="typeof resultReply.content !== 'undefined' && resultReply.content.length > 0">
+                    <ul>
+                        <li class="list_area" v-for="reply in resultReply.content">
+                            <div class="list_in">
+                                <div class="list_top">
+                                    <div class="id_date">
+                                        <p class="id">{{reply.userName}}</p>
+                                        <p class="date">{{dateFormat(reply.created, 'time')}}</p>
+                                    </div>
+                                </div>
+                                <p class="txt">{{reply.replyContent}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="review_none" v-else>
+                    <p>등록된 댓글이 없습니다.</p>
+                </div>
+
+                <pagination :current-page="resultReply.currentPage" :total-pages="resultReply.totalPages"
+                            @change="paging"
+                            v-if="typeof resultReply.content !== 'undefined' && resultReply.content.length > 0"></pagination>
+            </div>
+
+        </div>
+    </section>
+
+    <layout-footer></layout-footer>
+
+</div>
+
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+
+
+<script src="/modules/babel.min.js"></script>
+<script src="/modules/es6-promise.min.js"></script>
+<script src="/modules/es6-promise.auto.min.js"></script>
+<script src="/modules/axios.js"></script>
+<script src="/modules/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+
+
+<script type="text/babel">
+
+    Vue.use(VueAwesomeSwiper);
+    var vm = new Vue({
+        el: '#saleson',
+        components: {
+            'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+            'layout-header': httpVueLoader('/components/layouts/header.vue'),
+            'pagination': httpVueLoader('/components/ui/pagination.vue')
+        },
+        data: {
+            param: {
+                arrayRequiredItems: [],
+                page: 1
+            },
+            itemTypeIdKey: '',
+            itemTypeNameKey: '',
+            featuredUrl: '',
+            featured: [],
+            itemListMap: [],
+            itemTypeList: [],
+            itemTypeId: 'all',
+            resultReply: {}
+        },
+        methods: {
+            submit: function (page) {
+
+                var pageUrl = $s.requestContext.href;
+
+                $s.api.getEventDetail($s.core.getParameter('pages'), function (response) {
+
+                    var featured = response.featuredList.featured;
+
+                    vm.itemTypeIdKey = response.featuredList.itemTypeIdKey;
+                    vm.itemTypeNameKey = response.featuredList.itemTypeNameKey;
+                    vm.featuredUrl = response.featuredList.featuredUrl;
+                    vm.featured = featured;
+                    vm.itemListMap = response.featuredList.itemListMap;
+                    vm.itemTypeList = response.featuredList.itemTypeList;
+
+                    vm.getEventReply(page);
+
+                    vm.makeOpenGraphTag(pageUrl, featured.featuredName, '', featured.featuredSimpleContent);
+                    // vm.setPageInfo(featured.featuredName, featured.featuredSimpleContent, '');
+
+                    try {
+                        var itemListMapKeys = Object.keys(vm.itemListMap);
+                        for (var i=0; i<itemListMapKeys.length; i++) {
+                            var items = vm.itemListMap[itemListMapKeys[i]];
+
+                            vm.googleAnalyticsImpression(items, featured.featuredName);
+
+                            if (typeof items != 'undefined' && items != null) {
+
+                                var itemUserCodes = [];
+                                for (var j=0; j < items.length; j++) {
+                                    var item = items[j];
+
+                                    itemUserCodes.push(item.itemUserCode);
+                                }
+                                $s.ev.log.featured(itemUserCodes);
+                            }
+                        }
+                    } catch (e) {
+                        $s.error(e);
+                    }
+                });
+            },
+
+            paging: function (page) {
+                vm.param.page = page;
+                vm.submit(page);
+            },
+
+            categoryChange: function (e) {
+                vm.itemTypeId = e.target.value;
+            },
+
+            addToCart: function (itemId, orderMinQuantity) {
+                var quantity = Number(orderMinQuantity) > 1 ? Number(orderMinQuantity) : 1;
+                vm.param.arrayRequiredItems.push(itemId + '||' + quantity + '||');
+
+                $s.api.addToCart(vm.param, function () {
+                    var arrayRequiredItems = vm.param.arrayRequiredItems;
+                    arrayRequiredItems.splice(0, arrayRequiredItems.length);
+                    document.getElementById('cart_' + itemId).className = 'btn_cart on';
+                    $s.toast("해당 상품이 장바구니에 담겼습니다.");
+                });
+            },
+
+            addToWishList: function (itemId) {
+                $s.api.addToWishList(itemId, function () {
+                    document.getElementById('wish_' + itemId).className = 'btn_wish on';
+                    $s.toast("해당 상품이 관심상품에 담겼습니다.");
+                });
+            },
+
+            getEventReply: function (page) {
+                var params = {
+                    'page': page,
+                    'featuredUrl': vm.featuredUrl,
+                    'featuredId': vm.featured.featuredId
+                }
+
+                $s.api.getEventReply(params, function (response) {
+                    vm.resultReply = response;
+                });
+            },
+
+            replySubmit: function () {
+
+                if (!$s.isLogin()) {
+                    $s.alert("로그인 후 작성 가능합니다.");
+                    return;
+                }
+
+                var replyContent = document.getElementById("replyContent").value.trim();
+
+                if (replyContent === "") {
+                    $s.alert("댓글을 입력해주세요.");
+                    return false;
+                }
+
+                var params = {
+                    'replyContent': replyContent,
+                    'featuredUrl': vm.featuredUrl,
+                    'featuredId': vm.featured.featuredId
+                };
+                $s.api.createEventReply(params, function (response) {
+                    if (response.status === "OK") {
+                        $s.alert("등록되었습니다.");
+                        document.getElementById("replyContent").value = "";
+                    }
+
+                    vm.getEventReply(1);
+
+                });
+            },
+
+            redirectByItem: function (item) {
+                this.googleAnalyticsSelect(item, vm.featured.featuredName);
+                $s.redirect('/items/details.html?code=' + item.itemUserCode);
+            },
+
+        },
+        computed: {
+            bannerImage: function() {
+
+                var imageSrc = Saleson.config.noImage;
+                var featured = this.featured;
+
+                if (typeof featured != 'undefined' && featured != null) {
+
+                    if (Saleson.isMobile()) {
+                        imageSrc = featured.featuredImageMobileSrc;
+                    } else {
+                        imageSrc = featured.featuredImageSrc;
+                    }
+
+                    if (typeof imageSrc != 'undefined' && imageSrc != null && imageSrc != "") {
+                        imageSrc = this.itemImage(imageSrc);
+                    }
+                }
+
+                return imageSrc;
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+
+                Saleson.init();
+
+                if ($s.core.getParameter('pages') === '') {
+                    $s.notFoundException();
+                    return;
+                }
+
+                vm.paging(1);
+                initializeListEvent();
+            });
+        }
+    });
+</script>
+
+
+</body>
+</html>

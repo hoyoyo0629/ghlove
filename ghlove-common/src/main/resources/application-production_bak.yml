@@ -1,0 +1,555 @@
+# [SalesOn 환경 설정]
+# 서버별로 구별되지 않는 공통 항목을 설정함. (경로가 다른 부분은 제외함)
+#
+
+#######################
+# SalesOn
+#######################
+saleson:
+  version: "3.15.0"
+  root: c:/icraft/workspace/ghlove
+  storage-root: ${saleson.root}/ghlove-web/storage
+  static-root: ${saleson.root}/ghlove-web/static
+  file-root: ${saleson.root}    # licence, payment 등의 경로 기준을 서버 환경에 변경하여 사용함.
+  license-root: ${saleson.root}
+
+  # License
+  license:
+    clientid: icraft
+    creation.date: 20230510095913
+    hash.key: 3ef4d7bc45f69defb175e66b7e2f99f0ec7fa826cb9ec2d552a9e3a872b21c70
+    file: ${saleson.license-root}/license/icraft-20230510095913.license
+    key: ${saleson.license-root}/license/icraft-20230510095913.key
+    healthcheck.uri: /healthcheck
+
+  # Batch 실행 여부
+  batch: false
+
+
+  # DB Vendor
+  database:
+    vendor: cubrid
+    dialect: org.hibernate.dialect.CUBRIDDialect
+    hbm2ddl: update
+
+  # datasource
+  datasource:
+    driver-class-name: cubrid.jdbc.driver.CUBRIDDriver
+    jdbc-url: jdbc:cubrid:192.168.100.251:33000:ghlove:::?charset=UTF-8
+    username: dba
+    password: ghlove54321
+    connection-test-query: SELECT 1
+    minimum-idle: 10
+    maximum-pool-size: 10
+    pool-name: pool-saleson
+    data-source-properties:
+      rewriteBatchedStatements: true
+
+  # 서비스 DOMAIN
+  url:
+    shoppingmall: http://localhost:8080
+    bo: https://localhost:8080
+    api: http://localhost:9080
+    frontend: http://localhost:3000
+    cdn:
+
+  # API Allow Origin
+  # '*' or 'http://front.saleson.com' or 'http://front1.saleson.com,http://front2.saleson.com'
+  api:
+    crossorigins: http://localhost:3000
+
+  # Logging
+  log.path: ${saleson.file-root}/logs
+
+  # Mail
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    protocol: smtps
+    username: xxxx@gmail.com
+    password: password
+    smtp:
+      start-tls-enable: true
+      auth: true
+
+  # Manager Access Port Settings.. (If the value is blank,system does not check the connection port.)
+  opmanager.access.port:
+
+  # DB Query Log Intercepter (Y/N)
+  query.log: "N"
+
+  # Shopping Mall Type (1: NORMAL, 2: MALL IN MALL - 입점 몰인몰)
+  mall.type: 2
+
+  # 서비스 VIEW MODE (api/jsp)
+  view.type: api
+
+  # Mobile Prefix
+  # saleson.mobile.prefix: /sp
+  mobile.prefix: /m
+
+  # No Image Path
+  noimage.path: /content/images/common/no-image-gray.gif
+
+  # 관리자 본인 인증 (시간은 초)
+  auth:
+    manager:
+      process: false
+      time: 3600
+
+
+# Log DataSource
+log:
+  datasource:
+    driver-class-name: cubrid.jdbc.driver.CUBRIDDriver
+    jdbc-url: jdbc:cubrid:192.168.100.251:30000:ICRAFT:::?charset=UTF-8
+    username: dba
+    # password: Dnlvldk123#
+    password: ghlove54321
+    connection-test-query: SELECT 1
+    minimum-idle: 10
+    maximum-pool-size: 10
+    pool-name: pool-log
+
+
+#######################
+# SalesOn - Etc
+#######################
+file.storage:
+  # local, azure, aws
+  type: local
+  azure:
+    accountName: ""
+    accountKey: ""
+  aws:
+    accessKey: ""
+    secretKey: ""
+    bucketName: ""
+
+# 업로드 root (파일정보 저장 시 /abc/ef/g.jpg 형태로 저장된 경우 물리적 위치 기준 - 마이그레이션 시 경로까지 저장한 경우 사용)
+upload:
+  root: ${saleson.storage-root}
+
+  # 업로드 경로 (browser 접속 시 시작경로)
+  base.folder: /upload
+
+  # 업로드 경로 - 물리적 저장 경로 (absolute path)
+  save.folder: ${saleson.storage-root}/upload
+
+  # 파일명 저장 방식 (1:원본파일명, 2:파일 키로 변환)
+  option.save.filename: 2
+
+
+# Resource Location
+resource:
+  static.location: file:${saleson.static-root}
+  storage.location: file:${saleson.storage-root}
+
+  # Resources Folders
+  request.uris: /content,/upload
+
+
+# Security
+security:
+  # 양방향 암호화 키
+  cryptor.key: "4646A6A7B2E0A5CE40F063A3347AF084"
+
+  # XSS FILTER EXCLUDE Parameters (,)
+  xss.filter.exclude.parameters: buyerContent,adminContent,content,tagOverturue,tagAdwords,editContent,categoryFooter,categoryHeader,userHtmlEdit,brandContent,headerContent,agreement,protectPolicy,deliveryInfo,featuredContent,featuredSimpleContent,detailContent,detailContentMobile
+
+  # Security (yes/no)
+  opmanager.allow_ip_check: "no"
+
+  # Security Port Mapping (context-security.xml)
+  # 1. http, https \uB85C\uB9CC \uAD6C\uBD84\uB418\uB294 \uACBD\uC6B0 80, 80
+  # 2. http, https://xxx:8443 \uC778 \uACBD\uC6B0 80, 8443
+  port:
+    http: 8080
+    https: 8080
+
+# Board Config
+board:
+  data.table: SHOP
+
+
+#######################
+# UMS
+#######################
+ums:
+  client-id: onlinepowers
+  callback: 02-6737-9200
+  grp.cd: "01003"     # UMS 정산 그룹코드 (개발:01003, 운영:01002)
+
+  calculate:
+    host: msg.safeon.com
+    port: 7180
+    path: /sms.server/calculate.do
+
+  # 발송서버
+  api:
+    secret: 613690CD913C7E69998DD12DF14XXXX
+    url: http://ums.onlinepowers.com
+
+  # Alimtalk
+  kakao:
+    alimtalk:
+      host: msg.safeon.com
+      host.port: 47201
+      mplaceid: micesoftat01
+      senderkey: 08bc4c4c84e3af0f64172c5f46b7f954d5d4XXXX
+
+  # MMS IMAGE
+  mms:
+    image.upload:
+      host: msg.safeon.com
+      port: 7180
+      path: /sms.server/mms_save.do
+
+  # PUSH
+  push:
+    test: "N"
+
+
+
+#######################
+# Payment
+#######################
+pg:
+  service:
+
+  cj:
+    mid: CJ1401070001
+    card.pay.url: http://210.122.96.190/SmartPayment/SmartPayCreditcard.aspx
+    vbank.pay.url: http://210.122.96.190/SmartPayment/SmartPayVirtualAccount.aspx
+    realtimebank.pay.url: http://210.122.96.190/SmartPayment/SmartPayAccount.aspx
+    card.cancel.url: http://210.122.96.190/Pay/PayCancel.aspx
+    #card.pay.url: https://pay.cjsystems.co.kr/SmartPayment/SmartPayCreditcard.aspx
+
+  # PG - inipay
+  inipay:
+    home: ${saleson.file-root}/payment/INIpay50
+    web.type: webStandard
+    mid: INIpayTest
+    escrow.mid: iniescrow0
+    keypass: 1111
+    escrow.keypass: 1111
+    mobile.keypass: 1111
+    mobile.mid: INIpayTest
+    sign.key: SU5JTElURV9UUklQTEVERVNfS0VZU1RS
+
+  # PG - KSPAY
+  kspay:
+    mid: 2999199999
+    addr: localhost
+    port: 29991
+    url: "https://kspay.ksnet.to/store/KSPayFlashV1.3/KSPayPWeb.jsp?sndCharSet=utf-8"
+    mbUrl: https://kspay.ksnet.to/store/mb2/KSPayPWeb_utf8.jsp
+
+  # PG - LGDACOM
+  lgdacom:
+    serviceType: test
+    home: ${saleson.file-root}/payment/lgdacom
+    mid: tosspayments
+    key: b495c00ba8fcd62b18d69870c2c26979
+    viewType: iframe
+    realtimePartcancelFlag: N
+    hpPartcancelFlag: Y
+
+  # PG - NHN KCP
+  kcp:
+    module.type: 01
+    quotaopt: 12
+    currency: 410
+    g.conf:
+      home.dir: ${saleson.file-root}/payment/kcp
+      #key.dir: ${saleson.file-root}/payment/kcp/bin/pub.key
+      log.dir: ${saleson.file-root}/logs
+      gw.url: testpaygw.kcp.co.kr
+
+      # 결제창 호출 url
+      hub.js.url: "https://testpay.kcp.co.kr/plugin/cross_service/payplus_hub_web.js?1=29"
+      web.js.url: https://testpay.kcp.co.kr/plugin/payplus_web.jsp
+      mobile.js.url: /content/mobile/js/approval_key.js
+
+      server: false
+      #site.cd: T0000
+      #site.key: 3grptw1.zW0GSo4PQdaGvsF__
+      site.cd: T0007
+      site.key: 4Ho4YsuOZlLXUZUdOxM1Q7X__
+      site.name: ESCROW TEST SHOP
+      gw.port: 8090
+      log.level: 3
+      tx.mode: 0
+
+      # 현금영수증 발행 관련 설정
+      tax.no: 0000000000
+      corp.addr: 서울시 구로구 구로동 170-5
+      corp.owner: 홍길동
+      corp.tel: 02-0000-1111
+
+
+  # PG - EasyPay 8.0
+  easypay:
+    g.conf:
+      site.name: TEST SHOP
+      site.cd: T0009379
+      gw.url: testgw.easypay.co.kr
+      # site.cd: T0002013
+      # gw.url: gw.easypay.co.kr real
+
+      gw.port: 80
+      log.level: 1
+      key.dir: ${saleson.file-root}/payment/easypay/cert
+      log.dir: ${saleson.file-root}/logs
+      test.js.url: https://testpg.easypay.co.kr/webpay/EasypayCard_Web.js
+      real.js.url: https://pg.easypay.co.kr/webpay/EasypayCard_Web.js
+      viewType: iframe
+
+# Nicepay
+nicepay:
+  socket.flag: Y
+  charset: utf-8
+  encoding.parameters: CardNo,CardExpire,CardPwd
+  log.path: ${saleson.file-root}/logs
+
+# Payco
+payco:
+  seller.key: S0FSJE
+  seller.cpId: PARTNERTEST
+  order.api.url: https://alpha-api-bill.payco.com
+
+# Kakaopay
+kakaopay:
+  mid: cnstest25m
+  encode.key: "33F49GnCMS1mFYlGXisbUDzVf2ATWCl9k3R++d5hDd3Frmuos/XLx8XhXpe+LDYAbpGKZYSwtlyyLOtS/8aD7A=="
+  merchant.enc.key: 10a3189211e1dfc6
+  merchant.hash.key: 10a3189211e1dfc6
+  cnspay.path: ${saleson.file-root}/payment/kakaopay/properties
+  log.path: ${saleson.file-root}/logs
+  web.path: https://kmpay.lgcns.com:8443/
+  msg.name: merchant/requestDealApprove.dev
+
+
+# NaverPay
+naver:
+  checkout:
+    order.api.url: https://test-checkout.naver.com/customer/api/order.nhn
+    pc.payUrl: https://test-checkout.naver.com/customer/order.nhn
+    mobile.payUrl: https://test-m.checkout.naver.com/mobile/customer/order.nhn
+    wishlist.api.url: https://test-checkout.naver.com/customer/api/wishlist.nhn
+    pc.wishlist: https://test-checkout.naver.com/customer/wishlistPopup.nhn
+    mobile.wishlist: https://test-m.checkout.naver.com/mobile/customer/wishList.nhn
+    pc.button.script: http://test-checkout.naver.com/customer/js/checkoutButton2.js
+    mobile.button.script: http://test-checkout.naver.com/customer/js/mobile/checkoutButton.js
+
+  # Naverpay (결제형)
+  pay:
+    api.url: https://dev.apis.naver.com
+
+
+# PopBill
+popbill:
+  corp.num:
+  user.id:
+  link.id:
+  secret.key:
+  # 운영설정으로 변경할때 true -> false로 변경
+  is.test: true
+
+cashbill:
+  service:
+
+
+#######################
+# SNS로그인
+#######################
+# Naver
+naver.login:
+  appId: HEGPL8jkr8mQEVWjekMw
+  callback: /sns-user/naver-callback
+
+# Kakao
+kakao.login.appId: 2ad2a946a7b2476be7ba05450ca77e4f
+
+# Facebook
+fb.login.appId: 2235149073448625
+
+
+
+#######################
+# 본인인증
+#######################
+user:
+  auth:
+    #휴대폰 인증
+    pcc:
+      service: siren24
+      mid:
+      front.serviceNo:
+      mobile.serviceNo:
+
+    # IPIN 인증
+    ipin:
+      service: siren24
+      mid:
+      front.serviceNo:
+      mobile.serviceNo:
+
+
+
+#######################
+# Application
+#######################
+# User Agent
+app:
+  user.agent:
+    ios: SALESON_APPLICATION_IOS
+    android: SALESON_APPLICATION_ANDROID
+
+
+#######################
+# Server
+#######################
+server:
+  port: 8080
+  ajp:
+    protocol: AJP/1.3
+    port: 8009
+    enabled: false
+  ssl:
+    enabled: false
+    key-store: ${saleson.file-root}/keystore/saleson.keystore
+    key-store-password: 111111
+
+  error:
+    whitelabel.enabled: false
+    include-stacktrace: NEVER
+
+  servlet:
+    context-parameters.defaultHtmlEscape: false
+
+  tomcat:
+    additional-tld-skip-patterns: "*mchange-commons-java*.jar"
+    basedir: ${saleson.file-root}/temp
+
+  # HTTP encoding (HttpEncodingProperties)
+  http:
+    encoding:
+      force-request: true
+      charset: UTF-8
+      enabled: true
+      force: true
+
+
+
+#######################
+# Spring
+#######################
+spring:
+  main.allow-bean-definition-overriding: true
+  security.filter.order: 100
+  output.ansi.enabled: NEVER
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+      WRITE_DATES_AS_TIMESTAMPS: false
+    deserialization.fail-on-unknown-properties: false
+  devtools:
+    livereload.enabled: false
+    restart.enabled: false
+  thymeleaf.cache: false
+  aop.auto: true      # enables AOP using @EnableAspectJAutoProxy annotation
+  pid.file: saleson.pid
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+
+
+#######################
+# Logging Level
+#######################
+logging:
+  level:
+    log4jdbc.log4j2: ERROR
+    jdbc:
+      connection: OFF
+      sqlonly: OFF
+      audit: OFF
+      resultset: OFF
+      sqltiming: DEBUG
+      resultsettable: INFO
+    org.springframework.web: INFO
+    org.hibernate: ERROR
+    com.onlinepowers: INFO
+    com.onlinepowers.framework.web.interceptor.WebLogInterceptor: TRACE
+    saleson.common.config.LogDaoAspect: TRACE
+    saleson.common.config.LogSvcAspect: TRACE
+    saleson: INFO
+    
+# Outside Connection
+outconn:
+  # administration net
+  admin-addressinfo-url: http://192.168.84.56:4142/api/mopas/rsgstadresinfo
+  # juso search api
+  juso-api:
+    url: http://www.juso.go.kr/addrlink/addrLinkApiJsonp.do
+    key: U01TX0FVVEgyMDIyMTEyNTE0MTUzMTExMzI1OTc=
+  # korea receipt api
+  korea-api:
+    loginIp: 152.99.104.11
+    loginUrl: https://192.168.239.18:4141/jwtLoginAction.do
+    actionUrl: https://192.168.239.18:4141/jwtAction.do?actionId=ATESFACA001C11
+    #loginUrl: https://116.67.103.158/jwtLoginAction.do
+    #actionUrl: https://116.67.103.158/jwtAction.do?actionId=ATESFACA001C11
+    key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/RzW8TWg9hB7T1BWFSrwAASoNt/tBjTYWojvo3gB5MRjx+TI+tI7BqmhhxjAPv3mDNjBgeCW/J5UsCdYOt/dDyYyGiXjHSTE+JsX6Z1i3soDJJzwGnYLbRpbAb9mUi75T0Imwa4P4TLMHFzjw7r57MvJd26RKJnJe0IPGBK0CcQIDAQAB
+    id : ilovegohyang
+    password : rhgid#rlqn
+    
+  # seoul buga regist
+  seoul-buga-url: http://192.168.84.56:4142/api/seoul/epaymentno
+  # seoul sunap search
+  seoul-sunap-url: http://192.168.84.56:4141/api/etax/getSunapStatus
+  # contry(now) buga regist
+  contry-now-buga-url: http://192.168.84.56:4142/api/curgnr/epaymentno
+  # contry(now) sunap search
+  
+  contry-now-sunap-url: http://192.168.84.56:4142/api/curgnr/receipt
+  # giro
+  giro-url: https://www.giro.or.kr/epay/hometown/index.do
+  # AES256 key
+  giro-aes256-key: rhgidtkfkdrmarufdnjswlfhdusrP!@#
+  # AES256 iv
+  giro-aes256-iv: rhgidtkfkdrmaruf
+  
+  
+#######################
+# Sms
+#######################
+sms:
+  #. 국민비서
+  ips:
+    svcGrpId: "812"
+    prvcIdntfcSeCd: C0090001
+    esbIfId: IF_P01_MIS_IPS_ALM08
+    
+######금융인증서#######
+fincert:
+  url: https://certapi.yeskey.or.kr/oauth/2.0/api/token
+  ucpidUrl: https://certapi.yeskey.or.kr/v1/ucpid/ucpid-info
+  client-id: dba3f9f8-0ada-4661-91f2-18e53681d255
+  client-secret: 87b70351-7d6a-42f4-96cf-b8c9d39c1770
+  scope: ucpid
+  grant-type: client_credentials
+  server-id: server_ilovegohyang
+  cp-code: Y30000001301
+
+
+# 답례품 관리자 비밀번호/인증서 암호화 용 값, 변경시 답례품 관리자 비밀번호 전체 초기화 필요
+salt:
+  strForSellerSalt: MOIS2023
+
+  

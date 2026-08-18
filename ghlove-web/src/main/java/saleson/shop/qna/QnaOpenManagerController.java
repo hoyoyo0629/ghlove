@@ -1,0 +1,575 @@
+package saleson.shop.qna;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.onlinepowers.framework.context.RequestContext;
+import com.onlinepowers.framework.exception.NotAjaxRequestException;
+import com.onlinepowers.framework.repository.Code;
+import com.onlinepowers.framework.repository.CodeInfo;
+import com.onlinepowers.framework.util.CodeUtils;
+import com.onlinepowers.framework.util.DateUtils;
+import com.onlinepowers.framework.util.JsonViewUtils;
+import com.onlinepowers.framework.util.MessageUtils;
+import com.onlinepowers.framework.util.RedirectAttributeUtils;
+import com.onlinepowers.framework.util.StringUtils;
+import com.onlinepowers.framework.util.ViewUtils;
+import com.onlinepowers.framework.web.bind.annotation.RequestProperty;
+import com.onlinepowers.framework.web.domain.ListParam;
+import com.onlinepowers.framework.web.pagination.Pagination;
+import com.onlinepowers.framework.web.servlet.view.JsonView;
+
+import saleson.api.common.ApiResponseEntity;
+import saleson.api.common.enumerated.ApiError;
+import saleson.common.Const;
+import saleson.common.file.service.CustomFileService;
+import saleson.common.notification.ApplicationInfoService;
+import saleson.common.notification.UnifiedMessagingService;
+import saleson.common.security.crypto.Cryptor;
+import saleson.common.security.masking.DataMasking;
+import saleson.common.utils.CommonUtils;
+import saleson.common.utils.UserUtils;
+import saleson.model.Ums;
+import saleson.model.campaign.ApplicationInfo;
+import saleson.seller.main.support.SellerParam;
+import saleson.shop.item.support.ItemParam;
+import saleson.shop.mailconfig.MailConfigService;
+import saleson.shop.mailconfig.domain.MailConfig;
+import saleson.shop.mailconfig.support.QnaCompleteMail;
+import saleson.shop.qna.domain.Qna;
+import saleson.shop.qna.domain.QnaAnswer;
+import saleson.shop.qna.domain.QnaOpen;
+import saleson.shop.qna.domain.QnaOpenFile;
+import saleson.shop.qna.support.QnaExcelView;
+import saleson.shop.qna.support.QnaOpenParam;
+import saleson.shop.qna.support.QnaParam;
+import saleson.shop.sendmaillog.SendMailLogService;
+import saleson.shop.sendmaillog.domain.SendMailLog;
+import saleson.shop.ums.UmsService;
+import saleson.shop.ums.support.QnaComplete;
+import saleson.shop.user.UserService;
+import saleson.shop.user.domain.UserDetail;
+
+@Controller
+@RequestMapping("/opmanager/qna-open")
+@RequestProperty(title = "고객센터", template="opmanager", layout = "default")
+public class QnaOpenManagerController {
+
+	private static final Logger log = LoggerFactory.getLogger(QnaOpenManagerController.class);
+
+	@Autowired
+	private QnaService qnaService;
+
+	@Autowired
+	private SendMailLogService sendMailLogService;
+
+	@Autowired
+	private MailConfigService mailConfigService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private UmsService umsService;
+
+	@Autowired
+	private UnifiedMessagingService unifiedMessagingService;
+
+	@Autowired
+	private ApplicationInfoService applicationInfoService;
+
+	@Autowired
+	private Cryptor cryptor;
+
+	@Autowired
+	private DataMasking dataMasking;
+
+	@Autowired
+	private CustomFileService customFileService;
+
+	/**
+	 * 문의 관리 view
+	 *
+	 * @param requestContext
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("list")
+	public String qnaList(@ModelAttribute QnaOpenParam qnaOpenParam,
+			RequestContext requestContext, Model model) {
+
+//		QnaOpenParam qnaOpenParam = new QnaOpenParam();
+		qnaOpenParam.setSort("DESC");
+		qnaOpenParam.setOrderBy("CREATED_DATE");
+
+		if (qnaOpenParam.getPage() <= 0) {
+			qnaOpenParam.setPage(1);
+		}
+
+		int totalCount = 0;
+
+		Pagination pagination = Pagination.getInstance(totalCount, qnaOpenParam.getItemsPerPage());
+		qnaOpenParam.setPagination(pagination);
+
+		List<QnaOpen> qnaList =  Collections.EMPTY_LIST;
+
+//		qnaParam.setQnaType(Qna.QNA_GROUP_TYPE_QNA);
+//		qnaService.setQnaListPagination(qnaParam);
+//
+//		List<Qna> qnaList = qnaService.getQnaListByParam(qnaParam);
+
+		String today = DateUtils.getToday(Const.DATE_FORMAT);
+
+		List<Code> qnaGroups = CodeUtils.getCodeList("QNA_GROUPS");
+
+		model.addAttribute("qnaGroups", qnaGroups);
+
+		for (QnaOpen qnaCheck : qnaList) {
+
+			if (qnaCheck.getUserName() != null) {
+				qnaCheck.setUserName(qnaCheck.getUserName().substring(0, 1) + "*" + qnaCheck.getUserName().substring(2) );
+			}
+
+			for (Code code : qnaGroups) {
+
+				if (qnaCheck.getQnaGroup().equals(code.getId())) {
+					qnaCheck.setQnaGroup(code.getLabel());
+				}
+			}
+		}
+
+		List<Code> qnaTypes = new ArrayList<>();
+		for (Code code : qnaGroups) {
+			List<Code> qnaGroup = CodeUtils.getCodeList("QNA_GROUP_" + code.getValue());
+			for (Code qnaType : qnaGroup) {
+				qnaTypes.add(qnaType);
+			}
+		}
+		SellerParam sellerParam = new SellerParam();
+		sellerParam.setStatusCode("2");
+		//model.addAttribute("sellerList", sellerService.getSellerListByParam(sellerParam));
+		model.addAttribute("qnaCount", totalCount);
+		model.addAttribute("today", today);
+		model.addAttribute("week", DateUtils.addYearMonthDay(today, 0, 0, -7));
+		model.addAttribute("month1", DateUtils.addYearMonthDay(today, 0, -1, 0));
+		model.addAttribute("month3", DateUtils.addYearMonthDay(today, 0, -3, 0));
+		model.addAttribute("qnaList", qnaList);
+		model.addAttribute("pagination", qnaOpenParam.getPagination());
+		model.addAttribute("qnaTypes", qnaTypes);
+		model.addAttribute("qna", qnaOpenParam);
+
+		return "view";
+	}
+
+	@PostMapping("list")
+	public String qnaListPost(@ModelAttribute QnaOpenParam qnaOpenParam,
+			RequestContext requestContext, Model model) {
+
+//		QnaOpenParam qnaOpenParam = new QnaOpenParam();
+		qnaOpenParam.setSort("DESC");
+		qnaOpenParam.setOrderBy("CREATED_DATE");
+
+		if (qnaOpenParam.getPage() <= 0) {
+			qnaOpenParam.setPage(1);
+		}
+
+		int totalCount = qnaService.getFrontQnaOpenManagerListCount(qnaOpenParam);
+
+		Pagination pagination = Pagination.getInstance(totalCount, qnaOpenParam.getItemsPerPage());
+		qnaOpenParam.setPagination(pagination);
+
+		List<QnaOpen> qnaList =  qnaService.getFrontQnaOpenManagerList(qnaOpenParam);
+
+//		qnaParam.setQnaType(Qna.QNA_GROUP_TYPE_QNA);
+//		qnaService.setQnaListPagination(qnaParam);
+//
+//		List<Qna> qnaList = qnaService.getQnaListByParam(qnaParam);
+
+		String today = DateUtils.getToday(Const.DATE_FORMAT);
+
+		List<Code> qnaGroups = CodeUtils.getCodeList("QNA_GROUPS");
+
+		model.addAttribute("qnaGroups", qnaGroups);
+
+		for (QnaOpen qnaCheck : qnaList) {
+
+			if (qnaCheck.getUserName() != null) {
+				qnaCheck.setUserName(qnaCheck.getUserName().substring(0, 1) + "*" + qnaCheck.getUserName().substring(2) );
+			}
+
+			for (Code code : qnaGroups) {
+
+				if (qnaCheck.getQnaGroup().equals(code.getId())) {
+					qnaCheck.setQnaGroup(code.getLabel());
+				}
+			}
+		}
+
+		List<Code> qnaTypes = new ArrayList<>();
+		for (Code code : qnaGroups) {
+			List<Code> qnaGroup = CodeUtils.getCodeList("QNA_GROUP_" + code.getValue());
+			for (Code qnaType : qnaGroup) {
+				qnaTypes.add(qnaType);
+			}
+		}
+		SellerParam sellerParam = new SellerParam();
+		sellerParam.setStatusCode("2");
+		//model.addAttribute("sellerList", sellerService.getSellerListByParam(sellerParam));
+		model.addAttribute("qnaCount", totalCount);
+		model.addAttribute("today", today);
+		model.addAttribute("week", DateUtils.addYearMonthDay(today, 0, 0, -7));
+		model.addAttribute("month1", DateUtils.addYearMonthDay(today, 0, -1, 0));
+		model.addAttribute("month3", DateUtils.addYearMonthDay(today, 0, -3, 0));
+		model.addAttribute("qnaList", qnaList);
+		model.addAttribute("pagination", qnaOpenParam.getPagination());
+		model.addAttribute("qnaTypes", qnaTypes);
+		model.addAttribute("qna", qnaOpenParam);
+
+		return "view";
+	}
+
+	/**
+	 * 2015.1.18
+	 * 리스트 삭제 기능
+	 *
+	 * @param requestContext
+	 * @param listParam
+	 * @return
+	 */
+	@PostMapping("delete")
+	public JsonView deleteListData(RequestContext requestContext, ListParam listParam) {
+
+		 if (!requestContext.isAjaxRequest()) {
+			 throw new NotAjaxRequestException();
+		 }
+		 qnaService.deleteQnaData(listParam);
+
+		 return JsonViewUtils.success();
+	}
+
+	/**
+	 * 문의 내역 view
+	 *
+	 * @param requestContext
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/view/{qnaId}")
+	public String qnaView(@PathVariable("qnaId") int qnaId, Model model, QnaParam qnaParam) {
+		Qna qna = qnaService.getQnaByQnaId(qnaId);
+		QnaAnswer qnaAnswer = qnaService.getQnaAnswerByQnaId(qnaId);
+
+		//User adminUser = userService.getUserByUserId(UserUtils.getManagerId());
+		long userId = UserUtils.getManagerId();
+		CodeInfo codeInfo = CodeUtils.getCodeInfo("QNA_GROUPS", qna.getQnaGroup());
+
+		model.addAttribute("qnaGroups", codeInfo.getLabel());
+		model.addAttribute("qnaId", qnaId);
+		model.addAttribute("qna", qna);
+		model.addAttribute("qnaAnswer", qnaAnswer);
+		model.addAttribute("qnaParam", qnaParam);
+		//model.addAttribute("adminUser", adminUser);
+		model.addAttribute("userId", userId);
+		return ViewUtils.getView("/qna-open/view");
+	}
+
+
+	@GetMapping(value = "/answer/{qnaId}")
+	public String qnaAnswer(@PathVariable("qnaId") int qnaId, QnaParam qnaParam,
+			RequestContext requestContext, Model model) {
+		QnaOpenParam qnaFile = new QnaOpenParam();
+		qnaFile.setQnaId(qnaId);
+		Qna qna = qnaService.getQnaByQnaId(qnaId);
+		QnaAnswer qnaAnswer = qna.getQnaAnswer();
+
+		//User adminUser = userService.getUserByUserId(UserUtils.getManagerId());
+		long userId = UserUtils.getManagerId();
+
+		CodeInfo codeInfo = CodeUtils.getCodeInfo("QNA_GROUPS", qna.getQnaGroup());
+		model.addAttribute("qnaAnswerTypeLabel", codeInfo.getLabel());
+		model.addAttribute("qna", qna);
+		model.addAttribute("qnaAnswer", qnaAnswer);
+		model.addAttribute("qnaParam", qnaParam);
+
+		//model.addAttribute("adminUser", adminUser);
+		model.addAttribute("userId", userId);
+		model.addAttribute("buttonName", "답글등록");
+		model.addAttribute("qnaImage", qnaService.getFrontQnaOpenFileList(qnaFile));
+		return ViewUtils.getView("/qna-open/form");
+	}
+
+	/**
+	 * 문의관리
+	 *
+	 * @param requestContext
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("answer/{qnaId}")
+	public String qnaAnswerAction(@PathVariable("qnaId") int qnaId, QnaAnswer qnaAnswer,
+			MailConfig mailConfig, Model model, QnaParam qnaParam,
+			@RequestParam(value="detailImageFiles[]", required=false) MultipartFile[] detailImageFiles) {
+
+		qnaAnswer.setQnaDetailType("qna-open");
+
+		Qna qna = null;
+		qnaAnswer.setSendMailFlag(qnaAnswer.getSendMailFlag() == null ? "N": "Y");
+		qnaAnswer.setSendSmsFlag(qnaAnswer.getSendSmsFlag() == null ? "N": "Y");
+
+
+		qnaAnswer.setItemDetailImageFiles(detailImageFiles);
+
+		QnaAnswer answer = qnaService.getQnaAnswerByQnaId(qnaId);
+
+		if (answer != null) {
+			qnaService.updateQnaAnswer(qnaAnswer);
+		} else {
+			qnaService.insertQnaAnswer(qnaAnswer);
+		}
+
+		qnaService.updateQnaAnswerCount(qnaId);
+
+		if ("Y".equals(qnaAnswer.getSendMailFlag())) {
+
+			qna = qnaService.getQnaByQnaId(qnaId);
+			if(qna != null) {
+				qnaService.encryptQnaData(qna);
+
+				mailConfig.setTemplateId("qna_complete");
+				QnaCompleteMail qnaComplete = new QnaCompleteMail(qna, mailConfigService.getMailConfigByTemplateId(mailConfig.getTemplateId()), cryptor, dataMasking);
+
+				SendMailLog sendMailLog = new SendMailLog();
+				//sendMailLog.setVendorId(UserUtils.getVendorId());
+				sendMailLog.setSendType("qna_complete");
+				sendMailLog.setUserId(qna.getUserId());
+
+				sendMailLogService.sendMail(qnaComplete.getMailConfig(), sendMailLog, qna.getEmail(), qna.getUserName());
+			}
+		}
+
+		if ("Y".equals(qnaAnswer.getSendSmsFlag())) {
+
+			String phoneNumber = "";
+
+			if (qna == null) {
+				qna = qnaService.getQnaByQnaId(qnaId);
+			}
+
+			// 회원 번호가 있는경우
+			if (qna.getUserId() > 0) {
+
+				UserDetail userDetail = userService.getUserDetail(qna.getUserId()); //문의한 사람 폰넘버
+				if (userDetail != null) {
+					phoneNumber = userDetail.getPhoneNumber();
+				}
+			}
+
+
+			if (StringUtils.isNotEmpty(phoneNumber)) {
+				String templateCode = "qna_complete";
+
+				Ums ums = umsService.getUms(templateCode);
+				ApplicationInfo applicationInfo = applicationInfoService.getApplicationInfo(qna.getUserId());
+
+				unifiedMessagingService.sendMessage(new QnaComplete(ums, phoneNumber, qna, applicationInfo, cryptor, dataMasking));
+			}
+		}
+
+		//SMS 전송
+		qnaService.sendSmsQnaAnswer(qnaId);
+
+
+		return ViewUtils.redirect("/opmanager/qna-open/list", MessageUtils.getMessage("M00492")); // 답변이 등록되었습니다.
+	}
+
+	/**
+	 * 엑셀 다운로드 팝업
+	 *
+	 * @param itemParam
+	 * @param model
+	 * @return
+	 */
+	@RequestProperty(layout = "base")
+	@GetMapping(value = "/download-excel")
+	public String downloadExcel(ItemParam itemParam, Model model) {
+		model.addAttribute("itemParam", itemParam);
+		return ViewUtils.view();
+	}
+
+	/**
+	 * 엑셀 다운로드
+	 *
+	 * @param qnaParam
+	 * @return
+	 */
+	@RequestProperty(layout = "base")
+	@PostMapping("/download-excel")
+	public ModelAndView downloadExcelProcess(QnaParam qnaParam) {
+		// Excel
+		ModelAndView mav = new ModelAndView(new QnaExcelView());
+		mav.addObject("qna", qnaService.getQnaListByParam(qnaParam));
+
+		return mav;
+	}
+
+	/**
+	 * 엑셀 업로드
+	 *
+	 * @param model
+	 * @return
+	 */
+	@RequestProperty(layout = "base")
+	@GetMapping(value = "/upload-excel")
+	public String uploadExcel(Model model) {
+
+		if (RedirectAttributeUtils.hasRedirectAttributes()) {
+			model.addAttribute("result", RedirectAttributeUtils.get("result"));
+		}
+		return ViewUtils.view();
+	}
+
+	/**
+	 * 엑셀 업로드 처리
+	 *
+	 * @param multipartFile
+	 * @param session
+	 * @return
+	 */
+	/*
+	@RequestProperty(layout = "base")
+	@PostMapping("/upload-excel")
+	public String uploadExcelProcess(
+			@RequestParam(value = "file", required = false) MultipartFile multipartFile,
+			Model model, RedirectAttributes redirectAttribute) {
+
+		String result = qnaService.insertExcelData(multipartFile);
+
+		model.addAttribute("result", result);
+		RedirectAttributeUtils.addAttribute("result", result);
+		return ViewUtils.redirect("/opmanager/item/upload-excel");
+	}
+*/
+	/**
+	 * 2015.1.6 수정 view
+	 *
+	 * @param qnaId
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/edit/{qnaId}")
+	public String qnaUpdate(@PathVariable("qnaId") int qnaId, Model model) {
+		Qna qna = qnaService.getQnaByQnaId(qnaId);
+		QnaAnswer qnaAnswer = qnaService.getQnaAnswerByQnaId(qnaId);
+
+		//User adminUser = userService.getUserByUserId(UserUtils.getManagerId());
+		long userId = UserUtils.getManagerId();
+		CodeInfo codeInfo = CodeUtils.getCodeInfo("QNA_GROUPS", qna.getQnaGroup());
+
+		//model.addAttribute("adminUser", adminUser);
+		model.addAttribute("userId", userId);
+		model.addAttribute("qnaAnswerTypeLabel", codeInfo.getLabel());
+		model.addAttribute("qna", qna);
+		model.addAttribute("qnaAnswer", qnaAnswer);
+		model.addAttribute("qnaGroups", codeInfo.getLabel());
+		model.addAttribute("buttonName", "저장");
+		return ViewUtils.getView("/qna-open/form");
+	}
+
+	@PostMapping("/edit/{qnaId}")
+	public String qnaUpdateAction(@PathVariable("qnaId") int qnaId, Qna qna, QnaAnswer qnaAnswer) {
+		qna.setQnaId(qnaId);
+		qnaService.updateQnaAnswer(qnaAnswer);
+		return ViewUtils.redirect("/opmanager/qna-open/list", "수정되었습니다.");
+	}
+
+	/**
+	 * 2015.1.7 삭제
+	 *
+	 * @param qnaId
+	 * @return
+	 */
+	@GetMapping(value = "/delete/{qnaId}")
+	public JsonView qnaDelete(@PathVariable("qnaId") int qnaId) {
+		Qna qna = new Qna();
+		qna.setQnaId(qnaId);
+
+		qnaService.deleteQna(qna);
+		return JsonViewUtils.success();
+	}
+
+	/**
+	 * 문의 답변 삭제
+	 *
+	 * @param qnaAnswerId
+	 * @return
+	 */
+	@GetMapping(value = "/delete/{qnaId}/answer/{qnaAnswerId}")
+	public JsonView qnaAnswerDelete(@PathVariable("qnaId") int qnaId, @PathVariable("qnaAnswerId") int qnaAnswerId) {
+		QnaAnswer qnaAnswer = new QnaAnswer();
+		qnaAnswer.setQnaId(qnaId);
+		qnaAnswer.setQnaAnswerId(qnaAnswerId);
+		qnaAnswer.setQnaDetailType("qna-open");
+
+		qnaService.deleteQnaAnswer(qnaAnswer);
+		return JsonViewUtils.success();
+	}
+
+	/**
+	 * 파일를 삭제한다.
+	 * @param requestContext
+	 * @param itemId
+	 * @return
+	 */
+	@PostMapping("delete-item-image")
+	public JsonView deleteItemImage(RequestContext requestContext, @RequestParam("itemId") String itemId) {
+		if (!requestContext.isAjaxRequest()) {
+			throw new NotAjaxRequestException();
+		}
+
+		qnaService.deleteItemImageByItemId(itemId);
+
+		return JsonViewUtils.success();
+	}
+
+	/**
+	 * 첨부파일 다운로드
+	 * @param dataFileId
+	 * @return
+	 */
+	@GetMapping("/file-download/{qnaFileId}/{qnaDetailType}")
+	public ResponseEntity<?> fileDownload(@PathVariable String qnaFileId, @PathVariable String qnaDetailType) throws IOException {
+		QnaOpenParam qnaOpenParam = new QnaOpenParam();
+		qnaOpenParam.setQnaFileId(String.valueOf(qnaFileId));
+		qnaOpenParam.setQnaDetailType(qnaDetailType);
+
+		QnaOpenFile qnaOpenFile = qnaService.getFrontQnaOpenFileDetail(qnaOpenParam);
+		File file = new File(CommonUtils.dataNvl(qnaOpenFile.getFileSrc()));
+
+		if (file.exists()) {
+			return customFileService.getFileDownloadByGhlove(CommonUtils.dataNvl(qnaOpenFile.getOrgFileName()), file);
+		}
+
+		return ApiResponseEntity.error(ApiError.SYSTEM_ERROR);
+	}
+
+}

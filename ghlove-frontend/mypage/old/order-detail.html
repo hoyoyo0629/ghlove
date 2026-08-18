@@ -1,0 +1,1819 @@
+<!doctype html>
+<html lang="ko">
+<head id="saleson-head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+    <title>지역정보개발원-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/mypage.css">
+
+</head>
+<body>
+<div id="saleson" v-cloak>
+
+    <layout-header></layout-header>
+
+    <section class="contents order_detail_contents">
+        <div class="tit_wrap">
+            <h2 class="tit">주문/배송 상세조회</h2>
+        </div>
+        <div class="order_deli_wrap">
+            <div class="container">
+                <div class="order_detail_top">
+                    <p class="order_num">주문번호 : <span>{{result.orderCode}}</span></p>
+                    <p class="date">{{dateFormat(result.createdDate)}}</p>
+                </div>
+                <div class="order_deli_container">
+                    <div class="order_deli_list" v-for="(data, index) in result.item">
+                        <div class="item_list basic">
+                            <div class="list_area">
+                                <div class="list_tit">
+                                    <p>{{data.orderStatusLabel}}</p>
+                                </div>
+                                <div class="img_area">
+                                    <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + data.itemUserCode, 'paging', 'order')">
+                                        <img :src="itemImage(data.imageSrc)" :alt="unescapeHtml(data.itemName)">
+                                    </a>
+                                </div>
+                                <div class="txt_area">
+                                    <p class="brand">{{unescapeHtml(data.brand)}}</p>
+                                    <p class="title">{{unescapeHtml(data.itemName)}}</p>
+                                    <p class="option" v-if="data.options != ''" v-html="unescapeHtml(data.options)"></p>
+                                    <p class="option" v-if="data.freeGiftItemText != ''">
+                                        사은품 : {{unescapeHtml(data.freeGiftItemText)}}
+                                    </p>
+                                    <div class="sale_area">
+                                        <p class="price"><span>{{formatNumber(data.itemAmount)}}</span>원 / <span>{{data.quantity}}</span>개</p>
+                                    </div>
+                                </div>
+                                <div class="btn_right" v-if="data.orderStatus === '0'">
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" @click="orderCancel(result.orderCode, data.orderSequence, data.itemSequence)">주문취소</button>
+                                </div>
+                                <div class="btn_right" v-if="data.orderStatus === '10' || data.orderStatus === '20'">
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_cancel" @click="getOrderCancelPop(result.orderCode, data.orderSequence, data.itemSequence, data.orderStatus)">주문취소</button>
+                                </div>
+                                <div class="btn_purchase_area" v-if="data.orderStatus === '30' || data.orderStatus === '35' || data.orderStatus === '55' || data.orderStatus === '59' || data.orderStatus === '69'">
+                                    <button type="button" class="btn btn_sm btn_outline_secondary"
+                                            @click="confirmReviewPop(result.orderCode, data.orderSequence, data.itemSequence, index)"
+                                            v-show="showAfterReviewButton(result.orderCode, data.orderSequence, data.itemSequence)">
+                                        후기작성
+                                    </button>
+                                    <button type="button" class="btn btn_sm btn_primary"
+                                            @click="confirm(result.orderCode, data.orderSequence, data.itemSequence, index)"
+                                            v-show="!showAfterReviewButton(result.orderCode, data.orderSequence, data.itemSequence)">
+                                        구매확정
+                                    </button>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary">배송조회</button>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_exchange" @click="getExchangePop(result.orderCode, data.orderSequence, data.itemSequence)">교환신청</button>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_return" @click="getReturnPop(result.orderCode, data.orderSequence, data.itemSequence)">반품신청</button>
+                                </div>
+                                <div class="btn_purchase_area" v-if="data.orderStatus === '40'">
+                                    <template v-for="nonReview in nonregisteredReviews">
+                                        <button type="button" class="btn btn_sm btn_outline_secondary"
+                                                v-if="result.orderCode === nonReview.orderCode && data.orderSequence === nonReview.orderSequence && data.itemSequence === nonReview.itemSequence"
+                                                @click="reviewPop(index, false)">후기작성</button>
+                                    </template>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_exchange" @click="getExchangePop(result.orderCode, data.orderSequence, data.itemSequence)">교환신청</button>
+                                    <button type="button" class="btn btn_sm btn_outline_secondary" data-toggle="modal" data-target=".pop_appli_return" @click="getReturnPop(result.orderCode, data.orderSequence, data.itemSequence)">반품신청</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="order_deli_list">
+                         <div class="item_list basic">
+                             <div class="list_area">
+                                 <div class="list_tit">
+                                     <p>배송중</p>
+                                     <a href="" class="link_deli">롯데택배 456546456456</a>
+                                 </div>
+                                 <div class="img_area">
+                                     <a href="#">
+                                         <img src="/static/images/thumb.png" alt="썸네일">
+                                     </a>
+                                 </div>
+                                 <div class="txt_area">
+                                     <p class="brand">브랜드명</p>
+                                     <p class="title">보브 하운드투스 체크 린넨 블렌드 자켓 체크 린넨 블렌드 자켓</p>
+                                     <p class="option">옵션이 노출되는 공간입니다</p>
+                                     <div class="sale_area">
+                                         <p class="price"><span>123,000</span> / <span>1</span>개</p>
+                                     </div>
+                                 </div>
+                                 <div class="btn_purchase_area">
+                                     <div>
+                                         <button type="button" class="btn btn_sm btn_primary">구매확정</button>
+                                         <p class="info">7일후 자동확정</p>
+                                     </div>
+                                     <button type="button" class="btn btn_sm btn_outline_secondary">배송조회</button>
+                                     <button type="button" class="btn btn_sm btn_outline_secondary">교환신청</button>
+                                     <button type="button" class="btn btn_sm btn_outline_secondary">환불신청</button>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>-->
+
+                    <div class="order_deli_conts">
+                        <div class="conts_tit">
+                            <h3 class="tit">결제정보</h3>
+                        </div>
+                        <div class="conts_area" v-for="data in result.paymentList">
+                            <dl>
+                                <dt>{{data.approvalTypeLabel}}</dt>
+                                <dd v-if="data.paymentType == 1">
+                                    <strong>{{formatNumber(data.amount)}}</strong> 원
+                                    <strong v-if="data.amount != data.remainingAmount && data.remainingAmount > 0">(잔여액 : {{formatNumber(data.remainingAmount)}})</strong>
+                                </dd>
+                                <dd v-if="data.paymentType == 2"><strong>{{formatNumber(data.cancelAmount)}}</strong> 원</dd>
+                            </dl>
+                            <dl>
+                                <dt>결제상태</dt>
+                                <dd v-if="data.payDate == null">미결제</dd>
+                                <dd v-if="data.paymentType == 1 && data.payDate != null">결제완료</dd>
+                                <dd v-if="data.paymentType == 2">결제취소</dd>
+                            </dl>
+                            <dl v-if="data.payDate != null">
+                                <dt>결제일</dt>
+                                <dd><strong>{{dateFormat(data.payDate)}}</strong></dd>
+                            </dl>
+                            <dl>
+                                <dt v-if="data.approvalType == 'vbank' || data.approvalType == 'realtimebank'">입금계좌</dt>
+                                <dt v-else-if="data.approvalType == 'card'">카드정보</dt>
+                                <dt v-else-if="data.approvalType == 'bank'">입금계좌</dt>
+                                <dd>
+                                    <p v-if="data.approvalType == 'vbank'">
+                                        {{data.bankVirtualNo}}
+                                    </p>
+                                    <p v-else>
+                                        {{data.payInfo}}
+                                    </p>
+                                </dd>
+                            </dl>
+                            <dl v-if="data.bankVirtualNo != null">
+                                <dt>입금자명</dt>
+                                <dd>{{data.bankInName}}</dd>
+                            </dl>
+                        </div>
+                    </div><!-- 결제정보 -->
+                    <div class="order_deli_conts">
+                        <div class="conts_tit">
+                            <h3 class="tit">결제금액</h3>
+                        </div>
+                        <div class="conts_area">
+                            <dl>
+                                <dt>총 상품금액</dt>
+                                <dd><strong>{{formatNumber(result.totalItemAmount)}}</strong> 원</dd>
+                            </dl>
+                            <dl>
+                                <dt>배송비</dt>
+                                <dd><strong>{{formatNumber(result.totalShippingAmount)}}</strong> 원</dd>
+                            </dl>
+                            <dl v-if="result.totalDiscountAmount > 0">
+                                <dt>할인혜택</dt>
+                                <dd><strong>-{{formatNumber(result.totalDiscountAmount)}}</strong> 원</dd>
+                            </dl>
+                            <dl class="total_area">
+                                <dt><strong>총 결제금액</strong></dt>
+                                <dd><strong>{{formatNumber(result.totalOrderAmount)}}</strong> 원</dd>
+                            </dl>
+                            <dl class="point_area">
+                                <dt>적립예정포인트</dt>
+                                <dd><strong>{{formatNumber(param.totalPoint)}}</strong> P</dd>
+                            </dl>
+                        </div>
+                    </div><!-- 결제금액 정보 -->
+                    <!--<div class="order_deli_conts">
+                        <div class="conts_tit">
+                            <h3 class="tit">주문자정보</h3>
+                        </div>
+                        <div class="conts_area txt_left">
+                            <dl>
+                                <dt>이름</dt>
+                                <dd>김민석</dd>
+                            </dl>
+                            <dl>
+                                <dt>연락처</dt>
+                                <dd>010-1234-5678</dd>
+                            </dl>
+                            <dl>
+                                <dt>이메일</dt>
+                                <dd>hgd@onlinepowers.com</dd>
+                            </dl>
+                        </div>
+                    </div>--><!-- 주문자 정보 -->
+                    <div class="order_deli_conts">
+                        <div class="conts_tit">
+                            <h3 class="tit">배송지정보</h3>
+                        </div>
+                        <div class="conts_area txt_left">
+                            <dl>
+                                <dt>받는 분</dt>
+                                <dd>{{result.shippingInfo.receiveName}}</dd>
+                            </dl>
+                            <dl>
+                                <dt>주소</dt>
+                                <dd>{{unescapeHtml(result.shippingInfo.receiveAddress)}}&nbsp;{{result.shippingInfo.receiveAddressDetail}}</dd>
+                            </dl>
+                            <dl>
+                                <dt>연락처</dt>
+                                <dd>{{result.shippingInfo.receiveMobile}}</dd>
+                            </dl>
+                            <dl>
+                                <dt>배송메시지</dt>
+                                <dd>{{result.shippingInfo.memo}}</dd>
+                            </dl>
+                        </div>
+                    </div><!-- 배송지정보 -->
+
+                    <div class="row no-gutters btn-group">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <a href="/mypage/order.html">
+                                <button type="button" class="btn btn_lg btn_primary">목록으로</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 취소신청 레이어 -->
+        <div class="modal fade modal_full pop_appli_cancel">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal_tit">취소신청</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="apply_wrap">
+                            <div class="cart_top">
+                                <div class="check_area">
+                                    <input type="checkbox" id="a1" @click="checkAll()">
+                                    <label for="a1">전체선택</label>
+                                </div>
+                            </div>
+                            <div class="item_list check" v-for="data in cancelInfo.result.claimApply.order.orderShippingInfos">
+                                <div class="list_area" v-for="item in data.orderItems" v-if="item.claimApplyFlag === 'Y'">
+                                    <div class="check_area">
+                                        <input type="hidden" v-model="cancelInfo.param.orderCode">
+                                        <input type="hidden" v-model="cancelInfo.param.orderSequence">
+                                        <input type="hidden" v-model="cancelInfo.param.claimType">
+                                        <input type="checkbox" :id="item.claimApplyItemKey" class="op-key"
+                                               :data-item-sequence="item.itemSequence"
+                                               :data-parent-item-sequence="item.parentItemSequence"
+                                               :data-addition-item-flag="item.additionItemFlag"
+                                               title="선택" :value="item.claimApplyItemKey" @click="cancelRefundCheck($event, item.claimApplyItemKey)">
+                                        <label :for="item.claimApplyItemKey"></label>
+                                    </div>
+                                    <div class="img_area">
+                                        <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + item.itemUserCode, 'paging', 'order')">
+                                            <img :src="itemImage(item.imageSrc)" :alt="unescapeHtml(item.itemName)">
+                                        </a>
+                                    </div>
+                                    <div class="txt_area">
+                                        <p class="brand">{{unescapeHtml(item.brand)}}</p>
+                                        <p class="title">{{unescapeHtml(item.itemName)}}</p>
+                                        <p class="option" v-if="item.options != ''" v-html="unescapeHtml(item.options)"></p>
+                                        <p class="option" v-if="item.freeGiftItemText != ''">
+                                            사은품 : {{unescapeHtml(item.freeGiftItemText)}}
+                                        </p>
+                                        <div class="price_area">
+                                            <div class="sale_area">
+                                                <p class="price"><span>{{formatNumber(item.saleAmount)}}</span>원</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn_right" v-if="item.additionItemFlag == 'N'">
+                                        <select class="custom-select box_s" :id="'applyQuantity_'+item.claimApplyItemKey" @change="cancelRefundCheck()">
+                                            <option disabled value="">선택</option>
+                                            <option :value="data" v-for="data in (item.quantity-item.claimQuantity)" :selected="data === (item.quantity-item.claimQuantity)">{{data}}개</option>
+                                        </select>
+                                    </div>
+                                    <div class="btn_right txt_area" v-else>
+                                        <select class="custom-select box_s" :id="'applyQuantity_'+item.claimApplyItemKey" @change="cancelRefundCheck()">
+                                            <option :value="item.quantity-item.claimQuantity">{{item.quantity-item.claimQuantity}}개</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="apply_area">
+                                <div class="form_wrap_line">
+                                    <div class="form-group">
+                                        <select class="custom-select line" v-model="cancelInfo.param.claimReasonText" @change="claimReasonsSelect($event)">
+                                            <option disabled value="">사유 선택</option>
+                                            <option :value="cancelData.label" v-for="cancelData in cancelInfo.result.claimReasons">{{cancelData.label}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="claimReasonText" style="display: none;">
+                                        <input type="text" class="form-control line" placeholder="취소사유를 입력해주세요" title="취소사유를 입력해주세요" v-model="cancelInfo.param.claimReasonDetail">
+                                    </div>
+                                    <div class="info_dot">
+                                        <p>위 상품은 배송을 준비한다는 판매자의 연락이 있었으며, 현재 상품이 발송되었을 수 있습니다.</p>
+                                        <p>이미 상품이 발송된 것으로 확인되면 취소 요청이 자동으로 철회되며, 이 경우 상품을 받으신 후 반품신청을 하실 수 있습니다.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="apply_area" id="refundInfo" style="display: none;">
+                                <div id="refundBank" style="display: none;">
+                                    <h4 class="apply_tit">환불계좌 정보입력</h4>
+                                    <div class="form_wrap_line">
+                                        <div class="form-group phone_area">
+                                            <div class="row no-gutters">
+                                                <div class="col-4 col-md-3">
+                                                    <select class="custom-select line" v-model="cancelInfo.param.returnBankName">
+                                                        <option disabled value="">선택</option>
+                                                        <option :value="data.key" v-for="data in common.banks">{{data.label}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-8 col-md-9">
+                                                    <input type="text" class="form-control line" placeholder="예금주를 입력하세요" title="예금주를 입력하세요" v-model="cancelInfo.param.returnBankInName">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control line" placeholder="계좌번호를 정확히 입력해주세요" title="계좌번호를 정확히 입력해주세요" v-model="cancelInfo.param.returnVirtualNo">
+                                        </div>
+                                        <div class="info_dot">
+                                            <p id="partCancelComment">부분취소가 불가능한 결제방식의 경우 위에 입력하신 계좌로 취소금액을 입금해드립니다.</p>
+                                            <p>통장입금의 경우 택배가 판매자에게 도착한 후 2 ~ 3일 이내에 환불 신청하신 계좌로 입금됩니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="radio_area refund" v-if="(cancelInfo.refundResult.orderRefundApiInfo.totalReturnAmount > 0 && cancelInfo.refundResult.orderRefundApiInfo.isAutoCancel == true)
+                                                                            || (cancelInfo.param.orderStatus == '10' && cancelInfo.refundResult.orderPgData.pgPaymentType == 'CARD' && cancelInfo.refundResult.orderRefundApiInfo.claimApplyQuantity == cancelInfo.refundResult.orderRefundApiInfo.totalOrderQuantity)">
+                                    <input type="radio" name="claimRefundType" value="1" v-model="cancelInfo.param.claimRefundType" checked id="claimRefundType1">
+                                    <label for="claimRefundType1">환불하기</label>
+                                </div>
+                                <div class="radio_area refund" v-else>
+                                    <input type="radio" name="claimRefundType" value="2" v-model="cancelInfo.param.claimRefundType" checked id="claimRefundType2">
+                                    <label  for="claimRefundType2">신청하기</label>
+                                </div>
+                                <div class="apply_total">
+                                    <dl>
+                                        <dt>배송비</dt>
+                                        <dd><strong>{{formatNumber(cancelInfo.refundResult.orderRefundApiInfo.totalAddShippingAmount)}}</strong> 원</dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>상품금액</dt>
+                                        <dd><strong>{{formatNumber(cancelInfo.refundResult.orderRefundApiInfo.totalItemReturnAmount)}}</strong> 원</dd>
+                                    </dl>
+                                    <dl class="total_area">
+                                        <dt>총 환불금액</dt>
+                                        <dd><strong>{{formatNumber(cancelInfo.refundResult.orderRefundApiInfo.totalReturnAmount)}}</strong> 원</dd>
+                                    </dl>
+                                </div>
+                                <div class="row no-gutters btn-group">
+                                    <div class="col col-xl-4">
+                                        <button type="button" class="btn btn_lg btn_default" data-dismiss="modal">취소</button>
+                                    </div>
+                                    <div class="col col-xl-4">
+                                        <button type="button" class="btn btn_lg btn_primary" @click="cancelProcess()">
+                                            <template v-if="(cancelInfo.refundResult.orderRefundApiInfo.totalReturnAmount > 0 && cancelInfo.refundResult.orderRefundApiInfo.isAutoCancel == true)
+                                                                            || (cancelInfo.param.orderStatus == '10' && cancelInfo.refundResult.orderPgData.pgPaymentType == 'CARD' && cancelInfo.refundResult.orderRefundApiInfo.claimApplyQuantity == cancelInfo.refundResult.orderRefundApiInfo.totalOrderQuantity)">
+                                                환불
+                                            </template>
+                                            <template v-else>
+                                                신청
+                                            </template>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="modal_close" data-dismiss="modal">
+                        <span class="screen_out">취소신청 닫기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 교환신청 레이어 -->
+        <div class="modal fade modal_full pop_appli_exchange">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal_tit">교환신청</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="exchangeProcess">
+                            <div class="apply_wrap">
+                                <input type="hidden" :value="exchange.result.exchangeApply.shipmentReturnId" id="exchangeShipmentReturnId">
+                                <div class="item_list basic">
+                                    <div class="list_area">
+                                        <div class="img_area">
+                                            <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + exchange.result.exchangeApply.orderItem.itemUserCode, 'paging', 'order')">
+                                                <img :src="itemImage(exchange.result.exchangeApply.orderItem.imageSrc)" :alt="unescapeHtml(exchange.result.exchangeApply.orderItem.itemName)">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="brand">{{unescapeHtml(exchange.result.exchangeApply.orderItem.brand)}}</p>
+                                            <p class="title">{{unescapeHtml(exchange.result.exchangeApply.orderItem.itemName)}}</p>
+                                            <p class="option" v-if="exchange.result.exchangeApply.orderItem.options != ''" v-html="unescapeHtml(exchange.result.exchangeApply.orderItem.options)"></p>
+                                            <p class="option" v-if="exchange.result.exchangeApply.orderItem.freeGiftItemText != ''">
+                                                사은품 : {{unescapeHtml(exchange.result.exchangeApply.orderItem.freeGiftItemText)}}
+                                            </p>
+                                            <div class="price_area">
+                                                <div class="sale_area">
+                                                    <p class="price"><span>{{formatNumber(exchange.result.exchangeApply.orderItem.saleAmount)}}</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn_right">
+                                            <select class="custom-select box_s" v-model="exchange.param.applyQuantity">
+                                                <option disabled value="">선택</option>
+                                                <option :value="data" v-for="data in exchange.result.exchangeApply.orderItem.quantity">
+                                                    {{data}}개
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area">
+                                    <div class="form_wrap_line">
+                                        <div class="form-group">
+                                            <select class="custom-select line" v-model="exchange.param.claimReasonText" @change="claimChange($event)">
+                                                <option disabled value="">교환사유를 선택해주세요.</option>
+                                                <option :value="exchangeData.label" v-for="exchangeData in exchange.result.claimReasons" :class="exchangeData.detail">{{exchangeData.label}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control line" placeholder="교환사유를 입력해주세요" title="교환사유를 입력해주세요" v-model="exchange.param.claimReasonDetail">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area">
+                                    <h4 class="apply_tit">반송 송장 정보</h4>
+                                    <div class="form_wrap_line">
+                                        <div class="form-group">
+                                            <div class="radio_area">
+                                                <input type="radio" id="return_invoice1" name="return_invoice" v-model="exchange.param.exchangeShippingAskType" value="1">
+                                                <label for="return_invoice1">지정택배사 이용</label>
+                                            </div>
+                                            <div class="radio_area">
+                                                <input type="radio" id="return_invoice2" name="return_invoice" v-model="exchange.param.exchangeShippingAskType" value="2">
+                                                <label for="return_invoice2">직접발송</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group phone_area return_invoice_group">
+                                            <div class="row no-gutters">
+                                                <div class="col-4 col-md-3">
+                                                    <select class="custom-select line" v-model="exchange.param.deliveryCompanyName">
+                                                        <option disabled value="">선택</option>
+                                                        <option :value="data.deliveryCompanyName" v-for="data in exchange.result.deliveryCompanyList">{{data.deliveryCompanyName}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-8 col-md-9">
+                                                    <input type="number" class="form-control line" placeholder="송장번호를 입력하세요" title="송장번호를 입력하세요" v-model="exchange.param.exchangeShippingNumber">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area">
+                                    <h4 class="apply_tit">반송지 정보</h4>
+                                    <div class="form_wrap_line">
+                                        <div class="form-group address_area">
+                                            <input type="text" class="form-control line" placeholder="이름" title="이름" value="김민석" v-model="exchange.result.exchangeApply.exchangeReceiveName" readonly>
+                                        </div>
+                                        <div class="form-group address_area">
+                                            <input type="text" class="form-control line" placeholder="우편번호 찾기" title="우편번호 찾기" :value="unescapeHtml(exchange.param.addressInfo)" readonly>
+                                            <button type="button" class="btn_address" @click="exchangeOpenDaumPostcode()">
+                                                <img class="img-fluid" src="/static/images/icon/btn_address.png" alt="주소찾기">
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control line" placeholder="상세주소" title="상세주소" v-model="exchange.result.exchangeApply.exchangeReceiveAddress2">
+                                        </div>
+                                        <div class="form-group phone_area">
+                                            <div class="row no-gutters">
+                                                <div class="col-4 col-md-3">
+                                                    <select class="custom-select line" v-model="exchange.param.mobile1">
+                                                        <option disabled value="">선택</option>
+                                                        <option value="010">010</option>
+                                                        <option value="011">011</option>
+                                                        <option value="017">017</option>
+                                                        <option value="019">019</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-8 col-md-9">
+                                                    <input type="number" class="form-control line" placeholder="'-'없이 숫자만 입력" title="'-'없이 숫자만 입력" v-model="exchange.param.mobile2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row no-gutters btn-group">
+                                        <div class="col col-xl-4">
+                                            <button type="button" class="btn btn_lg btn_default" data-dismiss="modal">취소</button>
+                                        </div>
+                                        <div class="col col-xl-4">
+                                            <button type="submit" class="btn btn_lg btn_primary">신청</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <button type="button" class="modal_close" data-dismiss="modal">
+                        <span class="screen_out">교환신청 닫기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 반품신청 레이어 -->
+        <div class="modal fade modal_full pop_appli_return">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal_tit">반품신청</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="returnProcess">
+                            <div class="apply_wrap">
+                                <input type="hidden" :value="returnInfo.result.returnApply.shipmentReturnId" id="returnShipmentReturnId">
+                                <div class="item_list basic">
+                                    <div class="list_area">
+                                        <div class="img_area">
+                                            <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + returnInfo.result.returnApply.orderItem.itemUserCode, 'paging', 'order')">
+                                                <img :src="itemImage(returnInfo.result.returnApply.orderItem.imageSrc)" :alt="unescapeHtml(returnInfo.result.returnApply.orderItem.itemName)">
+                                            </a>
+                                        </div>
+                                        <div class="txt_area">
+                                            <p class="brand">{{unescapeHtml(returnInfo.result.returnApply.orderItem.brand)}}</p>
+                                            <p class="title">{{unescapeHtml(returnInfo.result.returnApply.orderItem.itemName)}}</p>
+                                            <p class="option" v-if="returnInfo.result.returnApply.orderItem.options != ''" v-html="unescapeHtml(returnInfo.result.returnApply.orderItem.options)"></p>
+                                            <p class="option" v-if="returnInfo.result.returnApply.orderItem.freeGiftItemText != ''">
+                                                사은품 : {{unescapeHtml(returnInfo.result.returnApply.orderItem.freeGiftItemText)}}
+                                            </p>
+                                            <div class="price_area">
+                                                <div class="sale_area">
+                                                    <p class="price"><span>{{formatNumber(returnInfo.result.returnApply.orderItem.saleAmount)}}</span>원</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn_right">
+                                            <select class="custom-select box_s" v-model="returnInfo.param.applyQuantity">
+                                                <option disabled value="">선택</option>
+                                                <option :value="data" v-for="data in returnInfo.result.returnApply.orderItem.quantity">
+                                                    {{data}}개
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area">
+                                    <div class="form_wrap_line">
+                                        <div class="form-group">
+                                            <select class="custom-select line" v-model="returnInfo.param.claimReasonText" @change="claimChange($event)">
+                                                <option disabled value="">선택</option>
+                                                <option :value="returnData.label" v-for="returnData in returnInfo.result.claimReasons" :class="returnData.detail">{{returnData.label}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control line" placeholder="반품사유를 입력해주세요" title="반품사유를 입력해주세요" v-model="returnInfo.param.claimReasonDetail">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area">
+                                    <h4 class="apply_tit">반송 송장 정보</h4>
+                                    <div class="form_wrap_line">
+                                        <div class="form-group">
+                                            <div class="radio_area">
+                                                <input type="radio" id="return_invoice2-1" v-model="returnInfo.param.returnShippingAskType" value="1" name="return_invoice">
+                                                <label for="return_invoice2-1">지정택배사 이용</label>
+                                            </div>
+                                            <div class="radio_area">
+                                                <input type="radio" id="return_invoice2-2" v-model="returnInfo.param.returnShippingAskType" value="2" name="return_invoice">
+                                                <label for="return_invoice2-2">직접발송</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group phone_area return_invoice_group">
+                                            <div class="row no-gutters">
+                                                <div class="col-4 col-md-3">
+                                                    <select class="custom-select line" v-model="returnInfo.param.deliveryCompanyName">
+                                                        <option disabled value="">선택</option>
+                                                        <option :value="data.deliveryCompanyName" v-for="data in returnInfo.result.deliveryCompanyList">{{data.deliveryCompanyName}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-8 col-md-9">
+                                                    <input type="number" class="form-control line" placeholder="송장번호를 입력하세요" title="송장번호를 입력하세요" v-model="returnInfo.param.returnShippingNumber">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area">
+                                    <h4 class="apply_tit">반송지 정보</h4>
+                                    <div class="form_wrap_line">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control line" placeholder="이름" title="이름" v-model="returnInfo.result.returnApply.returnReserveName" readonly>
+                                        </div>
+                                        <div class="form-group address_area">
+                                            <input type="text" class="form-control line" placeholder="우편번호 찾기" title="우편번호 찾기" :value="unescapeHtml(returnInfo.param.addressInfo)" readonly>
+                                            <button type="button" class="btn_address" @click="returnOpenDaumPostcode()">
+                                                <img class="img-fluid" src="/static/images/icon/btn_address.png" alt="주소찾기">
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control line" placeholder="상세주소" title="상세주소" v-model="returnInfo.result.returnApply.returnReserveAddress2">
+                                        </div>
+                                        <div class="form-group phone_area">
+                                            <div class="row no-gutters">
+                                                <div class="col-4 col-md-3">
+                                                    <select class="custom-select line" v-model="returnInfo.param.mobile1">
+                                                        <option disabled value="">선택</option>
+                                                        <option value="010">010</option>
+                                                        <option value="011">011</option>
+                                                        <option value="017">017</option>
+                                                        <option value="019">019</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-8 col-md-9">
+                                                    <input type="number" class="form-control line" placeholder="'-'없이 숫자만 입력" title="'-'없이 숫자만 입력" v-model="returnInfo.param.mobile2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apply_area">
+                                    <h4 class="apply_tit">환불계좌 정보입력</h4>
+                                    <div class="form_wrap_line">
+                                        <div class="form-group phone_area">
+                                            <div class="row no-gutters">
+                                                <div class="col-4 col-md-3">
+                                                    <select class="custom-select line" v-model="returnInfo.param.returnBankName">
+                                                        <option disabled value="">선택</option>
+                                                        <option :value="data.key" v-for="data in common.banks">{{data.label}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-8 col-md-9">
+                                                    <input type="text" class="form-control line" placeholder="예금주를 입력하세요" title="예금주를 입력하세요" v-model="returnInfo.param.returnBankInName">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="number" class="form-control line" placeholder="계좌번호를 정확히 입력해주세요" title="계좌번호를 정확히 입력해주세요" v-model="returnInfo.param.returnVirtualNo">
+                                        </div>
+                                        <div class="info_dot">
+                                            <p>부분취소가 불가능한 결제방식의 경우 위에 입력하신 계좌로 취소금액을 입금해드립니다.</p>
+                                            <p>통장입금의 경우 택배가 판매자에게 도착한 후 2 ~ 3일 이내에 환불 신청하신 계좌로 입금됩니다.</p>
+                                        </div>
+                                    </div>
+                                    <div class="row no-gutters btn-group">
+                                        <div class="col col-xl-4">
+                                            <button type="button" class="btn btn_lg btn_default" data-dismiss="modal">취소</button>
+                                        </div>
+                                        <div class="col col-xl-4">
+                                            <button type="submit" class="btn btn_lg btn_primary">신청</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <button type="button" class="modal_close" data-dismiss="modal">
+                        <span class="screen_out">반품신청 닫기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade modal_full pop_rv_write">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal_tit">후기작성</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="md_rv_write">
+                            <dl class="top_tit" v-if="reviewForm.confirmFlag">
+                                <dt>구매확정해주셔서 감사합니다.</dt>
+                                <dd>지금 바로 고객님의 소중한 후기를 남겨주세요. <br>모두의 후기가 모여 더욱 스마트한 쇼핑이 만들어집니다.</dd>
+                            </dl><!--// top_tit -->
+                            <dl class="prd_info">
+                                <dt><img :src="reviewForm.image" alt="썸네일 이미지"></dt>
+                                <dd><p>{{reviewForm.itemName}}</p></dd>
+                            </dl><!--// prd_info -->
+                            <div class="check_area op_view_chk">
+                                <input type="checkbox" id="op_view_chk" v-model="reviewForm.notDisplayOptionsFlag">
+                                <label for="op_view_chk">상품옵션 미노출</label>
+                            </div><!--// op_view_chk -->
+                            <dl class="rv_form">
+                                <dt>
+                                    <div class="rating_star xl">
+                                        <span @click="rating(0)" :class="reviewForm.showStarFlags[0] ? 'on' : ''"></span>
+                                        <span @click="rating(1)" :class="reviewForm.showStarFlags[1] ? 'on' : ''"></span>
+                                        <span @click="rating(2)" :class="reviewForm.showStarFlags[2] ? 'on' : ''"></span>
+                                        <span @click="rating(3)" :class="reviewForm.showStarFlags[3] ? 'on' : ''"></span>
+                                        <span @click="rating(4)" :class="reviewForm.showStarFlags[4] ? 'on' : ''"></span>
+                                    </div>
+                                    <p class="score">{{reviewForm.score}}</p>
+                                </dt>
+                                <dd>
+                                    <textarea cols="30" rows="10" placeholder="내용을 입력해주세요." class="form-control" v-model="reviewForm.content"></textarea>
+                                    <div class="info_dot"><p>이용후기는 구매확정 된 상품에 한하여 주문일로부터 90일내 작성 가능합니다.</p></div>
+                                    <div class="info_dot"><p><b>일반후기 {{formatNumber(reviewForm.point.point)}}P / 포토후기 {{formatNumber(reviewForm.point.photoPoint)}}P 증정</b>적립해드립니다.</p></div>
+                                </dd>
+                                <template v-if="reviewForm.filters.length > 0">
+                                    <dt>추가정보 입력</dt>
+                                    <dd>
+                                        <template v-for="(group, index) in reviewForm.filters">
+                                            <select :id="'filter-'+group.id" class="custom-select box"
+                                                    @change="selectReviewFilter(group.id, index, $event)">
+                                                <option value="">{{unescapeHtml(group.label)}}</option>
+                                                <template v-for="(code, codeIndex) in group.codes">
+                                                    <option :value="code.id">{{unescapeHtml(code.label)}}</option>
+                                                </template>
+                                            </select>
+                                        </template>
+                                    </dd>
+                                </template>
+                                <dd class="file_area">
+                                    <ul>
+                                        <li v-for="(fileData, fileIndex) in reviewForm.files">
+                                            <div>
+                                                <img id="reviewSrc" class="img_full" :src="reviewForm.fileImages[fileIndex]" alt="썸네일">
+                                            </div>
+                                            <button type="button" class="btn_file_del" @click="fileDelete(fileIndex)" >
+                                                <span class="screen_out">파일삭제</span>
+                                            </button>
+                                        </li>
+                                        <li v-show="reviewForm.files.length < reviewForm.maxFileCount">
+                                            <input type="file" multiple id="fileSelect" @change="fileSelect($event)">
+                                            <label for="fileSelect" class="btn_file_add">
+                                                <span class="screen_out">파일추가</span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                    <div class="info_dot"><p>5MB 이하의 사진 {{reviewForm.maxFileCount}}장까지 첨부 가능</p></div>
+                                </dd>
+                            </dl><!--// rv_form -->
+                            <div class="row no-gutters btn-group">
+                                <div class="col col-md-4">
+                                    <button type="button" class="btn btn_lg btn_light" @click="closeReviewForm">취소</button>
+                                </div>
+                                <div class="col col-md-4">
+                                    <button type="button" class="btn btn_lg btn_primary" @click="submitReview">등록</button>
+                                </div>
+                            </div>
+                        </div><!--// md_rv_write -->
+                    </div>
+                    <button type="button" class="modal_close" data-dismiss="modal">
+                        <span class="screen_out">후기작성 닫기</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <layout-footer></layout-footer>
+
+    <layout-address></layout-address>
+</div>
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="/modules/es6-promise.min.js"></script>
+<script src="/modules/es6-promise.auto.min.js"></script>
+<script src="/modules/axios.js"></script>
+<script src="/modules/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+<script type="text/javascript">
+    var daumApiUrl = 'http://dmaps.daum.net/map_js_init/postcode.v2.js';
+    if (window.location.protocol == 'https:') {
+        daumApiUrl = 'https://spi.maps.daum.net/imap/map_js_init/postcode.v2.js';
+    }
+    document.write('<script src="'+ daumApiUrl +'">' + '</' + 'script>');
+</script>
+<script type="text/babel">
+    Vue.use(VueAwesomeSwiper);
+    var vm = new Vue({
+        el: '#saleson',
+        components: {
+            'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+            'layout-header': httpVueLoader('/components/layouts/header.vue'),
+            'layout-address': httpVueLoader('/components/ui/daum/address-layer.vue')
+        },
+        data: {
+            param: {
+                orderCode : "",
+                orderSequence : 0,
+                itemSequence : 0,
+                totalPoint : 0,
+                nonregisteredReview: {
+                    conditionType: 'FRONT_MYPAGE',
+                    paging: false
+                }
+            },
+            result: {
+                createdDate : "",
+                orderCode : "",
+                item : [],
+                paymentList : [],
+                shippingInfo : {},
+                totalCouponDiscountAmount : 0,
+                totalDiscountAmount : 0,
+                totalItemAmount : 0,
+                totalOrderAmount : 0,
+                totalShippingAmount : 0,
+                totalUserLevelDiscountAmount : 0
+            },
+            categories: {},
+            returnInfo : {
+                result : {
+                    deliveryCompanyList : [],
+                    claimReasons : [],
+                    returnApply : {
+                        orderItem : {},
+                        returnReserveName : "",
+                        returnReservePhone : "",
+                        returnReserveMobile : "",
+                        returnReserveSido : "",
+                        returnReserveSigungu : "",
+                        returnReserveEupmyeondong : "",
+                        returnReserveZipcode : "",
+                        returnReserveAddress : "",
+                        returnReserveAddress2 : "",
+                        returnBankName : "",
+                        returnBankInName : "",
+                        returnVirtualNo : ""
+                    }
+                },
+                param : {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    page: 1,
+                    itemsPerPage: 10,
+                    returnShippingAskType : "",
+                    shipmentReturnId : "",
+                    applyQuantity : "",
+                    returnReserveName : "",
+                    returnReservePhone : "",
+                    returnReserveMobile : "",
+                    returnReserveZipcode : "",
+                    returnReserveAddress : "",
+                    returnReserveAddress2 : "",
+                    returnShippingCompanyName : "",
+                    returnShippingNumber : "",
+                    deliveryCompanyName : "",
+                    claimReason : "",
+                    claimReasonText : "",
+                    claimReasonDetail : "",
+                    returnBankName : "",
+                    returnBankInName: "",
+                    returnVirtualNo : "",
+                    addressInfo : "",
+                    mobile1 : "",
+                    mobile2 : ""
+                }
+            },
+            exchange : {
+                result : {
+                    deliveryCompanyList : [],
+                    claimReasons : [],
+                    exchangeApply : {
+                        exchangeReceiveName : "",
+                        exchangeReceivePhone : "",
+                        exchangeReceiveMobile : "",
+                        exchangeReceiveZipcode : "",
+                        exchangeReceiveAddress : "",
+                        exchangeReceiveAddress2 : "",
+                        orderItem : {}
+                    }
+                },
+                param : {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    page: 1,
+                    itemsPerPage: 10,
+                    returnShippingAskType : "",
+                    shipmentReturnId : "",
+                    applyQuantity : "",
+                    returnReserveName : "",
+                    returnReservePhone : "",
+                    returnReserveMobile : "",
+                    returnReserveZipcode : "",
+                    returnReserveAddress : "",
+                    returnReserveAddress2 : "",
+                    returnShippingCompanyName : "",
+                    returnShippingNumber : "",
+                    deliveryCompanyName : "",
+                    claimReason : "",
+                    claimReasonText : "",
+                    claimReasonDetail : "",
+                    returnBankName : "",
+                    returnBankInName: "",
+                    returnVirtualNo : "",
+                    addressInfo : "",
+                    mobile1 : "",
+                    mobile2 : "",
+                    exchangeShippingAskType : "",
+                    exchangeShippingNumber : ""
+                }
+            },
+            cancelInfo : {
+                result : {
+                    userClickItemStatus : "",
+                    claimReasons : [],
+                    claimApply : {
+                        order : {
+                            orderShippingInfos : []
+                        }
+                    }
+                },
+                refundResult : {
+                    partCancel : "0",
+                    orderPgData : {},
+                    orderRefundApiInfo : {},
+                    orderPgData: {
+                        pgPaymentType: ""
+                    }
+                },
+                param : {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    applyQuantity : 0,
+                    claimReasonText : "",
+                    claimRefundType : "",
+                    claimType : "",
+                    returnBankName : ""
+                }
+            },
+            common : {
+                banks : []
+            },
+            nonregisteredReviews : [],
+            reviewForm: {},
+            confirmOrderKey: []
+        },
+        methods: {
+            initReviewForm: function () {
+                return {
+                    submitFlag: false,
+                    point: {
+                        point: 0,
+                        photoPoint: 0
+                    },
+                    maxFileCount:4,
+                    confirmFlag: false,
+                    orderCode : '',
+                    itemId: 0,
+                    itemName:'',
+                    image:'',
+                    options: '',
+                    notDisplayOptionsFlag: false,
+                    displayOptionsFlag: 'N',
+                    selecteFilterMaps : [],
+                    filters : [],
+                    files: [],
+                    fileImages: [],
+                    showStarFlags: [false, false, false, false, false],
+                    score: 0,
+                    content: ''
+                }
+            },
+
+            validNonregisteredReview : function (orderCode, orderSequence, itemSequence) {
+
+                var list = vm.nonregisteredReviews;
+
+                for (var i=0; i<list.length; i++) {
+                    if (list[i].orderCode == orderCode
+                            && list[i].orderSequence == orderSequence
+                            && list[i].itemSequence == itemSequence) {
+                        return true;
+                    }
+                }
+
+                return false;
+
+            },
+            confirmReviewPop : function(orderCode, orderSequence, itemSequence, index) {
+
+                this.getUnregisteredItemReviews(function () {
+                    if (vm.validNonregisteredReview(orderCode, orderSequence, itemSequence)) {
+                        vm.reviewPop(index, itemSequence, true);
+                    } else {
+                        $s.alert('해당 상품의 상품 리뷰가 존재 합니다.');
+                    }
+                });
+            },
+
+            showAfterReviewButton(orderCode, orderSequence, itemSequence) {
+                var key = orderCode+'-'+orderSequence+'-'+itemSequence;
+
+                return vm.confirmOrderKey.indexOf(key) > -1;
+            },
+
+            confirm : function(orderCode, orderSequence, itemSequence, index){
+                vm.param.orderCode = orderCode;
+                vm.param.orderSequence = orderSequence;
+                vm.param.itemSequence = itemSequence;
+                var key = orderCode+'-'+orderSequence+'-'+itemSequence;
+
+                $s.confirm("해당 상품을 구매확정 하시겠습니까?", function(){
+
+                    $s.closeAlert();
+
+                    $s.api.confirmPurchase(vm.param,
+                        function (response) {
+                            if(response.status === "OK"){
+                                vm.confirmOrderKey.push(key);
+
+                                vm.getUnregisteredItemReviews(function () {
+                                    if (vm.validNonregisteredReview(orderCode, orderSequence, itemSequence)) {
+                                        vm.reviewPop(index, itemSequence, true);
+                                    } else {
+                                        $s.alert('해당 상품의 상품 리뷰가 존재 합니다.');
+                                    }
+                                });
+                            } else {
+                                $s.alert(response);
+                            }
+                        },
+                        function(error) {
+                            $s.alert("구매확정시 오류가 발생했습니다.");
+                        }
+                    );
+                });
+            },
+
+            // 주문취소 팝 정보 - 기본
+            getOrderCancelPop : function(orderCode, orderSequence, itemSequence, orderStatus){
+                vm.popReset();
+                vm.cancelInfo.param.orderCode = orderCode;
+                vm.cancelInfo.param.orderSequence = orderSequence;
+                vm.cancelInfo.param.itemSequence = itemSequence;
+                vm.cancelInfo.param.orderStatus = orderStatus;
+                $s.api.getCancelPop(vm.cancelInfo.param,
+                    function (response) {
+                        vm.cancelInfo.result = response.cancelApplyInfo;
+                    }
+                );
+            },
+
+            // 반품신청 팝 정보
+            getReturnPop : function(orderCode, orderSequence, itemSequence){
+                vm.popReset();
+                vm.returnInfo.param.orderCode = orderCode;
+                vm.returnInfo.param.orderSequence = orderSequence;
+                vm.returnInfo.param.itemSequence = itemSequence;
+                $s.api.getReturnPop(vm.returnInfo.param,
+                    function (response) {
+                        vm.returnInfo.result = response.returnInfo;
+                        vm.returnInfo.param.addressInfo = "[" + vm.returnInfo.result.returnApply.returnReserveZipcode + "] " + vm.returnInfo.result.returnApply.returnReserveAddress;
+                    }
+                );
+            },
+
+            // 반품신청
+            returnProcess : function(){
+                vm.returnInfo.param.shipmentReturnId = $("#returnShipmentReturnId").val();
+                vm.returnInfo.param.returnReserveMobile = vm.returnInfo.param.mobile1+vm.returnInfo.param.mobile2;
+                vm.returnInfo.param.returnReserveName = vm.returnInfo.result.returnApply.returnReserveName;
+                vm.returnInfo.param.returnReserveAddress2 = vm.returnInfo.result.returnApply.returnReserveAddress2;
+                vm.returnInfo.param.returnShippingCompanyName = vm.returnInfo.param.deliveryCompanyName;
+
+                if(vm.returnInfo.param.returnReserveZipcode === "" || vm.returnInfo.param.returnReserveZipcode == undefined){
+                    vm.returnInfo.param.returnReserveZipcode = vm.returnInfo.result.returnApply.returnReserveZipcode;
+                    vm.returnInfo.param.returnReserveAddress = vm.returnInfo.result.returnApply.returnReserveAddress;
+                    vm.returnInfo.param.returnReserveAddress2 = vm.returnInfo.result.returnApply.returnReserveAddress2;
+                    vm.returnInfo.param.returnReserveSido = vm.returnInfo.result.returnApply.returnReserveSido;
+                    vm.returnInfo.param.returnReserveSigungu = vm.returnInfo.result.returnApply.returnReserveSigungu;
+                    vm.returnInfo.param.returnReserveEupmyeondong = vm.returnInfo.result.returnApply.returnReserveEupmyeondong;
+                }
+
+                if (vm.returnInfo.param.applyQuantity === "" || vm.returnInfo.param.applyQuantity == undefined) {
+                    $s.alert("수량을 선택하세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.claimReasonText === "" || vm.returnInfo.param.claimReasonText == undefined) {
+                    $s.alert("반품사유를 선택하세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.returnShippingAskType != "1" &&
+                    (vm.returnInfo.param.returnShippingAskType === "" || vm.returnInfo.param.returnShippingAskType == undefined ||
+                     vm.returnInfo.param.deliveryCompanyName === "" || vm.returnInfo.param.deliveryCompanyName == undefined)) {
+                    $s.alert("반송 송장 정보를 입력해주세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.returnShippingAskType != "1"
+                    && (vm.returnInfo.param.returnShippingNumber === "" || vm.returnInfo.param.returnShippingNumber == undefined)) {
+                    $s.alert("송장번호를 입력하세요.");
+                    return false;
+                }
+                if(vm.returnInfo.param.returnReserveZipcode === "" || vm.returnInfo.param.returnReserveZipcode == undefined){
+                    vm.returnInfo.param.returnReserveZipcode = vm.returnInfo.result.returnApply.returnReserveZipcode;
+                    vm.returnInfo.param.returnReserveAddress = vm.unescapeHtml(vm.returnInfo.result.returnApply.returnReserveAddress);
+                }
+                if (vm.returnInfo.param.returnReserveZipcode === "" || vm.returnInfo.param.returnReserveZipcode == undefined ||
+                    vm.returnInfo.param.returnReserveAddress === "" || vm.returnInfo.param.returnReserveAddress == undefined ||
+                    vm.returnInfo.param.returnReserveAddress2 === "" || vm.returnInfo.param.returnReserveAddress2 == undefined) {
+                    $s.alert("반송지 정보를 입력해주세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.returnReserveMobile === "" || vm.returnInfo.param.returnReserveMobile == undefined) {
+                    $s.alert("연락처를 입력해주세요.");
+                    return false;
+                }
+                if (vm.returnInfo.param.returnBankName === "" || vm.returnInfo.param.returnBankName == undefined ||
+                    vm.returnInfo.param.returnBankInName === "" || vm.returnInfo.param.returnBankInName == undefined ||
+                    vm.returnInfo.param.returnVirtualNo === "" || vm.returnInfo.param.returnVirtualNo == undefined) {
+                    $s.alert("환불계좌 정보를 입력해주세요.");
+                    return false;
+                }
+
+                $s.api.returnProcess(vm.returnInfo.param,
+                    function (response) {
+                        if(response.status === "OK"){
+                            $s.alert("반품신청 되었습니다.", function(){
+                                location.reload();
+                            });
+                        }
+                    }
+                );
+            },
+
+            orderCancel : function(orderCode, orderSequence, itemSequence){
+                vm.param.orderCode = orderCode;
+                vm.param.orderSequence = orderSequence;
+                vm.param.itemSequence = itemSequence;
+
+                $s.confirm("주문취소 하시겠습니까?", function(){
+                    $s.api.orderCancel(vm.param,
+                        function (response) {
+                            if(response.status === "OK"){
+                                $s.alert("주문취소되었습니다.", function(){
+                                    location.reload();
+                                });
+                            } else {
+                                $s.alert(response);
+                            }
+                        }
+                    );
+                });
+            },
+
+            reviewPop : function(index, confirmFlag){
+                var order = this.result,
+                        item = order.item[index];
+
+                this.reviewForm = this.initReviewForm();
+
+                this.reviewForm.confirmFlag = confirmFlag;
+                this.reviewForm.orderCode  = order.orderCode;
+                this.reviewForm.itemId  = item.itemId;
+                this.reviewForm.itemName  = item.itemName;
+                this.reviewForm.image  = this.itemImage(item.imageSrc);
+                this.reviewForm.options  = item.options.replace("<br/>", "\n");
+
+                $s.api.getItemReviewInfo(item.itemUserCode, function(response) {
+
+                    vm.reviewForm.point.point = response.pointReview;
+                    vm.reviewForm.point.photoPoint = response.photoPointReview;
+                    vm.reviewForm.filters = response.reviewFilters;
+
+                }, function (error) {});
+
+                $('.pop_rv_write').modal("show");
+            },
+
+            // 교환신청 팝 정보
+            getExchangePop : function(orderCode, orderSequence, itemSequence){
+                vm.popReset();
+                vm.exchange.param.orderCode = orderCode;
+                vm.exchange.param.orderSequence = orderSequence;
+                vm.exchange.param.itemSequence = itemSequence;
+                $s.api.getExchangePop(vm.exchange.param,
+                    function (response) {
+                        vm.exchange.result = response.exchangeInfo;
+                        vm.exchange.param.addressInfo = "[" + vm.exchange.result.exchangeApply.exchangeReceiveZipcode + "] " + vm.exchange.result.exchangeApply.exchangeReceiveAddress;
+
+                    }
+                );
+            },
+
+            // 교환신청
+            exchangeProcess : function(){
+                vm.exchange.param.shipmentReturnId = $("#exchangeShipmentReturnId").val();
+                vm.exchange.param.exchangeReceiveMobile = vm.exchange.param.mobile1+vm.exchange.param.mobile2;
+                vm.exchange.param.exchangeReceivePhone = vm.exchange.param.exchangeReceiveMobile;
+                vm.exchange.param.exchangeReceiveName = vm.exchange.result.exchangeApply.exchangeReceiveName;
+                vm.exchange.param.exchangeReserveAddress2 = vm.exchange.result.exchangeApply.exchangeReserveAddress2;
+
+                if(vm.exchange.param.exchangeReceiveZipcode === "" || vm.exchange.param.exchangeReceiveZipcode == undefined){
+                    vm.exchange.param.exchangeReceiveZipcode = vm.exchange.result.exchangeApply.exchangeReceiveZipcode;
+                    vm.exchange.param.exchangeReceiveAddress = vm.exchange.result.exchangeApply.exchangeReceiveAddress;
+                    vm.exchange.param.exchangeReceiveAddress2 = vm.exchange.result.exchangeApply.exchangeReceiveAddress2;
+                    vm.exchange.param.exchangeReceiveSido = vm.exchange.result.exchangeApply.exchangeReceiveSido;
+                    vm.exchange.param.exchangeReceiveSigungu = vm.exchange.result.exchangeApply.exchangeReceiveSigungu;
+                    vm.exchange.param.exchangeReceiveEupmyeondong = vm.exchange.result.exchangeApply.exchangeReceiveEupmyeondong;
+                }
+
+                // validation
+                // 수량을 선택해주세요
+                if (vm.exchange.param.applyQuantity === "" || vm.exchange.param.applyQuantity == undefined) {
+                    $s.alert("수량을 선택하세요.");
+                    return false;
+                }
+                if (vm.exchange.param.claimReasonText === "" || vm.exchange.param.claimReasonText == undefined) {
+                    $s.alert("교환사유를 선택해주세요.");
+                    return false;
+                }
+                if (vm.exchange.param.exchangeShippingAskType != "1" && (vm.exchange.param.exchangeShippingAskType === "" || vm.exchange.param.exchangeShippingAskType == undefined ||
+                    vm.exchange.param.deliveryCompanyName === "" || vm.exchange.param.deliveryCompanyName == undefined)) {
+                    $s.alert("반송 송장 정보를 입력해주세요.");
+                    return false;
+                }
+                if (vm.exchange.param.exchangeShippingAskType != "1"
+                    && (vm.exchange.param.exchangeShippingNumber === "" || vm.exchange.param.exchangeShippingNumber == undefined)) {
+                    $s.alert("송장번호를 입력하세요.");
+                    return false;
+                }
+                if (vm.exchange.param.exchangeReceiveName === "" || vm.exchange.param.exchangeReceiveName == undefined ||
+                    vm.exchange.param.exchangeReceiveZipcode === "" || vm.exchange.param.exchangeReceiveZipcode == undefined ||
+                    vm.exchange.param.exchangeReceiveAddress === "" || vm.exchange.param.exchangeReceiveAddress == undefined) {
+                    $s.alert("반송지 정보를 입력해주세요.");
+                    return false;
+                }
+                if (vm.exchange.param.exchangeReceiveMobile === "" || vm.exchange.param.exchangeReceiveMobile == undefined) {
+                    $s.alert("연락처를 입력해주세요.");
+                    return false;
+                }
+                $s.api.exchangeProcess(vm.exchange.param,
+                    function (response) {
+                        if(response.status === "OK"){
+                            $s.alert("교환신청 되었습니다.", function(){
+                                location.reload();
+                            });
+                        }
+                    }
+                );
+            },
+
+            claimChange: function (e) {
+                var index = e.target.selectedIndex;
+                vm.returnInfo.param.claimReason = e.target.options[index].className;
+            },
+
+            // 취소신청-선택상세
+            cancelRefundCheck : function(e, claimApplyItemKey){
+                if($("input[type='checkbox']:checked.op-key").length > 0){
+                    var id = new Array();
+                    vm.cancelInfo.param.claimApplyItemMap = {};
+                    $.each($("input[type='checkbox']:checked.op-key"), function(e){
+                        id.push(this.value);
+                        vm.cancelInfo.param.claimApplyItemMap[this.value] = {
+                            orderCode : vm.cancelInfo.param.orderCode,
+                            orderSequence : vm.cancelInfo.param.orderSequence,
+                            applyQuantity : $("#applyQuantity_"+this.value).val(),
+                            itemSequence : this.getAttribute("data-item-sequence")
+                        };
+                    });
+                    vm.cancelInfo.param.claimReason = "2";
+                    vm.cancelInfo.param.id = id;
+
+                    $s.api.getRefundAmount(vm.cancelInfo.param,
+                        function (response) {
+                            vm.cancelInfo.refundResult = response.refundInfo;
+                            var orai = vm.cancelInfo.refundResult.orderRefundApiInfo;
+                            var pgPaymentType = 'deposit';
+                            var claimApplyQuantity = orai.claimApplyQuantity;
+                            var totalOrderQuantity = orai.totalOrderQuantity;
+                            var orderStatus = vm.cancelInfo.param.orderStatus;
+
+                            if (vm.cancelInfo.refundResult.orderPgData != null) {
+                                pgPaymentType = vm.cancelInfo.refundResult.orderPgData.pgPaymentType;
+                            } else {
+                                vm.cancelInfo.refundResult.orderPgData = ({
+                                    'pgPaymentType': pgPaymentType
+                                });
+                            }
+
+                            $("#refundInfo").show();
+                            if (orai.isAutoCancel == false || orai.isWriteBankInfo == true) {
+                                if (pgPaymentType == 'deposit') {
+                                    $('#partCancelComment').hide();
+
+                                } else if (claimApplyQuantity == totalOrderQuantity) {
+                                    $('#partCancelComment').text('자동 환불이 불가능한 결제방식의 경우 위에 입력하신 계좌로 취소금액을 입금해드립니다.');
+
+                                } else if (claimApplyQuantity != totalOrderQuantity) {
+                                    $('#partCancelComment').text('부분취소가 불가능한 결제방식의 경우 위에 입력하신 계좌로 취소금액을 입금해드립니다.');
+                                }
+
+                                $("#refundBank").show();
+                                // 결제완료 상태 - 부분취소 불가능한 카드결제 전체취소 시 부분취소 가능여부(PART_CANCEL_FLAG)와 상관없이 환불계좌를 입력받지 않고 PG취소
+                                if (orderStatus == '10' && pgPaymentType == 'CARD' && claimApplyQuantity == totalOrderQuantity) {
+                                    $("#refundBank").hide();
+                                }
+                            } else {
+                                $("#refundBank").hide();
+                            }
+                        }
+                    );
+                } else {
+                    $("#refundInfo").hide();
+                }
+            },
+
+            checkAll : function(){
+                if($("input[type='checkbox']:checked").val()=="on"){
+                    $("input[type='checkbox']").prop("checked", true);
+                    vm.cancelRefundCheck();
+                } else {
+                    $("input[type='checkbox']").prop("checked", false);
+                    $("#refundInfo").hide();
+                }
+            },
+
+            // 취소신청
+            cancelProcess : function(){
+                if($("input[type='checkbox']:checked.op-key").length == 0) {
+                    $s.alert('취소 상품을 선택해주세요.');
+                    return false;
+                }
+
+                var a = vm.cancelInfo.refundResult.orderRefundApiInfo;
+
+                // 결제완료 상태 - 카드 전체 취소일 경우 부분취소 가능여부(PART_CANCEL_FLAG)와 상관없이 환불계좌를 입력받지 않고 PG취소
+                var pgPaymentType = 'deposit';
+                if (vm.cancelInfo.refundResult.orderPgData != null) {
+                    pgPaymentType = vm.cancelInfo.refundResult.orderPgData.pgPaymentType;
+                } else {
+                    vm.cancelInfo.refundResult.orderPgData = ({
+                        'pgPaymentType': pgPaymentType
+                    });
+                }
+
+                var claimApplyQuantity = a.claimApplyQuantity;
+                var totalOrderQuantity = a.totalOrderQuantity;
+                var orderStatus = vm.cancelInfo.param.orderStatus;
+
+                if ((a.totalReturnAmount > 0 && a.isAutoCancel == true)
+                    || (orderStatus == '10' && pgPaymentType == 'CARD' && claimApplyQuantity == totalOrderQuantity)) {
+                    vm.cancelInfo.param.claimRefundType = 1;
+                } else {
+                    vm.cancelInfo.param.claimRefundType = 2;
+                }
+                vm.cancelInfo.param.claimType = vm.cancelInfo.result.claimApply.claimType;
+
+                if (vm.cancelInfo.param.applyQuantity === "" || vm.cancelInfo.param.applyQuantity == undefined) {
+                    $s.alert("수량을 선택해주세요.");
+                    return false;
+                }
+                if (vm.cancelInfo.param.claimReasonText === "" || vm.cancelInfo.param.claimReasonText == undefined) {
+                    $s.alert("취소사유를 선택해주세요.");
+                    return false;
+                }
+                if(vm.cancelInfo.param.claimReasonText === "기타") {
+                    if (vm.cancelInfo.param.claimReasonDetail === "" || vm.cancelInfo.param.claimReasonDetail === " " || vm.cancelInfo.param.claimReasonDetail == undefined) {
+                        $s.alert("취소사유를 입력해주세요.");
+                        return false;
+                    }
+                } else {
+                    // 취소사유가 기타가 아닌 경우 클레임 텍스트 공백문자 삽입
+                    vm.cancelInfo.param.claimReasonDetail = " ";
+                }
+                var orai = vm.cancelInfo.refundResult.orderRefundApiInfo;
+                if (orai.isAutoCancel == false || orai.isWriteBankInfo == true) {
+                    if (vm.cancelInfo.param.returnBankName === "" || vm.cancelInfo.param.returnBankName == undefined ||
+                        vm.cancelInfo.param.returnBankInName === "" || vm.cancelInfo.param.returnBankInName == undefined ||
+                        vm.cancelInfo.param.returnVirtualNo === "" || vm.cancelInfo.param.returnVirtualNo == undefined) {
+
+                        // 부분취소 불가능한 카드결제 전체취소 시 부분취소 가능여부(PART_CANCEL_FLAG)와 상관없이 환불계좌를 입력받지 않고 PG취소
+                        if (!(pgPaymentType == 'CARD' && claimApplyQuantity == totalOrderQuantity)) {
+                            $s.alert("환불계좌 정보를 입력해주세요.");
+                            return false;
+                        }
+                    }
+                }
+
+                $s.api.cancelProcess(vm.cancelInfo.param,
+                    function (response) {
+                        if(response.status === "OK"){
+                            var message = "취소신청"
+                            if (orai.isAutoCancel == true) {
+                                message = "취소"
+                            }
+                            $s.alert(message + "되었습니다.", function(){
+                                location.reload();
+                            });
+                        }
+                    }, function (error) {
+                        $s.alert(error.response.data.message);
+                    }
+                );
+            },
+
+            // 반품신청 주소찾기
+            returnOpenDaumPostcode : function(){
+                var child = Vue.child("layout-address");
+                if (child != null) {
+                    child.openDaumAddress(function(response) {
+                        vm.returnInfo.param.returnReserveZipcode = response.zipcode;
+                        vm.returnInfo.param.returnReserveZipcode = response.newZipcode;
+                        vm.returnInfo.param.returnReserveAddress = response.jibunAddress;
+                        vm.returnInfo.param.returnReserveSido = response.sido;
+                        vm.returnInfo.param.returnReserveSigungu = response.sigungu;
+                        vm.returnInfo.param.returnReserveEupmyeondong = response.eupmyeondong;
+                        vm.returnInfo.param.addressInfo = "[" + response.newZipcode + "] " + response.jibunAddress;
+                    });
+                }
+            },
+
+            // 교환신청 주소찾기
+            exchangeOpenDaumPostcode : function(){
+                var child = Vue.child("layout-address");
+                if (child != null) {
+                    child.openDaumAddress(function(response) {
+                        vm.exchange.param.exchangeReceiveZipcode = response.newZipcode;
+                        vm.exchange.param.exchangeReceiveAddress = response.jibunAddress;
+                        vm.exchange.param.exchangeReceiveSido = response.sido;
+                        vm.exchange.param.exchangeReceiveSigungu = response.sigungu;
+                        vm.exchange.param.exchangeReceiveEupmyeondong = response.eupmyeondong;
+                        vm.exchange.param.addressInfo = "[" + response.newZipcode + "] " + response.jibunAddress;
+
+                    });
+                }
+            },
+
+            popCommonBank : function(){
+                $s.api.getBankInfo(function(response){
+                    vm.common.banks = response.list;
+                });
+            },
+
+            deliveryLink : function(url, number){
+                location.href = url+number;
+            },
+
+            // 초기화
+            popReset : function(){
+                vm.cancelInfo.param = {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    applyQuantity : 0,
+                    claimReasonText : "",
+                    claimRefundType : "",
+                    claimType : "",
+                    returnBankName : ""
+                };
+
+                vm.exchange.param = {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    page: 1,
+                    itemsPerPage: 10,
+                    returnShippingAskType : "",
+                    shipmentReturnId : "",
+                    applyQuantity : "",
+                    returnReserveName : "",
+                    returnReservePhone : "",
+                    returnReserveMobile : "",
+                    returnReserveZipcode : "",
+                    returnReserveAddress : "",
+                    returnReserveAddress2 : "",
+                    returnShippingCompanyName : "",
+                    returnShippingNumber : "",
+                    deliveryCompanyName : "",
+                    claimReason : "",
+                    claimReasonText : "",
+                    claimReasonDetail : "",
+                    returnBankName : "",
+                    returnBankInName: "",
+                    returnVirtualNo : "",
+                    addressInfo : "",
+                    mobile1 : "",
+                    mobile2 : "",
+                    exchangeShippingAskType : "",
+                    exchangeShippingNumber : ""
+                };
+
+                vm.returnInfo.param = {
+                    orderCode : "",
+                    orderSequence : 0,
+                    itemSequence : 0,
+                    page: 1,
+                    itemsPerPage: 10,
+                    returnShippingAskType : "",
+                    shipmentReturnId : "",
+                    applyQuantity : "",
+                    returnReserveName : "",
+                    returnReservePhone : "",
+                    returnReserveMobile : "",
+                    returnReserveZipcode : "",
+                    returnReserveAddress : "",
+                    returnReserveAddress2 : "",
+                    returnShippingCompanyName : "",
+                    returnShippingNumber : "",
+                    deliveryCompanyName : "",
+                    claimReason : "",
+                    claimReasonText : "",
+                    claimReasonDetail : "",
+                    returnBankName : "",
+                    returnBankInName: "",
+                    returnVirtualNo : "",
+                    addressInfo : "",
+                    mobile1 : "",
+                    mobile2 : ""
+                };
+                if($("input[type='checkbox']:checked.op-key").length > 0){
+                    $("input[type='checkbox']").prop("checked", false);
+                    $("#refundInfo").hide();
+                }
+            },
+
+            popEvent : function(){
+                vm.popCommonBank();
+
+                Saleson.DateEvent.set('.searchDate');
+
+                $("input[name='return_invoice']").change(function(e){
+                    if(e.target.value === "1"){
+                        $(".return_invoice_group").hide();
+                    } else {
+                        $(".return_invoice_group").show();
+                    }
+                });
+
+                $("input[name='return_ex_invoice']").change(function(e){
+                    if(e.target.value === "1"){
+                        $(".return_ex_invoice_group").hide();
+                    } else {
+                        $(".return_ex_invoice_group").show();
+                    }
+                });
+            },
+
+            maxlength: function (e, len) {
+                var str = e.target.value;
+                if (str.length > len) {
+                    str = str.slice(0, len);
+
+                    $s.alert(len + '자를 초과 할 수 없습니다.');
+                    e.target.value = str;
+                }
+            },
+
+            getUnregisteredItemReviews: function(callback) {
+                $s.api.getUnregisteredItemReviews(vm.nonregisteredReviewParam,
+                        function (response) {
+                            vm.nonregisteredReviews = response.list;
+
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
+                        }
+                );
+            },
+            fileSelect: function (e) {
+                var size = 5;
+                var limit = 4;
+                var extensions = ['jpg','jpeg','png','gif','bmp'];
+
+                var selectFiles = this.reviewForm.files;
+                var images = this.reviewForm.fileImages;
+                var fileList = e.target.files;
+
+                // 파일 첨부 개수 체크
+                if (limit < selectFiles.length + fileList.length) {
+                    $s.alert('사진은 ' + limit + '장까지 첨부 가능합니다.');
+                    return;
+                }
+
+                for (var i=0; i<fileList.length; i++) {
+                    var file = fileList[i];
+                    var fileExt = fileList[i].name;
+
+                    // 사이즈 체크
+                    if (fileExt != "") {
+                        if (file.size > (size * 1024 * 1024)) {
+                            $s.alert("파일크기는 " + size + "MB 이내로 등록 가능합니다.");
+                            return;
+                        }
+                    }
+
+                    // 확장자 체크
+                    fileExt = fileExt.slice(fileExt.indexOf(".") + 1).toLowerCase();
+                    if (!extensions.includes(fileExt)) {
+                        $s.alert("이미지 파일(jpg, png, gif, bmp, jpeg) 만 등록 가능합니다.");
+                        return;
+                    }
+
+                    // 미리보기 생성
+                    try {
+                        var reader = new FileReader();
+                        var self = this;
+
+                        reader.onload = function (ie) {
+                            images.push(ie.target.result);
+                            self.reviewForm.fileImages = images;
+                        };
+
+                        selectFiles.push(file);
+                        self.reviewForm.files = selectFiles;
+
+                        reader.readAsDataURL(file);
+                    } catch (e) {
+						$s.error(e);
+                    }
+                }
+            },
+
+            fileDelete : function(fileIndex){
+                var files = this.reviewForm.files;
+                var images = this.reviewForm.fileImages;
+
+                files.splice(fileIndex,1);
+                images.splice(fileIndex,1);
+            },
+
+            rating : function(starIndex){
+
+                var score = starIndex + 1;
+
+                this.reviewForm.score = score;
+
+                var showStarFlags = [false, false, false, false, false];
+
+                for(var i = 0; i <= starIndex; i++){
+                    showStarFlags[i] = true;
+                }
+
+                this.reviewForm.showStarFlags = showStarFlags;
+            },
+            selectReviewFilter : function(groupId, ordering, e) {
+                var value = e.target.value;
+
+                if (value != '') {
+                    var map = {
+                        'itemId': Number(this.reviewForm.itemId),
+                        'filterGroupId' : Number(groupId),
+                        'filterCodeId' : Number(value),
+                        'ordering': Number(ordering)
+                    };
+                    var orginList = this.reviewForm.selecteFilterMaps;
+                    var saveList = [];
+
+                    saveList.push(map);
+
+                    for (var i=0; i<orginList.length; i++) {
+
+                        if (orginList[i].filterGroupId == groupId) {
+                            continue;
+                        }
+
+                        saveList.push(orginList[i]);
+                    }
+
+                    this.reviewForm.selecteFilterMaps = saveList;
+                }
+            },
+            submitReview: function() {
+
+                if (vm.reviewForm.submitFlag) {
+                    $s.alert('작성중입니다.');
+                    return false;
+                }
+
+                var reviewForm = this.reviewForm,
+                        formData = new FormData(),
+                        content = reviewForm.content,
+                        score = reviewForm.score;
+
+                if (typeof content == 'undefined' || content == '') {
+                    $s.alert('내용을 입력해 주세요');
+                    return false;
+                }
+
+                if (typeof score == 'undefined' || score == 0) {
+                    $s.alert('점수를 선택해 주세요');
+                    return false;
+                }
+
+                formData.append('content', content);       // 후기내용
+                formData.append('score', score);
+                formData.append('itemId', reviewForm.itemId);
+                formData.append('item.itemName', reviewForm.itemName);
+                formData.append('orderCode', reviewForm.orderCode);
+                formData.append('options', reviewForm.notDisplayOptionsFlag ? '' : reviewForm.options);
+                formData.append('displayOptionsFlag', reviewForm.notDisplayOptionsFlag ? 'N' : 'Y');
+
+                var files = reviewForm.files;
+
+                if (files != null && files.length > 0) {
+                    formData.append('itemReviewImageFile', files[0]);
+                    for (var i=0; i<files.length; i++) {
+                        formData.append('itemReviewImageFiles[' + i + ']', files[i]);
+                    }
+                }
+
+                var filters = reviewForm.selecteFilterMaps;
+
+                if (filters != null && filters.length > 0) {
+                    for (var i=0; i<filters.length; i++) {
+                        formData.append('itemReviewFilters[' + i + '].itemId', filters[i].itemId);
+                        formData.append('itemReviewFilters[' + i + '].filterGroupId', filters[i].filterGroupId);
+                        formData.append('itemReviewFilters[' + i + '].filterCodeId', filters[i].filterCodeId);
+                        formData.append('itemReviewFilters[' + i + '].ordering', filters[i].ordering);
+                    }
+                }
+
+                $s.confirm('후기를 작성하시겠습니까?', function() {
+
+                    if (vm.reviewForm.submitFlag) {
+                        $s.alert('작성중입니다.');
+                        return false;
+                    }
+
+                    vm.reviewForm.submitFlag = true;
+                    $s.api.review(formData, function (response) {
+                        if (response.status === "OK") {
+                            vm.closeReviewForm();
+                            vm.reviewForm.submitFlag = false;
+                            $s.alert("후기가 작성되었습니다.", function () {
+                                location.reload();
+                            });
+                        } else {
+                            $s.alert(response);
+                        }
+                    });
+                });
+            },
+            closeReviewForm : function () {
+                this.reviewForm = this.initReviewForm();
+                $('.pop_rv_write').modal("hide");
+            },
+            claimReasonsSelect: function(event) {
+                var value = event.target.value;
+                $("#claimReasonText").hide();
+
+                if (value == "기타") {
+                    $("#claimReasonText").show();
+                }
+            },
+        },
+        beforeMount: function() {
+            this.reviewForm = this.initReviewForm();
+        },
+        beforeMount: function() {
+            this.reviewForm = this.initReviewForm();
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+
+                Saleson.init({loginPage:true, guestLoginPage:true});
+
+                var orderCode = $s.core.getParameter("orderCode");
+                $s.api.getOrder(orderCode,
+                    function (response) {
+                        vm.result = response.order;
+                        var totalPoint = 0;
+                        $.each(response.order.item, function(i){
+                            totalPoint += $(this)[0].earnPoint;
+                        });
+                        vm.param.totalPoint = totalPoint;
+                    }
+                );
+                vm.popEvent();
+
+                vm.getUnregisteredItemReviews();
+            });
+        }
+    });
+
+</script>
+
+</body>
+</html>
+

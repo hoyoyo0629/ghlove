@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>:: Fasoo Secure Web ::</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<META content=no-cache http-equiv=pragma>
+<META content=no-cache http-equiv=cache-control>
+<META content=0 http-equiv=expires>
+<meta http-equiv="X-UA-Compatible" content="IE=7" />
+<link type="text/css" href="../css/web_guide.css" rel="stylesheet" />
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/jquery-ui.js"></script>
+<script src="../js/web_guide.js"></script>	
+<script src="../js/cookieLib.js"></script>	
+<script src="../js/windowsEnvLib.js"></script>	       
+</head>
+
+<body onLoad="DisplayErrorGuide('f_install_guide', 'guideList_2', 'ENG');">
+<div class="wrap">
+	<div class="header">
+		<div>
+			<h1><img src="../images/img_h1.png" alt="Fasoo"/></h1>
+			<h2>
+				<span>Installation Guide</span>
+				<span>Install FSW for greater web security.</span>
+			</h2>
+		</div>
+	</div>
+	<div class="content">
+		<div id="installobj"></div>
+		<span class="ac_text_02" id="ErrorNum"></span>
+		<div class="accordion">
+			<h3>1. Click "Install".</h3>
+			<p>
+				<span class="btn_base"><a id="linkSetup" onclick="SetupDownloadBtn()"><button onclick="linkSetup.click()">Install</button></a></span>
+				<br><br>Please re-start the browser after installation.<br>
+				<br>
+				<span class="ac_text" style="margin-top: 10px;">> Click "Run".</span>
+				<img id="imgExecuteBtn"/>
+				<br>
+				<span class="ac_text" style="margin-top: 10px;">> Click "Yes" upon installation.</span>
+				<img id="imgInstall_rebooting"/>
+			</p>
+			
+		    <h3 id="helpdesk_guide_menu"></h3>
+			<!-- helpdesk Info -->
+			<p id="helpdesk_guide"> </p>    
+		</div>
+	</div>
+	<div class="footer" style="margin-top: 50px">
+		<p class="float_left" id="osie"></p>
+
+		<!-- helpdesk Info -->
+		<p id="helpdesk_Info" class="float_right text_01"></p>	
+	</div>
+</div>
+
+</body>
+<footer>
+<script language=javascript>
+function DispGuideChangeUI()
+{
+    var imgExecuteBtn = document.getElementById("imgExecuteBtn");  
+    var imgInstall_rebooting = document.getElementById("imgInstall_rebooting");    
+    
+    if (GetOSName() != "Windows")
+    {
+        imgExecuteBtn.innerHTML = GetOSName() + " <br> Not Support OS ! ";       
+        return;
+    }
+
+  var Agent = navigator.userAgent.toLowerCase();
+	if(Agent.indexOf("msie") > -1 || Agent.indexOf("trident") > -1) //Internet Explorer
+	{
+    if (GetOSVersion() == "XP")
+    {
+        imgExecuteBtn.src = "../images/en_install_task_bar_execute_xp.jpg";
+        imgInstall_rebooting.src = "../images/en_install_rebooting_xp.jpg";                     
+    }
+	else if(GetOSVersion()== "10")
+	{
+		imgExecuteBtn.src = "../images/en_install_task_bar_execute_win7.jpg";
+        imgInstall_rebooting.src = "../images/en_install_rebooting_win10.jpg";
+	}
+    else
+    {
+        imgExecuteBtn.src = "../images/en_install_task_bar_execute_win7.jpg";
+        imgInstall_rebooting.src = "../images/en_install_rebooting_win7.jpg";             
+    }
+  }
+  else //타 브라우저
+  {
+    imgExecuteBtn.src = "../images/install_task_bar_execute_plugin.jpg";
+    imgInstall_rebooting.src = "../images/install_rebooting_plugin.jpg";             
+  }
+}
+
+function SetLinkSetupFile()
+{
+  var setupLink = document.getElementById("linkSetup");
+  var setupObj = document.getElementById("installobj");
+
+  if (GetWindowsBitType() == "32")
+    ClientSetupExeUrl = ClientSetupExe32Url;
+  else
+    ClientSetupExeUrl = ClientSetupExe64Url;
+
+  setupLink.href = ClientSetupExeUrl;
+}
+
+DispGuideChangeUI();   
+SetLinkSetupFile(); 
+</script>
+</footer>
+</html>

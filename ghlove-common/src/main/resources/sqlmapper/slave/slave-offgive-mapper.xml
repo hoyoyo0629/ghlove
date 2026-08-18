@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.slave.SlaveOffgiveMapper">
+
+	<select id="getOffgiveListCount" parameterType="saleson.shop.offgive.domain.Offgive" resultType="Integer" >
+		/* saleson.shop.slave.SlaveOffgiveMapper.getOffgiveListCount */
+        SELECT
+			COUNT(*) AS CNT
+		FROM G_CNTR GC
+			LEFT JOIN G_LCLGV_PBADMS_WLFR_CNTR_MNG LPWC ON GC.RCEPT_BANK_CODE = LPWC.PBADMS_WLFR_CNTR_ID
+			, G_LOCGOV GL, OP_USER OU
+		WHERE 1=1
+		AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+		AND GC.USER_ID = OU.USER_ID
+		AND GC.CNTR_PATH_CODE IN ('200', '300') -- (온라인 100/오프라인 농협 200/오프라인 행정복지센트 300)
+		<if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
+			<choose>
+				<when test='shKeyword == "CNTR_SN"'>
+					AND GC.CNTR_SN = #{shText} -- 접수번호
+				</when>
+				<when test='shKeyword == "LOCGOV_NM"'>
+					AND CONCAT(UPPER_LOCGOV_NM, ' ', LOCGOV_NM) LIKE CONCAT('%', #{shText}, '%')	-- 기부 지자체
+				</when>
+				<when test='shKeyword == "ELCTRN_PAY_NO"'>
+					AND GC.ELCTRN_PAY_NO = #{shText} -- 전자납부번호
+				</when>
+				<when test='shKeyword == "RCEPT_BANK_NM"'>
+					AND (GC.RCEPT_BANK_NM LIKE CONCAT('%', #{shText}, '%')
+							OR LPWC.PBADMS_WLFR_CNTR_NM LIKE CONCAT('%', #{shText}, '%') -- 접수지점
+						)
+				</when>
+			</choose>
+		</if>
+		<if test="(shFrstRegistPnttmStart != null and shFrstRegistPnttmStart != '') and (shFrstRegistPnttmEnd != null and shFrstRegistPnttmEnd != '')">
+			AND DATE_FORMAT(GC.FRST_REGIST_PNTTM,'%Y%m%d') BETWEEN #{shFrstRegistPnttmStart} AND #{shFrstRegistPnttmEnd} -- 신청일
+		</if>
+		<if test="(shCntrAmtStart != null and shCntrAmtStart != '') and (shCntrAmtEnd != null and shCntrAmtEnd != '')">
+			AND GC.CNTR_AMT	BETWEEN #{shCntrAmtStart} AND #{shCntrAmtEnd} -- 기부금액
+		</if>
+		<if test="shCntrSttusCode != null and shCntrSttusCode != ''">
+			AND GC.CNTR_STTUS_CODE = #{shCntrSttusCode} -- 상태 (신규/취소)
+		</if>
+		<if test="shRceptBankCode != null and shRceptBankCode != ''">
+			AND GC.RCEPT_BANK_CODE = #{shRceptBankCode} -- 소속지점(은행)
+		</if>
+		<if test="role == 'OFF_MAIN' or role == 'OFF_SUB'">
+			AND GC.CNTR_PATH_CODE = '200'
+		</if>
+		<if test="role == 'OFF_CENTER'">
+			AND GC.CNTR_PATH_CODE = '300'
+		</if>
+		<if test="shRceptBankNm != null and shRceptBankNm != '' and (role == 'OFF_MAIN' or role == 'OFF_SUB')">
+			AND GC.RCEPT_BANK_NM = #{shRceptBankNm} -- 소속지점명
+		</if>
+	</select>
+
+	<select id="getOffgiveList" parameterType="saleson.shop.offgive.domain.Offgive" resultType="saleson.shop.offgive.domain.Offgive" >
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getOffgiveList */
+		SELECT
+			T.CNTR_SN,
+			T.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE,
+			( SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = T.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y' ) AS UPPER_LOCGOV_NM,
+			T.LOCGOV_CODE AS LOCGOV_CODE,
+			T.LOCGOV_NM AS LOCGOV_NM,
+			T.STTEMNT_PAY_DE, <!-- 수납일 -->
+			CRYPTO_DEC('normal', T.USER_NAME, '', 0) as USER_NAME, <!-- 이름 -->
+			T.CNTR_AMT, <!-- 기부금액 -->
+			T.ELCTRN_PAY_NO, <!-- 전자납부번호 -->
+			T.RCEPT_BANK_CODE, <!-- 접수은행코드 -->
+			( SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = T.RCEPT_BANK_CODE AND CODE_TYPE = 'OFF_BANK_LIST' AND USE_YN = 'Y' ) AS RCEPT_BANK_CODE_NM,
+			T.RCEPT_BANK_NM, <!-- 접수지점 -->
+			T.FRST_REGIST_PNTTM, <!-- 신고일시 -->
+			T.CNTR_STTUS_CODE, <!-- 상태 (신고/정상/취소) -->
+			T.CNTR_PATH_CODE,
+			T.CNTR_POINT,
+			T.RTNPSNT_REQST_CODE,
+			T.PRJ_ID,
+			T.PRJ_SUBJECT
+		FROM (
+				SELECT
+					 CNTR_SN,
+					 GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE,
+					 GL.LOCGOV_CODE AS LOCGOV_CODE,
+					 GL.LOCGOV_NM AS LOCGOV_NM,
+					 GC.STTEMNT_PAY_DE,
+					 OU.USER_NAME,
+					 GC.CNTR_AMT,
+					 GC.ELCTRN_PAY_NO,
+					 GC.RCEPT_BANK_CODE,
+					 CASE 	WHEN GC.CNTR_PATH_CODE = '300'
+								THEN LPWC.PBADMS_WLFR_CNTR_NM
+							ELSE GC.RCEPT_BANK_NM
+							END AS RCEPT_BANK_NM,
+					 GC.FRST_REGIST_PNTTM,
+					 GC.CNTR_STTUS_CODE,
+					 GC.CNTR_PATH_CODE,
+					 GC.CNTR_POINT,
+					 GC.RTNPSNT_REQST_CODE,
+					 NVL(GC.DSGN_DNTN_BIZ_ID, 0) AS PRJ_ID,
+					 NVL(DPM.DSGN_DNTN_BIZ_TTL, '자치단체에 기부하기') AS PRJ_SUBJECT
+				FROM G_CNTR GC
+					LEFT JOIN G_DSGN_DNTN_BIZ_MNG DPM ON GC.DSGN_DNTN_BIZ_ID = DPM.DSGN_DNTN_BIZ_ID
+					LEFT JOIN G_LCLGV_PBADMS_WLFR_CNTR_MNG LPWC ON GC.RCEPT_BANK_CODE = LPWC.PBADMS_WLFR_CNTR_ID
+					, G_LOCGOV GL, OP_USER OU
+				WHERE 1=1
+				AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+				AND GC.USER_ID = OU.USER_ID
+				AND GC.CNTR_PATH_CODE IN ('200', '300') <!-- (온라인 100/오프라인 농협 200/오프라인 행정복지센트 300) -->
+				<if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
+					<choose>
+						<when test='shKeyword == "CNTR_SN"'>
+							AND GC.CNTR_SN = #{shText} <!-- 접수번호 -->
+						</when>
+						<when test='shKeyword == "LOCGOV_NM"'>
+							AND CONCAT(UPPER_LOCGOV_NM, ' ', LOCGOV_NM) LIKE CONCAT('%', #{shText}, '%')	<!-- 기부 지자체 -->
+						</when>
+						<when test='shKeyword == "ELCTRN_PAY_NO"'>
+							AND GC.ELCTRN_PAY_NO = #{shText} <!-- 전자납부번호 -->
+						</when>
+						<when test='shKeyword == "RCEPT_BANK_NM"'>
+							AND (GC.RCEPT_BANK_NM LIKE CONCAT('%', #{shText}, '%')
+									OR LPWC.PBADMS_WLFR_CNTR_NM LIKE CONCAT('%', #{shText}, '%') <!-- 접수지점 -->
+								)
+						</when>
+					</choose>
+				</if>
+				<if test="(shFrstRegistPnttmStart != null and shFrstRegistPnttmStart != '') and (shFrstRegistPnttmEnd != null and shFrstRegistPnttmEnd != '')">
+					AND DATE_FORMAT(GC.FRST_REGIST_PNTTM,'%Y%m%d') BETWEEN #{shFrstRegistPnttmStart} AND #{shFrstRegistPnttmEnd} <!-- 신청일 -->
+				</if>
+				<if test="(shCntrAmtStart != null and shCntrAmtStart != '') and (shCntrAmtEnd != null and shCntrAmtEnd != '')">
+					AND GC.CNTR_AMT	BETWEEN #{shCntrAmtStart} AND #{shCntrAmtEnd} <!-- 기부금액 -->
+				</if>
+				<if test="shCntrSttusCode != null and shCntrSttusCode != ''">
+					AND GC.CNTR_STTUS_CODE = #{shCntrSttusCode} <!-- 상태 (신규/취소) -->
+				</if>
+				<if test="shRceptBankCode != null and shRceptBankCode != ''">
+					AND GC.RCEPT_BANK_CODE = #{shRceptBankCode} <!-- 소속지점 -->
+				</if>
+				<if test="role == 'OFF_MAIN' or role == 'OFF_SUB'">
+					AND GC.CNTR_PATH_CODE = '200'
+				</if>
+				<if test="role == 'OFF_CENTER'">
+					AND GC.CNTR_PATH_CODE = '300'
+				</if>
+				<if test="shRceptBankNm != null and shRceptBankNm != '' and (role == 'OFF_MAIN' or role == 'OFF_SUB')">
+					AND GC.RCEPT_BANK_NM = #{shRceptBankNm} <!-- 소속지점명 -->
+				</if>
+			ORDER BY GC.FRST_REGIST_PNTTM DESC
+			<include refid="CommonMapper.paginationFooter" /> ) T
+	</select>
+
+
+    <!-- 기부 포인트현황 상세 -->
+	<select id="getOffgive" resultType="saleson.shop.offgive.domain.Offgive" >
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getOffgive */
+		SELECT
+				CNTR_SN
+			,  	FRST_REGIST_PNTTM
+			,  	INFO_AGRE_AT
+			, 	UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+		    , 	UPPER_LOCGOV_NM
+		    , 	LOCGOV_CODE AS LOCGOV_CODE
+		    , 	LOCGOV_NM AS LOCGOV_NM
+		    , 	CNTR_AMT	-- 기부금액
+		    , 	CNTR_AMT_YEAR_TOTAL
+		    , 	RCEPT_BANK_NM -- 접수지점
+		    , 	ELCTRN_PAY_NO	-- 전자납부번호
+		    , 	CNTR_POINT
+		    , 	CNTR_USE_POINT
+		    ,	CNTR_POINT - CNTR_USE_POINT AS CNTR_BLCE_POINT
+		    , 	CNTR_STTUS_CODE
+		    , 	REQ_ID
+		    , 	(SELECT CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) FROM OP_USER OU WHERE OU.USER_ID = A.USER_ID) 								AS LOGIN_ID
+			, 	(SELECT CRYPTO_DEC('normal', OU.USER_NAME, '', 0) FROM OP_USER OU WHERE OU.USER_ID = A.USER_ID) 							AS USER_NAME
+			, 	(SELECT CRYPTO_DEC('normal', OUD.BIRTHDAY, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 				AS BIRTHDAY
+			, 	(SELECT CRYPTO_DEC('normal', OUD.PHONE_NUMBER, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID)  	AS PHONE_NUMBER
+			, 	(SELECT CRYPTO_DEC('normal', POST, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 							AS POST
+			, 	(SELECT CRYPTO_DEC('normal', ADDRESS, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 					AS ADDRESS
+			, 	(SELECT CRYPTO_DEC('normal', ADDRESS_DETAIL, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 			AS ADDRESS_DETAIL
+			,	PRJ_SUBJECT
+			,	<![CDATA[(SELECT GROUP_CONCAT(SA.ITEM_NAME || SA.OPTIONS SEPARATOR '<br/>') FROM OP_ORDER_ITEM SA WHERE CNTR_SN = SA.FILLER9 AND (SA.ITEM_NAME || SA.OPTIONS) IS NOT NULL AND (SA.ITEM_NAME || SA.OPTIONS) <> '') AS OPTIONS ]]>
+			, 	(select CRYPTO_DEC('normal', os.receive_zipcode, '', 0) from op_order_shipping_info os where os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 			    AS rcvPost
+			, 	(SELECT CRYPTO_DEC('normal', os.receive_address, '', 0) FROM op_order_shipping_info os WHERE os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 					AS rcvAddress
+			, 	(SELECT CRYPTO_DEC('normal', os.receive_address_detail, '', 0) FROM op_order_shipping_info os WHERE os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 			AS rcvAddressDetail
+		FROM
+		(
+			SELECT
+					CNTR_SN
+				,	GC.USER_ID
+				,  	GC.FRST_REGIST_PNTTM -- 신청일
+				,  	GC.INFO_AGRE_AT	-- 행정정보 공동이용 동의
+				, 	GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+			    , 	(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR') AS UPPER_LOCGOV_NM
+			    , 	GL.LOCGOV_CODE AS LOCGOV_CODE
+			    , 	GL.LOCGOV_NM AS LOCGOV_NM
+			    , 	GC.CNTR_AMT	-- 기부금액
+			    , 	(SELECT IFNULL(SUM(CNTR_AMT), 0) FROM G_CNTR A WHERE YEAR(A.CNTR_DE) = DATE_FORMAT(NOW(), '%Y') AND A.USER_ID = GC.USER_ID AND A.DELETE_AT = 'N' and A.cntr_sttus_code = '200' and A.sttemnt_pay_de is not NULL) AS CNTR_AMT_YEAR_TOTAL
+			    , 	GC.RCEPT_BANK_NM -- 접수지점
+			    , 	GC.ELCTRN_PAY_NO	-- 전자납부번호
+			    , 	GC.CNTR_POINT
+			    , 	(SELECT IFNULL(SUM(CNTR_USE_POINT),0) FROM G_CNTR_USE_POINT A WHERE A.CNTR_SN = GC.CNTR_SN) AS CNTR_USE_POINT
+			    , 	GC.CNTR_STTUS_CODE
+			    , 	(SELECT REQ_ID FROM G_CNTR_REQMNG GCR WHERE REQ_STATUS_CODE = '100' AND GCR.CNTR_SN = GC.CNTR_SN) AS REQ_ID
+		    	,	NVL(DPM.DSGN_DNTN_BIZ_TTL, '자치단체기부') AS PRJ_SUBJECT			<!-- 지정기부 명 -->
+			FROM G_CNTR GC
+				LEFT JOIN G_DSGN_DNTN_BIZ_MNG DPM ON GC.DSGN_DNTN_BIZ_ID = DPM.DSGN_DNTN_BIZ_ID
+				, G_LOCGOV GL
+			WHERE 1=1
+				AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+				AND GC.CNTR_SN = #{cntrSn}
+		) A
+	</select>
+
+    <!-- 기부 포인트현황 상세 출력 -->
+	<select id="getOffgivePrint" parameterType="saleson.shop.offgive.domain.Offgive" resultType="saleson.shop.offgive.domain.Offgive" >
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getOffgivePrint */
+		SELECT
+			CNTR_SN
+			, GC.FRST_REGIST_PNTTM -- 신청일
+			, '' -- 처리기간
+			, crypto_dec('normal', OU.USER_NAME, '', 0) as USER_NAME
+			, crypto_dec('normal', OUD.BIRTHDAY, '', 0) as BIRTHDAY
+			, crypto_dec('normal', ADDRESS, '', 0) as ADDRESS
+			, crypto_dec('normal', ADDRESS_DETAIL, '', 0) as ADDRESS_DETAIL
+			, crypto_dec('normal', OUD.PHONE_NUMBER, '', 0) as OUD.PHONE_NUMBER
+		    , GC.CNTR_AMT	-- 기부금액
+			, GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+		    , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR') AS UPPER_LOCGOV_NM
+		    , GL.LOCGOV_CODE AS LOCGOV_CODE
+		    , GL.LOCGOV_NM AS LOCGOV_NM
+			, RTNPSNT_REQST_CODE -- 답례품신청코드
+		FROM G_CNTR GC, G_LOCGOV GL, OP_USER OU, OP_USER_DETAIL OUD
+		WHERE 1=1
+		AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+		AND GC.USER_ID = OU.USER_ID
+		AND OU.USER_ID = OUD.USER_ID
+		AND GC.DELETE_AT = 'N'
+		AND GC.CNTR_SN = #{cntrSn}
+	</select>
+
+	<select id="getManager" resultType="saleson.shop.offgive.domain.Manager" >
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getManager */
+		select
+			*
+		from OP_MANAGER
+		where status_code = 9
+		and user_id = #{userId}
+	</select>
+
+	<select id="getMaxCheck" resultType="Integer" >
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getMaxCheck */
+		SELECT 5000000 - IFNULL(SUM(CNTR_AMT), 0) AS MAX_CNTR_AMT
+		FROM G_CNTR
+		WHERE 1=1
+		AND DELETE_AT = 'N'
+		AND USER_ID = #{userId}
+		AND YEAR(CNTR_DE) = DATE_FORMAT(NOW(), '%Y')
+	</select>
+
+	<select id="getGCntrSumCntrAmt" resultType="Integer" >
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getGCntrSumCntrAmt */
+		SELECT IFNULL(SUM(CNTR_AMT), 0) AS MAX_CNTR_AMT
+		FROM G_CNTR
+		WHERE 1=1
+		AND DELETE_AT = 'N'
+		AND USER_ID = #{userId}
+		AND YEAR(CNTR_DE) = DATE_FORMAT(NOW(), '%Y')
+	</select>
+
+	<select id="getGMberSecsnSumCntrAmt" resultType="Integer" >
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getGMberSecsnSumCntrAmt */
+		select IFNULL(sum(cntr_amt), 0) as MAX_CNTR_AMT
+		from G_MBER_SECSN
+		where mber_ci = #{mberCi}
+		and secsn_year = DATE_FORMAT(NOW(), '%Y')
+	</select>
+
+	<select id="getLocgovMapngCode" resultType="java.util.HashMap" >
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getLocgovMapngCode */
+		SELECT
+			(select upper_locgov_code from g_locgov where locgov_code = locgov_mapng_code) as upper_locgov_mapng_code
+			, locgov_mapng_code
+			, (select locgov_nm from g_locgov where locgov_code = locgov_mapng_code) as locgov_nm
+		FROM G_INSTT_CODE
+		WHERE locgov_code = #{locgovCode}
+	</select>
+
+	<select id="getLocgovCodeByUserId" parameterType="Long" resultType="String">
+		/* saleson.shop.offgive.SlaveOffgiveMapper.getLocgovCodeByUserId (유저 지자체 코드 정보)*/
+		SELECT
+			LOCGOV_CODE
+		FROM
+			OP_USER
+		WHERE
+			USER_ID = #{userId}
+	</select>
+
+
+
+	<!-- 행정복지센터 관리 목록 조회 -->
+	<select id="selectWlfrCntrMngList" parameterType="saleson.shop.offgive.domain.WlfrCntrMng" resultType="saleson.shop.offgive.domain.WlfrCntrMng">
+		/* saleson.shop.offgive.SlaveOffgiveMapper.selectWlfrCntrMngList */
+		SELECT 	A.PBADMS_WLFR_CNTR_ID
+				, B.UPPER_LOCGOV_CODE
+				, A.LCLGV_CD
+				, B.UPPER_LOCGOV_NM
+				, B.LOCGOV_NM
+				, A.PBADMS_WLFR_CNTR_NM
+				, A.USE_YN
+				, A.FRST_REG_DT
+		FROM G_LCLGV_PBADMS_WLFR_CNTR_MNG A
+		LEFT OUTER JOIN G_LOCGOV B
+		ON A.LCLGV_CD = B.LOCGOV_CODE
+		WHERE 1=1
+
+		<choose>
+			<when test='lclgvCd != null and lclgvCd != ""'>
+				AND   LCLGV_CD = #{lclgvCd}
+			</when>
+			<otherwise>
+				<if test='upperLocgovCode != null and upperLocgovCode != ""'>
+					AND   LCLGV_CD IN (SELECT LOCGOV_CODE FROM G_LOCGOV WHERE UPPER_LOCGOV_CODE = #{upperLocgovCode})
+				</if>
+			</otherwise>
+		</choose>
+		<if test='pbadmsWlfrCntrNm != null and pbadmsWlfrCntrNm != ""'>
+			AND pbadms_wlfr_cntr_nm LIKE CONCAT('%', #{pbadmsWlfrCntrNm}, '%')
+		</if>
+		<if test="useYn != null and useYn != ''">
+			AND use_yn = #{useYn}
+		</if>
+		<if test="searchStDt != null and searchStDt != ''">
+			AND frst_reg_dt <![CDATA[ >= ]]> CONCAT(#{searchStDt}, '000000')
+		</if>
+		<if test="searchEdDt != null and searchEdDt != ''">
+			AND frst_reg_dt <![CDATA[ <= ]]> CONCAT(#{searchEdDt}, '235959')
+		</if>
+
+		ORDER BY PBADMS_WLFR_CNTR_ID DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 행정복지센터 관리 목록 카운트 조회 -->
+	<select id="selectWlfrCntrMngListCnt" parameterType="saleson.shop.offgive.domain.WlfrCntrMng" resultType="Integer">
+		SELECT count(*)
+		FROM (
+			SELECT 	A.PBADMS_WLFR_CNTR_ID
+					, B.UPPER_LOCGOV_CODE
+					, A.LCLGV_CD
+					, B.UPPER_LOCGOV_NM
+					, B.LOCGOV_NM
+					, A.PBADMS_WLFR_CNTR_NM
+					, A.USE_YN
+					, A.FRST_REG_DT
+			FROM G_LCLGV_PBADMS_WLFR_CNTR_MNG A
+			LEFT OUTER JOIN G_LOCGOV B
+			ON A.LCLGV_CD = B.LOCGOV_CODE
+			WHERE 1=1
+
+			<choose>
+				<when test='lclgvCd != null and lclgvCd != ""'>
+					AND   LCLGV_CD = #{lclgvCd}
+				</when>
+				<otherwise>
+					<if test='upperLocgovCode != null and upperLocgovCode != ""'>
+						AND   LCLGV_CD IN (SELECT LOCGOV_CODE FROM G_LOCGOV WHERE UPPER_LOCGOV_CODE = #{upperLocgovCode})
+					</if>
+				</otherwise>
+			</choose>
+			<if test='pbadmsWlfrCntrNm != null and pbadmsWlfrCntrNm != ""'>
+				AND pbadms_wlfr_cntr_nm LIKE CONCAT('%', #{pbadmsWlfrCntrNm}, '%')
+			</if>
+			<if test="useYn != null and useYn != ''">
+				AND use_yn = #{useYn}
+			</if>
+			<if test="searchStDt != null and searchStDt != ''">
+				AND frst_reg_dt <![CDATA[ >= ]]> CONCAT(#{searchStDt}, '000000')
+			</if>
+			<if test="searchEdDt != null and searchEdDt != ''">
+				AND frst_reg_dt <![CDATA[ <= ]]> CONCAT(#{searchEdDt}, '235959')
+			</if>
+		)
+	</select>
+
+	<!-- 행정복지센터 등록 -->
+	<insert id="insertWlfrCntrMng" parameterType="saleson.shop.offgive.domain.WlfrCntrMng">
+		INSERT INTO G_LCLGV_PBADMS_WLFR_CNTR_MNG (
+			LCLGV_CD
+			, PBADMS_WLFR_CNTR_NM
+			, PBADMS_WLFR_CNTR_CD
+			, USE_YN
+			, FRST_REG_DT
+		)
+		VALUES(
+			#{lclgvCd}
+			, #{pbadmsWlfrCntrNm}
+			, #{pbadmsWlfrCntrCd}
+			, #{useYn}
+			, CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<!-- 행정복지센터 중복체크 -->
+	<select id="isDuplicateWlfrCntrMng" parameterType="saleson.shop.offgive.domain.WlfrCntrMng" resultType="int">
+		SELECT COUNT(*) AS dupCnt
+		FROM G_LCLGV_PBADMS_WLFR_CNTR_MNG
+		WHERE LCLGV_CD = #{lclgvCd}
+		AND PBADMS_WLFR_CNTR_NM = #{pbadmsWlfrCntrNm}
+	</select>
+
+    <!-- 행정복지센터 상세 조회 -->
+    <select id="selectwlfrCntrMngDetail" parameterType="long" resultType="saleson.shop.offgive.domain.WlfrCntrMng">
+		SELECT 	A.PBADMS_WLFR_CNTR_ID
+				, B.UPPER_LOCGOV_CODE
+				, A.LCLGV_CD
+				, B.UPPER_LOCGOV_NM
+				, B.LOCGOV_NM
+				, A.PBADMS_WLFR_CNTR_NM
+				, A.PBADMS_WLFR_CNTR_CD
+				, A.USE_YN
+				, A.FRST_REG_DT
+		FROM G_LCLGV_PBADMS_WLFR_CNTR_MNG A
+		LEFT OUTER JOIN G_LOCGOV B
+		ON A.LCLGV_CD = B.LOCGOV_CODE
+		WHERE 1 = 1
+		AND PBADMS_WLFR_CNTR_ID = #{pbadmsWlfrCntrId}
+    </select>
+
+   	<!-- 행정복지센터 수정 -->
+	<update id="updatetWlfrCntrMng" parameterType="saleson.shop.offgive.domain.WlfrCntrMng">
+		UPDATE G_LCLGV_PBADMS_WLFR_CNTR_MNG SET
+			PBADMS_WLFR_CNTR_NM = #{pbadmsWlfrCntrNm}
+			, PBADMS_WLFR_CNTR_CD = #{pbadmsWlfrCntrCd}
+			, USE_YN = #{useYn}
+		WHERE 1=1
+		AND	PBADMS_WLFR_CNTR_ID = #{pbadmsWlfrCntrId}
+
+	</update>
+
+</mapper>

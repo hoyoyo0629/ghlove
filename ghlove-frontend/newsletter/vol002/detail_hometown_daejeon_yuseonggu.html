@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>제2회 고향사랑의 날 기념식과 박람회 : 고향사랑e음 기부제 소식</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type="text/babel">
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+  </head>
+
+<body>
+  <div id="saleson" v-cloak>
+    <newsletter-header :ver="'vol002'"></newsletter-header>
+
+    <div class="newsletter_detail_page hometown10">
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-header-ali>
+        <!-- [include] header -->
+        <header></header>
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <div class="banner_img_wrap">
+                <div class="img_wrap">
+                  <img src="/newsletter/static/images/vol002/hometown/daejeon/yuseonggu/detail_1.jpg" alt="유성온천 축제">
+                </div>
+                <div class="img_wrap">
+                  <img src="/newsletter/static/images/vol002/hometown/daejeon/yuseonggu/detail_2.jpg" alt="유성재즈 맥주 페스타">
+                </div>
+              </div>
+              <!-- <div class="banner_link_btn">
+                <a href="#;" target="_blank">자세히 보기&nbsp;&nbsp;+</a>
+              </div> -->
+            </div>
+            <div class="tit_area">
+              <h4>대전광역시 유성구</h4>
+              <h3>
+                고향사랑기부제를 알리고자  <br/>
+                <span class="blue">현장홍보!!</span>
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar"></div>
+          <div id="" class="detail_contents_area">
+            <ul class="deco-arrow blue-deco blue">
+              <li>
+                유성구 고향사랑기부제를 알리고자 유성구 대표 축제인 유성온천문화축제, 유성재즈&맥주페스타에 참여하여 현장홍보를 하였다.
+              </li>
+              <li>
+                유성구 축제 뿐 아니라 대전시, 대전 동구 등 타 지자체 축제에 참여 하여 현장 홍보를 진행하였다. <br/>
+                (대전광역시 - “0시축제”, 대전 동구 – “벚꽃축제”, “동구동락 축제” 등 현장홍보)
+              </li>
+              <li>
+                유성구와 자매결연도시인 당진시를 방문하여 현장홍보. <br/>
+                (당진시청 직원, 주민을 대상으로 고향사랑기부제 홍보)    
+              </li>
+            </ul>
+            <div class="bar blue-bar"></div>
+            <ul class="deco-circle blue-deco ">
+              <li>
+                일&nbsp;&nbsp;&nbsp;&nbsp;시 : 2024. 5. 10.(금) 15:00
+              </li>
+              <li>
+                장&nbsp;&nbsp;&nbsp;&nbsp;소 :  유성온천문화공원
+              </li>
+              <li>
+                홍보방법 : 배너설치, 홍보용 부채 및 리플릿 비치, 제도 설명
+              </li>
+              <li>
+                주요내용 : 유성구 고향사랑기부제 홍보 
+              </li>
+            </ul>
+            <div class="bar blue-bar"></div>
+            <ul class="deco-circle blue-deco ">
+              <li>
+                일&nbsp;&nbsp;&nbsp;&nbsp;시 : 2024. 8. 23.(금) 18:00
+              </li>
+              <li>
+                장&nbsp;&nbsp;&nbsp;&nbsp;소 :  유림공원
+              </li>
+              <li>
+                홍보방법 : 배너 설치, 홍보용 물티슈 및 리플릿, 사업설명 등
+              </li>
+              <li>
+                주요내용 : 유성구 고향사랑기부제 홍보
+              </li>
+            </ul>
+          </section>
+        </div>
+        <a href="#wrap" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+        
+      </div>
+    </div>
+
+    </div>
+    
+  </div>
+</body>
+</html>

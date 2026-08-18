@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
+	<deployment>
+<!-- 		<exclude-subsystems>
+			<subsystem name="logging" />
+			<subsystem name="jaxrs" />
+			<subsystem name="webservices" />
+		</exclude-subsystems>
+		<dependencies>
+			<module name="javax.xml.ws.api" />
+			<module name="javax.jws.api" />
+		</dependencies> -->
+		<exclusions>
+			<module name="org.slf4j" />
+			<module name="org.slf4j.impl" />
+			<!-- <module name="org.slf4j.jcl-over-slf4j" /> -->
+			<module name="org.apache.log4j" />
+			<module name="org.apache.commons.logging" />
+		</exclusions>
+<!-- 		<resources>
+			<resource-root
+				path="WEB-INF/lib/bcprov-jdk15on-1.68.jar"
+				use-physical-code-source="true" />
+		</resources> -->
+<!-- 	    <dependencies>
+			<module name="deployment.ghlove-common.jar" />
+		</dependencies> -->
+	</deployment>
+<!-- 	<sub-deployment name="ghlove-web.war">
+        <dependencies>
+            <module name="ghlove-common" export="true"/>
+        </dependencies>
+    </sub-deployment> -->
+<!--     <sub-deployment name="ghlove-common.jar">
+		<exclusions>
+			<module name="org.slf4j" />
+			<module name="org.slf4j.impl" />
+			<module name="org.slf4j.jcl-over-slf4j" />
+			<module name="org.apache.log4j" />
+			<module name="org.apache.commons.logging" />
+    	</exclusions>
+    </sub-deployment> -->
+</jboss-deployment-structure>

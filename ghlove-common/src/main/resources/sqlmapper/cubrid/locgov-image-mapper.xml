@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.user.LocgovImageMapper">
+	
+	
+	<select id="getLocgovImageInfo" parameterType="String" resultType="saleson.shop.user.domain.LocgovItemImage">
+		
+		SELECT
+			LOCGOV_CODE
+			, PC_FILE_NAME
+			, MOBILE_FILE_NAME
+			FROM G_LOCGOV_IMAGE
+			WHERE LOCGOV_CODE = #{value}
+		
+	</select>
+
+	
+	<insert id="insertLocgovImageInfo" parameterType="saleson.shop.user.domain.LocgovItemImage">
+		
+		INSERT INTO G_LOCGOV_IMAGE
+			(
+				LOCGOV_CODE
+				, PC_FILE_NAME
+				, MOBILE_FILE_NAME
+				, FRST_REGISTER_ID
+				, FRST_REGIST_PNTTM
+				, LAST_UPDUSR_ID
+				, LAST_UPDT_PNTTM
+			)
+			VALUES
+			(
+				#{locgovCode}
+				, #{pcFileName}
+				, #{mobileFileName}
+				, #{frstRegisterId}
+				, #{frstRegistPnttm}
+				, #{lastUpdusrId}
+				, #{lastUpdtPnttm}
+			)
+		
+	</insert>
+
+	
+	<update id="updateLocgovImageInfo" parameterType="saleson.shop.user.domain.LocgovItemImage">
+		
+		UPDATE G_LOCGOV_IMAGE
+			SET 
+				LAST_UPDUSR_ID = #{lastUpdusrId}
+				, LAST_UPDT_PNTTM = #{lastUpdtPnttm}
+				<if test="pcFileName != null">
+				, PC_FILE_NAME = #{pcFileName}
+				</if>
+				<if test="mobileFileName != null">
+				, MOBILE_FILE_NAME = #{mobileFileName}
+				</if>
+			WHERE LOCGOV_CODE = #{locgovCode}
+		
+	</update>
+	
+	<delete id="deleteLocgovImageInfo" parameterType="String">
+	
+		DELETE G_LOCGOV_IMAGE
+			WHERE LOCGOV_CODE = #{value}
+	
+	</delete>
+	
+	
+</mapper>

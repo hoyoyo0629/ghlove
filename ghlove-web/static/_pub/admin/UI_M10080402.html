@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <!-- 상단 타이틀 영역 -->
+                    <div class="location">
+                        <a href="">답례품 관리</a> &gt; <a href="">주문클레임관리</a> &gt; <a href="">환불관리</a> &gt; <a href="">상세</a>
+                    </div>
+                    <h3><span>환불관리</span></h3>
+                    <!-- // 상단 타이틀 영역 -->
+
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                                <col>
+                                <col style="width:220px;">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <!-- 주문번호 -->
+                                    <td class="label">주문번호</td>
+                                    <td>
+                                        <div>
+                                            <a href="">16843165</a>
+                                        </div>
+                                    </td>
+                                    <!-- // 주문번호 -->
+                                    <!-- 환불번호 -->
+                                    <td class="label">환불번호</td>
+                                    <td>
+                                        <div>RE-100</div>
+                                    </td>
+                                    <!-- // 환불번호 -->
+                                </tr>
+                                <tr>
+                                    <!-- 승인 요청일 -->
+                                    <td class="label">승인 요청일</td>
+                                    <td>
+                                        <div>
+                                            <span>2022-10-10</span>
+                                            <span>14:50:50</span>
+                                        </div>
+                                    </td>
+                                    <!-- // 승인 요청일 -->
+                                    <!-- 회원정보 -->
+                                    <td class="label">회원정보</td>
+                                    <td>
+                                        <div>
+                                            <span>홍길동</span>
+                                            <span>[agewrgerg]</span>
+                                        </div>
+                                    </td>
+                                    <!-- // 회원정보 -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="mt50 fs24"><span>[상호명] 정보</span></h3>
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <!-- 업체정보 -->
+                                    <td class="label">업체정보</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <span>상호명</span>
+                                            <span>/</span>
+                                            <span>02-123-1234</span>
+                                            <span>/</span>
+                                            <span>010-1234-1234</span>
+                                        </div>
+                                    </td>
+                                    <!-- // 업체정보 -->
+                                </tr>
+                                <tr>
+                                    <!-- 총 환불금액 -->
+                                    <td class="label">총 환불금액</td>
+                                    <td>
+                                        <div class="bold fs24">32,500</div>
+                                    </td>
+                                    <!-- // 총 환불금액 -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="board_list">
+                        <div class="border_box mt10">
+                            <table class="board_list_table">
+                                <colgroup>
+                                    <col style="width:200px;">
+                                    <col style="width:200px;">
+                                    <col style="width:150px;">
+                                    <col style="width:400px;">
+                                    <col style="width:100px;">
+                                    <col style="width:200px;">
+                                    <col style="width:200px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">구분</th> <!-- 구분 -->
+                                        <th scope="col">클레임번호</th> <!-- 클레임번호 -->
+                                        <th scope="col">이미지</th> <!-- 이미지 -->
+                                        <th scope="col">상품정보</th> <!-- 상품정보 -->
+                                        <th scope="col">수량</th> <!-- 수량 -->
+                                        <th scope="col">환불금액(상품)</th> <!-- 환불금액(상품) -->
+                                        <th scope="col">신청일</th> <!-- 신청일 -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background:#fff;">
+                                        <!-- 구분 -->
+                                        <td>
+                                            <div>취소 환불대기</div> <!-- 취소 환불대기 -->
+                                        </td>
+                                        <!-- // 구분 -->
+                                        <!-- 클레임번호 -->
+                                        <td>
+                                            <div>R-1348746</div>
+                                        </td>
+                                        <!-- // 클레임번호 -->
+                                        <!-- 이미지 -->
+                                        <td>
+                                            <div>
+                                                <c:choose>
+                                                    <c:otherwise>
+                                                        <a href="" target="_blank">
+                                                            <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품이미지" />
+                                                        </a>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                        </td>
+                                        <!-- // 이미지 -->
+                                        <!-- 상품정보 -->
+                                        <td class="left break-word">
+                                            <a href="javascript:Link.view('/opmanager/item/seller/edit/${item.itemUserCode}')" class="break-word">
+                                                <div>[G2000481961] 모노스윗 워싱 침구 3옵션형 test<br>
+                                                    상품구분 : 야구모자 / 색상 : 파랑 / 사이즈 : S (+1,000원)</div>
+                                            </a>
+                                        </td>
+                                        <!-- // 상품정보 -->
+                                        <!-- 수량 -->
+                                        <td>
+                                            <div>2</div>
+                                        </td>
+                                        <!-- // 수량 -->
+                                        <!-- 환불금액(상품) -->
+                                        <td>
+                                            <div>35,000</div>
+                                        </td>
+                                        <!-- // 환불금액(상품) -->
+                                        <!-- 신청일 -->
+                                        <td>
+                                            <div>2022-10-10</div>
+                                            <div>14:50:50</div>
+                                        </td>
+                                        <!-- // 신청일 -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="board_list_table mt0">
+                                <colgroup>
+                                    <col style="width:200px;">
+                                    <col style="width:200px;">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">구분</th> <!-- 구분 -->
+                                        <th scope="col">금액</th> <!-- 금액 -->
+                                        <th scope="col">내용</th> <!-- 내용 -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background:#fff;">
+                                        <!-- 구분 -->
+                                        <td>
+                                            <div>환불</div>
+                                        </td>
+                                        <!-- // 구분 -->
+                                        <!-- 금액 -->
+                                        <td>
+                                            <div>35,000</div>
+                                        </td>
+                                        <!-- // 금액 -->
+                                        <!-- 내용 -->
+                                        <td>
+                                            <div>상품 환불 금액</div>
+                                        </td>
+                                        <!-- // 내용 -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="border_box mt10">
+                            <table class="board_list_table">
+                                <colgroup>
+                                    <col style="width:200px;">
+                                    <col style="width:200px;">
+                                    <col style="width:150px;">
+                                    <col style="width:400px;">
+                                    <col style="width:100px;">
+                                    <col style="width:200px;">
+                                    <col style="width:200px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">구분</th> <!-- 구분 -->
+                                        <th scope="col">클레임번호</th> <!-- 클레임번호 -->
+                                        <th scope="col">이미지</th> <!-- 이미지 -->
+                                        <th scope="col">상품정보</th> <!-- 상품정보 -->
+                                        <th scope="col">수량</th> <!-- 수량 -->
+                                        <th scope="col">환불금액(상품)</th> <!-- 환불금액(상품) -->
+                                        <th scope="col">신청일</th> <!-- 신청일 -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background:#fff;">
+                                        <!-- 구분 -->
+                                        <td>
+                                            <div>취소 환불대기</div>
+                                        </td>
+                                        <!-- // 구분 -->
+                                        <!-- 클레임번호 -->
+                                        <td>
+                                            <div>R-1348746</div>
+                                        </td>
+                                        <!-- // 클레임번호 -->
+                                        <!-- 이미지 -->
+                                        <td>
+                                            <div>
+                                                <c:choose>
+                                                    <c:otherwise>
+                                                        <a href="" target="_blank">
+                                                            <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품이미지" />
+                                                        </a>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                        </td>
+                                        <!-- // 이미지 -->
+                                        <!-- 상품정보 -->
+                                        <td class="left break-word">
+                                            <a href="javascript:Link.view('/opmanager/item/seller/edit/${item.itemUserCode}')" class="break-word">
+                                                <div>[G2000481961] 모노스윗 워싱 침구 3옵션형 test<br>
+                                                    상품구분 : 야구모자 / 색상 : 파랑 / 사이즈 : S (+1,000원)</div>
+                                            </a>
+                                        </td>
+                                        <!-- // 상품정보 -->
+                                        <!-- 수량 -->
+                                        <td>
+                                            <div>2</div>
+                                        </td>
+                                        <!-- // 수량 -->
+                                        <!-- 환불금액(상품) -->
+                                        <td>
+                                            <div>35,000</div>
+                                        </td>
+                                        <!-- // 환불금액(상품) -->
+                                        <!-- 신청일 -->
+                                        <td>
+                                            <div>2022-10-10</div>
+                                            <div>14:50:50</div>
+                                        </td>
+                                        <!-- // 신청일 -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="board_list_table mt0">
+                                <colgroup>
+                                    <col style="width:200px;">
+                                    <col style="width:200px;">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">구분</th> <!-- 구분 -->
+                                        <th scope="col">금액</th> <!-- 금액 -->
+                                        <th scope="col">내용</th> <!-- 내용 -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background:#fff;">
+                                        <!-- 구분 -->
+                                        <td>
+                                            <div>환불</div>
+                                        </td>
+                                        <!-- // 구분 -->
+                                        <!-- 금액 -->
+                                        <td>
+                                            <div>35,000</div>
+                                        </td>
+                                        <!-- // 금액 -->
+                                        <!-- 내용 -->
+                                        <td>
+                                            <div>상품 환불 금액</div>
+                                        </td>
+                                        <!-- // 내용 -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="board_write mt40">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">환불 총액</td> <!-- 환불 총액 -->
+                                    <td class="text-right">
+                                        <div class="bold fs24">32,500</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="board_list mt40">
+                        <table class="board_list_table">
+                            <colgroup>
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">결제금액</th> <!-- 결제금액 -->
+                                    <th scope="col">결제상태</th> <!-- 결제상태 -->
+                                    <th scope="col">결제일</th> <!-- 결제일 -->
+                                    <th scope="col">환불금액</th> <!-- 환불금액 -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff;">
+                                    <!-- 결제금액 -->
+                                    <td>
+                                        <div>35,000</div>
+                                    </td>
+                                    <!-- // 결제금액 -->
+                                    <!-- 결제상태 -->
+                                    <td>
+                                        <div>결제완료</div>
+                                    </td>
+                                    <!-- // 결제상태 -->
+                                    <!-- 결제일 -->
+                                    <td>
+                                        <div>
+                                            <span>2022-04-26</span>
+                                            <span>14:05:22</span>
+                                        </div>
+                                    </td>
+                                    <!-- // 결제일 -->
+                                    <!-- 환불금액 -->
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="환불금액" class="input_txt required _filter half" type="text" value="">
+                                        </div>
+                                    </td>
+                                    <!-- // 환불금액 -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="btn_all btn_center">
+                        <div class="flex_box gap-08">
+                            <button type="submit" class="btn btn-dark-gray btn-small">환불 처리</button> <!-- 환불 처리 -->
+                            <button type="submit" class="btn btn-dark-gray btn-small">신청 취소</button> <!-- 신청 취소 -->
+                            <button type="submit" class="btn btn-default btn-small">목록</button> <!-- 목록 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

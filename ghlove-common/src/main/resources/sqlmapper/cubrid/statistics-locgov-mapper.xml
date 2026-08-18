@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.statistics.locgov.StatisticsLocgovMapper">
+
+	<select id="getLocgovLikeListTotal" parameterType="saleson.shop.statistics.locgov.domain.StatisticsLocgovSearch" resultType="Integer">
+		/* saleson.shop.statistics.locgov.StatisticsLocgovMapper.getLocgovLikeListTotal */
+		SELECT COUNT(*)
+		  FROM ( SELECT GL.UPPER_LOCGOV_CODE
+		                ,GL.LOCGOV_CODE, GL.LOCGOV_NM
+		                ,COUNT(USER_ID) AS LIKE_CNT
+		           FROM G_INTRST_LOCGOV GIL, G_LOCGOV GL
+		          WHERE GIL.LOCGOV_CODE = GL.LOCGOV_CODE
+		          <if test="shLocgovCode != null and shLocgovCode != ''">
+		            AND GL.LOCGOV_CODE = #{shLocgovCode}
+		          </if>
+	   	          GROUP BY GL.UPPER_LOCGOV_CODE, GL.LOCGOV_CODE
+	   	        )
+	</select>
+
+	<select id="getLocgovLikeList" parameterType="saleson.shop.statistics.locgov.domain.StatisticsLocgovSearch" resultType="saleson.shop.statistics.locgov.domain.StatisticsLocgov">
+		/* saleson.shop.statistics.locgov.StatisticsLocgovMapper.getLocgovLikeList */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT GL.UPPER_LOCGOV_CODE
+		       ,(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+		       ,GL.LOCGOV_CODE
+		       ,GL.LOCGOV_NM
+		       ,COUNT(USER_ID) AS LIKE_CNT
+		  FROM G_INTRST_LOCGOV GIL, G_LOCGOV GL
+		 WHERE GIL.LOCGOV_CODE = GL.LOCGOV_CODE
+		 <if test="shLocgovCode != null and shLocgovCode != ''">
+           AND GL.LOCGOV_CODE = #{shLocgovCode}
+         </if>
+	     GROUP BY GL.UPPER_LOCGOV_CODE, GL.LOCGOV_CODE
+	     ORDER BY LIKE_CNT DESC
+	     <include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getLikeCntByLocgov" parameterType="saleson.shop.statistics.locgov.domain.StatisticsLocgovSearch" resultType="saleson.shop.statistics.locgov.domain.StatisticsLocgov">
+		/* saleson.shop.statistics.locgov.StatisticsLocgovMapper.getLikeCntByLocgov */
+		SELECT COUNT(USER_ID) AS LIKE_CNT
+		       ,COUNT( CASE WHEN YEAR(REGIST_DE) = #{shCntrYear} THEN 1 END ) AS YEAR_LIKE_CNT
+          FROM G_INTRST_LOCGOV GIL, G_LOCGOV GL
+         WHERE GIL.LOCGOV_CODE = GL.LOCGOV_CODE
+           AND GL.LOCGOV_CODE = #{shLocgovCode}
+	</select>
+
+	<select id="statisticsLocgovLikeByMonth" parameterType="saleson.shop.statistics.locgov.domain.StatisticsLocgovSearch" resultType="saleson.shop.statistics.locgov.domain.StatisticsLocgov">
+		/* saleson.shop.statistics.locgov.StatisticsLocgovMapper.statisticsLocgovLikeByMonth */
+		SELECT MONTH(REGIST_DE) AS CNTR_MONTH
+			   ,COUNT(USER_ID) AS LIKE_CNT
+		  FROM G_INTRST_LOCGOV
+		 WHERE YEAR(REGIST_DE) = #{shCntrYear}
+		   AND LOCGOV_CODE = #{shLocgovCode}
+		 GROUP BY CNTR_MONTH
+	</select>
+
+</mapper>

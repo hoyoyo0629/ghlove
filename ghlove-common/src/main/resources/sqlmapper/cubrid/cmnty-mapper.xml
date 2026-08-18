@@ -1,0 +1,2400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.community.CmntyMapper">
+
+<resultMap id="SrBbsCmntDto" type="saleson.shop.community.doamin.CmntySrBbsCmntDto">
+	<result property="cmntId" column="CMNT_ID" />
+	<result property="bbsId" column="BBS_ID" />
+	<result property="cmntCn" column="CMNT_CN" />
+	<result property="useYn" column="USE_YN" />
+	<result property="frstCrtId" column="FRST_CRT_ID" />
+	<result property="frstCrtDt" column="FRST_CRT_DT" />
+	<result property="lastMdfcnId" column="LAST_MDFCN_ID" />
+	<result property="lastMdfcnDt" column="LAST_MDFCN_DT" />
+	<result property="authority" column="AUTHORITY" />
+	<result property="isSecret" column="IS_SECRET" />
+	<result property="upperLocgovNm" column="UPPER_LOCGOV_NM" />
+	<result property="locgovNm" column="LOCGOV_NM" />
+	<result property="userName" column="USER_NAME" />
+	<collection property="cmntySrBbsCmntFileList" resultMap="SrBbsCmntFileDto">
+	</collection>
+</resultMap>
+
+<resultMap id="SrBbsCmntFileDto" type="saleson.shop.community.doamin.CmntySrBbsCmntFileDto">
+	<result property="fileId" column="FILE_ID" />
+	<result property="cmntId" column="FILE_CMNT_ID" />
+	<result property="orgnlAtchFileNm" column="ORGNL_ATCH_FILE_NM" />
+	<result property="atchFileNm" column="ATCH_FILE_NM" />
+	<result property="atchFileExtnNm" column="ATCH_FILE_EXTN_NM" />
+	<result property="atchFileSz" column="ATCH_FILE_SZ" />
+	<result property="atchFileSeq" column="ATCH_FILE_SEQ" />
+	<result property="atchFilePathNm" column="ATCH_FILE_PATH_NM" />
+	<result property="frstCrtId" column="FILE_FRST_CRT_ID" />
+	<result property="frstCrtDt" column="FILE_FRST_CRT_DT" />
+
+</resultMap>
+
+<resultMap id="FaqBbsCmntDto" type="saleson.shop.community.doamin.CmntyFaqBbsCmntDto">
+	<result property="cmntId" column="CMNT_ID" />
+	<result property="bbsId" column="BBS_ID" />
+	<result property="cmntCn" column="CMNT_CN" />
+	<result property="useYn" column="USE_YN" />
+	<result property="frstCrtId" column="FRST_CRT_ID" />
+	<result property="frstCrtDt" column="FRST_CRT_DT" />
+	<result property="lastMdfcnId" column="LAST_MDFCN_ID" />
+	<result property="lastMdfcnDt" column="LAST_MDFCN_DT" />
+	<result property="authority" column="AUTHORITY" />
+	<result property="isSecret" column="IS_SECRET" />
+	<result property="upperLocgovNm" column="UPPER_LOCGOV_NM" />
+	<result property="locgovNm" column="LOCGOV_NM" />
+	<result property="userName" column="USER_NAME" />
+	<collection property="cmntyFaqBbsCmntFileList" resultMap="FaqBbsCmntFileDto">
+	</collection>
+</resultMap>
+
+<resultMap id="FaqBbsCmntFileDto" type="saleson.shop.community.doamin.CmntyFaqBbsCmntFileDto">
+	<result property="fileId" column="FILE_ID" />
+	<result property="cmntId" column="FILE_CMNT_ID" />
+	<result property="orgnlAtchFileNm" column="ORGNL_ATCH_FILE_NM" />
+	<result property="atchFileNm" column="ATCH_FILE_NM" />
+	<result property="atchFileExtnNm" column="ATCH_FILE_EXTN_NM" />
+	<result property="atchFileSz" column="ATCH_FILE_SZ" />
+	<result property="atchFileSeq" column="ATCH_FILE_SEQ" />
+	<result property="atchFilePathNm" column="ATCH_FILE_PATH_NM" />
+	<result property="frstCrtId" column="FILE_FRST_CRT_ID" />
+	<result property="frstCrtDt" column="FILE_FRST_CRT_DT" />
+
+</resultMap>
+
+<resultMap id="OffSrBbsCmntDto" type="saleson.shop.community.doamin.CmntyOffSrBbsCmntDto">
+	<result property="cmntId" column="CMNT_ID" />
+	<result property="bbsId" column="BBS_ID" />
+	<result property="cmntCn" column="CMNT_CN" />
+	<result property="useYn" column="USE_YN" />
+	<result property="frstCrtId" column="FRST_CRT_ID" />
+	<result property="frstCrtDt" column="FRST_CRT_DT" />
+	<result property="lastMdfcnId" column="LAST_MDFCN_ID" />
+	<result property="lastMdfcnDt" column="LAST_MDFCN_DT" />
+	<result property="authority" column="AUTHORITY" />
+	<result property="isSecret" column="IS_SECRET" />
+	<result property="upperLocgovNm" column="UPPER_LOCGOV_NM" />
+	<result property="locgovNm" column="LOCGOV_NM" />
+	<result property="userName" column="USER_NAME" />
+	<result property="bankCode" column="BANK_CODE" />
+	<result property="bankNm" column="BANK_NM" />
+	<result property="psitnNm" column="PSITN_NM" />
+	<collection property="cmntyOffSrBbsCmntFileList" resultMap="OffSrBbsCmntFileDto">
+	</collection>
+</resultMap>
+
+<resultMap id="OffSrBbsCmntFileDto" type="saleson.shop.community.doamin.CmntyOffSrBbsCmntFileDto">
+	<result property="fileId" column="FILE_ID" />
+	<result property="cmntId" column="FILE_CMNT_ID" />
+	<result property="orgnlAtchFileNm" column="ORGNL_ATCH_FILE_NM" />
+	<result property="atchFileNm" column="ATCH_FILE_NM" />
+	<result property="atchFileExtnNm" column="ATCH_FILE_EXTN_NM" />
+	<result property="atchFileSz" column="ATCH_FILE_SZ" />
+	<result property="atchFileSeq" column="ATCH_FILE_SEQ" />
+	<result property="atchFilePathNm" column="ATCH_FILE_PATH_NM" />
+	<result property="frstCrtId" column="FILE_FRST_CRT_ID" />
+	<result property="frstCrtDt" column="FILE_FRST_CRT_DT" />
+
+</resultMap>
+
+
+	<insert  id="addBbs" parameterType="saleson.shop.community.doamin.CmntyBbsDto">
+		INSERT INTO g_cmnty_bbs
+		(
+			  bbs_ttl
+			, bbs_cn
+			, notice_yn
+			, inq_cnt
+			, frst_crt_id
+			, frst_crt_dt
+			, is_secret
+		) VALUES
+		(
+			  #{bbsTtl}
+			, #{bbsCn}
+			, #{noticeYn}
+			, #{inqCnt}
+			, #{frstCrtId}
+			, NOW()
+			, #{isSecret}
+		)
+	</insert>
+
+
+	<select id="countBbs" parameterType="saleson.shop.community.doamin.CmntyBbsDto" resultType="Integer">
+		SELECT COUNT(*)
+		FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM g_cmnty_bbs AS a
+				LEFT JOIN op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN g_locgov AS c on c.locgov_code = b.locgov_code
+				<where>
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_5'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_5', 'ROLE_ADMIN_6', 'ROLE_ADMIN_10'))
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'USERNAME'">
+								AND b.user_name = crypto_enc('normal',#{query},'')
+							</when>
+							<otherwise>
+								AND (
+									bbs_ttl LIKE CONCAT('%', #{query}, '%')
+									OR b.user_name = crypto_enc('normal',#{query},'')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					AND a.use_yn = 'Y'
+				</where>
+			)
+	</select>
+
+	<select id="listBbs"  parameterType="saleson.shop.community.doamin.CmntyBbsRequestDto" resultType="saleson.shop.community.doamin.CmntyBbsDto">
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				  a.bbs_id
+				, a.bbs_ttl
+				, a.bbs_cn
+				, a.use_yn
+				, a.notice_yn
+				, a.inq_cnt
+				, a.frst_crt_id
+				, a.frst_crt_dt
+				, a.last_mdfcn_id
+				, a.last_mdfcn_dt
+				, crypto_dec('normal',a.user_name,'',0) AS user_name
+				, a.locgov_nm
+				, a.upper_locgov_nm
+				, a.authority
+				, (select count(*) from g_cmnty_cmnt where use_yn = 'Y' and bbs_id = a.bbs_id) as cmntCnt
+			FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM g_cmnty_bbs AS a
+				LEFT JOIN op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN g_locgov AS c on c.locgov_code = b.locgov_code
+				<where>
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_5'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_5', 'ROLE_ADMIN_6', 'ROLE_ADMIN_10'))
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'USERNAME'">
+								AND b.user_name = crypto_enc('normal',#{query},'')
+							</when>
+							<otherwise>
+								AND (
+									bbs_ttl LIKE CONCAT('%', #{query}, '%')
+									OR b.user_name = crypto_enc('normal',#{query},'')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					AND a.use_yn = 'Y'
+				</where>
+				ORDER BY a.notice_yn DESC, a.frst_crt_dt DESC
+			) a
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="detailBbs" parameterType="long" resultType="saleson.shop.community.doamin.CmntyBbsDto">
+		SELECT
+			  a.bbs_id
+			, a.bbs_ttl
+			, a.bbs_cn
+			, a.use_yn
+			, a.notice_yn
+			, a.is_secret
+			, IFNULL(a.inq_cnt, 0) as inq_cnt
+			, a.frst_crt_id
+			, a.frst_crt_dt
+			, a.last_mdfcn_id
+			, a.last_mdfcn_dt
+			, crypto_dec('normal',b.user_name,'',0) AS user_name
+			, (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+			, CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+			  ELSE '' END AS locgov_nm
+			, CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+			  ELSE '' END AS upper_locgov_nm
+		FROM g_cmnty_bbs AS a
+		LEFT JOIN op_manager AS b on a.frst_crt_id = b.user_id
+		LEFT JOIN g_locgov AS c on c.locgov_code = b.locgov_code
+		WHERE a.bbs_id = #{bbsId} AND a.use_yn = 'Y';
+	</select>
+
+	<update id="updateInqCnt" parameterType="long">
+		update g_cmnty_bbs
+		set inq_cnt = IFNULL(inq_cnt, 0) +1
+		where bbs_id = #{bbsId}
+	</update>
+
+	<select id="bbsCmntList" parameterType="long" resultType="saleson.shop.community.doamin.CmntyCmntDto">
+		SELECT
+			  cmnt_id
+			, bbs_id
+			, cmnt_cn
+			, use_yn
+			, crypto_dec('normal',b.user_name,'',0) AS user_name
+			, CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+			  ELSE '' END AS locgov_nm
+			, CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+			  ELSE '' END AS upper_locgov_nm
+			, (SELECT MIN(r.authority) FROM op_user_role r WHERE r.user_id = a.frst_crt_id) as authority
+			, frst_crt_id
+			, frst_crt_dt
+			, last_mdfcn_id
+			, last_mdfcn_dt
+		FROM g_cmnty_cmnt a
+		LEFT JOIN op_manager AS b on a.frst_crt_id = b.user_id
+		LEFT JOIN g_locgov AS c on c.locgov_code = b.locgov_code
+		WHERE a.use_yn = 'Y'
+			AND a.bbs_id = #{bbsId}
+		ORDER BY frst_crt_dt DESC
+	</select>
+
+	<update id="deleteBbs" parameterType="saleson.shop.community.doamin.CmntyBbsDto">
+		UPDATE g_cmnty_bbs
+		SET use_yn = 'N'
+			, last_mdfcn_id = #{frstCrtId}
+			, last_mdfcn_dt = NOW()
+		WHERE bbs_id = #{bbsId}
+	</update>
+
+	<insert id="addCmnt" parameterType="saleson.shop.community.doamin.CmntyCmntDto">
+		INSERT INTO g_cmnty_cmnt
+		(
+			  bbs_id
+			, cmnt_cn
+			, use_yn
+			, frst_crt_id
+			, frst_crt_dt
+		) VALUES (
+			  #{bbsId}
+			, #{cmntCn}
+			, 'Y'
+			, #{frstCrtId}
+			, NOW()
+		)
+
+	</insert>
+
+	<update id="deleteCmnt" parameterType="saleson.shop.community.doamin.CmntyCmntDto">
+		UPDATE g_cmnty_cmnt
+		SET use_yn = 'N'
+			, last_mdfcn_id = #{frstCrtId}
+			, last_mdfcn_dt = NOW()
+		WHERE cmnt_id = #{cmntId}
+	</update>
+
+	<select id="detailCmnt" parameterType="long" resultType="saleson.shop.community.doamin.CmntyCmntDto">
+		SELECT
+			  cmnt_id
+			, bbs_id
+			, cmnt_cn
+			, use_yn
+			, frst_crt_id
+			, frst_crt_dt
+			, last_mdfcn_id
+			, last_mdfcn_dt
+		FROM g_cmnty_cmnt
+		WHERE cmnt_id = #{cmntId} and use_yn = 'Y'
+	</select>
+
+	<update id="updateCmntCn" parameterType="saleson.shop.community.doamin.CmntyCmntDto">
+		UPDATE g_cmnty_cmnt
+		SET cmnt_cn = #{cmntCn}
+			, last_mdfcn_id = #{frstCrtId}
+			, last_mdfcn_dt = NOW()
+		WHERE cmnt_id = #{cmntId}
+	</update>
+
+	<update id="updateBbs" parameterType="saleson.shop.community.doamin.CmntyBbsDto">
+		UPDATE g_cmnty_bbs
+		SET bbs_ttl = #{bbsTtl}
+			, bbs_cn = #{bbsCn}
+			, notice_yn = #{noticeYn}
+			, is_secret = #{isSecret}
+			, last_mdfcn_id = #{frstCrtId}
+			, last_mdfcn_dt = NOW()
+		WHERE bbs_id = #{bbsId}
+	</update>
+
+
+	<select id="countRpstr" parameterType="saleson.shop.community.doamin.CmntyRpstrDto" resultType="Integer">
+		SELECT COUNT(*)
+		FROM
+			(
+				SELECT
+					   a.rpstr_id
+					 , a.rpstr_ttl
+					 , a.rpstr_cn
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM g_cmnty_rpstr  AS a
+				LEFT JOIN op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN g_locgov AS c on c.locgov_code = b.locgov_code
+				<where>
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_5'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_5', 'ROLE_ADMIN_6', 'ROLE_ADMIN_10'))
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND rpstr_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'USERNAME'">
+								AND b.user_name = crypto_enc('normal',#{query},'')
+							</when>
+							<otherwise>
+								AND (
+									rpstr_ttl LIKE CONCAT('%', #{query}, '%')
+									OR b.user_name = crypto_enc('normal',#{query},'')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					AND a.use_yn = 'Y'
+				</where>
+			)
+
+	</select>
+
+	<select	id="listRpstr" parameterType="saleson.shop.community.doamin.CmntyRpstrRequestDto" resultType="saleson.shop.community.doamin.CmntyRpstrDto">
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+				  A.RPSTR_ID
+				, A.RPSTR_TTL
+				, A.RPSTR_CN
+				, A.USE_YN
+				, A.NOTICE_YN
+				, A.INQ_CNT
+				, A.FRST_CRT_ID
+				, A.FRST_CRT_DT
+				, A.LAST_MDFCN_ID
+				, A.LAST_MDFCN_DT
+				, CRYPTO_DEC('normal',A.USER_NAME,'',0) AS USER_NAME
+				, A.LOCGOV_NM
+				, A.UPPER_LOCGOV_NM
+				, A.AUTHORITY
+				, A.ORGNL_ATCH_FILE_NM
+			FROM
+			(
+				SELECT
+					   A.RPSTR_ID
+					 , A.RPSTR_TTL
+					 , A.RPSTR_CN
+					 , A.USE_YN
+					 , A.NOTICE_YN
+					 , IFNULL(A.INQ_CNT, 0) AS INQ_CNT
+					 , A.FRST_CRT_ID
+					 , A.FRST_CRT_DT
+					 , A.LAST_MDFCN_ID
+					 , A.LAST_MDFCN_DT
+					 , B.USER_NAME
+					 , (SELECT MIN(AUTHORITY) FROM OP_USER_ROLE WHERE USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+					 , (select ORGNL_ATCH_FILE_NM from g_cmnty_file where rpstr_id  = A.rpstr_id and use_yn = 'Y') AS ORGNL_ATCH_FILE_NM
+					 , CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.LOCGOV_NM
+				        ELSE '' END AS LOCGOV_NM
+				    ,CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.UPPER_LOCGOV_NM
+				        ELSE '' END AS UPPER_LOCGOV_NM
+				FROM G_CMNTY_RPSTR AS A
+				LEFT JOIN OP_MANAGER AS B ON A.FRST_CRT_ID = B.USER_ID
+				LEFT JOIN G_LOCGOV AS C ON C.LOCGOV_CODE = B.LOCGOV_CODE
+				<where>
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND C.LOCGOV_CODE = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(A.FRST_CRT_DT, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND A.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND A.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_5'">
+			    		AND A.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_5', 'ROLE_ADMIN_6', 'ROLE_ADMIN_10'))
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND rpstr_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'USERNAME'">
+								AND b.user_name = crypto_enc('normal',#{query},'')
+							</when>
+							<otherwise>
+								AND (
+									rpstr_ttl LIKE CONCAT('%', #{query}, '%')
+									OR b.user_name = crypto_enc('normal',#{query},'')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					AND a.use_yn = 'Y'
+				</where>
+				ORDER BY a.notice_yn DESC, a.frst_crt_dt DESC
+			) a
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<insert id="insertRpstr" parameterType="saleson.shop.community.doamin.CmntyRpstrDto" useGeneratedKeys="true" keyProperty="rpstrId">
+		INSERT INTO G_CMNTY_RPSTR
+			(
+				RPSTR_TTL
+				, RPSTR_CN
+				, NOTICE_YN
+				, INQ_CNT
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{rpstrTtl}
+				, #{rpstrCn}
+				, #{noticeYn}
+				, 0
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<insert id="insertRpstrFile" parameterType="saleson.shop.community.doamin.CmntyFileDto">
+		INSERT INTO G_CMNTY_FILE
+			(
+				RPSTR_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{rpstrId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM G_CMNTY_FILE WHERE RPSTR_ID = #{rpstrId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<select id="getRpstrFileDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyFileDto">
+		SELECT
+				FILE_ID
+				, RPSTR_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_FILE
+		WHERE
+			FILE_ID = #{fileId}
+	</select>
+
+	<select id="getCurrentRpstrId" resultType="long">
+		SELECT
+			G_CMNTY_RPSTR_AI_RPSTR_ID.CURRENT_VALUE
+		FROM G_CMNTY_RPSTR
+		LIMIT 1
+	</select>
+
+	<update id="updateRpstrInqCnt" parameterType="long">
+		UPDATE G_CMNTY_RPSTR
+		SET INQ_CNT = INQ_CNT + 1
+		WHERE RPSTR_ID = #{rpstrId}
+	</update>
+
+	<select id="getRpstrDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyRpstrDto">
+		SELECT
+				A.RPSTR_ID
+				, A.RPSTR_TTL
+				, A.RPSTR_CN
+				, (SELECT ATCH_FILE_SZ  FROM G_CMNTY_FILE WHERE RPSTR_ID = A.RPSTR_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
+				, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+				, C.LOCGOV_NM
+				, C.UPPER_LOCGOV_NM
+				, A.USE_YN
+				, A.NOTICE_YN
+				, A.INQ_CNT
+				, A.FRST_CRT_ID
+				, A.FRST_CRT_DT
+				, A.LAST_MDFCN_ID
+				, A.LAST_MDFCN_DT
+				, (SELECT MIN(AUTHORITY) FROM OP_USER_ROLE WHERE USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+		FROM
+			G_CMNTY_RPSTR A
+		LEFT JOIN OP_MANAGER B ON A.FRST_CRT_ID  = B.USER_ID
+		LEFT JOIN G_LOCGOV C ON B.LOCGOV_CODE  = C.LOCGOV_CODE
+		WHERE A.RPSTR_ID = #{rpstrId}
+	</select>
+
+	<select id="getRpstrfileList" parameterType="long" resultType="saleson.shop.community.doamin.CmntyFileDto">
+		SELECT
+				FILE_ID
+				, RPSTR_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_FILE
+		WHERE RPSTR_ID = #{rpstrId}
+		AND USE_YN = 'Y'
+	</select>
+
+	<update id="deleteRpstr" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+		UPDATE G_CMNTY_RPSTR
+		SET USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE RPSTR_ID = #{rpstrId}
+	</update>
+
+	<update id="deleteFileByFileId" parameterType="saleson.shop.community.doamin.CmntyFileDto">
+		UPDATE G_CMNTY_FILE
+		SET USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE FILE_ID = #{fileId}
+	</update>
+
+	<update id="updateRpstr" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+		UPDATE G_CMNTY_RPSTR
+		SET RPSTR_TTL = #{rpstrTtl}
+			, RPSTR_CN = #{rpstrCn}
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+			, NOTICE_YN = #{noticeYn}
+		WHERE RPSTR_ID = #{rpstrId}
+	</update>
+
+	<select id="countSrBbs" parameterType="saleson.shop.community.doamin.CmntySrBbsDto" resultType="Integer">
+		SELECT COUNT(*)
+		FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM
+					g_cmnty_sr_bbs AS a
+				LEFT JOIN
+					op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN
+					g_locgov AS c on c.locgov_code = b.locgov_code
+				WHERE
+					1=1
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_5'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_5', 'ROLE_ADMIN_6', 'ROLE_ADMIN_10'))
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'USERNAME'">
+								AND b.user_name = crypto_enc('normal',#{query},'')
+							</when>
+							<otherwise>
+								AND (
+									bbs_ttl LIKE CONCAT('%', #{query}, '%')
+									OR b.user_name = crypto_enc('normal',#{query},'')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					AND a.use_yn = 'Y'
+			)
+	</select>
+
+	<select id="listSrBbs"  parameterType="saleson.shop.community.doamin.CmntySrBbsDto" resultType="saleson.shop.community.doamin.CmntySrBbsDto">
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				  a.bbs_id
+				, a.bbs_ttl
+				, a.bbs_cn
+				, a.use_yn
+				, a.notice_yn
+				, a.inq_cnt
+				, a.frst_crt_id
+				, a.frst_crt_dt
+				, a.last_mdfcn_id
+				, a.last_mdfcn_dt
+				, crypto_dec('normal',a.user_name,'',0) AS user_name
+				, a.locgov_nm
+				, a.upper_locgov_nm
+				, a.authority
+				, a.is_secret
+				, (select count(*) from g_cmnty_sr_bbs_cmnt where use_yn = 'Y' and bbs_id = a.bbs_id) as cmntCnt
+				, (select count(*) from g_cmnty_sr_bbs_file where use_yn = 'Y' and bbs_id = a.bbs_id) as attachedFileCnt
+			FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , a.is_secret
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM
+					g_cmnty_sr_bbs AS a
+				LEFT JOIN
+					op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN
+					g_locgov AS c on c.locgov_code = b.locgov_code
+				WHERE
+					1=1
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_5'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_5', 'ROLE_ADMIN_6', 'ROLE_ADMIN_10'))
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'USERNAME'">
+								AND b.user_name = crypto_enc('normal',#{query},'')
+							</when>
+							<otherwise>
+								AND (
+									bbs_ttl LIKE CONCAT('%', #{query}, '%')
+									OR b.user_name = crypto_enc('normal',#{query},'')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					AND a.use_yn = 'Y'
+				ORDER BY a.notice_yn DESC, a.frst_crt_dt DESC
+			) a
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+		<insert id="insertSrBbs" parameterType="saleson.shop.community.doamin.CmntySrBbsDto" useGeneratedKeys="true" keyProperty="bbsId">
+		INSERT INTO
+			G_CMNTY_SR_BBS
+			(
+				BBS_TTL
+				, BBS_CN
+				, NOTICE_YN
+				, IS_SECRET
+				, INQ_CNT
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{bbsTtl}
+				, #{bbsCn}
+				, #{noticeYn}
+				, #{isSecret}
+				, 0
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<insert id="insertSrBbsFile" parameterType="saleson.shop.community.doamin.CmntySrBbsDto">
+		INSERT INTO
+			G_CMNTY_SR_BBS_FILE
+			(
+				BBS_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{bbsId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM G_CMNTY_SR_BBS_FILE WHERE BBS_ID = #{bbsId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+
+	<update id="updateSrBbsInqCnt" parameterType="long">
+	/**cmnty-mapper.updateSrBbsInqCnt */
+		UPDATE
+			G_CMNTY_SR_BBS
+		SET
+			INQ_CNT = INQ_CNT + 1
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+
+	<select id="getSrBbsDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntySrBbsDto">
+		/**cmnty-mapper.getSrBbsDetail */
+		SELECT
+			A.BBS_ID
+			, A.BBS_TTL
+			, A.BBS_CN
+			, (SELECT ATCH_FILE_SZ  FROM G_CMNTY_SR_BBS_FILE WHERE BBS_ID = A.BBS_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
+			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, C.LOCGOV_NM
+			, C.UPPER_LOCGOV_NM
+			, A.USE_YN
+			, A.NOTICE_YN
+			, A.INQ_CNT
+			, A.IS_SECRET
+			, A.FRST_CRT_ID
+			, A.FRST_CRT_DT
+			, A.LAST_MDFCN_ID
+			, A.LAST_MDFCN_DT
+			, (SELECT MIN(AUTHORITY) FROM OP_USER_ROLE WHERE USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+		FROM
+			G_CMNTY_SR_BBS A
+		LEFT JOIN
+			OP_MANAGER B ON A.FRST_CRT_ID  = B.USER_ID
+		LEFT JOIN
+			G_LOCGOV C ON B.LOCGOV_CODE  = C.LOCGOV_CODE
+		WHERE
+			A.BBS_ID = #{bbsId}
+	</select>
+
+	<select id="getSrBbsfileList" parameterType="long" resultType="saleson.shop.community.doamin.CmntySrBbsFileDto">
+		/**cmnty-mapper.getSrBbsfileList */
+		SELECT
+			FILE_ID
+			, BBS_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_SR_BBS_FILE
+		WHERE
+			BBS_ID = #{bbsId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<select id="getSrBbsFileDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntySrBbsFileDto">
+		/**cmnty-mapper.getSrBbsFileDetail */
+		SELECT
+			FILE_ID
+			, BBS_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_SR_BBS_FILE
+		WHERE
+			FILE_ID = #{fileId}
+	</select>
+
+	<update id="deleteSrBbsFileByFileId" parameterType="saleson.shop.community.doamin.CmntySrBbsFileDto">
+		/**cmnty-mapper.deleteSrBbsFileByFileId */
+		UPDATE
+			G_CMNTY_SR_BBS_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<update id="updateSrBbs" parameterType="saleson.shop.community.doamin.CmntySrBbsDto">
+		/**cmnty-mapper.updateSrBbs */
+		UPDATE
+			G_CMNTY_SR_BBS
+		SET
+			BBS_TTL = #{bbsTtl}
+			, BBS_CN = #{bbsCn}
+			, NOTICE_YN = #{noticeYn}
+			, IS_SECRET = #{isSecret}
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+
+	<update id="deleteSrBbs" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+	/**cmnty-mapper.updateSrBbs */
+		UPDATE
+			G_CMNTY_SR_BBS
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<update id="deleteSrBbsFileByBbsId" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+	/**cmnty-mapper.deleteSrBbsFileByBbsId */
+		UPDATE
+			G_CMNTY_SR_BBS_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<insert id="addSrBbsCmnt" parameterType="saleson.shop.community.doamin.CmntySrBbsCmntDto">
+	/**cmnty-mapper.addSrBbsCmnt */
+		INSERT INTO
+			G_CMNTY_SR_BBS_CMNT
+		(
+			  BBS_ID
+			, CMNT_CN
+			, USE_YN
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+		) VALUES (
+			  #{bbsId}
+			, #{cmntCn}
+			, 'Y'
+			, #{frstCrtId}
+			, NOW()
+		)
+
+	</insert>
+
+	<select id="selectSrBbsCmntList" parameterType="long" resultMap="SrBbsCmntDto">
+	/**cmnty-mapper.selectSrBbsCmntList */
+		SELECT
+			  A.CMNT_ID
+			, A.BBS_ID
+			, A.CMNT_CN
+			, A.USE_YN
+			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.LOCGOV_NM
+			  ELSE '' END AS LOCGOV_NM
+			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.UPPER_LOCGOV_NM
+			  ELSE '' END AS UPPER_LOCGOV_NM
+			, (SELECT MIN(R.AUTHORITY) FROM OP_USER_ROLE R WHERE R.USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+			, A.FRST_CRT_ID
+			, A.FRST_CRT_DT
+			, A.LAST_MDFCN_ID
+			, A.LAST_MDFCN_DT
+			, D.FILE_ID
+			, D.CMNT_ID AS FILE_CMNT_ID
+			, D.ORGNL_ATCH_FILE_NM
+			, D.ATCH_FILE_NM
+			, D.ATCH_FILE_EXTN_NM
+			, D.ATCH_FILE_SZ
+			, D.ATCH_FILE_SEQ
+			, D.ATCH_FILE_PATH_NM
+			, D.FRST_CRT_ID AS FILE_FRST_CRT_ID
+			, D.FRST_CRT_DT AS FILE_FRST_CRT_DT
+		FROM
+			G_CMNTY_SR_BBS_CMNT A
+		LEFT JOIN
+			OP_MANAGER AS B ON A.FRST_CRT_ID = B.USER_ID
+		LEFT JOIN
+			G_LOCGOV AS C ON C.LOCGOV_CODE = B.LOCGOV_CODE
+		LEFT JOIN
+			G_CMNTY_SR_BBS_CMNT_FILE D ON A.CMNT_ID = D.CMNT_ID AND D.USE_YN = 'Y'
+		WHERE
+			A.USE_YN = 'Y'
+			AND A.BBS_ID = #{bbsId}
+		ORDER BY A.FRST_CRT_DT ASC
+	</select>
+
+	<update id="deleteSrBbsCmnt" parameterType="saleson.shop.community.doamin.CmntySrBbsCmntDto">
+	/**cmnty-mapper.deleteSrBbsCmnt */
+		UPDATE
+			G_CMNTY_SR_BBS_CMNT
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<select id="selectSrBbsCmntDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntySrBbsCmntDto">
+	/**cmnty-mapper.selectSrBbsCmntDetail */
+		SELECT
+			  CMNT_ID
+			, BBS_ID
+			, CMNT_CN
+			, USE_YN
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+			, LAST_MDFCN_ID
+			, LAST_MDFCN_DT
+		FROM
+			G_CMNTY_SR_BBS_CMNT
+		WHERE
+			CMNT_ID = #{cmntId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<update id="updateSrBbsCmnt" parameterType="saleson.shop.community.doamin.CmntySrBbsCmntDto">
+	/**cmnty-mapper.updateSrBbsCmnt */
+		UPDATE
+			G_CMNTY_SR_BBS_CMNT
+		SET
+			CMNT_CN = #{cmntCn}
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<insert id="insertSrBbsCmntFile" parameterType="saleson.shop.community.doamin.CmntySrBbsCmntFileDto">
+		INSERT INTO
+			G_CMNTY_SR_BBS_CMNT_FILE
+			(
+				CMNT_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{cmntId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM G_CMNTY_SR_BBS_CMNT_FILE WHERE CMNT_ID = #{cmntId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<select id="getSrBbsCmntFileList" parameterType="long" resultType="saleson.shop.community.doamin.CmntySrBbsCmntFileDto">
+		/**cmnty-mapper.getSrBbsCmntFileList */
+		SELECT
+			FILE_ID
+			, CMNT_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+		FROM
+			G_CMNTY_SR_BBS_CMNT_FILE
+		WHERE
+			CMNT_ID = #{cmntId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<select id="getSrBbsCmntFileDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntySrBbsCmntFileDto">
+		/**cmnty-mapper.getSrBbsCmntFileDetail */
+		SELECT
+			FILE_ID
+			, CMNT_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_SR_BBS_CMNT_FILE
+		WHERE
+			FILE_ID = #{fileId}
+	</select>
+
+	<update id="deleteSrBbsCmntFileByCmntId" parameterType="saleson.shop.community.doamin.CmntySrBbsCmntFileDto">
+		/**cmnty-mapper.deleteSrBbsCmntFileByCmntId */
+		UPDATE
+			G_CMNTY_SR_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<update id="deleteSrBbsCmntFileByFileId" parameterType="saleson.shop.community.doamin.CmntySrBbsCmntFileDto">
+		/**cmnty-mapper.deleteSrBbsCmntFileByFileId */
+		UPDATE
+			G_CMNTY_SR_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<update id="deleteSrBbsCmntByBbsId" parameterType="saleson.shop.community.doamin.CmntySrBbsDto">
+		/**cmnty-mapper.deleteSrBbsCmntByBbsId */
+		UPDATE
+			G_CMNTY_SR_BBS_CMNT
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<update id="deleteSrBbsCmntFileByBbsId" parameterType="saleson.shop.community.doamin.CmntySrBbsDto">
+		/**cmnty-mapper.deleteSrBbsCmntFileByBbsId */
+		UPDATE
+			G_CMNTY_SR_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID IN (
+				SELECT
+					CMNT_ID
+				FROM
+					G_CMNTY_SR_BBS_CMNT
+				WHERE
+					BBS_ID = #{bbsId}
+				)
+	</update>
+
+
+	<select id="countFaqBbs" parameterType="saleson.shop.community.doamin.CmntyFaqBbsDto" resultType="Integer">
+		SELECT COUNT(*)
+		FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM
+					g_cmnty_faq_bbs AS a
+				LEFT JOIN
+					op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN
+					g_locgov AS c on c.locgov_code = b.locgov_code
+				WHERE
+					1=1
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_5'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_5', 'ROLE_ADMIN_6', 'ROLE_ADMIN_10'))
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<otherwise>
+								AND (
+									bbs_ttl LIKE CONCAT('%', #{query}, '%')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					<if test="shFaqType != null and shFaqType != ''">
+			    		AND a.faq_Type  = #{shFaqType}
+			    	</if>
+					AND a.use_yn = 'Y'
+			)
+	</select>
+
+	<select id="listFaqBbs"  parameterType="saleson.shop.community.doamin.CmntyFaqBbsDto" resultType="saleson.shop.community.doamin.CmntyFaqBbsDto">
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				  a.bbs_id
+				, a.bbs_ttl
+				, a.bbs_cn
+				, a.faq_Type
+				, a.use_yn
+				, a.notice_yn
+				, a.inq_cnt
+				, a.frst_crt_id
+				, a.frst_crt_dt
+				, a.last_mdfcn_id
+				, a.last_mdfcn_dt
+				, crypto_dec('normal',a.user_name,'',0) AS user_name
+				, a.locgov_nm
+				, a.upper_locgov_nm
+				, a.authority
+				, a.is_secret
+				, (select count(*) from g_cmnty_faq_bbs_cmnt where use_yn = 'Y' and bbs_id = a.bbs_id) as cmntCnt
+				, (select count(*) from g_cmnty_faq_bbs_file where use_yn = 'Y' and bbs_id = a.bbs_id) as attachedFileCnt
+			FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.faq_Type
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , a.is_secret
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM
+					g_cmnty_faq_bbs AS a
+				LEFT JOIN
+					op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN
+					g_locgov AS c on c.locgov_code = b.locgov_code
+				WHERE
+					1=1
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_5'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_5', 'ROLE_ADMIN_6', 'ROLE_ADMIN_10'))
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<otherwise>
+								AND (
+									bbs_ttl LIKE CONCAT('%', #{query}, '%')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					<if test="shFaqType != null and shFaqType != ''">
+			    		AND a.faq_Type  = #{shFaqType}
+			    	</if>
+					AND a.use_yn = 'Y'
+				ORDER BY a.notice_yn DESC, a.frst_crt_dt DESC
+			) a
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+		<insert id="insertFaqBbs" parameterType="saleson.shop.community.doamin.CmntyFaqBbsDto" useGeneratedKeys="true" keyProperty="bbsId">
+		INSERT INTO
+			G_CMNTY_FAQ_BBS
+			(
+				BBS_TTL
+				, BBS_CN
+				, FAQ_TYPE
+				, NOTICE_YN
+				, IS_SECRET
+				, INQ_CNT
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{bbsTtl}
+				, #{bbsCn}
+				, #{faqType}
+				, #{noticeYn}
+				, #{isSecret}
+				, 0
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<insert id="insertFaqBbsFile" parameterType="saleson.shop.community.doamin.CmntyFaqBbsDto">
+		INSERT INTO
+			G_CMNTY_FAQ_BBS_FILE
+			(
+				BBS_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{bbsId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM G_CMNTY_FAQ_BBS_FILE WHERE BBS_ID = #{bbsId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+
+	<update id="updateFaqBbsInqCnt" parameterType="long">
+	/**cmnty-mapper.updateFaqBbsInqCnt */
+		UPDATE
+			G_CMNTY_FAQ_BBS
+		SET
+			INQ_CNT = INQ_CNT + 1
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+
+	<select id="getFaqBbsDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyFaqBbsDto">
+		/**cmnty-mapper.getFaqBbsDetail */
+		SELECT
+			A.BBS_ID
+			, A.BBS_TTL
+			, A.BBS_CN
+			, A.FAQ_TYPE
+			, (SELECT ATCH_FILE_SZ  FROM G_CMNTY_FAQ_BBS_FILE WHERE BBS_ID = A.BBS_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
+			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, C.LOCGOV_NM
+			, C.UPPER_LOCGOV_NM
+			, A.USE_YN
+			, A.NOTICE_YN
+			, A.INQ_CNT
+			, A.IS_SECRET
+			, A.FRST_CRT_ID
+			, A.FRST_CRT_DT
+			, A.LAST_MDFCN_ID
+			, A.LAST_MDFCN_DT
+			, (SELECT MIN(AUTHORITY) FROM OP_USER_ROLE WHERE USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+		FROM
+			G_CMNTY_FAQ_BBS A
+		LEFT JOIN
+			OP_MANAGER B ON A.FRST_CRT_ID  = B.USER_ID
+		LEFT JOIN
+			G_LOCGOV C ON B.LOCGOV_CODE  = C.LOCGOV_CODE
+		WHERE
+			A.BBS_ID = #{bbsId}
+			AND A.USE_YN = 'Y'
+	</select>
+
+	<select id="getFaqBbsfileList" parameterType="long" resultType="saleson.shop.community.doamin.CmntyFaqBbsFileDto">
+		/**cmnty-mapper.getFaqBbsfileList */
+		SELECT
+			FILE_ID
+			, BBS_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_FAQ_BBS_FILE
+		WHERE
+			BBS_ID = #{bbsId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<select id="getFaqBbsFileDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyFaqBbsFileDto">
+		/**cmnty-mapper.getFaqBbsFileDetail */
+		SELECT
+			FILE_ID
+			, BBS_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_FAQ_BBS_FILE
+		WHERE
+			FILE_ID = #{fileId}
+	</select>
+
+	<update id="deleteFaqBbsFileByFileId" parameterType="saleson.shop.community.doamin.CmntyFaqBbsFileDto">
+		/**cmnty-mapper.deleteFaqBbsFileByFileId */
+		UPDATE
+			G_CMNTY_FAQ_BBS_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<update id="updateFaqBbs" parameterType="saleson.shop.community.doamin.CmntyFaqBbsDto">
+		/**cmnty-mapper.updateFaqBbs */
+		UPDATE
+			G_CMNTY_FAQ_BBS
+		SET
+			BBS_TTL = #{bbsTtl}
+			, BBS_CN = #{bbsCn}
+			, FAQ_TYPE = #{faqType}
+			, NOTICE_YN = #{noticeYn}
+			, IS_SECRET = #{isSecret}
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+
+	<update id="deleteFaqBbs" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+	/**cmnty-mapper.updateFaqBbs */
+		UPDATE
+			G_CMNTY_FAQ_BBS
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<update id="deleteFaqBbsFileByBbsId" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+	/**cmnty-mapper.deleteFaqBbsFileByBbsId */
+		UPDATE
+			G_CMNTY_FAQ_BBS_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<insert id="addFaqBbsCmnt" parameterType="saleson.shop.community.doamin.CmntyFaqBbsCmntDto">
+	/**cmnty-mapper.addFaqBbsCmnt */
+		INSERT INTO
+			G_CMNTY_FAQ_BBS_CMNT
+		(
+			  BBS_ID
+			, CMNT_CN
+			, USE_YN
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+		) VALUES (
+			  #{bbsId}
+			, #{cmntCn}
+			, 'Y'
+			, #{frstCrtId}
+			, NOW()
+		)
+
+	</insert>
+
+	<select id="selectFaqBbsCmntList" parameterType="long" resultMap="FaqBbsCmntDto">
+	/**cmnty-mapper.selectFaqBbsCmntList */
+		SELECT
+			  A.CMNT_ID
+			, A.BBS_ID
+			, A.CMNT_CN
+			, A.USE_YN
+			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.LOCGOV_NM
+			  ELSE '' END AS LOCGOV_NM
+			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.UPPER_LOCGOV_NM
+			  ELSE '' END AS UPPER_LOCGOV_NM
+			, (SELECT MIN(R.AUTHORITY) FROM OP_USER_ROLE R WHERE R.USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+			, A.FRST_CRT_ID
+			, A.FRST_CRT_DT
+			, A.LAST_MDFCN_ID
+			, A.LAST_MDFCN_DT
+			, D.FILE_ID
+			, D.CMNT_ID AS FILE_CMNT_ID
+			, D.ORGNL_ATCH_FILE_NM
+			, D.ATCH_FILE_NM
+			, D.ATCH_FILE_EXTN_NM
+			, D.ATCH_FILE_SZ
+			, D.ATCH_FILE_SEQ
+			, D.ATCH_FILE_PATH_NM
+			, D.FRST_CRT_ID AS FILE_FRST_CRT_ID
+			, D.FRST_CRT_DT AS FILE_FRST_CRT_DT
+		FROM
+			G_CMNTY_FAQ_BBS_CMNT A
+		LEFT JOIN
+			OP_MANAGER AS B ON A.FRST_CRT_ID = B.USER_ID
+		LEFT JOIN
+			G_LOCGOV AS C ON C.LOCGOV_CODE = B.LOCGOV_CODE
+		LEFT JOIN
+			G_CMNTY_FAQ_BBS_CMNT_FILE D ON A.CMNT_ID = D.CMNT_ID AND D.USE_YN = 'Y'
+		WHERE
+			A.USE_YN = 'Y'
+			AND A.BBS_ID = #{bbsId}
+		ORDER BY A.FRST_CRT_DT ASC
+	</select>
+
+	<update id="deleteFaqBbsCmnt" parameterType="saleson.shop.community.doamin.CmntyFaqBbsCmntDto">
+	/**cmnty-mapper.deleteFaqBbsCmnt */
+		UPDATE
+			G_CMNTY_FAQ_BBS_CMNT
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<select id="selectFaqBbsCmntDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyFaqBbsCmntDto">
+	/**cmnty-mapper.selectFaqBbsCmntDetail */
+		SELECT
+			  CMNT_ID
+			, BBS_ID
+			, CMNT_CN
+			, USE_YN
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+			, LAST_MDFCN_ID
+			, LAST_MDFCN_DT
+		FROM
+			G_CMNTY_FAQ_BBS_CMNT
+		WHERE
+			CMNT_ID = #{cmntId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<update id="updateFaqBbsCmnt" parameterType="saleson.shop.community.doamin.CmntyFaqBbsCmntDto">
+	/**cmnty-mapper.updateFaqBbsCmnt */
+		UPDATE
+			G_CMNTY_FAQ_BBS_CMNT
+		SET
+			CMNT_CN = #{cmntCn}
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<insert id="insertFaqBbsCmntFile" parameterType="saleson.shop.community.doamin.CmntyFaqBbsCmntFileDto">
+		INSERT INTO
+			G_CMNTY_FAQ_BBS_CMNT_FILE
+			(
+				CMNT_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{cmntId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM G_CMNTY_FAQ_BBS_CMNT_FILE WHERE CMNT_ID = #{cmntId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<select id="getFaqBbsCmntFileList" parameterType="long" resultType="saleson.shop.community.doamin.CmntyFaqBbsCmntFileDto">
+		/**cmnty-mapper.getFaqBbsCmntFileList */
+		SELECT
+			FILE_ID
+			, CMNT_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+		FROM
+			G_CMNTY_FAQ_BBS_CMNT_FILE
+		WHERE
+			CMNT_ID = #{cmntId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<select id="getFaqBbsCmntFileDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyFaqBbsCmntFileDto">
+		/**cmnty-mapper.getFaqBbsCmntFileDetail */
+		SELECT
+			FILE_ID
+			, CMNT_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_FAQ_BBS_CMNT_FILE
+		WHERE
+			FILE_ID = #{fileId}
+	</select>
+
+	<update id="deleteFaqBbsCmntFileByCmntId" parameterType="saleson.shop.community.doamin.CmntyFaqBbsCmntFileDto">
+		/**cmnty-mapper.deleteFaqBbsCmntFileByCmntId */
+		UPDATE
+			G_CMNTY_FAQ_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<update id="deleteFaqBbsCmntFileByFileId" parameterType="saleson.shop.community.doamin.CmntyFaqBbsCmntFileDto">
+		/**cmnty-mapper.deleteFaqBbsCmntFileByFileId */
+		UPDATE
+			G_CMNTY_FAQ_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<update id="deleteFaqBbsCmntByBbsId" parameterType="saleson.shop.community.doamin.CmntyFaqBbsDto">
+		/**cmnty-mapper.deleteFaqBbsCmntByBbsId */
+		UPDATE
+			G_CMNTY_FAQ_BBS_CMNT
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<update id="deleteFaqBbsCmntFileByBbsId" parameterType="saleson.shop.community.doamin.CmntyFaqBbsDto">
+		/**cmnty-mapper.deleteFaqBbsCmntFileByBbsId */
+		UPDATE
+			G_CMNTY_FAQ_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID IN (
+				SELECT
+					CMNT_ID
+				FROM
+					G_CMNTY_FAQ_BBS_CMNT
+				WHERE
+					BBS_ID = #{bbsId}
+				)
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<select id="countOffSrBbs" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsDto" resultType="Integer">
+		SELECT COUNT(*)
+		FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM
+					g_cmnty_off_sr_bbs AS a
+				LEFT JOIN
+					op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN
+					g_locgov AS c on c.locgov_code = b.locgov_code
+				WHERE
+					1=1
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_7'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_7', 'ROLE_ADMIN_8'))
+			    	</if>
+			    	<if test="shBank != null and shBank != ''">
+			    		AND b.bank_code = #{shBank}
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'PSITN'">
+								AND b.psitn_nm LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<otherwise>
+								AND (
+									bbs_ttl LIKE CONCAT('%', #{query}, '%')
+									OR b.psitn_nm LIKE CONCAT('%', #{query}, '%')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					AND a.use_yn = 'Y'
+			)
+	</select>
+
+	<select id="listOffSrBbs"  parameterType="saleson.shop.community.doamin.CmntyOffSrBbsDto" resultType="saleson.shop.community.doamin.CmntyOffSrBbsDto">
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				  a.bbs_id
+				, a.bbs_ttl
+				, a.bbs_cn
+				, a.use_yn
+				, a.notice_yn
+				, a.inq_cnt
+				, a.frst_crt_id
+				, a.frst_crt_dt
+				, a.last_mdfcn_id
+				, a.last_mdfcn_dt
+				, crypto_dec('normal',a.user_name,'',0) AS user_name
+				, a.locgov_nm
+				, a.upper_locgov_nm
+				, a.authority
+				, a.is_secret
+				, a.bank_code
+				, a.bank_nm
+				, a.psitn_nm
+				, (select count(*) from g_cmnty_off_sr_bbs_cmnt where use_yn = 'Y' and bbs_id = a.bbs_id) as cmntCnt
+				, (select count(*) from g_cmnty_off_sr_bbs_file where use_yn = 'Y' and bbs_id = a.bbs_id) as attachedFileCnt
+			FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.use_yn
+					 , a.notice_yn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , b.user_name
+					 , b.bank_code
+					 , (
+							SELECT C.LABEL
+							FROM OP_COMMON_CODE C
+							WHERE C.CODE_TYPE = 'OFF_BANK_LIST'
+							AND C.USE_YN = 'Y'
+							AND C.LANGUAGE = 'ko'
+							AND C.ID = b.bank_code
+					    ) AS bank_nm
+					 , b.psitn_nm
+					 , a.is_secret
+					 , (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
+					 , CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
+				        ELSE '' END AS locgov_nm
+				    ,CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
+				        ELSE '' END AS upper_locgov_nm
+				FROM
+					g_cmnty_off_sr_bbs AS a
+				LEFT JOIN
+					op_manager AS b on a.frst_crt_id = b.user_id
+				LEFT JOIN
+					g_locgov AS c on c.locgov_code = b.locgov_code
+				WHERE
+					1=1
+					<if test="locgovCode != null and locgovCode != ''">
+				    	AND c.locgov_code = #{locgovCode}
+				    </if>
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="searchRole == 'ROLE_ADMIN_1'">
+				    	AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_1', 'ROLE_ADMIN_2'))
+				   	</if>
+				   	<if test="searchRole == 'ROLE_ADMIN_3'">
+				   		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_3', 'ROLE_ADMIN_4'))
+				   	</if>
+			    	<if test="searchRole == 'ROLE_ADMIN_7'">
+			    		AND a.frst_crt_id in (select user_id from op_user_role where authority in ('ROLE_ADMIN_7', 'ROLE_ADMIN_8'))
+			    	</if>
+			    	<if test="shBank != null and shBank != ''">
+			    		AND b.bank_code = #{shBank}
+			    	</if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'PSITN'">
+								AND b.psitn_nm LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<otherwise>
+								AND (
+									bbs_ttl LIKE CONCAT('%', #{query}, '%')
+									OR b.psitn_nm LIKE CONCAT('%', #{query}, '%')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					AND a.use_yn = 'Y'
+				ORDER BY a.notice_yn DESC, a.frst_crt_dt DESC
+			) a
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+		<insert id="insertOffSrBbs" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsDto" useGeneratedKeys="true" keyProperty="bbsId">
+		INSERT INTO
+			G_CMNTY_OFF_SR_BBS
+			(
+				BBS_TTL
+				, BBS_CN
+				, NOTICE_YN
+				, IS_SECRET
+				, INQ_CNT
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{bbsTtl}
+				, #{bbsCn}
+				, #{noticeYn}
+				, #{isSecret}
+				, 0
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<insert id="insertOffSrBbsFile" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsDto">
+		INSERT INTO
+			G_CMNTY_OFF_SR_BBS_FILE
+			(
+				BBS_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{bbsId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM G_CMNTY_OFF_SR_BBS_FILE WHERE BBS_ID = #{bbsId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+
+	<update id="updateOffSrBbsInqCnt" parameterType="long">
+	/**cmnty-mapper.updateOffSrBbsInqCnt */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS
+		SET
+			INQ_CNT = INQ_CNT + 1
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+
+	<select id="getOffSrBbsDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyOffSrBbsDto">
+		/**cmnty-mapper.getOffSrBbsDetail */
+		SELECT
+			A.BBS_ID
+			, A.BBS_TTL
+			, A.BBS_CN
+			, (SELECT ATCH_FILE_SZ  FROM G_CMNTY_OFF_SR_BBS_FILE WHERE BBS_ID = A.BBS_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
+			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, C.LOCGOV_NM
+			, C.UPPER_LOCGOV_NM
+			, A.USE_YN
+			, A.NOTICE_YN
+			, A.INQ_CNT
+			, A.IS_SECRET
+			, A.FRST_CRT_ID
+			, A.FRST_CRT_DT
+			, A.LAST_MDFCN_ID
+			, A.LAST_MDFCN_DT
+			, (SELECT MIN(AUTHORITY) FROM OP_USER_ROLE WHERE USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+			, B.USER_NAME
+			, B.BANK_CODE
+			, (
+					SELECT C.LABEL
+					FROM OP_COMMON_CODE C
+					WHERE C.CODE_TYPE = 'OFF_BANK_LIST'
+					AND C.USE_YN = 'Y'
+					AND C.LANGUAGE = 'ko'
+					AND C.ID = B.BANK_CODE
+			   ) AS BANK_NM
+			, B.PSITN_NM
+		FROM
+			G_CMNTY_OFF_SR_BBS A
+		LEFT JOIN
+			OP_MANAGER B ON A.FRST_CRT_ID  = B.USER_ID
+		LEFT JOIN
+			G_LOCGOV C ON B.LOCGOV_CODE  = C.LOCGOV_CODE
+		WHERE
+			A.BBS_ID = #{bbsId}
+	</select>
+
+	<select id="getOffSrBbsfileList" parameterType="long" resultType="saleson.shop.community.doamin.CmntyOffSrBbsFileDto">
+		/**cmnty-mapper.getOffSrBbsfileList */
+		SELECT
+			FILE_ID
+			, BBS_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_OFF_SR_BBS_FILE
+		WHERE
+			BBS_ID = #{bbsId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<select id="getOffSrBbsFileDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyOffSrBbsFileDto">
+		/**cmnty-mapper.getOffSrBbsFileDetail */
+		SELECT
+			FILE_ID
+			, BBS_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_OFF_SR_BBS_FILE
+		WHERE
+			FILE_ID = #{fileId}
+	</select>
+
+	<update id="deleteOffSrBbsFileByFileId" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsFileDto">
+		/**cmnty-mapper.deleteOffSrBbsFileByFileId */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<update id="updateOffSrBbs" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsDto">
+		/**cmnty-mapper.updateOffSrBbs */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS
+		SET
+			BBS_TTL = #{bbsTtl}
+			, BBS_CN = #{bbsCn}
+			, NOTICE_YN = #{noticeYn}
+			, IS_SECRET = #{isSecret}
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+
+	<update id="deleteOffSrBbs" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+	/**cmnty-mapper.updateOffSrBbs */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<update id="deleteOffSrBbsFileByBbsId" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+	/**cmnty-mapper.deleteOffSrBbsFileByBbsId */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<insert id="addOffSrBbsCmnt" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsCmntDto">
+	/**cmnty-mapper.addOffSrBbsCmnt */
+		INSERT INTO
+			G_CMNTY_OFF_SR_BBS_CMNT
+		(
+			  BBS_ID
+			, CMNT_CN
+			, USE_YN
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+		) VALUES (
+			  #{bbsId}
+			, #{cmntCn}
+			, 'Y'
+			, #{frstCrtId}
+			, NOW()
+		)
+
+	</insert>
+
+	<select id="selectOffSrBbsCmntList" parameterType="long" resultMap="OffSrBbsCmntDto">
+	/**cmnty-mapper.selectOffSrBbsCmntList */
+		SELECT
+			  A.CMNT_ID
+			, A.BBS_ID
+			, A.CMNT_CN
+			, A.USE_YN
+			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.LOCGOV_NM
+			  ELSE '' END AS LOCGOV_NM
+			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.UPPER_LOCGOV_NM
+			  ELSE '' END AS UPPER_LOCGOV_NM
+			, (SELECT MIN(R.AUTHORITY) FROM OP_USER_ROLE R WHERE R.USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+			, A.FRST_CRT_ID
+			, A.FRST_CRT_DT
+			, A.LAST_MDFCN_ID
+			, A.LAST_MDFCN_DT
+			, D.FILE_ID
+			, D.CMNT_ID AS FILE_CMNT_ID
+			, D.ORGNL_ATCH_FILE_NM
+			, D.ATCH_FILE_NM
+			, D.ATCH_FILE_EXTN_NM
+			, D.ATCH_FILE_SZ
+			, D.ATCH_FILE_SEQ
+			, D.ATCH_FILE_PATH_NM
+			, D.FRST_CRT_ID AS FILE_FRST_CRT_ID
+			, D.FRST_CRT_DT AS FILE_FRST_CRT_DT
+			, B.USER_NAME
+			, B.BANK_CODE
+			, (
+					SELECT C.LABEL
+					FROM OP_COMMON_CODE C
+					WHERE C.CODE_TYPE = 'OFF_BANK_LIST'
+					AND C.USE_YN = 'Y'
+					AND C.LANGUAGE = 'ko'
+					AND C.ID = B.BANK_CODE
+			   ) AS BANK_NM
+			, B.PSITN_NM
+		FROM
+			G_CMNTY_OFF_SR_BBS_CMNT A
+		LEFT JOIN
+			OP_MANAGER AS B ON A.FRST_CRT_ID = B.USER_ID
+		LEFT JOIN
+			G_LOCGOV AS C ON C.LOCGOV_CODE = B.LOCGOV_CODE
+		LEFT JOIN
+			G_CMNTY_OFF_SR_BBS_CMNT_FILE D ON A.CMNT_ID = D.CMNT_ID AND D.USE_YN = 'Y'
+		WHERE
+			A.USE_YN = 'Y'
+			AND A.BBS_ID = #{bbsId}
+		ORDER BY A.FRST_CRT_DT ASC
+	</select>
+
+	<update id="deleteOffSrBbsCmnt" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsCmntDto">
+	/**cmnty-mapper.deleteOffSrBbsCmnt */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS_CMNT
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<select id="selectOffSrBbsCmntDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyOffSrBbsCmntDto">
+	/**cmnty-mapper.selectOffSrBbsCmntDetail */
+		SELECT
+			  CMNT_ID
+			, BBS_ID
+			, CMNT_CN
+			, USE_YN
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+			, LAST_MDFCN_ID
+			, LAST_MDFCN_DT
+		FROM
+			G_CMNTY_OFF_SR_BBS_CMNT
+		WHERE
+			CMNT_ID = #{cmntId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<update id="updateOffSrBbsCmnt" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsCmntDto">
+	/**cmnty-mapper.updateOffSrBbsCmnt */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS_CMNT
+		SET
+			CMNT_CN = #{cmntCn}
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<insert id="insertOffSrBbsCmntFile" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsCmntFileDto">
+		INSERT INTO
+			G_CMNTY_OFF_SR_BBS_CMNT_FILE
+			(
+				CMNT_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{cmntId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM G_CMNTY_OFF_SR_BBS_CMNT_FILE WHERE CMNT_ID = #{cmntId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<select id="getOffSrBbsCmntFileList" parameterType="long" resultType="saleson.shop.community.doamin.CmntyOffSrBbsCmntFileDto">
+		/**cmnty-mapper.getOffSrBbsCmntFileList */
+		SELECT
+			FILE_ID
+			, CMNT_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+			, FRST_CRT_ID
+			, FRST_CRT_DT
+		FROM
+			G_CMNTY_OFF_SR_BBS_CMNT_FILE
+		WHERE
+			CMNT_ID = #{cmntId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<select id="getOffSrBbsCmntFileDetail" parameterType="long" resultType="saleson.shop.community.doamin.CmntyOffSrBbsCmntFileDto">
+		/**cmnty-mapper.getOffSrBbsCmntFileDetail */
+		SELECT
+			FILE_ID
+			, CMNT_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_CMNTY_OFF_SR_BBS_CMNT_FILE
+		WHERE
+			FILE_ID = #{fileId}
+	</select>
+
+	<update id="deleteOffSrBbsCmntFileByCmntId" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsCmntFileDto">
+		/**cmnty-mapper.deleteOffSrBbsCmntFileByCmntId */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID = #{cmntId}
+	</update>
+
+	<update id="deleteOffSrBbsCmntFileByFileId" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsCmntFileDto">
+		/**cmnty-mapper.deleteOffSrBbsCmntFileByFileId */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<update id="deleteOffSrBbsCmntByBbsId" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsDto">
+		/**cmnty-mapper.deleteOffSrBbsCmntByBbsId */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS_CMNT
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+	<update id="deleteOffSrBbsCmntFileByBbsId" parameterType="saleson.shop.community.doamin.CmntyOffSrBbsDto">
+		/**cmnty-mapper.deleteOffSrBbsCmntFileByBbsId */
+		UPDATE
+			G_CMNTY_OFF_SR_BBS_CMNT_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{frstCrtId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			CMNT_ID IN (
+				SELECT
+					CMNT_ID
+				FROM
+					G_CMNTY_OFF_SR_BBS_CMNT
+				WHERE
+					BBS_ID = #{bbsId}
+				)
+	</update>
+
+</mapper>

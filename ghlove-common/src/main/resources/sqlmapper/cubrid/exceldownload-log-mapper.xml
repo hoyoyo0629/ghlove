@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.log.ExceldownloadLogMapper">
+	<resultMap id="PrivacyLogResult" type="saleson.shop.log.support.PrivacyLogParam">
+		<result property="id" column="ID"/>
+		<result property="createdAt" column="CREATED_AT"/>
+		<result property="ip" column="IP"/>
+		<result property="loginType" column="LOGIN_TYPE"/>
+		<result property="managerId" column="MANAGER_ID"/>
+		<result property="loginId" column="LOGIN_ID"/>
+		<result property="method" column="METHOD"/>
+		<result property="name" column="NAME"/>
+		<result property="reasonType" column="REASON_TYPE"/>
+		<result property="reasonTypeNm" column="REASON_TYPE_NM"/>
+		<result property="reason" column="REASON"/>
+		<result property="task" column="TASK"/>
+		<result property="url" column="URL"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="histCnt" column="HIST_CNT"/>
+	</resultMap>
+
+
+	<select id="getExceldownloadLogListCountByParam" parameterType="saleson.shop.log.support.PrivacyLogParam" resultType="int">
+		/** exceldownload-log-mapper.getExceldownloadLogListCountByParam (엑셀다운로드 사유 목록 갯수) */
+		SELECT
+			COUNT(*)
+		FROM (
+			SELECT
+				PL.ID,
+				PL.CREATED_AT,
+				PL.IP,
+				PL.LOGIN_TYPE,
+				PL.MANAGER_ID,
+				(CASE
+					WHEN LOGIN_TYPE = 'MANAGER' THEN (SELECT LOGIN_ID FROM OP_MANAGER WHERE PL.MANAGER_ID = USER_ID)
+					WHEN LOGIN_TYPE = 'SELLER' THEN (SELECT LOGIN_ID FROM OP_SELLER WHERE PL.MANAGER_ID = SELLER_ID)
+					ELSE ''
+				END) AS LOGIN_ID,
+				NVL(PL.MANAGER_ID, 0),
+				PL.METHOD,
+				PL.NAME,
+				PL.REASON,
+				PL.TASK,
+				PL.URL,
+				PL.USER_ID
+			FROM OP_PRIVACY_ACCESS_LOG PL
+			WHERE
+				PL.TASK = '엑셀 다운로드'
+				<if test="adminUserId != 0">
+					AND PL.MANAGER_ID = #{adminUserId}
+				</if>
+			ORDER BY PL.CREATED_AT DESC
+		) A
+		WHERE 1=1
+		<if test="srchKey == 'LOGIN_ID' and (srchValue != null and srchValue != '')">
+			AND A.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue},''))
+		</if>
+		<if test="srchKey == 'DOWNLOAD_MENU' and (srchValue != null and srchValue != '')">
+			AND A.NAME LIKE CONCAT('%', #{srchValue} , '%')
+		</if>
+		<if test="srchKey == 'REASON' and (srchValue != null and srchValue != '')">
+			AND A.REASON LIKE CONCAT('%', #{srchValue} , '%')
+		</if>
+		<if test="srchStartLogDate != null and srchStartLogDate != ''">
+			AND A.CREATED_AT <![CDATA[>=]]> CONCAT(#{srchStartLogDate}, '000000')
+		</if>
+		<if test="srchEndLogDate != null and srchEndLogDate != ''">
+			AND A.CREATED_AT <![CDATA[<=]]> CONCAT(#{srchEndLogDate}, '235959')
+		</if>
+	</select>
+
+	<select id="getExceldownloadLogListByParam" parameterType="saleson.shop.log.support.PrivacyLogParam" resultMap="PrivacyLogResult">
+		/** exceldownload-log-mapper.getExceldownloadLogListByParam (엑셀다운로드 사유 목록) */
+		SELECT
+			A.id,
+			A.created_at,
+			A.ip,
+			A.login_type,
+			(CASE
+				WHEN A.login_type = 'MANAGER' THEN crypto_dec('normal', A.login_id, '', 0)
+				WHEN A.login_type = 'SELLER' THEN A.login_id
+				ELSE ''
+			END) AS login_id,
+			A.manager_id,
+			A.method,
+			A.name,
+			A.reason,
+			A.task,
+			A.url,
+			A.user_id,
+			(select label from op_common_code where code_type = 'EXCELDOWNLOAD_REASON_TYPE' and A.reason_type = id) as reason_type,
+			A.hist_cnt
+		FROM (
+			<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				PL.id,
+				PL.created_at,
+				PL.ip,
+				PL.login_type,
+				(CASE
+					WHEN login_type = 'MANAGER' THEN (SELECT login_id FROM op_manager WHERE PL.manager_id = USER_ID)
+					WHEN login_type = 'SELLER' THEN (SELECT login_id FROM op_seller WHERE PL.manager_id = SELLER_ID)
+					ELSE ''
+				END) AS LOGIN_ID,
+				NVL(PL.manager_id, 0) AS manager_id,
+				PL.method,
+				PL.name,
+				PL.reason,
+				PL.task,
+				PL.url,
+				PL.user_id,
+				PL.reason_type,
+				(SELECT COUNT(*) FROM op_privacy_access_log_hist A WHERE A.privacy_access_log_id = PL.id) AS hist_cnt
+			FROM
+				op_privacy_access_log PL
+			WHERE
+				PL.task = '엑셀 다운로드'
+				<if test="adminUserId != 0">
+					AND PL.manager_id = #{adminUserId}
+				</if>
+			ORDER BY PL.created_at DESC
+		) A
+		WHERE 1=1
+		<if test="srchKey == 'LOGIN_ID' and (srchValue != null and srchValue != '')">
+			AND A.login_id = (SELECT crypto_enc('normal', #{srchValue},''))
+		</if>
+		<if test="srchKey == 'DOWNLOAD_MENU' and (srchValue != null and srchValue != '')">
+			AND A.name LIKE CONCAT('%', #{srchValue} , '%')
+		</if>
+		<if test="srchKey == 'REASON' and (srchValue != null and srchValue != '')">
+			AND A.reason LIKE CONCAT('%', #{srchValue} , '%')
+		</if>
+		<if test="srchStartLogDate != null and srchStartLogDate != ''">
+			AND A.created_at <![CDATA[>=]]> CONCAT(#{srchStartLogDate}, '000000')
+		</if>
+		<if test="srchEndLogDate != null and srchEndLogDate != ''">
+			AND A.created_at <![CDATA[<=]]> CONCAT(#{srchEndLogDate}, '235959')
+		</if>
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+	<select id="getExceldownloadLogDetail" parameterType="saleson.shop.log.support.PrivacyLogParam" resultMap="PrivacyLogResult">
+		SELECT
+			ID,
+			MANAGER_ID,
+			REASON_TYPE,
+			(select label from op_common_code where code_type = 'EXCELDOWNLOAD_REASON_TYPE' and reason_type = id) as REASON_TYPE_NM,
+			REASON
+		FROM
+			OP_PRIVACY_ACCESS_LOG
+		WHERE 1=1
+			AND ID = #{id}
+	</select>
+
+
+	<select id="getExcelAccessLogCheck" parameterType="saleson.shop.log.support.PrivacyLogParam" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			OP_PRIVACY_ACCESS_LOG
+		WHERE 1=1
+			AND IP = #{ip}
+			AND LOGIN_TYPE = #{loginType}
+			AND USER_ID = #{userId}
+			AND URL = #{url}
+			AND CREATED_AT BETWEEN #{srchStartLogDate} AND #{srchEndLogDate}
+	</select>
+</mapper>

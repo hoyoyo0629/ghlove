@@ -1,0 +1,52 @@
+.s-contents.donation-re {
+      text-align: center;
+}
+
+/* .s-contents.donation-re .progress-img{
+      margin-bottom: calc(var(--margin-padding-8)*5);
+} */
+
+.s-contents.donation-re .progress-title {
+      font-family: var(--fs-kangwonGyoT), sans-serif;
+      color: var(--main-color1);
+      padding: calc(var(--margin-padding-8)*5) 0;
+}
+
+.s-contents.donation-re .progress-subtitle {
+      font-size: 26px;
+      color: var(--gray2);
+      font-weight: 400;
+      margin-bottom: calc(var(--margin-padding-8)*3);
+      margin-bottom: calc(var(--margin-padding-8)*3);
+}
+
+.s-contents.donation-re p.pointRed {
+      /* padding: calc(var(--margin-padding-8)*3) 0; */
+      font-weight: 700;
+}
+
+.s-contents.donation-re p {
+      line-height: 1.5em;
+      margin-bottom: calc(var(--margin-padding-8)*3);
+}
+
+.s-contents.donation-re .example-wrap {
+      display: flex;
+      justify-content: center;
+      padding-top: calc(var(--margin-padding-8)*2);
+}
+
+.s-contents.donation-re .example-wrap div {
+      margin: 1%;
+}
+
+
+@media screen and (max-width:768px) {
+      .s-contents.donation-re{
+            margin-bottom: 40px;
+      }
+      .s-contents.donation-re .example-wrap {
+            flex-direction: column;
+      }
+
+}

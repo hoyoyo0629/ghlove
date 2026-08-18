@@ -1,0 +1,285 @@
+buildscript {
+    ext {
+        springBootVersion = "2.7.0"
+    }
+    repositories {
+        mavenCentral()
+        maven {url "https://plugins.gradle.org/m2/"}
+        maven {url "https://repo.spring.io/milestone"}
+        maven { url "https://maven.egovframe.go.kr/maven/"
+            metadataSources {
+                artifact()
+            }}
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        // 1. jspc-gradle-plugin
+        classpath "gradle.plugin.com.liferay:gradle-plugins-jasper-jspc:2.0.6"
+
+		println '>>>>>>>>>>> [active]=' + project.hasProperty("active")
+		if (!project.hasProperty("active") || 'local'.equals(project.property("active"))) {
+	        // 2. tomcat-plugin
+	        println '>>>>>>>>>>> [tomcat] dependency'
+	        classpath 'com.bmuschko:gradle-tomcat-plugin:2.5'
+        } else {
+        	println '>>>>>>>>>>> [undertow] dependency'
+        }
+    }
+}
+
+plugins {
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "idea"
+    apply plugin: "eclipse"
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
+
+
+    group = 'com.onlinepowers'
+    version = '3.15.0'
+    sourceCompatibility = '11'
+
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url "https://maven.egovframe.go.kr/maven/"
+            metadataSources {
+                artifact()
+            }}
+    }
+
+    task initSourceFolders {
+        sourceSets*.java.srcDirs*.each {
+            if( !it.exists() ) {
+                it.mkdirs()
+            }
+        }
+
+        sourceSets*.resources.srcDirs*.each {
+            if( !it.exists() ) {
+                it.mkdirs()
+            }
+        }
+    }
+
+    task unpack(type: Copy) {
+        dependsOn bootJar
+        from(zipTree(tasks.bootJar.outputs.files.singleFile))
+        into("build/dependency")
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        if (!project.hasProperty("active") || 'local'.equals(project.property("active"))) {
+			implementation 'org.springframework.boot:spring-boot-starter-web'
+			// implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+		} else {
+			implementation ('org.springframework.boot:spring-boot-starter-web') {
+	            exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+	            // exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+	        }
+            implementation 'org.springframework.boot:spring-boot-starter-undertow'
+		}
+
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-devtools'
+
+        //providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+        implementation 'javax.xml.bind:jaxb-api'
+        implementation 'javax.xml.soap:javax.xml.soap-api:1.4.0'
+
+
+        // lombok
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+        // Junit5
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // egovframework
+        implementation 'org.egovframe.rte:org.egovframe.rte.ptl.mvc:4.0.0'
+        implementation 'org.egovframe.rte:org.egovframe.rte.psl.dataaccess:4.0.0'
+        implementation 'org.egovframe.rte:org.egovframe.rte.fdl.cmmn:4.0.0'
+        implementation 'org.egovframe.rte:org.egovframe.rte.fdl.logging:4.0.0'
+        // JBoss 처리를 위해 내부로 이동
+        // implementation 'org.egovframe.rte:spring-modules-validation:0.9'
+    }
+    test {
+        useJUnitPlatform()
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    // eclipse 에서도 동작 확인
+    configure("querydsl") {
+        apply plugin: "io.spring.dependency-management"
+
+        dependencies {
+            //implementation "com.querydsl:querydsl-jpa"
+            //implementation "com.querydsl:querydsl-core"
+            //annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
+            //annotationProcessor "jakarta.persistence:jakarta.persistence-api:2.2.3"
+            //annotationProcessor "jakarta.annotation:jakarta.annotation-api:1.3.5"
+
+            implementation "com.querydsl:querydsl-jpa"
+			implementation "com.querydsl:querydsl-core"
+			implementation "com.querydsl:querydsl-collections"
+			annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
+			annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+			annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+        }
+
+        // querydsl 적용
+        def generated='src/main/generated'
+        sourceSets {
+            main.java.srcDirs += [ generated ]
+        }
+
+        tasks.withType(JavaCompile) {
+            options.annotationProcessorGeneratedSourcesDirectory = file(generated)
+        }
+
+        clean.doLast {
+            file(generated).deleteDir()
+            delete file('out') // 인텔리J build output 경로
+        }
+    }
+}
+
+
+task buildGhloveContent(type: Zip){
+	println '################## Run Build buildGhloveContent ##################'
+    from ('ghlove-web/static/content')
+    archiveFileName = provider {
+        "ghlove-static-content.zip"
+    }
+}
+task buildGhloveFrontend(type: Zip){
+	println '################## Run Build buildGhloveFrontend ##################'
+
+	if (project.hasProperty("active")) {
+		def condigPath = "ghlove-frontend/modules"
+		def staticPath = "ghlove-frontend/static/css"
+		def scriptPath = "ghlove-frontend/static/js"
+		def configFile = "${condigPath}/op.config-"+project.property("active")+".js"
+		def targetFile = "${condigPath}/op.config.js"
+		def backupFile = "${condigPath}/op.config-backup.js"
+
+		def wcslogTrgFile = "${condigPath}/op.wcslog.js"
+		def wcslogLocFile = "${condigPath}/op.wcslog_local.js"
+		def wcslogPrdFile = "${condigPath}/op.wcslog_prod.js"
+
+		def commonCssTrgFile = "${staticPath}/common.css"
+		def commonCssLocFile = "${staticPath}/common_local.css"
+		def commonCssPrdFile = "${staticPath}/common_prod.css"
+
+		def netfunnelTrgFile = "${scriptPath}/netfunnel.js"
+		def netfunnelLocFile = "${scriptPath}/netfunnel_local.js"
+		def netfunnelPrdFile = "${scriptPath}/netfunnel_prod.js"
+
+		doFirst{
+			println "Back up : ${targetFile} -> ${backupFile}"
+			file(targetFile).renameTo(file(backupFile))
+
+			println "Copying : ${configFile} -> ${targetFile}"
+			copy {
+				from configFile
+				into condigPath
+				rename {"op.config.js"}
+			}
+
+
+			println "Copying : ${wcslogPrdFile} -> ${wcslogTrgFile}"
+			copy {
+				from wcslogPrdFile
+				into condigPath
+				rename {"op.wcslog.js"}
+			}
+
+			println "Copying : ${commonCssPrdFile} -> ${commonCssTrgFile}"
+			copy {
+				from commonCssPrdFile
+				into staticPath
+				rename {"common.css"}
+			}
+
+			println "Copying : ${netfunnelPrdFile} -> ${netfunnelTrgFile}"
+			copy {
+				from netfunnelPrdFile
+				into scriptPath
+				rename {"netfunnel.js"}
+			}
+		}
+
+	    doLast{
+			println "Deleting : ${targetFile}"
+			delete file(targetFile)
+
+			println "Restoring : ${backupFile} -> ${targetFile}"
+			file(backupFile).renameTo(file(targetFile))
+
+			println "Deleting : ${backupFile}"
+			delete file(backupFile)
+
+			println "Copying : ${wcslogLocFile} -> ${wcslogTrgFile}"
+			copy {
+				from wcslogLocFile
+				into condigPath
+				rename {"op.wcslog.js"}
+			}
+
+			println "Copying : ${commonCssLocFile} -> ${commonCssTrgFile}"
+			copy {
+				from commonCssLocFile
+				into staticPath
+				rename {"common.css"}
+			}
+
+			println "Copying : ${netfunnelLocFile} -> ${netfunnelTrgFile}"
+			copy {
+				from netfunnelLocFile
+				into scriptPath
+				rename {"netfunnel.js"}
+			}
+
+
+
+		}
+	}
+
+    from ('ghlove-frontend') {
+        exclude('.docker')
+        //exclude('common')
+        //exclude('html')
+        exclude('Dockerfile')
+        //exclude('*.iml')
+        exclude('index.js')
+        exclude('node_modules')
+    }
+    archiveFileName = provider {
+        "ghlove-frontend.zip"
+    }
+}
+task buildGhloveReport(type: Zip){
+	println '################## Run Build buildGhloveReport ##################'
+    from ('ghlove-web/src/main/webapp/WEB-INF/oz')
+    archiveFileName = provider {
+        "ghlove-report.zip"
+    }
+}
+build.dependsOn buildGhloveContent
+build.dependsOn buildGhloveFrontend
+build.dependsOn buildGhloveReport

@@ -1,0 +1,1696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.donation.NgDonationMapper">
+
+  <resultMap id="UserCntrResult" type="saleson.shop.donation.domain.UserCntrInfo">
+    <result property="cntrAmt" column="CNTR_AMT" />
+  </resultMap>
+
+  <resultMap id="SidoResult" type="saleson.shop.donation.support.SidoListParam">
+    <result property="sidoCode" column="ID" />
+    <result property="sidoName" column="LABEL" />
+  </resultMap>
+
+  <resultMap id="CityResult" type="saleson.shop.donation.support.SidoListParam">
+    <result property="cityCode" column="LOCGOV_CODE" />
+    <result property="cityName" column="LOCGOV_NM" />
+    <result property="sidoCode" column="UPPER_LOCGOV_CODE" />
+    <result property="sidoName" column="UPPER_LOCGOV_NM" />
+    <result property="isExist" column="IS_EXIST" />
+  </resultMap>
+
+  <resultMap id="UserDetailResult" type="saleson.shop.user.domain.UserDetail">
+    <result property="userId" column="USER_ID" />
+    <result property="address" column="ADDRESS" />
+    <result property="addressDetail" column="ADDRESS_DETAIL" />
+    <result property="telNumber" column="TEL_NUMBER" />
+    <result property="phoneNumber" column="PHONE_NUMBER" />
+    <result property="birthday" column="BIRTHDAY" />
+    <result property="mberCiYn" column="MBER_CI_YN" />
+    <result property="mberCi" column="MBER_CI" />
+
+  </resultMap>
+
+  <resultMap id="SunapParam" type="saleson.shop.donation.support.SeoulParam">
+    <result property="bookNo" column="BOOK_NO" />
+    <result property="enapbuNo" column="ENAPBU_NO" />
+    <result property="jijacheCd" column="LOCGOV_CODE" />
+    <result property="userCntrPoint" column="USER_CNTR_POINT" />
+    <result property="presentType" column="PRESENT_TYPE" />
+  </resultMap>
+
+  <resultMap id="NtsParam" type="saleson.shop.donation.support.SeoulParam">
+    <result property="userId" column="USER_ID" />
+    <result property="jijacheCd" column="LOCGOV_CODE" />
+    <result property="taxAmt" column="TAX_AMT" />
+    <result property="sttemntPayDe" column="STTEMNT_PAY_DE" />
+  </resultMap>
+
+  <resultMap id="GiroParam" type="saleson.shop.donation.support.GiroParam">
+    <result property="jijacheCd" column="LOCGOV_CODE" />
+    <result property="useInsttCode" column="USE_INSTT_CODE" />
+    <result property="giroNo" column="GIRO_NO" />
+  </resultMap>
+
+  <resultMap id="NextGnrParam" type="saleson.shop.donation.support.NextGnrParam">
+    <result property="jijacheCd" column="LOCGOV_CODE" />
+    <result property="useInsttCode" column="USE_INSTT_CODE" />
+    <result property="giroNo" column="GIRO_NO" />
+  </resultMap>
+
+  <select id="getUserCntrLimit" parameterType="long" resultType="Integer">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getUserCntrLimit */
+    select 5000000-((select nvl(SUM(CAST(CNTR_AMT AS bigint)),0)
+                          from g_mber_secsn
+                 where mber_ci = (select mber_ci from op_user where user_id = #{value})
+                     and secsn_year = DATE_FORMAT(now(),'%Y'))+
+                 (select NVL(SUM(CAST(CNTR_AMT AS bigint)),0)
+                 from g_cntr
+              where user_id = #{value}
+                  and substr(cntr_de,0,4) = DATE_FORMAT(now(),'%Y')
+                    and delete_at = 'N')) as cntr_amt
+    ]]>
+  </select>
+
+  <select id="getSidoList" parameterType="saleson.shop.donation.support.DonationParam" resultMap="SidoResult" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getSidoList */
+    SELECT ID
+         , LABEL
+      FROM OP_COMMON_CODE
+     WHERE CODE_TYPE = 'WDR'
+     ORDER BY ORDERING
+    ]]>
+  </select>
+
+  <select id="getSigunguList" parameterType="saleson.shop.donation.support.DonationParam" resultMap="CityResult" >
+    /* saleson.shop.donation.NgDonationMapper.getSigunguList */
+    <![CDATA[
+    SELECT LOCGOV_CODE
+         , LOCGOV_NM
+         , UPPER_LOCGOV_CODE
+         , UPPER_LOCGOV_NM
+         /* 지정기부 사업이 존재하고, prjStatus(진행 or 종료)를 조건으로 지정기부 사업이 존재 시 isExist = Y로 반환 */
+         , (SELECT 'Y' FROM G_DSGN_DNTN_BIZ_MNG B WHERE B.LCLGV_CD = A.LOCGOV_CODE AND DSGN_DNTN_BIZ_STTS_CD = #{prjStatus} LIMIT 1) AS IS_EXIST
+      FROM G_LOCGOV A
+     WHERE UPPER_LOCGOV_CODE = #{sidoCode}
+     AND A.USE_AT = 'Y'
+     ORDER BY ORDERING
+    ]]>
+  </select>
+
+  <select id="getLocGovInfo" parameterType="saleson.shop.user.domain.LocGovInfo" resultType="saleson.shop.donation.domain.DoLocGovInfo">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getLocGovInfo */
+    SELECT GLG.LOCGOV_CODE
+         , GLG.UPPER_LOCGOV_NM
+         , GLG.LOCGOV_NM
+         , GLG.UPPER_LOCGOV_CODE
+         , GLG.LOCGOV_INTRCN_CN
+         , crypto_dec('normal', GLG.CHARGER_CTTPC,'dba',0) AS CHARGER_CTTPC
+         , crypto_dec('normal', GLG.CHARGER_NM,'dba',0) AS CHARGER_NM
+         , GLG.CHARGER_PSITN_DEPT
+         , GLG.LOCGOV_HMPG
+         , GLG.LOCGOV_POPLTN_CO
+         , GLG.LOCGOV_AR
+         , GLG.LOCGOV_SPCPRD
+         , GLG.GCCT_USE_AT
+         , GLG.ETRCSH_USE_AT
+         , GLG.LOCGOV_BUDGET_AMT
+         , GLG.BIZRNO
+         , GLG.LOCGOV_ZIP
+         , GLG.BASS_ADRES
+         , GLG.DTL_ADRES
+         , GLG.ACHLQR_SLE_AT
+         , GLG.USE_AT
+         , GLG.FRST_REGISTER_ID
+         , GLG.FRST_REGIST_PNTTM
+         , GLG.LAST_UPDUSR_ID
+         , GLG.LAST_UPDT_PNTTM
+         , NVL(GCS.POINT_RATE, 30) AS POINT_RATE
+         , GLG.STDR_1LEVEL_AMT
+         , GLG.STDR_2LEVEL_AMT
+         , GLG.STDR_3LEVEL_AMT
+         , (CASE WHEN #{userId} != 0 THEN ( SELECT COUNT(1)
+                                              FROM G_INTRST_LOCGOV
+                                             WHERE USER_ID = #{userId}
+                                               AND LOCGOV_CODE = #{locgovCode} )
+                 ELSE 0 END) AS INTRST_CNT
+         , DATE_FORMAT(GCL.LMTT_BGN_DE, '%Y.%m.%d') AS LMTT_BGN_DE
+         , DATE_FORMAT(GCL.LMTT_END_DE, '%Y.%m.%d') AS LMTT_END_DE
+         , GCL.VIOLT_RESN_CN
+      FROM G_LOCGOV GLG
+      LEFT OUTER JOIN G_CTBNY_SETUP GCS
+        ON GLG.LOCGOV_CODE = GCS.LOCGOV_CODE
+      LEFT OUTER JOIN G_CNTR_LMTT GCL
+        ON GLG.LOCGOV_CODE = GCL.LOCGOV_CODE
+       AND GCL.LMTT_BGN_DE <= CURRENT_DATE
+       AND GCL.LMTT_END_DE >= CURRENT_DATE
+     WHERE GLG.LOCGOV_CODE = #{locgovCode}
+       AND GCS.STDR_YEAR = TO_CHAR(CURRENT_DATE,'YYYY')
+    ]]>
+  </select>
+
+  <insert id="insertIntrstLocgovInfo" parameterType="saleson.shop.user.domain.LocGovInfo">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.insertIntrstLocgovInfo */
+    INSERT INTO G_INTRST_LOCGOV(
+      LOCGOV_CODE,
+      USER_ID,
+      REGIST_DE,
+      FRST_REGISTER_ID,
+      FRST_REGIST_PNTTM,
+      LAST_UPDUSR_ID,
+      LAST_UPDT_PNTTM
+      ) VALUES(
+        #{locgovCode},
+        #{userId},
+        DATE_FORMAT(now(),'%Y%m%d'),
+        #{userId},
+        DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),
+        #{userId},
+        DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+      )
+    ]]>
+  </insert>
+
+  <select id="getIntrstLocgovInfo" parameterType="saleson.shop.user.domain.LocGovInfo" resultType="Integer">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getIntrstLocgovInfo */
+    SELECT count(*)
+      FROM G_INTRST_LOCGOV
+     WHERE USER_ID = #{userId}
+       AND LOCGOV_CODE = #{locgovCode}
+    ]]>
+  </select>
+
+  <insert id="insertSntrBuga" parameterType="saleson.shop.donation.support.SeoulParam">
+    <selectKey keyProperty="cntrId" resultType="java.lang.String" order="BEFORE">
+         SELECT concat(DATE_FORMAT(now(),'%Y%m%d%H%m%s'), g_cntr_cntr_sn.next_value)
+      </selectKey>
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.insertSntrBuga */
+    INSERT INTO G_CNTR(
+      CNTR_SN,
+      CNTR_DE,
+      USER_ID,
+      PSITN_LOCGOV_CODE,
+      CNTR_LOCGOV_CODE,
+      CNTR_AMT,
+      CNTR_POINT,
+      PAY_VALID_DE,
+      CNTR_PATH_CODE,
+      CNTR_STTUS_CODE,
+      ELCTRN_PAY_NO,
+      SEOUL_TRGET_AT,
+      INFO_AGRE_AT,
+      RTNPSNT_REQST_CODE,
+      FRST_REGISTER_ID,
+      FRST_REGIST_PNTTM,
+      DELETE_AT,
+      FOREIGN_STATUS_CODE,
+      DSGN_DNTN_BIZ_ID
+      ) VALUES(
+        #{cntrId},
+        DATE_FORMAT(now(),'%Y%m%d'),
+        #{userId},
+        #{userRegionCd},
+        #{selectedRegionCd},
+        #{taxAmt},
+        0,
+        DATE_FORMAT(ADDDATE( NOW() , interval+1 DAY),'%Y%m%d'),
+        '100',
+        '100',
+        #{enapbuNo},
+        'Y',
+        '1',
+        #{presentType},
+        #{userId},
+        DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),
+        'N',
+        #{foreignStatusCode},
+        #{prjId}
+      )
+    ]]>
+  </insert>
+
+  <insert id="insertContryBuga" parameterType="saleson.shop.donation.support.ContryParam">
+    <selectKey keyProperty="cntrId" resultType="java.lang.String" order="BEFORE">
+         SELECT concat(DATE_FORMAT(now(),'%Y%m%d%H%m%s'), g_cntr_cntr_sn.next_value)
+      </selectKey>
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.insertContryBuga */
+    INSERT INTO G_CNTR(
+      CNTR_SN,
+      CNTR_DE,
+      USER_ID,
+      PSITN_LOCGOV_CODE,
+      CNTR_LOCGOV_CODE,
+      CNTR_AMT,
+      CNTR_POINT,
+      PAY_VALID_DE,
+      CNTR_PATH_CODE,
+      CNTR_STTUS_CODE,
+      ELCTRN_PAY_NO,
+      SEOUL_TRGET_AT,
+      INFO_AGRE_AT,
+      RTNPSNT_REQST_CODE,
+      FRST_REGISTER_ID,
+      FRST_REGIST_PNTTM,
+      DELETE_AT,
+      FOREIGN_STATUS_CODE,
+      DSGN_DNTN_BIZ_ID
+      ) VALUES(
+        #{cntrId},
+        DATE_FORMAT(now(),'%Y%m%d'),
+        #{userId},
+        #{userRegionCd},
+        #{selectedRegionCd},
+        #{taxAmt},
+        0,
+        #{payValidDe},
+        '100',
+        '100',
+        #{enapbuNo},
+        'N',
+        '1',
+        #{presentType},
+        #{userId},
+        DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),
+        'N',
+        #{foreignStatusCode},
+        #{prjId}
+      )
+    ]]>
+  </insert>
+
+  <select id="getUserDetail" parameterType="long" resultMap="UserDetailResult">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getUserDetail */
+    SELECT
+         a.user_id
+      ,	IF(a.mber_ci IS NOT NULL AND a.mber_ci !='', 'Y', 'N') 		AS mber_ci_yn
+      ,	crypto_dec('normal', b.address,'dba',0) 						AS address
+      , 	crypto_dec('normal', b.address_detail,'dba',0) 				AS address_detail
+      , 	crypto_dec('normal', b.phone_number,'dba',0) 				AS phone_number
+      , 	crypto_dec('normal', b.birthday,'dba',0) 						AS birthday
+      ,	b.birthday_type
+      ,	a.login_path_code
+      , a.mber_ci
+    FROM op_user a
+    INNER JOIN op_user_detail b ON a.user_id = b.user_id
+    WHERE a.user_id = #{value}
+    ]]>
+  </select>
+
+  <select id="getPresentTypeList" parameterType="saleson.shop.donation.support.DonationParam" resultMap="SidoResult" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getPresentTypeList */
+    SELECT ID
+         , LABEL
+      FROM OP_COMMON_CODE
+     WHERE CODE_TYPE = 'RTNPSNT_REQST'
+    ]]>
+  </select>
+
+  <select id="getBookNoSeoul" resultType="String" >
+    /* saleson.shop.donation.NgDonationMapper.getBookNoSeoul */
+    SELECT gif_seoul_book_no_seq.next_value
+  </select>
+
+  <select id="getBookNoContry" resultType="String" >
+    /* saleson.shop.donation.NgDonationMapper.getBookNoContry */
+    SELECT gif_stnd_mng_htm5_seq.next_value
+  </select>
+
+  <select id="getMngNoEtax" resultType="String" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getMngNoEtax */
+    select to_char(sysdatetime, 'hh24missFF') || lpad(random() % 1000, 3, 0)
+    ]]>
+  </select>
+
+  <select id="getMappingLocgovCode" parameterType="String" resultType="String" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getMappingLocgovCode */
+    SELECT locgov_mapng_code
+      FROM G_INSTT_CODE
+     WHERE locgov_code = #{locgovCode}
+    ]]>
+  </select>
+
+  <select id="getJijachDeptCd" parameterType="String" resultType="String" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getJijachDeptCd */
+    SELECT process_dept_code
+      FROM G_LOCGOV
+     WHERE locgov_code = #{locgovCode}
+    ]]>
+  </select>
+
+  <select id="getSiguCdSeoul" parameterType="String" resultType="String" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getSiguCdSeoul */
+    SELECT administ_instt_code
+      FROM G_LOCGOV
+     WHERE locgov_code = #{locgovCode}
+    ]]>
+  </select>
+
+  <select id="getUserCI" parameterType="long" resultType="String" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getUserCI */
+    SELECT mber_ci
+      FROM OP_USER
+     WHERE USER_ID = #{value}
+    ]]>
+  </select>
+
+  <update id="sunapSuccess" parameterType="saleson.shop.donation.support.SeoulParam">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.sunapSuccess */
+    UPDATE G_CNTR gc
+       SET gc.CNTR_POINT = CASE WHEN gc.rtnpsnt_reqst_code = '100'  THEN (gc.cntr_amt *(select point_rate from g_ctbny_setup where locgov_code = gc.cntr_locgov_code and stdr_year = DATE_FORMAT(now(),'%Y') )/100)
+       		WHEN gc.rtnpsnt_reqst_code = '300' THEN 0
+       		ELSE 0 END
+         , gc.CNTR_BLCE_POINT = CASE WHEN gc.rtnpsnt_reqst_code = '100' THEN (gc.cntr_amt *(select point_rate from g_ctbny_setup where locgov_code = gc.cntr_locgov_code and stdr_year = DATE_FORMAT(now(),'%Y') )/100) WHEN rtnpsnt_reqst_code = '300' THEN 0
+			ELSE 0 END
+         , gc.STTEMNT_PAY_DE = IFNULL(#{sttemntPayDe}, gc.cntr_de)
+         , gc.POINT_END_DE = CASE WHEN gc.rtnpsnt_reqst_code = '100' THEN DATE_FORMAT(ADDDATE( NOW() , interval+5 YEAR),'%Y%m%d') WHEN gc.rtnpsnt_reqst_code = '300' THEN NULL
+         ELSE NULL END
+         , gc.CNTR_STTUS_CODE = '200'
+         , gc.LAST_UPDUSR_ID = #{userId}
+         , gc.DELETE_AT = 'N'
+         , gc.LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+     WHERE gc.ELCTRN_PAY_NO = #{enapbuNo} and gc.USER_ID = #{userId}
+    ]]>
+  </update>
+
+  <update id="sunapResultSuccess" parameterType="saleson.shop.donation.support.SeoulParam">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.sunapResultSuccess */
+    UPDATE G_CNTR gc
+       SET gc.CNTR_POINT = CASE WHEN gc.rtnpsnt_reqst_code = '100' THEN (gc.cntr_amt *(select point_rate from g_ctbny_setup where locgov_code = gc.cntr_locgov_code and stdr_year = DATE_FORMAT(now(),'%Y') )/100) WHEN gc.rtnpsnt_reqst_code = '300' THEN 0 END
+         , gc.CNTR_BLCE_POINT = CASE WHEN gc.rtnpsnt_reqst_code = '100' THEN (gc.cntr_amt *(select point_rate from g_ctbny_setup where locgov_code = gc.cntr_locgov_code and stdr_year = DATE_FORMAT(now(),'%Y') )/100) WHEN rtnpsnt_reqst_code = '300' THEN 0 END
+         , gc.STTEMNT_PAY_DE = IFNULL(#{sttemntPayDe}, DATE_FORMAT(now(),'%Y%m%d'))
+         , gc.POINT_END_DE = CASE WHEN gc.rtnpsnt_reqst_code = '100' THEN DATE_FORMAT(ADDDATE( NOW() , interval+5 YEAR),'%Y%m%d') WHEN gc.rtnpsnt_reqst_code = '300' THEN NULL END
+         , gc.CNTR_STTUS_CODE = '200'
+         , gc.LAST_UPDUSR_ID = #{userId}
+         , gc.DELETE_AT = 'N'
+         , gc.LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+     WHERE gc.ELCTRN_PAY_NO = #{enapbuNo}
+    ]]>
+  </update>
+
+  <update id="updateSunapBatchCompleted" parameterType="saleson.shop.donation.support.SeoulParam">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.updateSunapBatchCompleted */
+    UPDATE G_CNTR gc
+       SET
+          gc.CNTR_STTUS_CODE = '900'
+         , gc.LAST_UPDUSR_ID = 0
+         , gc.LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+     WHERE gc.ELCTRN_PAY_NO = #{enapbuNo}
+    ]]>
+  </update>
+
+  <update id="deleteCntrData">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.deleteCntrData */
+    UPDATE G_CNTR
+       SET DELETE_AT = 'Y'
+         , LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+         , LAST_UPDUSR_ID = 0
+     WHERE datediff(DATE_FORMAT(now(),'%Y%m%d'), cntr_de) > 0
+          AND STTEMNT_PAY_DE is null
+          AND DELETE_AT = 'N'
+          AND SEOUL_TRGET_AT = 'Y'
+    ]]>
+  </update>
+
+  <update id="updateNtsStatus" parameterType="saleson.shop.donation.support.SeoulParam">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.updateNtsStatus */
+    UPDATE G_CNTR
+       SET NTS_STTUS_MSSAGE = #{resMsg}
+         , LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+         , LAST_UPDUSR_ID = 0
+     WHERE ELCTRN_PAY_NO = #{enapbuNo}
+    ]]>
+  </update>
+
+  <select id="getStandardNotSunapList" resultMap="SunapParam" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getStandardNotSunapList */
+    select gc.elctrn_pay_no enapbu_no
+         , gsb.mng_htm5 book_no
+         , gc.cntr_locgov_code jijache_cd
+         , gc.cntr_amt *(select point_rate from g_ctbny_setup where locgov_code = gc.cntr_locgov_code and stdr_year = DATE_FORMAT(now(),'%Y') )/100 as user_cntr_point
+         , gc.rtnpsnt_reqst_code present_type
+      from g_cntr gc
+      inner join gif_stnd_buga_now gsb
+        on gc.elctrn_pay_no = gsb.elct_pay_no
+     where gc.sttemnt_pay_de is null
+       and gc.delete_at = 'N'
+       and gc.seoul_trget_at = 'N'
+       and gc.pay_valid_de > DATE_FORMAT(now(),'%Y%m%d')
+    ]]>
+  </select>
+
+  <select id="getSeoulNotSunapList" resultMap="SunapParam" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getSeoulNotSunapList */
+    select gc.elctrn_pay_no enapbu_no
+         , (select to_char(sysdatetime, 'hh24missFF') || lpad(random() % 1000, 3, 0) ) book_no
+         , gc.cntr_locgov_code jijache_cd
+         , gc.cntr_amt *(select point_rate from g_ctbny_setup where locgov_code = gc.cntr_locgov_code and stdr_year = DATE_FORMAT(now(),'%Y') )/100 as user_cntr_point
+         , gc.rtnpsnt_reqst_code present_type
+      from g_cntr gc
+      inner join gif_seoul gs
+        on gc.elctrn_pay_no = gs.elct_pay_no
+     where gc.sttemnt_pay_de is null
+       and gc.delete_at = 'N'
+       and gc.seoul_trget_at = 'Y'
+       and gc.pay_valid_de > DATE_FORMAT(now(),'%Y%m%d')
+    ]]>
+  </select>
+
+  <select id="getBizNo" parameterType="String" resultType="String" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getBizNo */
+    SELECT bizrno
+      FROM G_LOCGOV
+     WHERE locgov_code = #{jijacheCd}
+    ]]>
+  </select>
+
+  <select id="getNtsEreceipt" parameterType="String"  resultMap="NtsParam">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getNtsEreceipt */
+    select gc.frst_register_id user_id
+        , gc.cntr_locgov_code locgov_code
+        , gc.cntr_amt tax_amt
+        , gc.sttemnt_pay_de
+        , (select mber_ci from op_user where user_id = gc.user_id ) user_ci
+        , (select bizrno from g_locgov where locgov_code = gc.cntr_locgov_code ) biz_no
+        , gc.elctrn_pay_no enapbu_no
+     from g_cntr gc
+    where gc.sttemnt_pay_de is not null
+      and gc.cntr_sttus_code = '200'
+      and gc.delete_at = 'N'
+      and gc.elctrn_pay_no = #{enapbuNo}
+      and (gc.nts_sttus_mssage is null OR gc.nts_sttus_mssage = 'null')
+    ]]>
+  </select>
+
+  <select id="getNtsEreceiptNotList" parameterType="String"  resultMap="NtsParam">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getNtsEreceiptNotList */
+    select user_id
+         , locgov_code
+         , tax_amt
+         , sttemnt_pay_de
+         , user_ci
+         , biz_no
+         , enapbu_no
+      from ( select gc.frst_register_id user_id
+              , gc.cntr_locgov_code locgov_code
+              , gc.cntr_amt tax_amt
+              , gc.sttemnt_pay_de
+              , (select mber_ci from op_user where user_id = gc.user_id ) user_ci
+              , (select bizrno from g_locgov where locgov_code = gc.cntr_locgov_code ) biz_no
+              , gc.elctrn_pay_no enapbu_no
+           from g_cntr gc
+          where gc.sttemnt_pay_de is not null
+            and gc.cntr_sttus_code = '200'
+            and gc.cntr_path_code = #{cntrPathCode}
+            and gc.delete_at = 'N'
+            and gc.sttemnt_pay_de = TO_CHAR(ADDDATE( SYSDATETIME , INTERVAL -1 DAY), 'yyyymmdd')
+            and (gc.nts_sttus_mssage is null OR gc.nts_sttus_mssage = 'null')
+           order by gc.cntr_de )
+       where rownum <= 100 AND user_ci IS NOT null
+    ]]>
+  </select>
+
+  <select id="getNtsEreceiptNotListOld" resultMap="NtsParam">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getNtsEreceiptNotListOld */
+    select user_id
+         , locgov_code
+         , tax_amt
+         , sttemnt_pay_de
+         , user_ci
+         , biz_no
+         , enapbu_no
+      from ( select gc.frst_register_id user_id
+              , gc.cntr_locgov_code locgov_code
+              , gc.cntr_amt tax_amt
+              , gc.sttemnt_pay_de
+              , (select mber_ci from op_user where user_id = gc.user_id ) user_ci
+              , (select bizrno from g_locgov where locgov_code = gc.cntr_locgov_code ) biz_no
+              , gc.elctrn_pay_no enapbu_no
+           from g_cntr gc
+          where gc.sttemnt_pay_de is not null
+            and gc.cntr_sttus_code = '200'
+            and gc.delete_at = 'N'
+            and (gc.nts_sttus_mssage is null OR gc.nts_sttus_mssage = 'null')
+           order by gc.cntr_de )
+       where rownum <= 100 AND user_ci IS NOT null
+    ]]>
+  </select>
+
+  <update id="deleteNotSunapStndOneBatch">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.deleteNotSunapStndOneBatch */
+    UPDATE G_CNTR
+       SET DELETE_AT = 'Y'
+         , LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+         , LAST_UPDUSR_ID = 0
+     WHERE datediff(DATE_FORMAT(now(),'%Y%m%d'), cntr_de) > 0
+          AND STTEMNT_PAY_DE is null
+          AND DELETE_AT = 'N'
+          AND SEOUL_TRGET_AT = 'N'
+    ]]>
+  </update>
+
+  <update id="deleteNotSunapStndBatch">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.deleteNotSunapStndBatch */
+    UPDATE G_CNTR
+       SET DELETE_AT = 'Y'
+         , LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+         , LAST_UPDUSR_ID = 0
+     WHERE datediff(DATE_FORMAT(now(),'%Y%m%d'), pay_valid_de) > 0
+          AND STTEMNT_PAY_DE is null
+          AND DELETE_AT = 'N'
+          AND SEOUL_TRGET_AT = 'N'
+    ]]>
+  </update>
+
+  <insert id="insertHometaxGif" parameterType="saleson.shop.donation.support.SeoulParam">
+    <selectKey keyProperty="cntrId" resultType="java.lang.String" order="BEFORE">
+          SELECT to_char(sysdatetime, 'yyyyMMddhh24miss') || lpad(random() % 100000, 16, 0)
+      </selectKey>
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.insertHometaxGif */
+    INSERT INTO GIF_HOMETAX(
+      if_no,
+      elctrn_pay_no,
+      user_id,
+      dnt_dt,
+      conb_cd,
+      dnt_amt,
+      cntr_type,
+      mem_ci,
+      biz_no,
+      result_code,
+      result_msg,
+      if_st_dt
+      ) VALUES(
+        #{cntrId},
+        #{enapbuNo},
+        #{userId},
+        #{sttemntPayDe},
+        #{conbCd},
+        #{taxAmt},
+        #{cntrType},
+        #{userCi},
+        #{bizNo},
+        #{resCode},
+        #{resMsg},
+        DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+      )
+    ]]>
+  </insert>
+
+  <select id="getGiroData" parameterType="saleson.shop.donation.support.GiroParam" resultMap="GiroParam" >
+    /* saleson.shop.donation.NgDonationMapper.getGiroData */
+    select B.locgov_code,
+           B.use_instt_code,
+           B.giro_no
+    FROM   G_LOCGOV A, G_GIRO B
+    WHERE  A.LOCGOV_CODE = B.locgov_code
+    AND    A.LOCGOV_CODE = #{jijacheCd}
+  </select>
+
+  <select id="selectHometaxCount" parameterType="saleson.shop.donation.support.SeoulParam" resultType="int" >
+    /* saleson.shop.donation.NgDonationMapper.selectHometaxCount */
+    SELECT COUNT(*)
+    FROM  GIF_HOMETAX
+    WHERE elctrn_pay_no = #{enapbuNo}
+  </select>
+
+  <select id="getProcessDeptCd" parameterType="hashMap" resultType="String" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getProcessDeptCd */
+    SELECT process_dept_code
+      FROM G_LOCGOV
+     WHERE locgov_code = #{locgovCode}
+    ]]>
+  </select>
+
+  <select id="getCntrLmtt" parameterType="saleson.shop.donation.support.SidoListParam" resultType="saleson.shop.donation.domain.CntrLmtt" >
+    /* saleson.shop.donation.NgDonationMapper.getCntrLmtt */
+    SELECT DATE_FORMAT(LMTT_BGN_DE, '%Y.%m.%d') AS LMTT_BGN_DE
+           ,DATE_FORMAT(LMTT_END_DE, '%Y.%m.%d') AS LMTT_END_DE
+           ,VIOLT_RESN_CN
+      FROM G_CNTR_LMTT
+     WHERE LOCGOV_CODE = #{cityCode}
+       AND LMTT_BGN_DE <![CDATA[<=]]> CURRENT_DATE
+       AND LMTT_END_DE <![CDATA[>=]]> CURRENT_DATE
+  </select>
+
+  <select id="getHonorCntrLevel" parameterType="saleson.shop.user.domain.LocGovInfo" resultType="saleson.shop.donation.domain.HonorCntr" >
+    /* saleson.shop.donation.NgDonationMapper.getHonorCntrLevel */
+    SELECT GL.LOCGOV_CODE
+           ,GL.UPPER_LOCGOV_NM
+           ,GL.LOCGOV_NM
+         ,#{userId} AS USER_ID
+         ,(SELECT MBER_CI FROM OP_USER WHERE USER_ID = #{userId}) AS MBER_CI
+         ,(SELECT CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME FROM OP_USER WHERE USER_ID = #{userId}) AS USER_NAME
+         ,(SELECT RECEIVE_SMS FROM OP_USER_DETAIL WHERE USER_ID = #{userId}) AS RECEIVE_SMS
+         ,(SELECT REPLACE (CRYPTO_DEC('normal',PHONE_NUMBER, '', 0),'-','') FROM OP_USER_DETAIL WHERE USER_ID = #{userId}) AS PHONE_NUMBER
+         ,NVL(( SELECT ( CASE WHEN SUM(CNTR_AMT) <![CDATA[>=]]> STDR_3LEVEL_AMT THEN '300'
+                         WHEN SUM(CNTR_AMT) <![CDATA[>=]]> STDR_2LEVEL_AMT THEN '200'
+                        WHEN SUM(CNTR_AMT) <![CDATA[>=]]> STDR_1LEVEL_AMT THEN '100'
+                       ELSE '0' END )
+                   FROM G_CNTR
+                       WHERE YEAR(STTEMNT_PAY_DE) = YEAR(CURRENT_DATE)
+                         AND CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+                         AND DELETE_AT = 'N'
+                  AND CNTR_STTUS_CODE = '200'
+                  AND USER_ID = #{userId}
+                     AND STTEMNT_PAY_DE IS NOT NULL ), 0) AS CODE
+               ,NVL(( SELECT HONOR_CNTRBTR_LEVEL_CODE
+                        FROM G_HONOR_CNTRBTR
+                       WHERE STDR_YEAR = YEAR(CURRENT_DATE)
+                         AND USER_ID = #{userId}
+                         AND LOCGOV_CODE = GL.LOCGOV_CODE ), 0) AS HONOR_CNTRBTR_LEVEL_CODE
+          FROM G_LOCGOV GL
+         WHERE GL.LOCGOV_CODE = #{locgovCode}
+           AND ( GL.STDR_1LEVEL_AMT <![CDATA[>=]]> 100
+                 OR
+                 GL.STDR_2LEVEL_AMT <![CDATA[>=]]> 100
+                 OR
+                 GL.STDR_3LEVEL_AMT <![CDATA[>=]]> 100 )
+  </select>
+
+  <insert id="insertHonorCntrbtr" parameterType="saleson.shop.donation.domain.HonorCntr">
+    /* saleson.shop.donation.NgDonationMapper.insertHonorCntrbtr */
+    INSERT INTO G_HONOR_CNTRBTR (
+      STDR_YEAR
+      ,LOCGOV_CODE
+      ,USER_ID
+      ,HONOR_CNTRBTR_LEVEL_CODE
+      ,FRST_REGISTER_ID
+      ,FRST_REGIST_PNTTM
+      ,LAST_UPDUSR_ID
+      ,LAST_UPDT_PNTTM
+    ) VALUES (
+      YEAR(CURRENT_DATE)
+      ,#{locgovCode}
+      ,#{userId}
+      ,#{code}
+      ,#{userId}
+      ,<include refid="CommonMapper.datetime" />
+      ,#{userId}
+      ,<include refid="CommonMapper.datetime" />
+    )
+  </insert>
+
+  <update id="updateHonorCntrbtr" parameterType="saleson.shop.donation.domain.HonorCntr">
+    /* saleson.shop.donation.NgDonationMapper.updateHonorCntrbtr */
+    UPDATE G_HONOR_CNTRBTR
+       SET HONOR_CNTRBTR_LEVEL_CODE = #{code}
+           ,LAST_UPDUSR_ID = #{userId}
+           ,LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />
+     WHERE STDR_YEAR = YEAR(CURRENT_DATE)
+       AND LOCGOV_CODE = #{locgovCode}
+       AND USER_ID = #{userId}
+  </update>
+
+  <delete id="deleteHonorCntrbtr" parameterType="saleson.shop.donation.domain.HonorCntr">
+    /* saleson.shop.donation.NgDonationMapper.deleteHonorCntrbtr */
+    DELETE
+      FROM G_HONOR_CNTRBTR
+     WHERE STDR_YEAR = YEAR(CURRENT_DATE)
+       AND LOCGOV_CODE = #{locgovCode}
+       AND USER_ID = #{userId}
+  </delete>
+
+  <select id="confirmSunapForDeletedList" resultType="hashMap">
+    /* saleson.shop.donation.NgDonationMapper.confirmSunapForDeletedList */
+    SELECT
+        gc.elctrn_pay_no
+      , 	(select mng_htm5 from gif_stnd_buga_now gsb where gc.elctrn_pay_no = gsb.elct_pay_no) as book_no
+        , 	gc.cntr_locgov_code jijache_cd
+        , 	gc.seoul_trget_at
+        ,	gc.cntr_de
+        ,	gc.user_id
+      FROM g_cntr gc
+     WHERE gc.cntr_sttus_code = '100'
+       AND gc.cntr_path_code = '100'
+       AND gc.seoul_trget_at = 'Y'
+         AND gc.cntr_de = TO_CHAR(ADDDATE( SYSDATETIME , INTERVAL -1 DAY), 'yyyymmdd')
+       ORDER BY gc.frst_regist_pnttm desc
+       LIMIT 100
+  </select>
+
+  <select id="getLocgovFisSp" parameterType="String" resultType="String" >
+    /* saleson.shop.donation.NgDonationMapper.getLocgovFisSp */
+    SELECT
+      CASE WHEN IFNULL(fis_sp, '') = '' AND SUBSTRING(locgov_code, 3) = '000' THEN '31'
+        WHEN IFNULL(fis_sp, '') = '' AND SUBSTRING(locgov_code, 3) != '000' THEN '41'
+      ELSE fis_sp END fis_sp
+    FROM G_LOCGOV
+    WHERE locgov_code = #{locgovCode}
+  </select>
+
+  <update id="updateCntrBlcePoint" parameterType="String">
+    /* saleson.shop.donation.NgDonationMapper.updateCntrBlcePoint */
+    UPDATE G_CNTR
+    SET CNTR_BLCE_POINT = (CNTR_POINT - (SELECT IFNULL(SUM(cntr_use_point), 0) FROM g_cntr_use_point b WHERE CNTR_SN = #{cntrSn} AND b.use_se_code = '1'))
+    WHERE CNTR_SN = #{cntrSn}
+  </update>
+
+  <select id="getSmsSendGiveUserInfo" parameterType="saleson.shop.donation.support.SeoulParam" resultType="saleson.shop.donation.domain.GiveUserSmsInfo">
+    /* saleson.shop.donation.NgDonationMapper.getSmsSendGiveUserInfo */
+<!--     SELECT A.USER_ID
+           ,MBER_CI
+           ,CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+           ,(SELECT CONCAT(UPPER_LOCGOV_NM, ' ', LOCGOV_NM) FROM G_LOCGOV WHERE LOCGOV_CODE = B.CNTR_LOCGOV_CODE) as LOCGOV_NM
+           ,B.CNTR_AMT
+           ,C.RECEIVE_SMS
+           ,REPLACE (CRYPTO_DEC('normal',C.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+      FROM OP_USER A
+     INNER JOIN (SELECT USER_ID
+               ,SUM(CNTR_AMT) AS CNTR_AMT
+               ,CNTR_LOCGOV_CODE
+              FROM G_CNTR
+             WHERE USER_ID = #{userId}
+               AND DELETE_AT = 'N'
+               AND CNTR_STTUS_CODE = '200'
+               AND STTEMNT_PAY_DE IS NOT NULL
+             GROUP BY USER_ID ) B
+        ON A.USER_ID = B.USER_ID
+     INNER JOIN OP_USER_DETAIL C
+        ON A.USER_ID = C.USER_ID
+     WHERE 1=1
+       AND A.USER_ID = #{userId} -->
+
+	<!-- 수납완료처리한 기부정보의 지자체와 해당 지자체로 기부한 총 기부금액을 조회하도록 수정 -->
+    SELECT A.USER_ID
+           ,MBER_CI
+           ,CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+           ,(SELECT CONCAT(UPPER_LOCGOV_NM, ' ', LOCGOV_NM) FROM G_LOCGOV WHERE LOCGOV_CODE = B.CNTR_LOCGOV_CODE) AS LOCGOV_NM
+           ,B.CNTR_AMT
+           ,C.RECEIVE_SMS
+           ,REPLACE (CRYPTO_DEC('normal',C.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+      FROM OP_USER A
+     INNER JOIN (SELECT USER_ID
+				   ,SUM(CNTR_AMT) OVER (PARTITION BY CNTR_LOCGOV_CODE) AS CNTR_AMT
+				   ,CNTR_LOCGOV_CODE
+				   ,ELCTRN_PAY_NO
+				  FROM G_CNTR
+				 WHERE USER_ID = #{userId}
+				   AND DELETE_AT = 'N'
+				   AND CNTR_STTUS_CODE = '200'
+				   AND STTEMNT_PAY_DE IS NOT NULL) B
+        ON A.USER_ID = B.USER_ID
+     INNER JOIN OP_USER_DETAIL C
+        ON A.USER_ID = C.USER_ID
+     WHERE 1=1
+       AND A.USER_ID = #{userId}
+       AND B.ELCTRN_PAY_NO = #{enapbuNo}
+  </select>
+
+  <select id="selectRelayLogListCount" parameterType="saleson.shop.log.support.RelayLogParam" resultType="int">
+    /* saleson.shop.donation.NgDonationMapper.selectRelayLogListCount */
+    SELECT
+        COUNT(*)
+    FROM g_relay_log a
+    INNER JOIN op_user b ON a.user_id = b.user_id
+    INNER JOIN g_locgov c ON a.cntr_locgov_code = c.locgov_code
+    WHERE a.frst_regist_pnttm BETWEEN TO_DATETIME(#{srchStartLogDate} || ' 00:00:00.000', 'YYYYMMDD HH24:MI:SS.FF') AND TO_DATETIME(#{srchEndLogDate} || ' 23:59:59.999', 'YYYYMMDD HH24:MI:SS.FF')
+      <if test='srchRelayType != null and srchRelayType != ""'>
+        AND a.relay_type = #{srchRelayType}
+      </if>
+      <if test='srchRelayResultCode != null and srchRelayResultCode != ""'>
+        AND a.relay_result_code = #{srchRelayResultCode}
+      </if>
+      <if test="srchTxt != null and srchTxt != ''">
+            <choose>
+              <when test="'USERID'.equals(srchType)">
+                AND a.user_id = #{srchTxt}
+              </when>
+              <when test="'USERNAME'.equals(srchType)">
+                AND b.user_name LIKE CONCAT('%', (SELECT crypto_enc('normal', #{srchTxt},'')), '%')
+              </when>
+        </choose>
+      </if>
+  </select>
+
+  <select id="selectRelayLogList" parameterType="saleson.shop.log.support.RelayLogParam" resultType="saleson.shop.log.support.RelayLogParam">
+    <include refid="CommonMapper.paginationHeader" />
+    /* saleson.shop.donation.NgDonationMapper.selectRelayLogList */
+    SELECT
+        a.user_id
+      ,	CRYPTO_DEC('normal', b.login_id	, '', 0) AS login_id
+      ,	CRYPTO_DEC('normal', b.user_name, '', 0) AS user_name
+      ,	a.relay_type
+      ,	f.label AS relay_type_name
+      ,	a.cntr_locgov_code
+      ,	c.locgov_nm AS cntr_locgov_code_name
+      ,	d.elctrn_pay_no
+      ,	CASE WHEN a.relay_result_code = '100' THEN '성공( code : ' || relay_result_code || ' )' ELSE  '실패( code : ' || relay_result_code || ' )' END AS relay_result_code
+      ,	a.frst_regist_pnttm
+    FROM g_relay_log a
+    INNER JOIN op_user b ON a.user_id = b.user_id
+    INNER JOIN g_locgov c ON a.cntr_locgov_code = c.locgov_code
+    LEFT OUTER JOIN g_cntr d ON a.cntr_sn =  d.cntr_sn
+    LEFT OUTER JOIN op_common_code f ON f.code_type= 'RELAY_TYPE' AND a.relay_type = f.id
+    WHERE a.frst_regist_pnttm BETWEEN TO_DATETIME(#{srchStartLogDate} || ' 00:00:00.000', 'YYYYMMDD HH24:MI:SS.FF') AND TO_DATETIME(#{srchEndLogDate} || ' 23:59:59.999', 'YYYYMMDD HH24:MI:SS.FF')
+      <if test='srchRelayType != null and srchRelayType != ""'>
+        AND a.relay_type = #{srchRelayType}
+      </if>
+      <if test='srchRelayResultCode != null and srchRelayResultCode != ""'>
+        AND a.relay_result_code = #{srchRelayResultCode}
+      </if>
+      <if test="srchTxt != null and srchTxt != ''">
+            <choose>
+              <when test="'LOGIN_ID'.equals(srchType)">
+                AND b.login_id = (SELECT crypto_enc('normal', #{srchTxt},''))
+              </when>
+              <when test="'USER_NAME'.equals(srchType)">
+                AND b.user_name = (SELECT crypto_enc('normal', #{srchTxt},''))
+              </when>
+              <otherwise>
+                AND (b.login_id = (SELECT crypto_enc('normal', #{srchTxt},'')) OR b.user_name = (SELECT crypto_enc('normal', #{srchTxt},'')))
+              </otherwise>
+        </choose>
+      </if>
+    ORDER BY a.frst_regist_pnttm DESC
+    <include refid="CommonMapper.paginationFooter" />
+  </select>
+
+  <insert id="insertRelayLog" parameterType="saleson.shop.log.support.RelayLogParam">
+    /* saleson.shop.donation.NgDonationMapper.insertRelayLog */
+    INSERT INTO g_relay_log
+    (
+         user_id
+      , 	relay_type
+      , 	cntr_locgov_code
+      , 	cntr_sn
+      , 	relay_result_code
+    ) VALUES
+    (
+        #{userId}
+      , 	#{relayType}
+      , 	#{cntrLocgovCode}
+      , 	#{cntrSn}
+      , 	#{relayResultCode}
+    )
+
+  </insert>
+
+  <select id="selectNextBugaLogCount" parameterType="saleson.shop.donation.NextBugaRequestLogDto" resultType="int">
+    /* saleson.shop.donation.NgDonationMapper.selectGifStndBugaCount */
+    SELECT
+        COUNT(*)
+    FROM g_next_buga_request buga
+    WHERE 1 = 1
+	<if test ='srchStartLogDate != null and srchEndLogDate != null'>
+	 	AND buga.lvy_ymd <![CDATA[>=]]> #{srchStartLogDate}
+	 	AND buga.lvy_ymd  <![CDATA[<=]]> #{srchEndLogDate}
+	 </if>
+	 <if test = 'bugaStatusCd != null and bugaStatusCd !=""'>
+	 	AND buga.buga_status_cd = #{bugaStatusCd}
+	 </if>
+	  <if test = 'linkRstCd != null and linkRstCd !=""'>
+	 	AND buga.link_rst_cd = #{linkRstCd}
+	 </if>
+	 <if test = 'epayNo != null and epayNo != ""'>
+	 	AND buga.link_rst_msg LIKE '%'|| #{epayNo} || '%'
+	 </if>
+	 <if test = 'srchlinkRstYn != null and srchlinkRstYn != ""'>
+	 	<choose>
+	 		<when test='srchlinkRstYn == "Y"'>
+			 	AND buga.link_rst_cd = '000'
+	 		</when>
+	 		<when test='srchlinkRstYn == "N"'>
+			 	AND ( buga.link_rst_cd  <![CDATA[<>]]>  '000' OR buga.link_rst_cd is null )
+	 		</when>
+	 	</choose>
+	 </if>
+	 <if test = 'srchpyrNm != null and srchpyrNm != ""'>
+	 	AND buga.pyr_nm = crypto_enc('normal',#{srchpyrNm},'')
+	 </if>
+  </select>
+
+  <select id="selectNextBugaLogList" parameterType="saleson.shop.donation.NextBugaRequestLogDto" resultType="saleson.shop.donation.NextBugaResponseLogDto">
+    <include refid="CommonMapper.paginationHeader" />
+     /* saleson.shop.donation.NgDonationMapper.selectGifStndBugaList */
+   SELECT
+		  gov.upper_locgov_nm
+		, gov.locgov_nm
+		, buga.link_mng_key
+		, buga.sgb_cd
+		, buga.link_trgt_cd
+		, buga.dpt_cd
+		, buga.spcl_fis_biz_cd
+		, buga.fyr
+		, buga.act_se_cd
+		, buga.rprs_txm_cd
+		, buga.oper_item_cd
+		, buga.lvy_ymd
+		, buga.frst_pct_amt
+		, buga.frst_pid_ymd
+		, buga.pyr_se_cd
+		, buga.pyr_no
+		, crypto_dec('normal', buga.pyr_nm, '', 0) as pyr_nm
+		, buga.rprs_pyr_no
+		, buga.rprs_pyr_nm
+		, buga.pyr_stt_cd
+		, buga.lotno_road_addr_se_cd
+		, buga.zip
+		, buga.road_nm_cd
+		, buga.bmno
+		, buga.bsno
+		, buga.stdg_cd
+		, buga.dong_cd
+		, crypto_dec('normal', buga.road_nm_daddr, '', 0) as road_nm_daddr
+		, buga.gl_nm
+		, buga.mng_item_cn1
+		, buga.buga_status_cd
+		, buga.link_rst_cd
+		, buga.link_rst_msg
+		, buga.frst_regist_pnttm
+	FROM g_next_buga_request buga
+	LEFT JOIN g_locgov gov ON buga.sgb_cd = gov.administ_instt_code
+	WHERE 1 = 1
+	<if test ='srchStartLogDate != null and srchEndLogDate != null'>
+	 	AND buga.lvy_ymd <![CDATA[>=]]> #{srchStartLogDate}
+	 	AND buga.lvy_ymd  <![CDATA[<=]]> #{srchEndLogDate}
+	 </if>
+	 <if test = 'bugaStatusCd != null and bugaStatusCd !=""'>
+	 	AND buga.buga_status_cd = #{bugaStatusCd}
+	 </if>
+	 <if test = 'linkRstCd != null and linkRstCd !=""'>
+	 	AND buga.link_rst_cd = #{linkRstCd}
+	 </if>
+	 <if test = 'epayNo != null and epayNo != ""'>
+	 	AND buga.link_rst_msg LIKE '%'|| #{epayNo} || '%'
+	 </if>
+	 <if test = 'srchlinkRstYn != null and srchlinkRstYn != ""'>
+	 	<choose>
+	 		<when test='srchlinkRstYn == "Y"'>
+			 	AND buga.link_rst_cd = '000'
+	 		</when>
+	 		<when test='srchlinkRstYn == "N"'>
+			 	AND ( buga.link_rst_cd  <![CDATA[<>]]>  '000' OR buga.link_rst_cd is null )
+	 		</when>
+	 	</choose>
+	 </if>
+	 <if test = 'srchpyrNm != null and srchpyrNm != ""'>
+	 	AND buga.pyr_nm = crypto_enc('normal',#{srchpyrNm},'')
+	 </if>
+	 ORDER BY buga.frst_regist_pnttm DESC
+    <include refid="CommonMapper.paginationFooter" />
+  </select>
+
+
+
+
+  <select id="selectNextSunapLogCount" parameterType="saleson.shop.donation.NextSunapRequestLogDto" resultType="int">
+    /* saleson.shop.donation.NgDonationMapper.selectGifStndSunapCount */
+    SELECT
+        COUNT(*)
+    FROM g_next_sunap_response
+    WHERE 1=1
+      <if test = 'srchStartLogDate != null and srchEndLogDate != null'>
+      	AND rcvmt_ymd <![CDATA[>=]]> #{srchStartLogDate}
+      	AND rcvmt_ymd <![CDATA[<=]]> #{srchEndLogDate}
+      </if>
+      <if test="epayNo != null and epayNo != ''">
+        AND epay_no = #{epayNo}
+      </if>
+
+  </select>
+
+  <select id="selectNextSunapLogList" parameterType="saleson.shop.donation.NextSunapRequestLogDto" resultType="saleson.shop.donation.NextSunapResponseLogDto">
+    <include refid="CommonMapper.paginationHeader" />
+    /* saleson.shop.donation.NgDonationMapper.selectGifStndSunapList */
+    SELECT
+        *
+    FROM g_next_sunap_response
+    WHERE 1=1
+      <if test = 'srchStartLogDate != null and srchEndLogDate != null'>
+      	AND rcvmt_ymd <![CDATA[>=]]> #{srchStartLogDate}
+      	AND rcvmt_ymd <![CDATA[<=]]> #{srchEndLogDate}
+      </if>
+      <if test="epayNo != null and epayNo != ''">
+        AND epay_no = #{epayNo}
+      </if>
+     ORDER BY frst_regist_pnttm DESC
+    <include refid="CommonMapper.paginationFooter" />
+  </select>
+
+  <select id="selectGifSeoulBugaCount" parameterType="saleson.shop.log.support.GifSeoulParam" resultType="int">
+    /* saleson.shop.donation.NgDonationMapper.selectGifSeoulBugaCount */
+    SELECT
+        COUNT(*)
+    FROM gif_seoul a
+    WHERE a.if_st_dt BETWEEN TO_DATETIME(#{srchStartLogDate} || ' 00:00:00.000', 'YYYYMMDD HH24:MI:SS.FF') AND TO_DATETIME(#{srchEndLogDate} || ' 23:59:59.999', 'YYYYMMDD HH24:MI:SS.FF')
+      <if test="srchTxt != null and srchTxt != ''">
+        AND a.enapbu_no = #{srchTxt}
+      </if>
+      <if test='srchErrorCd != null and srchErrorCd != ""'>
+        <choose>
+              <when test="'SUCCESS'.equals(srchErrorCd)">
+                AND a.error_cd = '0'
+              </when>
+              <otherwise>
+                AND a.error_cd != '0'
+              </otherwise>
+        </choose>
+      </if>
+  </select>
+
+  <select id="selectGifSeoulBugaList" parameterType="saleson.shop.log.support.GifSeoulParam" resultType="saleson.shop.log.support.GifSeoulParam">
+    <include refid="CommonMapper.paginationHeader" />
+    /* saleson.shop.donation.NgDonationMapper.selectGifSeoulBugaList */
+    SELECT
+        *
+    FROM gif_seoul a
+    WHERE a.if_st_dt BETWEEN TO_DATETIME(#{srchStartLogDate} || ' 00:00:00.000', 'YYYYMMDD HH24:MI:SS.FF') AND TO_DATETIME(#{srchEndLogDate} || ' 23:59:59.999', 'YYYYMMDD HH24:MI:SS.FF')
+    <if test="srchTxt != null and srchTxt != ''">
+      AND a.enapbu_no = #{srchTxt}
+    </if>
+    <if test='srchErrorCd != null and srchErrorCd != ""'>
+        <choose>
+              <when test="'SUCCESS'.equals(srchErrorCd)">
+                AND a.error_cd = '0'
+              </when>
+              <otherwise>
+                AND a.error_cd != '0'
+              </otherwise>
+        </choose>
+      </if>
+    ORDER BY a.if_st_dt DESC
+    <include refid="CommonMapper.paginationFooter" />
+  </select>
+
+  <select id="selectGifSeoulSunapCount" parameterType="saleson.shop.log.support.GifSeoulParam" resultType="int">
+    /* saleson.shop.donation.NgDonationMapper.selectGifSeoulSunapCount */
+    SELECT
+        COUNT(*)
+    FROM gif_etax_sunap a
+    WHERE a.if_st_dt BETWEEN TO_DATETIME(#{srchStartLogDate} || ' 00:00:00.000', 'YYYYMMDD HH24:MI:SS.FF') AND TO_DATETIME(#{srchEndLogDate} || ' 23:59:59.999', 'YYYYMMDD HH24:MI:SS.FF')
+      <if test="srchTxt != null and srchTxt != ''">
+        AND a.epay_no = #{srchTxt}
+      </if>
+      <if test='srchRstCd != null and srchRstCd != ""'>
+        <choose>
+              <when test="'SUCCESS'.equals(srchRstCd)">
+                AND a.sunap_yn = 'Y'
+              </when>
+              <otherwise>
+                AND a.sunap_yn != 'Y'
+              </otherwise>
+        </choose>
+      </if>
+  </select>
+
+  <select id="selectGifSeoulSunapList" parameterType="saleson.shop.log.support.GifSeoulParam" resultType="saleson.shop.log.support.GifSeoulParam">
+    <include refid="CommonMapper.paginationHeader" />
+    /* saleson.shop.donation.NgDonationMapper.selectGifSeoulSunapList */
+    SELECT
+        *
+    FROM gif_etax_sunap a
+    WHERE a.if_st_dt BETWEEN TO_DATETIME(#{srchStartLogDate} || ' 00:00:00.000', 'YYYYMMDD HH24:MI:SS.FF') AND TO_DATETIME(#{srchEndLogDate} || ' 23:59:59.999', 'YYYYMMDD HH24:MI:SS.FF')
+      <if test="srchTxt != null and srchTxt != ''">
+        AND a.epay_no = #{srchTxt}
+      </if>
+      <if test='srchRstCd != null and srchRstCd != ""'>
+        <choose>
+              <when test="'SUCCESS'.equals(srchRstCd)">
+                AND a.sunap_yn = 'Y'
+              </when>
+              <otherwise>
+                AND a.sunap_yn != 'Y'
+              </otherwise>
+        </choose>
+      </if>
+    ORDER BY a.if_st_dt DESC
+    <include refid="CommonMapper.paginationFooter" />
+  </select>
+
+  <select id="getLocgovInfo" parameterType="hashMap" resultType="saleson.shop.user.domain.Locgov" >
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getLocgovInfo */
+    SELECT *
+      FROM G_LOCGOV
+     WHERE locgov_code = #{locgovCode}
+    ]]>
+  </select>
+
+  <select id="selectDeleteCntrReSunapList" parameterType="hashMap" resultType="hashMap">
+    /* saleson.shop.donation.NgDonationMapper.selectDeleteCntrReSunapList */
+    SELECT
+        gc.elctrn_pay_no
+      , 	(select mng_htm5 from gif_stnd_buga_now gsb where gc.elctrn_pay_no = gsb.elct_pay_no) as book_no
+        , 	gc.cntr_locgov_code
+        , 	gc.seoul_trget_at
+        ,	gc.cntr_de
+        ,	gc.user_id
+      FROM g_cntr gc, op_user ou
+     WHERE gc.user_id = ou.user_id
+       AND gc.cntr_sttus_code = '100'
+         AND gc.cntr_de <![CDATA[>=]]> #{shCntrDeStart}
+         AND gc.cntr_de <![CDATA[<=]]> #{shCntrDeEnd}
+         <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
+         <choose>
+          <when test='shKeyword == "USER_NAME"'>
+            AND ou.USER_NAME = (SELECT crypto_enc('normal', #{shText},''))
+          </when>
+
+
+          <when test='shKeyword == "LOGIN_ID"'>
+            AND ou.LOGIN_ID = (SELECT crypto_enc('normal', #{shText},''))
+          </when>
+        </choose>
+            </if>
+      <if test="shLocgovCode != null and shLocgovCode != ''">
+        AND gc.CNTR_LOCGOV_CODE = #{shLocgovCode}
+      </if>
+  </select>
+
+  <select id="selectUserCntrLocgovForNhList" parameterType="hashMap" resultType="hashMap">
+    /* saleson.shop.donation.NgDonationMapper.selectUserCntrLocgovForNhList */
+    SELECT
+        a.user_id 									AS userId
+      ,	b.mber_ci 									AS mberCi
+      ,	a.sttemnt_pay_de						AS sttemntPayDe
+      ,	a.cntr_locgov_code						AS cntrLocgovCode
+      ,	NVL(CAST(cntr_amt AS bigint), 0)	AS cntrAmt
+    FROM
+    (
+      SELECT
+          a.user_id
+        ,	a.sttemnt_pay_de
+        ,	a.cntr_locgov_code
+        ,	sum(a.cntr_amt) as  cntr_amt
+      FROM g_cntr a
+      WHERE a.delete_at = 'N'
+        AND a.sttemnt_pay_de IS NOT NULL
+        AND a.cntr_sttus_code = '200'
+         AND a.sttemnt_pay_de <![CDATA[ <= ]]> #{sttemntPayDe}
+      GROUP BY a.user_id, a.sttemnt_pay_de, a.cntr_locgov_code
+    ) a
+    INNER JOIN op_user b ON a.user_id = b.user_id and b.mber_ci is not null
+   </select>
+
+  <select id="selectUserCntrForNhList" parameterType="hashMap" resultType="hashMap">
+    /* saleson.shop.donation.NgDonationMapper.selectUserCntrForNhList */
+    SELECT
+        a.user_id 									AS userId
+      ,	b.mber_ci 									AS mberCi
+      ,	a.sttemnt_pay_de						AS sttemntPayDe
+      ,	NVL(CAST(cntr_amt AS bigint), 0)	AS cntrAmt
+    FROM
+    (
+      SELECT
+          a.user_id
+        ,	sttemnt_pay_de
+        ,	sum(cntr_amt) as  cntr_amt
+      FROM g_cntr a
+      WHERE a.delete_at = 'N'
+        AND a.sttemnt_pay_de IS NOT NULL
+        AND a.cntr_sttus_code = '200'
+        AND a.sttemnt_pay_de <![CDATA[ <= ]]> #{sttemntPayDe}
+      GROUP BY a.user_id, a.sttemnt_pay_de
+    ) a
+    INNER JOIN op_user b ON a.user_id = b.user_id and b.mber_ci is not null
+   </select>
+
+   <select id="selectLocgovForNhList" resultType="hashMap">
+     /* saleson.shop.donation.NgDonationMapper.selectLocgovForNhList */
+    SELECT
+        locgov_code 				AS locgovCode
+      ,	locgov_nm					AS locgovNm
+      , 	upper_locgov_code		AS upperLocgovCode
+      , 	upper_locgov_nm			AS upperLocgovNm
+    FROM g_locgov
+    WHERE use_at = 'Y'
+   </select>
+
+   <update id="updateForeignStatusCode" parameterType="saleson.shop.donation.support.ForeignStatusParam">
+     /* saleson.shop.donation.NgDonationMapper.updateForeignStatusCode */
+    UPDATE OP_USER
+      SET FOREIGN_STATUS_CODE = #{foreignStatusCode}
+    WHERE USER_ID = #{userId}
+   </update>
+
+   <update id="updateKakaoBirthdayInfo" parameterType="saleson.shop.user.domain.UserDetail">
+     /* saleson.shop.donation.NgDonationMapper.updateKakaoBirthdayInfo */
+    UPDATE OP_USER_DETAIL
+      SET BIRTHDAY = CRYPTO_ENC('normal', #{birthday}, '')
+      , BIRTHDAY_TYPE = '1'
+    WHERE USER_ID = #{userId}
+   </update>
+
+
+   <select id="selectLocgovByAdmCd" resultType="String" parameterType="String">
+    <!-- SELECT
+        LOCGOV_CODE
+    FROM G_ADM_LOCGOV
+    WHERE ADM_CD = #{value} -->
+    /* saleson.shop.donation.NgDonationMapper.selectLocgovByAdmCd */
+    SELECT LOCGOV_CODE
+      FROM G_ADM_LOCGOV
+      WHERE ADM_CD LIKE CONCAT(#{value}, '%')
+    LIMIT 1
+
+   </select>
+
+  <select id="getNoBugaLocgovList" resultType="hashMap">
+     /* saleson.shop.donation.NgDonationMapper.getNoBugaLocgovList */
+     WITH
+    locgov AS
+    (
+      SELECT
+          upper_locgov_code
+         ,	locgov_code
+         ,	upper_locgov_nm
+         ,	locgov_nm
+      FROM g_locgov
+      WHERE use_at = 'Y'
+    )
+    SELECT *
+    FROM
+    (
+      SELECT
+          upper_locgov_code
+        , 	locgov_code
+        , 	upper_locgov_nm
+        , 	locgov_nm
+        ,	sum(seo_cnt) AS seo_cnt
+        ,	sum(con_cnt) AS con_cnt
+      FROM
+      (
+        SELECT
+            upper_locgov_code
+          , 	locgov_code
+          , 	upper_locgov_nm
+          , 	locgov_nm
+          , 	0 AS seo_cnt
+          , 	0 AS con_cnt
+        FROM locgov
+        UNION ALL
+        SELECT
+            a.upper_locgov_code
+          , 	a.locgov_code
+          , 	a.upper_locgov_nm
+          , 	a.locgov_nm
+          , 	count(b.cntr_sn) AS seo_cnt
+          ,	0 as con_cnt
+        FROM g_locgov a
+        INNER JOIN g_cntr b ON a.locgov_code = b.cntr_locgov_code AND b.delete_at ='N' AND b.sttemnt_pay_de IS NOT NULL AND b.cntr_sttus_code = '200'
+        AND b.cntr_de between DATE_FORMAT(ADDDATE(SYSDATETIME, interval-3 day), '%Y%m%d') and TO_CHAR(SYSDATETIME, 'yyyymmdd')
+        AND b.seoul_trget_at = 'Y'
+        GROUP BY upper_locgov_code, a.locgov_code, a.upper_locgov_nm, a.locgov_nm
+        UNION ALL
+        SELECT
+            a.upper_locgov_code
+          , 	a.locgov_code
+          , 	a.upper_locgov_nm
+          , 	a.locgov_nm
+          ,	0 as seo_cnt
+          , 	count(b.cntr_sn) AS con_cnt
+        FROM g_locgov a
+        INNER JOIN g_cntr b ON a.locgov_code = b.cntr_locgov_code AND b.delete_at ='N' AND b.sttemnt_pay_de IS NOT NULL AND b.cntr_sttus_code = '200'
+        AND b.cntr_de between DATE_FORMAT(ADDDATE(SYSDATETIME, interval-3 day), '%Y%m%d') and TO_CHAR(SYSDATETIME, 'yyyymmdd')
+        AND b.seoul_trget_at = 'N'
+        GROUP BY upper_locgov_code, a.locgov_code, a.upper_locgov_nm, a.locgov_nm
+      ) a
+      GROUP BY upper_locgov_code, a.locgov_code, a.upper_locgov_nm, a.locgov_nm
+    ) a
+    where (a.locgov_code like '11%' AND seo_cnt = 0) OR (substring(locgov_code ,0, 2) != '11' AND con_cnt = 0)
+   </select>
+
+	<select id="getCntrTaxTempList" resultMap="NtsParam">
+		/* saleson.shop.donation.NgDonationMapper.getCntrTaxTempList */
+		SELECT
+				T.ELCTRN_PAY_NO AS ENAPBU_NO
+			,	T.STTEMNT_PAY_DE AS STTEMNT_PAY_DE
+			,	CASE WHEN T.MBER_CI IS NULL THEN NVL((SELECT UC.mber_ci
+														FROM op_user_ci UC
+														WHERE UC.user_id = T.USER_ID) , '') ELSE T.MBER_CI END AS USER_CI
+			,	T.CNTR_AMT AS TAX_AMT
+			,	T.BIZ_NO AS BIZ_NO
+			, 	T.ELCR_APL_CD AS ELCR_APL_CD
+			,	T.CONB_CD AS CONB_CD
+		FROM
+			G_CNTR_TAX_TEMP T
+		WHERE 1=1
+		AND T.IS_SEND = 0
+		ORDER BY T.STTEMNT_PAY_DE
+		LIMIT 100
+	</select>
+
+	<insert id="insertCntrTaxLog" parameterType="saleson.shop.donation.CntrTaxLogDto">
+		/* saleson.shop.donation.NgDonationMapper.insertCntrTaxLog */
+		INSERT INTO g_cntr_tax_log
+		(
+				elctrn_pay_no
+			, 	sttemnt_pay_de
+			, 	cntr_amt
+			, 	tax_status_code
+			,	conb_cd
+			,	cntr_type
+			, 	nts_res_code
+			, 	nts_res_mssage
+			,	elcr_apl_cd
+			, 	frst_regist_pnttm
+		)
+		VALUES
+		(
+				#{elctrnPayNo}
+			, 	#{sttemntPayDe}
+			, 	#{cntrAmt}
+			, 	#{taxStatusCode}
+			, 	#{conbCd}
+			, 	#{cntrType}
+			, 	#{ntsResCode}
+			, 	#{ntsResMssage}
+			,	#{elcrAplCd}
+			, 	SYS_DATETIME
+		)
+
+	</insert>
+
+	<update id="updateCntrTaxLog" parameterType="saleson.shop.donation.CntrTaxLogDto">
+		/* saleson.shop.donation.NgDonationMapper.updateCntrTaxLog */
+		UPDATE g_cntr_tax_log
+		SET tax_status_code = #{taxStatusCode}
+			,	nts_res_code = #{ntsResCode}
+			,	nts_res_mssage = #{ntsResMssage}
+			,	last_updt_pnttm = SYS_DATETIME
+		WHERE elctrn_pay_no = #{elctrnPayNo}
+	</update>
+
+	<select id="getLinkMngKeyNextValue" resultType="String">
+		SELECT concat(DATE_FORMAT(now(),'%Y%m%d%H%i%s'), g_cntr_cntr_sn.next_value)
+	</select>
+
+	<insert id="insertNextBugaCntr" parameterType="saleson.shop.donation.NextBugaRequestDto">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.insertNextBugaCntr */
+    INSERT INTO G_CNTR(
+      CNTR_SN,
+      CNTR_DE,
+      USER_ID,
+      PSITN_LOCGOV_CODE,
+      CNTR_LOCGOV_CODE,
+      CNTR_AMT,
+      CNTR_POINT,
+      PAY_VALID_DE,
+      CNTR_PATH_CODE,
+      CNTR_STTUS_CODE,
+      ELCTRN_PAY_NO,
+      SEOUL_TRGET_AT,
+      INFO_AGRE_AT,
+      RTNPSNT_REQST_CODE,
+      FRST_REGISTER_ID,
+      FRST_REGIST_PNTTM,
+      DELETE_AT,
+      FOREIGN_STATUS_CODE,
+      DSGN_DNTN_BIZ_ID
+      ) VALUES(
+        #{linkMngKey},
+        #{lvyYmd},
+        #{userId},
+        #{psitnLocgovCode},
+        #{cntrLocgovCode},
+        #{frstPctAmt},
+        0,
+        #{lvyYmd},
+        '100',
+        '100',
+        #{epayNo},
+        'N',
+        '1',
+        #{presentType},
+        #{userId},
+        DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),
+        'N',
+        #{foreignStatusCode},
+        #{prjId}
+      )
+    ]]>
+  </insert>
+	<select id="getSunapInfo" parameterType="String" resultType="Integer">
+    <![CDATA[
+    /* saleson.shop.donation.NgDonationMapper.getSunapInfo */
+    	SELECT
+    		COUNT(*) as CNT
+    	FROM
+    		G_CNTR
+    	WHERE
+    		1=1
+    		AND ELCTRN_PAY_NO = #{elctrnPayNo}
+    		AND STTEMNT_PAY_DE IS NOT NULL
+    		AND CNTR_STTUS_CODE = '200'
+    		AND DELETE_AT = 'N'
+    ]]>
+  </select>
+
+	<select id="getCntrNonSunapDataList" parameterType="String" resultType="saleson.shop.donation.support.SeoulParam">
+		<![CDATA[
+		/* saleson.shop.donation.NgDonationMapper.getCntrNonSunapDataList */
+		SELECT
+			GC.ELCTRN_PAY_NO AS ENAPBU_NO
+			,GSR.RCVMT_YMD AS STTEMNT_PAY_DE
+			,GC.CNTR_SN AS LINK_MNG_KEY
+			,(SELECT ORDER_CODE FROM OP_ORDER_ITEM WHERE FILLER9 = GC.CNTR_SN LIMIT 1) AS ORDER_CODE
+		FROM
+			G_CNTR GC
+		INNER JOIN G_NEXT_SUNAP_RESPONSE GSR ON
+			GC.CNTR_SN = GSR.LINK_MNG_KEY
+		WHERE
+			GC.CNTR_STTUS_CODE = '100'
+			AND GC.CNTR_LOCGOV_CODE IS NOT NULL
+			AND GC.CNTR_DE  >=  '20240101'
+		ORDER BY
+			GC.CNTR_DE DESC
+		LIMIT 200
+		]]>
+	</select>
+
+	<update id="updateCntrTaxTemp" parameterType="saleson.shop.donation.CntrTaxLogDto">
+		/* saleson.shop.donation.NgDonationMapper.updateCntrTaxTemp */
+		UPDATE G_CNTR_TAX_TEMP
+		SET IS_SEND = 1
+		WHERE ELCTRN_PAY_NO = #{elctrnPayNo}
+	</update>
+
+
+	<select id="getGCntrSumCntrAmt" resultType="Integer" >
+		/* saleson.shop.offgive.NgDonationMapper.getGCntrSumCntrAmt */
+		SELECT IFNULL(SUM(CNTR_AMT), 0) AS MAX_CNTR_AMT
+		FROM G_CNTR
+		WHERE 1=1
+		AND DELETE_AT = 'N'
+		AND USER_ID = #{userId}
+		AND YEAR(CNTR_DE) = DATE_FORMAT(NOW(), '%Y')
+	</select>
+
+	<select id="getGMberSecsnSumCntrAmt" resultType="Integer" >
+		/* saleson.shop.offgive.NgDonationMapper.getGMberSecsnSumCntrAmt */
+		select IFNULL(sum(cntr_amt), 0) as MAX_CNTR_AMT
+		from G_MBER_SECSN
+		where mber_ci = #{mberCi}
+		and secsn_year = DATE_FORMAT(NOW(), '%Y')
+	</select>
+
+	<update id="updateOrderStatus" parameterType="String">
+	    /* saleson.shop.donation.NgDonationMapper.updateOrderStatus */
+	    UPDATE 	OP_ORDER_ITEM
+	    SET		ORDER_STATUS = '10'
+	    WHERE	ORDER_CODE = #{orderCode}
+	    AND		ORDER_STATUS = '0'
+  </update>
+	<select id="selectTodayCntrSigunguCnt" parameterType="saleson.shop.code.support.CodeParam" resultType="Integer" >
+	    <![CDATA[
+	    /* saleson.shop.donation.NgDonationMapper.selectTodayCntrSigunguCnt */
+	    SELECT count(*) as cnt
+	      FROM G_CNTR CN
+	     inner join G_LOCGOV L on L.LOCGOV_CODE = CN.CNTR_LOCGOV_CODE
+		where 1=1
+			and CN.STTEMNT_PAY_DE is not null
+			and CN.DELETE_AT = 'N'
+			and CN.CNTR_STTUS_CODE = '200'
+			and cn.cntr_de = DATE_FORMAT(now(), '%Y%m%d')
+			and cn.cntr_locgov_code = #{locgovCode}
+			and cn.user_id = #{userId}
+	    ]]>
+	 </select>
+	 <select id="getTodayCntrListInfo" parameterType="saleson.shop.mypage.support.CntrParam" resultType="saleson.shop.mypage.domain.Cntr">
+	 	/* saleson.shop.donation.NgDonationMapper.getTodayCntrListInfo */
+		SELECT
+			a.cntr_sn,
+			DATE_FORMAT(a.cntr_de, '%Y.%m.%d') as cntr_de,
+			c.locgov_code,
+			c.upper_locgov_nm,
+			c.locgov_nm,
+			a.cntr_amt,
+			a.cntr_point,
+			a.cntr_blce_point,
+			a.elctrn_pay_no,
+			case
+		   	when a.sttemnt_pay_de is not null and cntr_sttus_code = '200' then DATE_FORMAT(a.sttemnt_pay_de, '%Y.%m.%d')
+		   	else '납부결과확인'
+		   	end as sttemnt_pay_de,
+			case
+		   	when a.sttemnt_pay_de is not null and cntr_sttus_code = '200' then 1
+		   	else 2
+		   	end as sttemnt_pay_de_case,
+		   	a.cntr_locgov_code,  <!--기부 지자체 코드 -->
+		   	case
+		   		when substr(a.cntr_locgov_code,1,2) = '11' then (select to_char(sysdatetime, 'hh24missFF') || lpad(random() % 1000, 3, 0))  <!--서울-->
+		   		else (select mng_htm5 from gif_stnd_buga_now where elct_pay_no = a.elctrn_pay_no)  <!--서울 이외-->
+		   	end as mng_no,  <!--계정 관리 번호 -->
+		   	(select point_rate from g_ctbny_setup where locgov_code = a.cntr_locgov_code and stdr_year = DATE_FORMAT(NOW(),'%Y')) as point_rate  <!--지자체 포인트 지급률-->
+		   	, A.DSGN_DNTN_BIZ_ID AS PRJ_ID		<!--지정기부아이디-->
+		   	, IFNULL(DPM.DSGN_DNTN_BIZ_TTL, '자치단체기부') AS PRJ_SUBJECT			<!--지정기부 사업명-->
+		   	, D.DETAIL
+		   	, A.LINK_INSTT_CD
+		FROM OP_USER B
+		JOIN G_CNTR A ON A.USER_ID = B.USER_ID
+		JOIN G_LOCGOV C ON A.CNTR_LOCGOV_CODE = C.LOCGOV_CODE
+		LEFT JOIN G_DSGN_DNTN_BIZ_MNG DPM ON A.DSGN_DNTN_BIZ_ID = DPM.DSGN_DNTN_BIZ_ID
+		LEFT JOIN OP_COMMON_CODE D ON D.ID = A.LINK_INSTT_CD AND D.CODE_TYPE = 'LINK_INSTT_CD'
+		WHERE
+		A.DELETE_AT = 'N'
+	    AND B.USER_ID = #{userId}
+	    AND a.cntr_locgov_code = #{locgovCode}
+	    AND a.cntr_de = DATE_FORMAT(SYSDATE,'%Y%m%d')
+	 </select>
+
+	 <select id="getCntrNonSunapFiveMinList" resultType="saleson.shop.give.givestate.domain.GiveStateTest">
+		<![CDATA[
+		/* saleson.shop.donation.NgDonationMapper.getCntrNonSunapFiveMinList */
+		SELECT
+			GC.ELCTRN_PAY_NO AS ENAPBU_NO
+			,GC.CNTR_SN AS CNTR_SN
+			,GC.CNTR_DE AS CNTR_DE
+			,GC.SEOUL_TRGET_AT AS SEOUL_TRGET_AT
+			,GC.CNTR_LOCGOV_CODE AS CNTR_LOCGOV_CODE
+			,GC.USER_ID AS USER_ID
+			,GC.CNTR_AMT AS CNTR_AMT
+			,CRYPTO_DEC('normal', OU.LOGIN_ID	, '', 0) AS LOGIN_ID
+      		,CRYPTO_DEC('normal', OU.USER_NAME, '', 0) AS USER_NAME
+		FROM
+			G_CNTR GC
+		INNER JOIN OP_USER OU ON
+			GC.USER_ID = OU.USER_ID
+		WHERE
+			GC.CNTR_STTUS_CODE = '100'
+			AND GC.CNTR_LOCGOV_CODE IS NOT NULL
+			AND GC.SUNAP_PROCSS_YN = 'N'
+			AND GC.CNTR_DE  >=  TO_CHAR(ADDDATE( SYSDATETIME , INTERVAL -1 DAY), 'yyyymmdd')
+		ORDER BY
+			GC.CNTR_DE DESC
+		LIMIT 200
+		]]>
+	</select>
+
+	<update id="updateSunapBatchProcessById" parameterType="saleson.shop.give.givestate.domain.GiveStateTest">
+		<![CDATA[
+		/* saleson.shop.donation.NgDonationMapper.updateSunapBatchProcessById */
+		UPDATE G_CNTR A
+ 		SET A.LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+ 		    , A.SUNAP_PROCSS_YN = 'Y'
+ 	    WHERE
+ 		A.ELCTRN_PAY_NO = #{enapbuNo}
+ 		AND A.USER_ID = #{userId}
+		]]>
+	</update>
+
+	<select id="getCntrNonSunapAlldayList" resultType="saleson.shop.give.givestate.domain.GiveStateTest">
+		<![CDATA[
+		/* saleson.shop.donation.NgDonationMapper.getCntrNonSunapAlldayList */
+		SELECT
+			GC.ELCTRN_PAY_NO AS ENAPBU_NO
+			,GC.CNTR_SN AS CNTR_SN
+			,GC.CNTR_DE AS CNTR_DE
+			,GC.SEOUL_TRGET_AT AS SEOUL_TRGET_AT
+			,GC.CNTR_LOCGOV_CODE AS CNTR_LOCGOV_CODE
+			,GC.USER_ID AS USER_ID
+			,GC.CNTR_AMT AS CNTR_AMT
+			,CRYPTO_DEC('normal', OU.LOGIN_ID	, '', 0) AS LOGIN_ID
+      		,CRYPTO_DEC('normal', OU.USER_NAME, '', 0) AS USER_NAME
+		FROM
+			G_CNTR GC
+		INNER JOIN OP_USER OU ON
+			GC.USER_ID = OU.USER_ID
+		WHERE
+			GC.CNTR_STTUS_CODE = '100'
+			AND GC.CNTR_LOCGOV_CODE IS NOT NULL
+			AND GC.CNTR_DE  >=  TO_CHAR(ADDDATE(SYSDATETIME , INTERVAL -7 DAY), 'yyyymmdd')
+		ORDER BY
+			GC.CNTR_DE DESC
+		]]>
+	</select>
+
+
+	<select id="getItemDisplayCheckList" resultType="saleson.shop.item.domain.ItemBase">
+		<![CDATA[
+
+		/* saleson.shop.donation.NgDonationMapper.getItemDisplayCheckList */
+			SELECT  ITEM_ID,
+					DISPLAY_FLAG
+			  FROM  OP_ITEM
+			 WHERE SUBSTR(item_close_dt, 1,8) = to_char(SYSDATE -1 , 'YYYYMMDD')
+
+		]]>
+	</select>
+
+	<update id="updateItemDisplayFlag" parameterType="saleson.shop.item.domain.ItemBase">
+	/* saleson.shop.donation.NgDonationMapper.updateItemDisplayFlag */
+
+	UPDATE OP_ITEM
+	   SET DISPLAY_FLAG = 'N'
+	 WHERE ITEM_ID = #{itemId}
+
+	</update>
+
+	<select id="getUserCiFromOpUserCi" parameterType="String"  resultMap="NtsParam">
+	  <![CDATA[
+	   /* saleson.shop.donation.NgDonationMapper.getUserCiFromOpUserCi */
+	   SELECT
+		   USER_ID,
+		   IFNULL(MBER_CI,'') AS USER_CI
+	   FROM OP_USER_CI
+	   WHERE 1=1
+	   AND USER_ID = #{userId}
+	  ]]>
+	</select>
+
+	<select id="getCntrLocgovCode" parameterType="hashMap" resultType="String">
+		<![CDATA[
+
+		/* saleson.shop.donation.NgDonationMapper.getCntrLocgovCode */
+			SELECT  LOCGOV_CODE
+			  FROM  G_CNTR
+			 WHERE 1=1
+			 AND CNTR_SN = #{cntrSn}
+			 AND ELCTRN_PAY_NO = #{elctrnPayNo}
+			 AND USER_ID = #{userId}
+			 AND STTEMNT_PAY_DE = #{sttemntPayDe}
+
+		]]>
+	</select>
+</mapper>

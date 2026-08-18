@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="ko" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="/static/favicon.ico">
+	<title>기부하기 > 특정사업에 기부하기 상세 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/item.css">
+    <link rel="stylesheet" href="/static/css/designation.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" class="noscroll" v-cloak>
+        <layout-header-ali :export-mode="exportMode"></layout-header-ali>
+        <!-- 모바일 헤더 -->
+        <header id="fixed_top" v-if="!exportMode">
+			<div class="center">
+				<button type="button" @click.prevent="historyBack" v-if="movePage">
+					<img class="icon-img" src="/static/images/icon/btn_pback.png" alt="뒤로 이동">
+				</button>
+			</div>
+		</header>
+
+        <section class="page-title-box mall center" v-if="movePage">
+			<span class="ali_breadcrumb">
+				<a href="/" v-if="!exportMode"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+				<span class="txt-arrow" v-if="!exportMode"><span class="sr-only">></span></span>
+              	<a href="#">기부하기</a>
+				<span class="txt-arrow"><span class="sr-only">></span></span>
+				<a :href="exportMode ? '/designated-donation/index.html?exportMode=true' : '/designated-donation/index.html'">특정사업에 기부하기</a>
+			</span>
+		</section>
+
+		<section class="page-title-box mall center" v-if="!movePage" style="margin: 0px;">
+		</section>
+
+        <section class="center prj_details" id="contents" style="padding-top: 0px;">
+
+            <div class="goods_view_top prj">
+                <div class="prj_img">
+                    <div class="target_img">
+                        <div class="swiper-wrapper">
+                            <swiper ref="mainSwiper" class="img_area" :options="swiperOption.mainSlider">
+                                <swiper-slide v-for="(slide, index) in prjCard.prjImages" :key="slide.dsgncntrPrjImageId">
+                                    <!-- <a href="javascript:void(0)"> -->
+                                        <img :src="getPrjImage(slide, 'L')" :alt="prjCard.prjSubject  + ' 대표 썸네일'" @error="errorImage">
+                                    <!-- </a> -->
+                                </swiper-slide>
+                                <div class="swiper-button-prev pc" slot="button-prev"><span
+                                        class="screen_out">이전슬라이드 사진</span></div>
+                                <div class="swiper-button-next pc" slot="button-next"><span
+                                        class="screen_out">다음슬라이드 사진</span></div>
+                                <div class="swiper-pagination" slot="pagination"></div>
+                            </swiper>
+                        </div>
+                    </div>
+                    <div class="thumb_box">
+                        <button type="button" class="swiper-button-prev" @click="moveSlideViewImage(true, $event)">
+                            <img src="/static/images/goods/thumb_arrow-prev.png" alt="이전 특정사업에 기부하기 이미지 보기">
+                        </button>
+                        <div class="swiper-wrapper">
+                            <swiper ref="mainThumbSwiper" class="thumb_area d-none d-lg-block"
+                                    :options="swiperOption.thumbSlider" @click-slide="toSlideViewImage">
+                                <swiper-slide v-for="(slide, index) in prjCard.prjImages" :key="slide.dsgncntrPrjImageId">
+                                    <button type="button" class="cursor swiper_img" :title="prjCard.prjSubject + ' 사진' + (index + 1) + ' 보기'" @click="toSlideViewImage(index)">
+                                        <img :src="getPrjImage(slide)" @error="errorImage" :alt="prjCard.prjSubject + ' 사진' + (index + 1) + ' 보기'">
+                                    </button>
+                                </swiper-slide>
+                            </swiper>
+                        </div>
+                        <button type="button" class="swiper-button-next" @click="moveSlideViewImage(false, $event)">
+                            <img src="/static/images/goods/thumb_arrow-next.png" alt="다음 특정사업에 기부하기 이미지 보기">
+                        </button>
+                    </div>
+                </div>
+                <!-- //프로젝트 이미지 -->
+
+                <!-- 프로젝트 정보 -->
+                <div class="goods_info prj_info">
+                    <div class="info_box">
+                        <div class="prj_progress">
+                            <div class="brand_mall d_area">
+                                <img src="/static/images/icon/d-area.png" alt="지역 위치 모양 마커">{{prjCard.locgovNm}}
+                            </div>
+
+                            <div class="info_title">
+                                <h2>{{prjCard.prjSubject}}</h2>
+                                <p class="s-txt">{{prjCard.prjStDtForm}} ~ {{prjCard.prjEdDtForm}}</p>
+                            </div>
+                        </div>
+
+                        <div class="donation_amount">
+                            <span class="txt">기부총액 </span><span
+                                class="pointblue"><strong>{{formatNumber(prjCard.sumAmt)}}</strong> 원</span>
+                        </div>
+
+                        <div class="prj_progress">
+                            <div class="prj_gauge">
+                                <div class="gauge_back">
+                                    <div class="gauge_result" :style="{width: prjCard.rateAmtStr +'%'}"
+                                        :class="{'lt_goal': prjCard.rateAmt < 100, 'goal': prjCard.rateAmt === 100, 'gt_goal': prjCard.rateAmt > 100}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="inner_wrap">
+                                <div class="prj_gaugePer">
+                                    <img src="/static/images/icon/cli-icon_btn-donation2.png" alt="초과달성"
+                                        v-show="prjCard.rateAmt > 100">
+                                    <span class="perNum">{{ prjCard.rateAmtStr }}</span>%
+                                </div>
+                                <div class="prj_status" :class="[prjCard.prjStatus == '2'? 'on':'']">{{prjCard.leftDayStr}}</div>
+                            </div>
+                        </div>
+
+                        <div class="info_row etc nomargin">
+                            <div class="line top-nomargin"></div>
+                            <div class="shop_info">
+                                <div class="title_col">
+                                    <p>목표금액</p>
+                                </div>
+                                <div class="para_col">
+                                    <p class="txt">{{formatNumber(prjCard.targetAmt)}} 원</p>
+                                </div>
+                            </div>
+                            <div class="shop_info">
+                                <div class="title_col">
+                                    <p>기부참여</p>
+                                </div>
+                                <div class="para_col">
+                                    <p class="txt">{{formatNumber(prjCard.cntrCnt)}} 명</p>
+                                </div>
+                            </div>
+                            <div class="line bt-nomargin "></div>
+                        </div>
+                        <p class="txt">특정사업에 기부하기는 지역이 가진 문제를 해결하기 위해 고향사랑기부제를 프로젝트화하고 그 취지에 공감하는 특정사업을 직접 선택하여 기부할 수 있습니다.
+                        </p>
+
+                        <div class="prj_donation-btns" v-if="!exportMode">
+                            <button class="formBtn donation" type="button" @click="goDonationPage(prjCard.prjId, prjCard.locgovCode,'donationBtn')" id="donationBtn">
+                                <img src="/static/images/icon/cli-icon_btn-donation2.png" alt="하트와 월계수"><span>기부하기</span>
+                            </button>
+                            <!--<button class="formBtn prj_btns" type="button">
+                                <img src="/static/images/icon/prj_btn-icon_heart.png" alt="찜하기">
+                            </button>
+                            <button class="formBtn prj_btns" type="button">
+                                <img src="/static/images/icon/prj_btn-icon_share.png" alt="공유하기">
+                            </button>-->
+                        </div>
+                    </div>
+                    <!--// 프로젝트 정보 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 프로젝트소개, 기부내역, 자주묻는질문 -->
+        <section>
+            <layout-prj_tab-ali ref="prjTab" @go-donation-page="goDonationPage" :export-mode="exportMode"></layout-prj_tab-ali>
+            <div class="center tab_container">
+                <div class="tab-content item_view">
+                    <!-- 프로젝트소개  -->
+                    <div id="nav-detail" class="tab-pane show active">
+                        <div class="item_detail">
+                            <div class="total_top">
+                                <h3 class="total">사업 소개<span class="pointblue"></span></h3>
+                            </div>
+                            <div class="detailContent">
+                                <!-- <div v-if="item.detailContent != ''" v-html="appendCdnDomain(unescapeHtml(item.detailContent))"></div> -->
+                                <!--<img src="https://img2.yna.co.kr/photo/reuters/2020/07/08/PRU20200708229301055_P4.jpg"
+                                    alt="예시이미지">-->
+                                <div class="sampleContents">
+                                    <p class="pointGray" v-html="appendCdnDomain(prjCard.prjCn)">
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--// 프로젝트 소개-->
+
+					<!-- <div>
+						<p class="wait" style="padding-top: 50px;">
+						    <img src="/static/images/icon/flag_wait.png" alt="잠깐!">
+						    <span class="left_txt">
+						        <span class="pointRed">지정 기부가 완료되면 취소가 불가능합니다. 취소 안되용~ 테스트 문구</span> <br>
+						        기부 진행 중 취소한 건에 대해서는 <strong>당일 자동 취소 처리</strong>됩니다. 작성하신 내용이 맞는지 다시 한 번 확인해
+						        주세요. 테스트 문구
+						    </span>
+						</p>
+					</div> -->
+
+                    <!--  -->
+                    <div id="nav-review" class="tab-pane">
+                        <h3 class="sr-only">응원메시지(기부내역)</h3>
+                        <div class="item_review">
+                            <div class="total_top">
+<!--                                 <p class="total">기부내역<span class="pointblue">{{prjCard.cntrCnt}}</span></p> 2025-06-30 삭제-->
+                            </div>
+                            <div class="total-noti-wrap">
+                                <div class="noti_wrap">
+                                    <div class="noti-box">
+                                        <div class="noti_txt">"총 {{prjCard.cntrCnt}}건이 기부되었습니다."</div>
+                                    </div>
+                                    <img src="/static/images/icon/dsg-donation_gohyangee.png" alt="고향이" class="gohyangee">
+                                </div>
+                            </div>
+                            <div class="list_wrap review_list">
+                                <ul v-if="result.cntrList.content.length > 0">
+                                    <li class="list_area" v-for="(cntr, cntrIndex) in result.cntrList.content" :key="cntrIndex">
+                                        <div class="review_open">
+                                            <div class="list_top">
+                                               	<div class="review_para" style="width:70%;">
+                                               		<p class="prj-tab-list_point-txt"><strong class="pointRed"
+	                                                            v-html="formatNumber(cntr.cntrAmt)"></strong>원 참여</p>
+												</div>
+												<div class="review_para" style="display:flex;justify-content: space-between;align-items: center;width:100%;padding-right:0">
+	                                                <input type="text" :name="'input' + cntrIndex" :id="'input' + cntrIndex" v-if="cntr.giveOrder == 1 && !exportMode" style="width: 100%;" :ref="'input' + cntr.cntrSn" :value="cntr.cheerMsg"/>
+                                               		<div class="review_id" v-if="cntr.giveOrder == 1 && !exportMode" style="padding-left:10px;">
+														<button class="formBtn" style="font-size:13px;" type="button" @click="saveCheerMsg(cntr.cntrSn)" :ref="'btn' + cntr.cntrSn">
+														    적용
+														</button>
+                                                   </div>
+                                                   <div v-if="cntr.giveOrder == 0 || exportMode">
+                                                        <p class="" style="white-space: normal;">{{cntr.cheerMsg}}</p>
+                                                   </div>
+												</div>
+                                                <div class="m-field" style="min-width:30%;">
+                                                    <div class="review_id">
+                                                        <p class="">{{cntr.userName}}</p>
+                                                    </div>
+                                                    <div class="review_id">
+                                                        <p class="">{{cntr.loginId}}</p>
+                                                    </div>
+                                                    <div class="review_date">
+                                                        <p class="">
+                                                            {{cntr.cntrDeFormat}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="list-none" v-if="result.cntrList.content.length == 0">
+                                    <img src="/static/images/icon/non-list.png" alt="기부내역이 없음">
+                                    기부내역이 없습니다.
+                                </div>
+                            </div>
+                            <pagination :current-page="result.cntrList.currentPage" :total-pages="result.cntrList.totalPages" :page-target="'review'" @change="cntrListPaging" v-if="result.cntrList.content.length > 0"></pagination>
+                        </div>
+                    </div>
+
+                    <div id="nav-qna" class="tab-pane">
+                        <div class="item_qna">
+                            <div class="total_top">
+                                <!-- <p class="total">Q&A
+                                    <span class="pointblue">{{ formatNumber(result.faqList.content.length) }}</span>
+                                </p>
+                                <div class="search-field">
+                                    <input type="search" v-model="faqParam.query" @keyup.enter="faqSearch()" aria-labe="검색" placeholder="검색 키워드">
+                                    <button type="button" class="button search" @click="faqSearch()" aria-label="조회"></button>
+                                </div> -->
+                                <h3 class="total">공지사항
+                                    <span class="pointblue">{{ formatNumber(result.noticeList.totalCnt) }}</span>
+                                </h3>
+                            </div>
+                           <!--
+                            <div class="list_wrap qna_list">
+                                <ul v-if="result.faqList.content.length > 0" >
+                                    <li class="list_top dropdown cursor" v-for="(data, index) in result.faqList.content" :key="index" accordion-option="toggle">
+                                        <button aria-level="2" class="dropdown-toggle" data-toggle="dropdown" @click="addHits(data.id)">
+                                            <img class="faq-icon" src="/static/images/icon/cli-icon_faq-q.png"
+                                                alt="질문">
+                                            <div class="header-faq">
+                                                <!--<div class="status_c category">
+                                                    지정기부
+                                                </div>-->
+                                                <!-- <div class="faq_txt" style="white-space: normal;padding-right: 50px;">{{ unescapeHtml(data.title) }}</div>
+                                                <div class="col_group" style="right:0px;position: absolute;">
+                                                    <div class="status_c date">{{ data.createdDate }}</div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                        <div class="dropdown-menu" role="region" :aria-labelledby="'faq-q-' + index"  :ref="'faq_' + data.id" style="z-index: 500;">
+                                            <div tabindex="0" class="notice-wrap" >
+                                                <img class="faq-icon" src="/static/images/icon/cli-icon_faq-a.png"
+                                                    alt="답변">
+                                                <div  class="header-faq">
+                                                    <span class="status_c category">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                    <div class="faq_txt" style="padding:0px 20px;">
+                                                        <span v-html="appendCdnDomain(data.content)"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="list-none" v-if="result.faqList.content.length == 0">
+                                    <img src="/static/images/icon/non-list.png" alt="">
+                                    게시글이 없습니다.
+                                </div>
+                            </div>
+                             <pagination :current-page="result.faqList.currentPage" :total-pages="result.faqList.totalPages" :page-target="'qna'" @change="faqListPaging" v-if="result.faqList.content.length > 0"></pagination> -->
+                             <div class="list_wrap qna_list">
+                                <ul v-if="result.noticeList.content.length > 0" >
+                                    <li class="list_top dropdown cursor" v-for="(data, index) in result.noticeList.content" :key="index" accordion-option="toggle">
+                                        <button aria-level="2" class="dropdown-toggle" data-toggle="dropdown">
+                                            <!-- <img class="faq-icon" src="/static/images/icon/cli-icon_faq-q.png"
+                                                alt="질문"> -->
+                                            <div class="header-faq">
+                                                <div class="faq_txt" style="white-space: normal;padding-right: 70px;">{{ unescapeHtml(data.prjNoticeSubject) }}</div>
+                                                <div class="col_group" style="right:50px;position: absolute;">
+                                                    <div class="">{{ data.frstRegistPnttmStr }}</div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                        <div class="dropdown-menu" role="region" :aria-labelledby="'notice-t-' + index"  :ref="'notice_' + data.id" style="z-index: 500;" @keydown="keyHandler($event)">
+                                            <div tabindex="0" class="notice-wrap" >
+                                                <!-- <img class="faq-icon" src="/static/images/icon/cli-icon_faq-a.png"
+                                                    alt="답변"> -->
+                                                <div  class="header-faq">
+                                                    <div class="faq_txt" style="padding:0px 20px;">
+                                                        <span v-html="appendCdnDomain(data.prjNoticeCn)"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <br>
+											<div  class="header-faq" v-if="data.prjFiles.length > 0">
+	                                           	<div class="faq_txt" style="padding:0px 20px;">
+	                                           		- 첨부파일
+	                                           	</div>
+                                            </div>
+                                            <div v-for="(file, index) in data.prjFiles" :key="'file_' + index" style="padding-top:5px;">
+                                            	<div  class="header-faq">
+	                                            	<div class="faq_txt" style="padding:0px 20px;">
+	                                            		<a @click="fileDownload($event, file)" :title="file.orgFileName + ' 파일 다운로드'" style="cursor: pointer;">{{index + 1}}. {{file.orgFileName}}</a>
+	                                            	</div>
+                                            	</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="list-none" v-if="result.noticeList.content.length == 0">
+                                    <img src="/static/images/icon/non-list.png" alt="">
+                                    게시글이 없습니다.
+                                </div>
+                            </div>
+                            <pagination :current-page="result.noticeList.currentPage" :total-pages="result.noticeList.totalPages" :page-target="'qna'" @change="noticeListPaging" v-if="result.noticeList.content.length > 0"></pagination>
+                        </div>
+                    </div>
+                </div>
+	            <div class="center" style="margin-top: 100px;" v-if="movePage">
+	            	<div class="btn-box many mb_b60">
+	            		<button type="button" title="특정사업에 기부하기 목록으로 이동" class="blueBtn u-confirm" @click="goList()">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							목록 페이지
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<!-- <span>
+								<img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+							</span> -->
+						</button>
+					</div>
+				</div>
+            </div>
+        </section>
+        <layout-fixed-btn v-if="!exportMode"></layout-fixed-btn>
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted" :export-mode="exportMode"></layout-footer-ali>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/static/js/bootstrap/vendor/clipboard.min.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.directives.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script type="application/javascript">
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/ko_KR/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                //'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                // 'layout-qna-write': httpVueLoader('/components/ui/modal-goodsQnA.vue'),
+                'layout-prj_tab-ali': httpVueLoader('/components/layouts/prj_tab-ali.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'),
+                'alert': httpVueLoader('/components/layouts/alert.vue'),
+                // 'naver-pay-button': httpVueLoader('/components/ui/naver/naver-pay-button.vue')
+            },
+            data: function () {
+                return {
+                    prjCard: {
+                        cntrCnt: 0
+                        , leftDayStr: 'D-DAY'
+                        , locgovNm: ''
+                        , targetAmt: 0
+                        , sumAmt: 0
+                        , rateAmtStr: 0
+                        , rateAmt: 0
+                    },
+                    result: {
+                        cntrList: {
+                            currentPage: 0,
+                            totalPages: 0,
+                            totalElements: 0,
+                            content: []
+                        },
+						/*faqList: {
+                            currentPage: 1,
+                            totalPages: 0,
+                            totalElements: 0,
+                            content: {}
+                        },*/
+						noticeList: {
+                            currentPage: 0,
+                            totalPages: 0,
+                            totalElements: 0,
+                            content: {}
+                        },
+                    },
+                    swiperOption: {
+                        thumbSlider: {
+                            slidesPerView: 'auto',
+                            spaceBetween: 8,
+                            freeMode: true,
+                            watchSlidesVisibility: true,
+                            watchSlidesProgress: true,
+                            observer: true,
+                            observeParents: true,
+                            // allowTouchMove: false
+                            navigation: {
+                                /*nextEl: '.thumb_box .swiper-button-next',
+                                prevEl: '.thumb_box .swiper-button-prev',*/
+                            },
+                        },
+
+                        mainSlider: {
+                            spaceBetween: 15,
+                            observer: true,
+                            observeParents: true,
+                            navigation: {
+                                nextEl: '.swiper-button-next',
+                                prevEl: '.swiper-button-prev',
+                            },
+                            pagination: {
+                                el: '.swiper-pagination',
+                            },
+                            thumbs: {
+                                swiper: this.viewThumbsSwiper
+                            }
+                        },
+                        itemSlider: {
+                            slidesPerView: 'auto',
+                            centerSlides: true,
+                            spaceBetween: 8,
+                            // freeMode: true,
+                            watchSlidesVisibility: true,
+                            watchSlidesProgress: true,
+                            navigation: {
+                                // nextEl: '.item_slider .swiper-button-next',
+                                // prevEl: '.item_slider .swiper-button-prev',
+                            },
+                            // breakpoints: {
+                            // 	767: {
+                            // 		slidesPerView: 2,
+                            // 		spaceBetween: 16
+                            // 	},
+                            // 	991: {
+                            // 		slidesPerView: 3,
+                            // 		spaceBetween: 20
+                            // 	}
+                            // }
+                        }
+                    },
+                    menuUrl: location.pathname,
+/*
+                    faqParam: {
+                        page: 0,
+                        size: 10,
+                        faqType: "F_CNTR_DESIGNATED",
+                        where: "title",
+                        query: "",
+                        sort: "",
+                    },
+*/
+                    noticeParam: {
+                        page: 0,
+                        itemsPerPage: 5,
+                    },
+					exportMode: false,
+					movePage: true,
+                }
+            },
+
+
+
+            methods: {
+                slidelistHeader: function (index, noticeId) {
+                    $('.list_top').eq(index).siblings('.list_header').slideToggle().css('display', 'flex');
+                },
+                slideQnatHeader: function (index, noticeId) {
+                    var obj = $(".list_header.qna").eq(index);
+                    $(obj).slideToggle();
+                },
+
+                loadingMounted: function () {			// 하위컴포넌트 로딩 중 화면 로딩 후 실행 함수
+                    this.initCallFunction();
+                },
+                showLoading: function (isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+                },
+                initCallFunction: function () {
+                    // 답례품 이미지 스와이퍼가 변경되면 썸네일 스와이퍼도 변경되도록 이벤트 추가
+                    this.$refs.mainSwiper.swiper.eventsListeners.activeIndexChange.push(function () {
+                        let activeIdx = vm.$refs.mainSwiper.swiper.activeIndex;
+                        vm.$refs.mainThumbSwiper.swiper.slideTo(activeIdx);
+                    });
+                    // 답례품 이미지 스와이퍼가 변경되면 썸네일 스와이퍼도 변경되도록 이벤트 추가
+                    this.getDesignatedDonationDetail();
+                    //this.faqSearch();
+                },
+                getDesignatedDonationDetail: function () {
+                    this.showLoading(true);
+                    let prjId = $s.core.getParameter('prjId');
+                    $s.api.getDesignatedDonationDetail(
+                        prjId
+                        , function (response) {
+                            vm.showLoading(false);
+                            if (response && response.content) {
+                                vm.prjCard = response.content;
+                                vm.result.cntrList.content = response.content.cntrList;
+                                vm.result.cntrList.currentPage = response.cntrListCurrentPage;
+                                //vm.result.cntrList.totalElements = response.cntrListTotalCnt;
+                                vm.result.cntrList.totalPages = response.cntrListTotalPages;
+                                vm.setTabPrjCard(vm.prjCard);
+                                //vm.faqSearch();
+
+								vm.noticeSearch();
+                            } else {
+                                $s.alert("기부가능한 상태가 아닙니다.", function() {
+                                    vm.historyBack();
+                                });
+                                // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                                $('#saleson').on('click', '#op-alert', function () {
+                                    vm.historyBack();
+                                });
+                            }
+                        }
+                        , vm.commError
+                    );
+                },
+                historyBack: function () {
+                    if (history.length == 1) {
+                        $s.redirect($s.pages.INDEX);
+                    } else {
+                        history.back();
+                    }
+                },
+                setTabPrjCard: function (prjCard) {
+                    setTimeout(
+                        function() {
+                            try {
+                                vm.$refs.prjTab.setPrjCard(prjCard);
+                            } catch(e) {
+                                vm.setTabPrjCard(prjCard);
+                            }
+                        }
+                        , 500
+                    );
+                },
+                commError: function (error) {
+                    vm.showLoading(false);
+                    $s.api.handleApiExeption(error);
+                },
+                moveSlideViewImage: function (isBefore, event) {
+                    if (isBefore) {
+                        this.$refs.mainSwiper.swiper.navigation.onPrevClick(event);
+                    } else {
+                        this.$refs.mainSwiper.swiper.navigation.onNextClick(event);
+                    }
+                },
+                toSlideViewImage: function (index) {
+                    this.$refs.mainSwiper.swiper.slideTo(index);
+                },
+                cntrListPaging: function (page) {
+                    if (this.result.cntrList.currentPage == page) {
+                        return;
+                    }
+                    this.showLoading(true);
+                    let prjId = $s.core.getParameter('prjId');
+
+                    let param = {
+                        prjId: prjId
+                        , page: page
+                    };
+                    $s.api.getDesignatedCntrList(
+                        param
+                        , function (response) {
+                            vm.showLoading(false);
+                            vm.result.cntrList.content = response.content.cntrList;
+                            vm.result.cntrList.currentPage = response.cntrListCurrentPage;
+                            //vm.result.cntrList.totalElements = response.cntrListTotalCnt;
+                            vm.result.cntrList.totalPages = response.cntrListTotalPages;
+                        }
+                        , vm.commError
+                    );
+                },
+/*
+                faqListPaging: function (page) {
+                    if (this.result.faqList.currentPage == page) {
+                        vm.showLoading(false);
+                        return;
+                    }
+                    this.faqParam.page = page;
+                    $s.api.getFaq(
+                        vm.faqParam,
+                        function (response) {
+                            vm.showLoading(false);
+                            if (response) {
+                                vm.result.faqList.totalPages = response.content.totalPages;
+                                vm.result.faqList.currentPage = response.content.number + 1;
+                                vm.result.faqList.faqCount = response.content.totalElements;
+                                vm.result.faqList.content = response.content.content;
+                            } else {
+                                vm.result.faqList.content = [];
+                                vm.result.faqList.totalPages = 1;
+                                vm.result.faqList.currentPage = 1;
+                                vm.result.faqList.faqCount = 0;
+                            }
+                        },
+                        function (err) {
+                            vm.showLoading(false);
+                            vm.result.faqList.content = [];
+                            vm.result.faqList.totalPages = 1;
+                            vm.result.faqList.currentPage = 1;
+                            vm.result.faqList.faqCount = 0;
+                        }
+                    );
+                },
+                faqSearch: function () {
+                    vm.showLoading(true);
+                    this.faqListPaging(0);
+                },
+*/
+                addHits: function (id) {
+                    let state = this.$refs['faq_' + id][0].className;
+                    if(state.indexOf('show') < 0) {     // 열기
+                        $s.api.updateFaqHits({ id: id }, function (response) {});
+                    }
+                },
+                goDonationPage: function (prjId, locgovCode, btnId) {
+					if (this.prjCard.inDate == 2) {
+						$s.alert('시작일 이전에 기부가 불가능합니다.', btnId);
+					} else if (this.prjCard.inDate == 3) {
+						$s.alert('종료일 이후에 기부가 불가능합니다.', btnId);
+					} else {
+						if (this.prjCard.prjStatus == '2') {
+							if (this.prjCard.rateAmt >= 100) {
+								$s.alert('목표 금액이 달성되어 기부가 불가능합니다.', btnId);
+							} else {
+    	                		//$s.redirect('/donation/donation-main-test.html?prjId=' + prjId + '&locgovCode=' + locgovCode);
+								$s.donation.goDonationPage('?prjId=' + prjId + '&locgovCode=' + locgovCode);
+							}
+						} else  {
+							$s.alert('진행 중 상태만 기부 가능합니다.', btnId);
+						}
+					}
+                },
+                getPrjImage: function (prjImage, type) {
+                    let path = CDN_DOMAIN + '/upload/prj/' + this.prjCard.prjId + '/';
+                    if (type == 'L') {
+                        return path + prjImage.imageNameL;
+                    } else {
+                        return path + prjImage.imageName;
+                    }
+                },
+				saveCheerMsg: function(cntrSn) {
+					let msg = this.$refs['input' + cntrSn][0].value;
+					if (msg.length > 30) {
+						$s.alert('30자 까지 입력가능합니다.', function () {
+							$s.closeAlert();
+							vm.$refs['input' + cntrSn][0].focus();
+						});
+						return;
+					}
+					let param = {
+						cntrSn : cntrSn
+						, cheerMsg : msg
+					};
+					let btnId = 'btn' + cntrSn;
+					vm.showLoading(true);
+					$s.api.saveCheerMsg(
+						param
+						, function (response) {
+							vm.showLoading(false);
+							if (response && response.saveCnt == 1) {
+								vm.result.cntrList.currentPage = 0;
+								vm.cntrListPaging(1);
+								$s.alert('적용되었습니다.', btnId);
+							} else if (response && response.errMsg) {
+								$s.alert(response.errMsg, btnId);
+							} else {
+								$s.alert('실패했습니다.', btnId);
+							}
+						}
+						, function (error) {
+							vm.showLoading(false);
+							$s.alert('실패했습니다.', btnId);
+						}
+					);
+				},
+                noticeSearch: function () {
+                    this.noticeListPaging(1);
+                },
+                noticeListPaging: function (page) {
+                    if (this.result.noticeList.currentPage == page) {
+                        vm.showLoading(false);
+                        return;
+                    }
+                    vm.noticeParam.page = page;
+					vm.noticeParam.prjId = Number($s.core.getParameter('prjId'));
+					vm.showLoading(true);
+                    $s.api.getDesignatedDonationNotice(
+                        vm.noticeParam,
+                        function (response) {
+                            vm.showLoading(false);
+                            if (response) {
+                                vm.result.noticeList.totalPages = response.noticeListTotalPages;
+                                vm.result.noticeList.currentPage = response.noticeListCurrentPage;
+                                vm.result.noticeList.totalCnt = response.noticeListTotalCnt;
+                                vm.result.noticeList.content = response.content;
+                            } else {
+                                vm.result.noticeList.content = [];
+                                vm.result.noticeList.totalPages = 1;
+                                vm.result.noticeList.currentPage = 1;
+                                vm.result.noticeList.totalCnt = 0;
+                            }
+                        },
+                        function (err) {
+                            vm.showLoading(false);
+                            vm.result.noticeList.content = [];
+                            vm.result.noticeList.totalPages = 1;
+                            vm.result.noticeList.currentPage = 1;
+                            vm.result.noticeList.totalCnt = 0;
+                        }
+                    );
+                },
+				fileDownload : function (e, file) {
+					e.preventDefault();
+					e.stopPropagation();
+					location.href = CDN_DOMAIN + "/opmanager/fileDownload/downloadByProgramData"
+									+ "?programName=PRJ_NOTICE"
+									+ "&programId=" + file.prjNoticeId
+									+ "&fileName=" + encodeURIComponent(file.fileName)
+									+ "&orgFileName=" + encodeURIComponent(file.orgFileName)
+				},
+				keyHandler : function (e) {
+					/*if (e.code == 'Tab') {
+						e.preventDefault();
+						e.stopPropagation();
+					}
+					*/
+				},
+				goList : function () {
+					if (this.exportMode) {
+						$s.redirect('/designated-donation/index.html?exportMode=true');
+					} else {
+						$s.redirect('/designated-donation/index.html');
+					}
+				},
+				onPageShow: function () {
+					this.loadingMounted();
+				},
+            },
+
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init();
+					this.exportMode = $s.core.getParameter("exportMode") == 'true' ? true : false;
+					this.movePage = $s.core.getParameter("back") == 'no' ? false : true;
+                });
+            },
+        });
+    </script>
+</body>
+
+
+<style>
+	@media screen and (max-width: 768px) {
+	  #header-wrap {
+	    display:none;
+	  }
+	}
+</style>
+
+
+</html>

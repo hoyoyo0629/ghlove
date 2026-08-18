@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description" content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description" content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>통합검색 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/search_ru.css">
+    <link rel="stylesheet" href="/static/css/ct_nov.css">
+    <link rel="stylesheet" href="/static/css/goods_card.css">
+    <link rel="stylesheet" href="/static/css/evt_card.css">
+    <link rel="stylesheet" href="/static/css/designation.css">
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <!-- <layout-subsearch-ali @query="goToSearch"></layout-subsearch-ali> -->
+
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt=""></a>
+                        <span class="txt-not-arrow"></span>
+                        통합검색
+                    </span>
+                    <h2 class="page-title-txt">통합검색</h2>
+                </div>
+            </section>
+            <section id="contents">
+                <div class="contents-wrap">
+                    <div class="s-contents result center">
+                        <div class="search-result-info">
+                            <p class="title-txt" v-if="param.searchKeyword">
+                                <span> 검색어 <strong class="pointblue">{{ param.searchKeyword }}</strong>에 대한 검색결과는</span>
+                                <span> 총 <strong class="pointblue">{{ formatNumber(getTotalCount) }}</strong>건 입니다.</span>
+                            </p>
+                            <p class="title-txt" v-else>
+                                검색어가 없습니다.
+                            </p>
+                        </div>
+                        <div class="search-result-box">
+                            <div class="tab_menu_wrap">
+                                <div class="search-result-group">
+                                    <button type="button" class="search-result-items on" @click="goToTabMenu('total')" tabindex="0">통합검색</button>
+                                    <button type="button" class="search-result-items" v-if="data.menuView"
+                                        v-for="(data,category,index) in searchMenuList" :key="index"
+                                        @click="goToTabMenu(category)" tabindex="0">{{ data.searchMenu }}
+                                        <span class="pointblue">{{ formatNumber(data.resultCount) }}</span></button>
+                                </div>
+                            </div>
+
+                            <!-- 검색결과 없을 때  -->
+                            <div class="result-body noneR" v-show="!isResultView" style="display:block">
+                                <img src="/static/images/icon/cli-icon_result-none.png" alt="결과없음">
+                            </div>
+                            <!-- //검색결과 없을 때  -->
+
+                            <!-- 검색결과 있을 때 -->
+                            <div class="result-body" v-show="isResultView">
+                                <div class="result-items locgovR"
+                                    v-if="locgovList.length > 0 && searchMenuList.locgov.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        지자체 검색 결과
+                                    </h3>
+                                    <div class="result-box">
+                                        <div class="result-txt cursor" v-for="(data,index) in locgovList" :key="index" tabindex="0" @click="goToMovePage(data.view_url)">
+                                            <strong v-html="inputColorSearchString(unescapeHtml(data.upper_locgov_nm))"></strong>&nbsp;<strong v-html="inputColorSearchString(unescapeHtml(data.locgov_nm))"></strong>
+                                            <p v-html="inputColorSearchString(replaceLine(data.locgov_intrcn_cn))"></p>
+                                            <p class="s-txt">인구수 : {{ formatNumber(data.locgov_popltn_co) }}
+                                                <span>
+                                                    <span class="v-bar">|</span>
+                                                </span> 홈페이지 : {{ data.locgov_hmpg }}
+                                                <!-- 지자체 홈페이지 링크 사용안함, <a :href="data.locgov_hmpg" target="_blank" v-if="data.locgov_hmpg">{{data.locgov_hmpg}}</a> -->
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('locgov')"
+                                            v-if="param.category == 'total' && searchMenuList.locgov.resultCount > searchMenuList.locgov.pageSize">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('locgov')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+
+                                <div class="result-items dsgnDntnR"
+                                    v-if="dsgnDntnList.length > 0 && searchMenuList.dsgnDntn.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        특정사업 기부 검색 결과
+                                    </h3>
+                                    <div class="result-area">
+							          	<div class="section all_prj" id="contents" v-if="dsgnDntnList.length > 0">
+							                <ul class="prj-list-group">
+							                    <li class="prj-list-items" v-for="(list,i) in dsgnDntnList" :key="i" tabindex="0">
+							                        <div class="list_inner" @click="goDsgnDntnBizDetail(list)" tabindex="0"
+							                             @keydown="goDsgnDntnBizDetailE(list)">
+							                            <div class="inner-group" >
+							                                <span class="prj_loc pointGray"><img src="/static/images/icon/dsgncntr-pin-off.png" alt="마커"> {{ list.lclgvNm }}</span>
+							                                <span class="prj_title deepGray">{{list.dsgnDntnBizTtl}}</span>
+							                            </div>
+							                            <span class="img_frame">
+							                                <img class="item_img" :src="getPrjImgPath(list.dsgnDntnBizId, list.dsgnDtntBizRprsImg)" :alt="list.dsgnDntnBizTtl + ' 특정사업기부 대표 이미지'">
+							                            </span>
+							                            <div class="inner-group">
+							                                <span class="prj_amount deepGray"><!-- {{ formatNumber(list.goalAmt) }}원 --> &nbsp; </span>
+							                                <div class="prj_gauge">
+							                                    <div class="gauge_back">
+							                                        <div class="gauge_result" :style="{width:getRtAmtStr(list.rtAmt)+'%'}"
+							                                             :class="{'lt_goal': list.rtAmt < 100, 'goal': list.rtAmt == 100, 'gt_goal': list.rtAmt > 100}">
+							                                        </div>
+							                                    </div>
+							                                </div>
+							                                <div class="inner_wrap">
+							                                	<span class="prj_period2 deepGray">{{dateFormat(list.dsgnDntnBizBgngYmd, 'date')}} ~ {{dateFormat(list.dsgnDntnBizEndYmd, 'date')}}</span>
+							                                	<span class="prj_period_mini deepGray">{{dateFormat(list.dsgnDntnBizBgngYmd, 'date')}}<br> ~ <br>{{dateFormat(list.dsgnDntnBizEndYmd, 'date')}}</span>
+							                                    <div class="prj_gaugePer">
+							                                        <span class="perNumMain">{{ getRtAmtStr(list.rtAmt) }}</span><span style="font-weight: 600;">%</span>
+							                                    </div>
+							                                </div>
+							                            </div>
+							                        </div>
+							                    </li>
+							                </ul>
+							            </div>
+
+							          	<div v-if="dsgnDntnList.length == 0">
+								            <img src="/static/images/icon/empty-prj.png" alt="결과 없음"><br>
+											조회된 특정사업기부 사업이 없습니다.
+										</div>
+
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('dsgnDntn')"
+                                            v-if="(param.category == 'total' && searchMenuList.dsgnDntn.resultCount > searchMenuList.dsgnDntn.pageSize)">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('item')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+
+                                <div class="result-items itemR"
+                                    v-if="itemList.length > 0 && searchMenuList.item.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        답례품 검색 결과
+                                    </h3>
+                                    <div class="result-area">
+                                        <div class="section all_goods">
+											<ul class="goods-list-group">
+												<li class="goods-list-items" v-for="(data,index) in itemList" :key="index">
+													<a href="javascript:void(0)" @click.prevent="goItemDetail(data)" class="list_inner">
+														<span class="img_frame">
+															<img class="item_img" v-bind:src="itemImage(data.image_url)" :alt="data.itemName" @error="this.$goodsItem.errorImage($event)">
+															<img src="/static/images/goods/goods_sold-out.png" alt="품절" v-show="!(data.adult_item_yn === 'Y' && adultYn === 'N') && data.item_sold_out_flag === 'Y'">
+															<!--<img src="/static/images/goods/goods_19.png" alt="19세구매가능" v-show="data.adult_item_yn === 'Y' && adultYn === 'N'">-->
+														</span>
+														<button type="button" class="do_btn" @click.stop="this.$goodsItem.getLocGovInfo(data.locgov_code)">
+															<span class="btn_icon"></span>
+															<span class="btn_txt">{{ data.locgov_nm }} 기부</span>
+															<span class="btn_arrow"></span>
+														</button>
+														<span class="card_title" :class="{ 'grayTxt_so' :  data.item_sold_out_flag === 'Y' }" v-html="inputColorSearchString(data.item_name)"></span>
+														<span class="deepBlue" :class="{ 'grayTxt_so' :  data.item_sold_out_flag === 'Y' }"><span class="pointSize">{{ formatNumber(data.sale_price) }}</span> P</span>
+														<span class="tag_box" v-if="data.item_new_flag == 'Y'">신규</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('item')"
+                                            v-if="(param.category == 'total' && searchMenuList.item.resultCount > searchMenuList.item.pageSize)">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('item')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+
+                                <div class="result-items noticeR"
+                                    v-if="noticeList.length > 0 && searchMenuList.notice.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        공지사항 검색 결과
+                                    </h3>
+                                    <div class="result-area list-notice-body">
+                                        <div class="list-title">
+                                           <div class="date-col title"><strong>제목</strong></div>
+		                                    <div class="notice_info">
+		                                        <div class="date-col date"><strong>등록일</strong></div>
+		                                        <div class="date-col view"><strong>조회수</strong></div>
+		                                    </div>
+                                        </div>
+                                        <ul class="list-notice-group">
+                                            <li class="list-items cursor" v-for="(data, index) in noticeList" :key="index" tabindex="0" @click="goNoticeDetail(data.notice_id)">
+		                                        <div class="notice_tit">
+		                                            <div class="notice_txt" v-html="inputColorSearchString(unescapeHtml(data.subject))"></div>
+		                                        </div>
+		                                        <div class="notice_info">
+		                                            <div class="date-col" v-html="inputColorSearchString(dateFormat(data.created_date,'date'))"></div>
+		                                            <div class="date-col view_c">
+		                                                <img src="/static/images/icon/cli-icon_pw-show.png" alt="조회수" class="board_icon">{{ formatNumber(data.hits) }}
+		                                            </div>
+		                                        </div>
+		                                    </li>
+                                        </ul>
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('notice')"
+                                            v-if="param.category == 'total' && searchMenuList.notice.resultCount > searchMenuList.notice.pageSize">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('notice')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+
+                                <div class="result-items qnaR"
+                                    v-if="qnaList.length > 0 && searchMenuList.qna.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        Q＆A 검색 결과
+                                    </h3>
+                                    <div class="result-area">
+                                        <div class="table-container">
+                                            <div class="list-search-body qna">
+                                                <div class="qna-list-wrap">
+                                                    <div class="list-title">
+                                                        <div class="date-col"><strong>No.</strong></div>
+                                                        <div class="date-col"><strong>작성자</strong></div>
+                                                        <div class="date-col"><strong>Q＆A</strong></div>
+                                                		<div class="date-col notice-header-txt"><strong>제목</strong></div>
+                                                        <div class="date-col"><strong>등록일</strong></div>
+                                                        <div class="date-col"><strong>조회수</strong></div>
+                                                    </div>
+                                                    <ul class="list-search-group">
+                                                        <li class="list-items" v-for="(data,index) in qnaList" :key="index" @click="goToMovePage(data.view_url)">
+                                                            <div class="notice-header">
+                                                                <div class="date-col idx">{{ index+1 }}</div>
+                                                                <div class="date-col writer">{{ data.qna_detail_type == 'A' ? '관리자' : data.user_name }}</div>
+                                                                <div class="date-col">
+		                                                            <strong class="pointblue" v-if="data.qna_detail_type == 'Q'">Q</strong>
+		                                                            <strong class="pointRed" v-if="data.qna_detail_type == 'A'">A</strong>
+		                                                        </div>
+                                                                <div class="date-col tit notice-header-txt" v-html="inputColorSearchString(unescapeHtml(data.subject))"></div>
+                                                                <div class="date-col">{{ dateFormat(data.created_date,'date') }}</div>
+                                                                <div class="date-col">{{ formatNumber(data.hits) }}</div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                            <div class="table-overlap">
+                                                <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br>
+                                                <button type="button" class="formBtn" @click="closeTableOverlap($event)">확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('qna')"
+                                            v-if="param.category == 'total' && searchMenuList.qna.resultCount > searchMenuList.qna.pageSize">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('qna')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+
+                                <div class="result-items faqR"
+                                    v-if="faqList.length > 0 && searchMenuList.faq.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        FAQ 검색 결과
+                                    </h3>
+                                    <div class="result-area list-search-body faq">
+                                        <ul class="list-search-group" v-if="!isNoData">
+                                            <!-- <li class="list-items dropdown cursor" v-for="(data, index) in result.faqList" :key="index" tabindex="0" @keydown="toggleClass(index,$event)"> -->
+                                            <li class="list-items dropdown cursor" v-for="(data, index) in faqList" :key="index" @keydown="toggleClass(index,$event)">
+                                                <div class="dropdown-toggle" data-toggle="dropdown">
+                                                    <img class="faq-icon" src="/static/images/icon/cli-icon_faq-q.png" alt="질문">
+                                                    <div class="header-faq">
+                                                        <div class="status_c category">{{ getFaqTypeName(data.faq_type) }}</div>
+                                                        <div class="faq_txt" v-html="inputColorSearchString(unescapeHtml(data.subject))"></div>
+                                                        <div class="col_group">
+                                                            <div class="status_c date">{{ dateFormat(data.created_date,'date') }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="dropdown-menu" aria-labelledby="dLabel">
+                                                    <div class="notice-wrap">
+                                                        <img class="faq-icon" src="/static/images/icon/cli-icon_faq-a.png" alt="답변">
+                                                        <div class="header-faq">
+                                                            <span class="status_c category"></span>
+                                                            <div class="faq_txt"><span v-html="inputColorSearchString(appendCdnDomain(data.content))"></span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('faq')"
+                                            v-if="param.category == 'total' && searchMenuList.faq.resultCount > searchMenuList.faq.pageSize">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('faq')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+
+                                <div class="result-items databoardR"
+                                    v-if="databoardList.length > 0 && searchMenuList.databoard.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        자료실 검색 결과
+                                    </h3>
+                                    <div class="result-area">
+                                        <div class="table-container">
+                                            <div class="list-search-body data">
+                                                <div class="list-title">
+                                                    <div class="date-col"><strong>No.</strong></div>
+                                                    <div class="date-col"><strong>파일유형</strong></div>
+                                                    <div class="date-col"><strong>제목</strong></div>
+                                                    <div class="date-col"><strong>등록일</strong></div>
+                                                    <div class="date-col"><strong>조회수</strong></div>
+                                                </div>
+                                                <ul class="list-search-group">
+                                                    <li class="list-items cursor-pointer"
+                                                        v-for="(data,index) in databoardList" :key="index"
+                                                        @click="goToMovePage(data.view_url)">
+                                                        <div class="notice-header">
+                                                            <div class="date-col">{{ index+1 }}</div>
+                                                            <div class="date-col">{{ data.file_ty }}</div>
+                                                            <div class="date-col notice-header-txt" v-html="inputColorSearchString(unescapeHtml(data.subject))"></div>
+                                                            <div class="date-col">{{ dateFormat(data.created_date,'date') }}</div>
+                                                            <div class="date-col">{{ formatNumber(data.hits) }}</div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="table-overlap">
+                                                <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br>
+                                                <button type="button" class="formBtn" @click="closeTableOverlap($event)">확인</button>
+                                            </div>
+                                        </div>
+                                        <div class="btn-box moreBtn">
+                                            <button class="formBtn" type="button" @click="goToMoreBtn('databoard')"
+                                                v-if="param.category == 'total' && searchMenuList.databoard.resultCount > searchMenuList.databoard.pageSize">탭이동</button>
+                                            <button class="formBtn" type="button" @click="goToMoreBtn('databoard')"
+                                                v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="result-items etc guidanceR"
+                                    v-if="guidanceList.length > 0 && searchMenuList.guidance.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        안내문 검색 결과
+                                    </h3>
+                                    <div class="result-box">
+                                        <div class="result-txt cursor-pointer" v-for="(data,index) in guidanceList" :key="index" @click="goToMovePage(data.view_url)">
+                                            <strong v-html="inputColorSearchString(unescapeHtml(data.subject))"></strong>
+                                            <p v-html="inputColorSearchString(unescapeHtml(replaceLine(data.content)))"></p>
+                                        </div>
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('guidance')"
+                                            v-if="param.category == 'total' && searchMenuList.guidance.resultCount > searchMenuList.guidance.pageSize">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('guidance')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+
+                                <div class="result-items eventR"
+                                    v-if="eventList.length > 0 && searchMenuList.event.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        이벤트 검색 결과
+                                    </h3>
+                                    <div class="result-area">
+	                                    <ul class="goods-evt-group">
+					                        <li class="evt-list-items" v-for="(data,index) in eventList" :key="index"
+					                            @click="goToMovePage(data.view_url)">
+					                            <div class="list_inner">
+					                                <span class="img_frame">
+					                                    <img class="item_img" :src="itemImage(data.featured_list_image)" :alt="data.featured_name"
+					                                        @error="errorImage">
+					                                </span>
+					                               <span class="cardTxt card_evt-du">{{`${dateFormat(data.start_date,'date')} ~ ${dateFormat(data.end_date,'date')}`}}</span>
+					                               <span class="cardTxt card_title" v-html="inputColorSearchString(data.featured_name)"></span>
+					                               <span class="cardTxt pointGray" v-html="inputColorSearchString(data.featured_host)"></span>
+					                               <span class="cardTxt pointGray" v-show="data.featured_phone_no1 && data.featured_phone_no2 && data.featured_phone_no3">{{`${data.featured_phone_no1}-${data.featured_phone_no2}-${data.featured_phone_no3}`}}</span>
+					                            </div>
+					                        </li>
+					                    </ul>
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('event')"
+                                            v-if="param.category == 'total' && searchMenuList.event.resultCount > searchMenuList.event.pageSize">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('event')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+
+                                <div class="result-items specialitemR"
+                                    v-if="specialitemList.length > 0 && searchMenuList.specialitem.resultView">
+                                    <h3 class="result-tab-title">
+                                        <img class="result-bullet" src="/static/images/icon/cli-icon-bullet.png" alt="">
+                                        특산물관 검색 결과
+                                    </h3>
+                                    <div class="result-area">
+                                        <div class="section all_goods">
+											<ul class="goods-list-group">
+												<li class="goods-list-items" v-for="(data,index) in specialitemList" :key="index">
+													<a href="javascript:void(0)" @click.prevent="goItemDetail(data)" class="list_inner">
+														<span class="img_frame">
+															<img class="item_img" v-bind:src="itemImage(data.image_url)" :alt="data.itemName" @error="this.$goodsItem.errorImage($event)">
+															<img src="/static/images/goods/goods_sold-out.png" alt="품절" v-show="!(data.adult_item_yn === 'Y' && adultYn === 'N') && data.item_sold_out_flag === 'Y'">
+															<!--<img src="/static/images/goods/goods_19.png" alt="19세구매가능" v-show="data.adult_item_yn === 'Y' && adultYn === 'N'">-->
+														</span>
+														<button type="button" class="do_btn" @click.stop="this.$goodsItem.getLocGovInfo(data.locgov_code)">
+															<span class="btn_icon"></span>
+															<span class="btn_txt">{{ data.locgov_nm }} 기부</span>
+															<span class="btn_arrow"></span>
+														</button>
+														<span class="card_title" :class="{ 'grayTxt_so' :  data.item_sold_out_flag === 'Y' }">{{ data.item_name }}</span>
+														<span class="deepBlue" :class="{ 'grayTxt_so' :  data.item_sold_out_flag === 'Y' }"><span class="pointSize">{{ formatNumber(data.sale_price) }}</span> P</span>
+														<span class="tag_box" v-if="data.item_new_flag == 'Y'">신규</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+                                    </div>
+                                    <div class="btn-box moreBtn">
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('specialitem')"
+                                            v-if="param.category == 'total' && searchMenuList.specialitem.resultCount > searchMenuList.specialitem.pageSize">탭이동</button>
+                                        <button class="formBtn" type="button" @click="goToMoreBtn('specialitem')"
+                                            v-if="param.category != 'total' && param.pageNumber < pageInfo.totalLastPageNum">더보기</button>
+                                    </div>
+                                </div>
+                                <span v-if="param.category != 'total' && pageInfo.totalLastPageNum > 1"
+                                    style="float:right; color:#dfdfdf">{{ param.pageNumber }}/{{ pageInfo.totalLastPageNum }}</span>
+                            </div>
+                            <!-- //검색결과 있을 때 -->
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script src="/modules/goods.item.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-help-btn': httpVueLoader('/components/ui/helpBtn.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'swiper-tabmenu': httpVueLoader('/components/ui/swiperTabMenu.vue'),
+            },
+            data: {
+                param: {
+                    searchKeyword: '',
+                    pageNumber: 1,
+                    category: 'total'
+                },
+				adultYn: 'N',
+                isResultView: true,
+  		        searchMenuList: {
+                    total: { searchMenu: "통합검색", resultCount: 0, menuView: false, resultView: false },
+                    locgov: { searchMenu: "지자체", resultCount: 0, menuView: true, resultView: false, pageSize: 5 },
+                    dsgnDntn: { searchMenu: "특정사업 기부", resultCount: 0, menuView: true, resultView: false, pageSize: 4 },
+                    item: { searchMenu: "답례품", resultCount: 0, menuView: true, resultView: false, pageSize: 4 },
+                    notice: { searchMenu: "공지사항", resultCount: 0, menuView: true, resultView: false, pageSize: 5 },
+                    qna: { searchMenu: "Q＆A", resultCount: 0, menuView: true, resultView: false, pageSize: 5 },
+                    faq: { searchMenu: "FAQ", resultCount: 0, menuView: true, resultView: false, pageSize: 5 },
+                    databoard: { searchMenu: "자료실", resultCount: 0, menuView: true, resultView: false, pageSize: 5 },
+                    guidance: { searchMenu: "안내문", resultCount: 0, menuView: true, resultView: false, pageSize: 5 },
+                    // event: 	{ searchMenu: "이벤트",  	resultCount: 0, menuView: true, resultView: false, 	pageSize:5},
+					// specialitem: 	{ searchMenu: "특산물관",  	resultCount: 0, menuView: true, resultView: false, 	pageSize:4},
+                },
+                popularList: [], // 인기검색어 결과
+                recentList: [],  // 내가찾은검색어 결과
+
+                // 검색 결과
+                locgovList: [],
+                dsgnDntnList: [],
+                itemList: [],
+                noticeList: [],
+                qnaList: [],
+                faqList: [],
+                databoardList: [],
+                guidanceList: [],
+                eventList: [],
+				specialitemList: [],
+
+                // 페이지정보
+                pageInfo: {},
+
+                // FAQ 타입
+                faqTypes: []
+            },
+            methods: {
+                // URL 파라미터 세팅
+                setParam() {
+                    const url = new URL(window.location.href);
+                    // URLSearchParams 객체
+                    const urlParams = url.searchParams;
+
+                    if (urlParams.get('searchKeyword') != null) {
+                        vm.param.searchKeyword = urlParams.get('searchKeyword');
+                    }
+                    if (urlParams.get('category') != null) {
+                        vm.param.category = urlParams.get('category');
+                    }
+                    if (urlParams.get('pageNumber') != null) {
+                        vm.param.pageNumber = urlParams.get('pageNumber');
+                    }
+
+                    this.goToTabMenu(vm.param.category);
+                },
+                // 새로고침 초기화 방지용.
+                makeParam() {
+                    const param = new URLSearchParams();
+                    param.append("searchKeyword", vm.param.searchKeyword);
+                    param.append("category", vm.param.category);
+
+                    history.pushState(null, null, "?" + param.toString())
+                },
+                submit: function () {
+                    if (this.param.searchKeyword != "") {
+                        this.getLocgov();
+						this.getDsgnDntn();
+                        this.getItem();
+                        this.getNotice();
+                        this.getQna();
+                        this.getFaq();
+                        this.getDataboard();
+                        this.getGuidance();
+                        //this.getEvent();
+						//this.getSpecialitem();            // 없애는게 맞아보임(답례품 조회 결과에 해당 답례품들이 포함되어 있고 특별한 차이가 없음...)
+
+                        vm.makeParam(); // 파라미터 세팅을 해주므로써 현재 파라미터 데이터를 유지할 수 있게 해준다.
+
+                        // 검색시 검색결과 영역으로 바로 이동하기.
+                        //if(vm.param.pageNumber === 1){
+                        //	let scrollTop = $('.s-contents.result').offset().top;
+                        //	window.scrollTo({ left: 0, top: scrollTop, behavior: "smooth" });
+                        //}
+                    } else {
+                        this.displayViewFlag();
+                    }
+                },
+                /**
+                 * 결과 리스트 가져오기
+                 */
+                // 인기검색어 (2차:검색창 vue 로 이동됨. 현재 사용안함.)
+                getPopular: function () {
+                    $s.api.getTotalSearchPopular(vm.param,
+                        function (response) {
+                            vm.popularList = response.data;
+                        }
+                    )
+                },
+                // 내가 찾은 검색어 조회 (2차:검색창 vue 로 이동됨. 현재 사용안함.)
+                getRecent: function () {
+                    if ($s.isLogin()) {
+                        $s.api.getTotalSearchMyRecent(vm.param,
+                            function (response) {
+                                vm.recentList = response.data;
+                            }
+                        );
+                    }
+                },
+                // 내가 찾은 검색어 등록 (2차:검색창 vue 로 이동됨. 현재 사용안함.)
+                setRecent: function () {
+                    if ($s.isLogin()) {
+						if(vm.param.searchKeyword != ""){
+                        	$s.api.setTotalSearchInsertRecent(vm.param,
+                            	function (response) {
+                             	   vm.recentList = response.data;
+                            	}
+                        	);
+						}
+                    }
+                },
+                // 지자체 검색결과
+                getLocgov: function () {
+                    let params = {};
+                    const category = "locgov";
+                    params.pageSize = vm.searchMenuList[category].pageSize;
+                    Object.assign(params, vm.param);
+
+                    $s.api.getTotalSearchLocgov(params,
+                        function (response) {
+                            if (vm.param.pageNumber > 1) {
+                                vm.locgovList = [].concat(vm.locgovList, response.data.result);
+                            } else {
+                                vm.locgovList = response.data.result;
+                                vm.searchMenuList[category].resultCount = response.data.count;
+                            }
+                            if (vm.param.category === category) {
+                                vm.pageInfo = response.pageInfo;
+                            }
+                        }
+                    )
+                },
+                // 특정사업 기부(지정기부) 검색결과
+                getDsgnDntn: function () {
+                    let params = {};
+                    const category = "dsgnDntn";
+                    params.pageSize = vm.searchMenuList[category].pageSize;
+                    Object.assign(params, vm.param);
+
+                    /*$s.api.getTotalSearchLocgov(params,
+                        function (response) {
+                            if (vm.param.pageNumber > 1) {
+                                vm.dsgnDntnList = [].concat(vm.dsgnDntnList, response.data.result);
+                            } else {
+                                vm.dsgnDntnList = response.data.result;
+                                vm.searchMenuList[category].resultCount = response.data.count;
+                            }
+                            if (vm.param.category === category) {
+                                vm.pageInfo = response.pageInfo;
+                            }
+                        }
+                    )*/
+					vm.dsgnDntnList = [
+						{
+							lclgvCd: '11000'
+							, lclgvNm: '서울특별시 시청'
+							, dsgnDntnBizId: 1
+							, dsgnDntnBizTtl: '지정기부 사업명1'
+							, dsgnDtntBizRprsImg: '111.jpg'
+							, rtAmt: 11.123412341
+							, goalAmt: 100000000
+							, dsgnDntnBizBgngYmd: '20240101'
+							, dsgnDntnBizEndYmd: '20241231'
+						},
+						{
+							lclgvCd: '11000'
+							, lclgvNm: '서울특별시 시청'
+							, dsgnDntnBizId: 2
+							, dsgnDntnBizTtl: '지정기부 사업명2'
+							, dsgnDtntBizRprsImg: '111.jpg'
+							, rtAmt: 11.123412341
+							, goalAmt: 100000000
+							, dsgnDntnBizBgngYmd: '20240201'
+							, dsgnDntnBizEndYmd: '20241231'
+						},
+						{
+							lclgvCd: '11000'
+							, lclgvNm: '서울특별시 시청'
+							, dsgnDntnBizId: 3
+							, dsgnDntnBizTtl: '지정기부 사업명3'
+							, dsgnDtntBizRprsImg: '111.jpg'
+							, rtAmt: 11.123412341
+							, goalAmt: 100000000
+							, dsgnDntnBizBgngYmd: '20240301'
+							, dsgnDntnBizEndYmd: '20241231'
+						},
+						{
+							lclgvCd: '11000'
+							, lclgvNm: '서울특별시 시청'
+							, dsgnDntnBizId: 4
+							, dsgnDntnBizTtl: '지정기부 사업명4'
+							, dsgnDtntBizRprsImg: '111.jpg'
+							, rtAmt: 11.123412341
+							, goalAmt: 100000000
+							, dsgnDntnBizBgngYmd: '20240401'
+							, dsgnDntnBizEndYmd: '20241231'
+						},
+						{
+							lclgvCd: '11000'
+							, lclgvNm: '서울특별시 시청'
+							, dsgnDntnBizId: 5
+							, dsgnDntnBizTtl: '지정기부 사업명5'
+							, dsgnDtntBizRprsImg: '111.jpg'
+							, rtAmt: 11.123412341
+							, goalAmt: 100000000
+							, dsgnDntnBizBgngYmd: '20240501'
+							, dsgnDntnBizEndYmd: '20241231'
+						},
+					];
+					vm.searchMenuList[category].resultCount = 5;
+                },
+                //답례품 검색결과
+                getItem: function () {
+                     let params = {};
+                     const category = "item";
+                     params.pageSize = vm.searchMenuList[category].pageSize;
+                     Object.assign(params, vm.param);
+
+                     $s.api.getTotalSearchItem(params,
+                         function (response) {
+                             if (vm.param.pageNumber > 1) {
+                                 vm.itemList = [].concat(vm.itemList, response.data.result);
+                             } else {
+                                 vm.itemList = response.data.result;
+                                 vm.searchMenuList[category].resultCount = response.data.count;
+                             }
+                             if (vm.param.category === category) {
+                                 vm.pageInfo = response.pageInfo;
+                             }
+							vm.adultYn = response.adultYn;
+                         }
+                     )
+                },
+                // 공지사항 검색결과
+                getNotice: function () {
+                    let params = {};
+                    const category = "notice";
+                    params.pageSize = vm.searchMenuList[category].pageSize;
+                    Object.assign(params, vm.param);
+
+                    $s.api.getTotalSearchNotice(params,
+                        function (response) {
+                            if (vm.param.pageNumber > 1) {
+                                vm.noticeList = [].concat(vm.noticeList, response.data.result);
+                            } else {
+                                vm.noticeList = response.data.result;
+                                vm.searchMenuList[category].resultCount = response.data.count;
+                            }
+                            if (vm.param.category === category) {
+                                vm.pageInfo = response.pageInfo;
+                            }
+                        }
+                    )
+                },
+                // qna 검색결과
+                getQna: function () {
+                    let params = {};
+                    const category = "qna";
+                    params.pageSize = vm.searchMenuList[category].pageSize;
+                    Object.assign(params, vm.param);
+
+                    $s.api.getTotalSearchQna(params,
+                        function (response) {
+                            if (vm.param.pageNumber > 1) {
+                                vm.qnaList = [].concat(vm.qnaList, response.data.result);
+                            } else {
+                                vm.qnaList = response.data.result;
+                                vm.searchMenuList[category].resultCount = response.data.count;
+                            }
+                            if (vm.param.category === category) {
+                                vm.pageInfo = response.pageInfo;
+                            }
+                        }
+                    )
+                },
+                // faq 검색결과
+                getFaq: function () {
+                    let params = {};
+                    const category = "faq";
+                    params.pageSize = vm.searchMenuList[category].pageSize;
+                    Object.assign(params, vm.param);
+
+                    $s.api.getTotalSearchFaq(params,
+                        function (response) {
+                            // faq 타입
+                            vm.faqTypes = response.types;
+
+                            if (vm.param.pageNumber > 1) {
+                                vm.faqList = [].concat(vm.faqList, response.data.result);
+                            } else {
+                                vm.faqList = response.data.result;
+                                vm.searchMenuList[category].resultCount = response.data.count;
+                            }
+                            if (vm.param.category === category) {
+                                vm.pageInfo = response.pageInfo;
+                            }
+                        }
+                    )
+                },
+                // 자료실 검색결과
+                getDataboard: function () {
+                    let params = {};
+                    const category = "databoard";
+                    params.pageSize = vm.searchMenuList[category].pageSize;
+                    Object.assign(params, vm.param);
+
+                    $s.api.getTotalSearchDataboard(params,
+                        function (response) {
+                            if (vm.param.pageNumber > 1) {
+                                vm.databoardList = [].concat(vm.databoardList, response.data.result);
+                            } else {
+                                vm.databoardList = response.data.result;
+                                vm.searchMenuList[category].resultCount = response.data.count;
+                            }
+                            if (vm.param.category === category) {
+                                vm.pageInfo = response.pageInfo;
+                            }
+                        }
+                    )
+                },
+                // 안내문 검색결과
+                getGuidance: function () {
+                    let params = {};
+                    const category = "guidance";
+                    params.pageSize = vm.searchMenuList[category].pageSize;
+                    Object.assign(params, vm.param);
+
+                    $s.api.getTotalSearchGuidance(params,
+                        function (response) {
+                            if (vm.param.pageNumber > 1) {
+                                vm.guidanceList = [].concat(vm.guidanceList, response.data.result);
+                            } else {
+                                vm.guidanceList = response.data.result;
+                                vm.searchMenuList[category].resultCount = response.data.count;
+                            }
+                            if (vm.param.category === category) {
+                                vm.pageInfo = response.pageInfo;
+                            }
+                        }
+                    )
+                },
+                // 이벤트 검색결과
+                getEvent: function () {
+                    let params = {};
+                    const category = "event";
+                    params.pageSize = vm.searchMenuList[category].pageSize;
+                    Object.assign(params, vm.param);
+
+                    $s.api.getTotalSearchEvent(params,
+                        function (response) {
+                            if (vm.param.pageNumber > 1) {
+                                vm.eventList = [].concat(vm.eventList, response.data.result);
+                            } else {
+                                vm.eventList = response.data.result;
+                                vm.searchMenuList[category].resultCount = response.data.count;
+                            }
+                            if (vm.param.category === category) {
+                                vm.pageInfo = response.pageInfo;
+                            }
+                        }
+                    )
+                },
+ 				//특산물관 검색결과
+                getSpecialitem: function () {
+                     let params = {};
+                     const category = "specialitem";
+                     params.pageSize = vm.searchMenuList[category].pageSize;
+                     Object.assign(params, vm.param);
+
+                     $s.api.getTotalSearchSpecialitem(params,
+                         function (response) {
+                             if (vm.param.pageNumber > 1) {
+                                 vm.specialitemList = [].concat(vm.specialitemList, response.data.result);
+                             } else {
+                                 vm.specialitemList = response.data.result;
+                                 vm.searchMenuList[category].resultCount = response.data.count;
+                             }
+                             if (vm.param.category === category) {
+                                 vm.pageInfo = response.pageInfo;
+                             }
+                         }
+                     )
+                },
+
+                getFaqTypeName: function (faqType) {
+                    if (vm.faqTypes == null || vm.faqTypes.length == 0) {
+                        return '';
+                    }
+
+                    for (var i = 0; i < vm.faqTypes.length; i++) {
+                        if (faqType === vm.faqTypes[i].code) {
+                            return vm.faqTypes[i].title;
+                        }
+                    }
+                },
+                /**
+                 * 이벤트성 함수
+                 */
+                goToPaging: function (pageNum) {
+                    this.param.pageNumber = pageNum;
+                    this.submit();
+                },
+                goToSearch: function (text) {
+                    vm.param.searchKeyword = text;
+                    vm.param.category = 'total';
+
+                    //(2차:검색창 vue 로 이동됨. 현재 사용안함.)
+					//this.setRecent();
+                    this.goToTabMenu('total');
+                },
+                goToMain: function () {
+                    location.href = "/";
+                    // 메인화면 URL 지정하기
+                },
+                // 탭 카테고리 메뉴 선택시
+                goToTabMenu: function (category) {
+                    let index = this.getMenuIndex(category);
+
+                    $(".search-result-items").eq(index).addClass('on').siblings(".search-result-items").removeClass('on');
+                    vm.param.category = category;
+                    vm.param.pageNumber = 1;
+
+                    this.submit();
+                },
+                // 더보기 버튼 클릭시
+                goToMoreBtn: function (cate) {
+                    const currentCategory = vm.param.category;
+                    if (currentCategory === 'total') {
+                        vm.goToTabMenu(cate);
+                    } else {
+                        vm.goToPaging(vm.pageInfo.nextPage);
+                    }
+                },
+
+
+                // 페이지 이동
+                goToMovePage: function (url) {
+                    location.href = url;
+                },
+                // 메뉴리스트에서 index 값 가져오기
+                getMenuIndex: function (category) {
+                    return Object.keys(this.searchMenuList).indexOf(category);
+                },
+                // 답례품 검색 결과
+				goItemDetail:function(v){
+                    // if (v.adult_item_yn === 'Y' && this.adultYn === 'N')
+                    //     return ;
+
+					$s.redirect(v.view_url);
+                },
+                // 공지사항 클릭시 이동과 조회수 증가
+				goNoticeDetail: function (noticeId) {
+					$s.api.updateNoticeHits({ "noticeId": noticeId }, function (response) {
+						location.href = '/notice/detail.html?noticeId=' + noticeId;
+					}, function () {
+						location.href = '/notice/detail.html?noticeId=' + noticeId;
+					});
+				},
+                // FAQ 클릭시 조회수 증가
+                addFaqHits: function (id) {
+                    $s.api.updateFaqHits({ "id": id },
+                        function (response) { }
+                    );
+                },
+                /**
+                 * 기능 함수
+                 */
+                // 로그인 여부에 따른 내가찾은검색어 display 제어
+                // 선택한 카테고리를 보여주고 다른 카테고리는 숨긴다.
+                displayViewFlag: function () {
+                    const category = vm.param.category;
+                    let menuList = this.searchMenuList;
+
+                    // 내가찾은 검색어
+                    // 미로그인시 인기검색어만 보여준다.
+                    if (!$s.isLogin()) {
+                        $(".s-contents.keyword").css({ "display": "block" });
+                        $(".s-contents.keyword").children("div").eq(1).css({ "display": "none" });
+                        $(".s-contents.keyword").children("div").eq(2).css({ "display": "none" });
+                    }
+
+                    // 검색결과영역
+                    if (menuList[category].resultCount > 0) {
+                        if (category == 'total') {
+                            $(".result-items").css({ "display": "block" });
+                            Object.keys(menuList).forEach((data, index) => {
+                                menuList[data].resultView = true;
+                            });
+                        } else {
+                            $(".result-items").css({ "display": "none" });
+                            $("." + category + "R").css({ "display": "block" });
+
+                            menuList[category].resultView = true;
+                        }
+                        vm.isResultView = true;
+                    } else {
+                        vm.isResultView = false;
+                    }
+                },
+                slideContentBody: function (index, id, category) {
+                    var obj = $(".notice-body." + category).eq(index);
+                    $(obj).slideToggle(0, function () {
+                        if ($(obj).css("display") == "block") {
+                            if (category === "faq") {
+                                vm.addFaqHits(id);
+                            }
+                        }
+                    });
+                },
+                closeTableOverlap: function (e) {
+                    // $(".table-overlap").css("display", "none");
+                    $(e.target).parents(".table-overlap").css("display", "none");
+                },
+                // 개행변환 함수
+                replaceLine: function (text) {
+                    return text.replace(/(?:\\\r\\\n|\\r|\\n)/g, ' ');
+                },
+                replaceAll: function (str, searchStr, replaceStr) {
+					if (str) {
+                    	return str.split(searchStr).join(replaceStr);
+					}
+					return str;
+                },
+                inputColorSearchString: function (text) {
+                    return this.replaceAll(text, this.param.searchKeyword, '<strong class="pointblue">' + this.param.searchKeyword + '</strong>')
+                },
+				dsgnDntnBizImage: function (data) {
+            		return CDN_DOMAIN + '/upload/prj/' + data.dsgnDntnBizId + '/' + data.dsgnDtntBizRprsImg;
+				},
+				goDsgnDntnBizDetail: function (data) {
+					$s.redirect( "/designated-donation/details.html?prjId=" + data.dsgnDntnBizId);
+				},
+				getPrjImgPath: function (prjId, prjImage) {
+					//prjImage = prjImage.replace('_XS', '_M');
+					return CDN_DOMAIN + '/upload/prj/' + prjId + '/' + prjImage;
+				},
+				getRtAmtStr: function (rtAmt) {
+					try {
+						console.log(rtAmt);
+						let rtAmtFloor = Math.floor(rtAmt * 100) / 100;
+						return '' + rtAmtFloor;
+					} catch(e) {
+						return '0';
+					}
+				},
+            },
+            computed: {
+                getTotalCount: function () {
+                    let count = 0;
+                    let menuList = this.searchMenuList;
+
+                    Object.keys(menuList).forEach((data, index) => {
+                        if (index > 0)
+                            count += menuList[data].resultCount;
+                    });
+                    menuList.total.resultCount = count;
+
+                    vm.displayViewFlag();
+
+                    return count;
+
+                },
+            },
+            mounted: function () {
+                //location.href = "../index.html";
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    Saleson.init();
+
+                    // 내가찾은검색어 세팅.(2차:검색창 vue 로 이동됨. 현재 사용안함.)
+                    // 로그인 되어있을 때만 보여준다.
+                   	// vm.getRecent();
+                    // vm.getPopular(); 	// 인기검색어 세팅.
+
+                    vm.setParam(); 		// URL에 파라미터가 있으면 파라미터로 세팅 후 submit.
+
+                    initializeListEvent();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

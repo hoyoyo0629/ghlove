@@ -1,0 +1,3000 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.analysis.AnalysisMapper">
+
+	<resultMap id='callResult' type='saleson.shop.give.givestate.domain.CallState'>
+			<result property="callKookmin" column="CALL_KOOKMIN"/>
+			<result property="callLov" column="CALL_LOV"/>
+			<result property="callGiver" column="CALL_GIVER"/>
+			<result property="callNhbank" column="CALL_NHBANK"/>
+			<result property="callTotal" column="CALL_TOTAL"/>
+			<result property="callAmt" column="CALL_AMT"/>
+			<result property="onlinecntr" column="on_cntr_cnt"/>
+			<result property="onlinecntramt" column="on_cntr_amt"/>
+			<result property="offlinecntr" column="off_cntr_cnt"/>
+			<result property="offlinecntramt" column="off_cntr_amt"/>
+			<result property="totalpresent" column="present_cnt"/>
+			<result property="totalpresentamt" column="present_amt"/>
+			<result property="userAmt" column="total_user"/>
+			<result property="totalcntr" column="total_cntr"/>
+			<result property="totalcntramt" column="total_cntramt"/>
+			<result property="frstregisterid" column="frst_register_id"/>
+	</resultMap>
+
+	<insert id="insertCntrAllTotalMonthStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+
+		DELETE FROM cntr_all_total_month_stats where stats_year = #{statsYear} AND stats_month = #{statsMonth};
+
+		INSERT INTO cntr_all_total_month_stats
+		(
+				stats_year
+			, 	stats_month
+			, 	cntr_cnt
+			, 	online_cntr_cnt
+			, 	offline_cntr_cnt
+			, 	cntr_person
+			, 	cntr_amt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYear}
+			,	#{statsMonth}
+			,	#{cntrCnt}
+			,	#{onlineCntrCnt}
+			,	#{offlineCntrCnt}
+			,	#{cntrPerson}
+			,	#{cntrAmt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertCntrAllAgeStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM cntr_all_age_stats where stats_year = #{statsYear};
+
+		INSERT INTO cntr_all_age_stats
+		(
+				stats_year
+			, 	cntr_cnt
+			, 	cntr_amt
+			,	cntr_age
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYear}
+			,	#{cntrCnt}
+			,	#{cntrAmt}
+			,	#{cntrAge}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertCntrAllHourStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM cntr_all_hour_stats where stats_dt = #{statsDt} AND cntr_hour = #{cntrHour};
+
+		INSERT INTO cntr_all_hour_stats
+		(
+				stats_dt
+			, 	cntr_hour
+			, 	cntr_amt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsDt}
+			,	#{cntrHour}
+			,	#{cntrAmt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertCntrLocgovMonthStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM cntr_locgov_month_stats where stats_year = #{statsYear} AND stats_month = #{statsMonth} AND locgov_code = #{locgovCode};
+
+		INSERT INTO cntr_locgov_month_stats
+		(
+				stats_year
+			, 	stats_month
+			, 	locgov_code
+			, 	cntr_cnt
+			, 	online_cntr_cnt
+			, 	offline_cntr_cnt
+			, 	cntr_person
+			, 	cntr_amt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYear}
+			, 	#{statsMonth}
+			, 	#{locgovCode}
+			, 	#{cntrCnt}
+			, 	#{onlineCntrCnt}
+			, 	#{offlineCntrCnt}
+			, 	#{cntrPerson}
+			, 	#{cntrAmt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertCntrLocgovAgeStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM cntr_locgov_age_stats where stats_year = #{statsYear} AND locgov_code = #{locgovCode};
+
+		INSERT INTO cntr_locgov_age_stats
+		(
+				stats_year
+			, 	locgov_code
+			, 	cntr_cnt
+			, 	cntr_amt
+			, 	cntr_age
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYear}
+			, 	#{locgovCode}
+			, 	#{cntrCnt}
+			, 	#{cntrAmt}
+			, 	#{cntrAge}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+
+	<insert id="insertCntrLocgovHourStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM cntr_locgov_hour_stats where stats_dt = #{statsDt} AND locgov_code = #{locgovCode} AND cntr_hour = #{cntrHour};
+
+		INSERT INTO cntr_locgov_hour_stats
+		(
+				stats_dt
+			, 	locgov_code
+			, 	cntr_hour
+			, 	cntr_amt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsDt}
+			, 	#{locgovCode}
+			, 	#{cntrHour}
+			, 	#{cntrAmt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertSalesOrderItemDayStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM sales_order_item_day_stats where stats_dt = #{statsDt} AND device_type = #{deviceType};
+
+		INSERT INTO sales_order_item_day_stats
+		(
+				stats_dt
+			, 	device_type
+			,	sale_count
+			,	cancel_count
+			,	sale_amount
+			,	cancel_amount
+			,	item_price
+			,	cancel_item_price
+			,	coupon_discount_price
+			,	seller_discount_price
+			,	spot_discount_price
+			,	level_discount_price
+			,	set_discount_price
+			,	cancel_coupon_discount_price
+			,	cancel_seller_discount_price
+			,	cancel_spot_discount_price
+			,	cancel_level_discount_price
+			,	cancel_set_discount_price
+			,	shipping
+			,	cancel_shipping
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsDt}
+			, 	#{deviceType}
+			,	#{saleCount}
+			,	#{cancelCount}
+			,	#{saleAmount}
+			,	#{cancelAmount}
+			,	#{itemPrice}
+			,	#{cancelItemPrice}
+			,	#{couponDiscountPrice}
+			,	#{sellerDiscountPrice}
+			,	#{spotDiscountPrice}
+			,	#{levelDiscountPrice}
+			,	#{setDiscountPrice}
+			,	#{cancelCouponDiscountPrice}
+			,	#{cancelSellerDiscountPrice}
+			,	#{cancelSpotDiscountPrice}
+			,	#{cancelLevelDiscountPrice}
+			,	#{cancelSetDiscountPrice}
+			,	#{shipping}
+			,	#{cancelShipping}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertSalesOrderItemMonthStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM sales_order_item_month_stats where stats_ym = #{statsYm} AND device_type = #{deviceType};
+
+		INSERT INTO sales_order_item_month_stats
+		(
+				stats_ym
+			, 	device_type
+			,	sale_count
+			,	cancel_count
+			,	sale_amount
+			,	cancel_amount
+			,	item_price
+			,	cancel_item_price
+			,	coupon_discount_price
+			,	seller_discount_price
+			,	spot_discount_price
+			,	level_discount_price
+			,	set_discount_price
+			,	cancel_coupon_discount_price
+			,	cancel_seller_discount_price
+			,	cancel_spot_discount_price
+			,	cancel_level_discount_price
+			,	cancel_set_discount_price
+			,	shipping
+			,	cancel_shipping
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYm}
+			, 	#{deviceType}
+			,	#{saleCount}
+			,	#{cancelCount}
+			,	#{saleAmount}
+			,	#{cancelAmount}
+			,	#{itemPrice}
+			,	#{cancelItemPrice}
+			,	#{couponDiscountPrice}
+			,	#{sellerDiscountPrice}
+			,	#{spotDiscountPrice}
+			,	#{levelDiscountPrice}
+			,	#{setDiscountPrice}
+			,	#{cancelCouponDiscountPrice}
+			,	#{cancelSellerDiscountPrice}
+			,	#{cancelSpotDiscountPrice}
+			,	#{cancelLevelDiscountPrice}
+			,	#{cancelSetDiscountPrice}
+			,	#{shipping}
+			,	#{cancelShipping}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertSalesOrderItemYearStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM sales_order_item_year_stats where stats_year = #{statsYear} AND device_type = #{deviceType};
+
+		INSERT INTO sales_order_item_year_stats
+		(
+				stats_year
+			, 	device_type
+			,	sale_count
+			,	cancel_count
+			,	sale_amount
+			,	cancel_amount
+			,	item_price
+			,	cancel_item_price
+			,	coupon_discount_price
+			,	seller_discount_price
+			,	spot_discount_price
+			,	level_discount_price
+			,	set_discount_price
+			,	cancel_coupon_discount_price
+			,	cancel_seller_discount_price
+			,	cancel_spot_discount_price
+			,	cancel_level_discount_price
+			,	cancel_set_discount_price
+			,	shipping
+			,	cancel_shipping
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYear}
+			, 	#{deviceType}
+			,	#{saleCount}
+			,	#{cancelCount}
+			,	#{saleAmount}
+			,	#{cancelAmount}
+			,	#{itemPrice}
+			,	#{cancelItemPrice}
+			,	#{couponDiscountPrice}
+			,	#{sellerDiscountPrice}
+			,	#{spotDiscountPrice}
+			,	#{levelDiscountPrice}
+			,	#{setDiscountPrice}
+			,	#{cancelCouponDiscountPrice}
+			,	#{cancelSellerDiscountPrice}
+			,	#{cancelSpotDiscountPrice}
+			,	#{cancelLevelDiscountPrice}
+			,	#{cancelSetDiscountPrice}
+			,	#{shipping}
+			,	#{cancelShipping}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertSalesApprovalType" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM sales_approval_type where stats_dt = #{statsDt} AND approval_type = #{approvalType} AND device_type = #{deviceType};
+
+		INSERT INTO sales_approval_type
+		(
+				stats_dt
+			, 	approval_type
+			, 	device_type
+			, 	pay_count
+			, 	pay_amount
+			, 	cancel_count
+			, 	cancel_amount
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsDt}
+			, 	#{approvalType}
+			, 	#{deviceType}
+			, 	#{payCount}
+			, 	#{payAmount}
+			, 	#{cancelCount}
+			, 	#{cancelAmount}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertCtbnyOpratnStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM ctbny_opratn_stats where stats_year = #{statsYear} AND locgov_code = #{locgovCode} AND cntr_use_code = #{cntrUseCode};
+
+		INSERT INTO ctbny_opratn_stats
+		(
+				stats_year
+			, 	locgov_code
+			, 	cntr_use_code
+			, 	cntr_use_name
+			, 	expndtr_cnt
+			, 	expndtr_amt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYear}
+			, 	#{locgovCode}
+			, 	#{cntrUseCode}
+			, 	#{cntrUseName}
+			, 	#{expndtrCnt}
+			, 	#{expndtrAmt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertLocgovLikeStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM locgov_like_stats where stats_year = #{statsYear} AND stats_month = #{statsMonth} AND locgov_code = #{locgovCode};
+
+		INSERT INTO locgov_like_stats
+		(
+				stats_year
+			, 	stats_month
+			, 	locgov_code
+			, 	like_cnt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYear}
+			, 	#{statsMonth}
+			, 	#{locgovCode}
+			, 	#{likeCnt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertStsfdgStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM stsfdg_stats where menu_url = #{menuUrl};
+
+		INSERT INTO stsfdg_stats
+		(
+				menu_url
+			, 	menu_nm
+			, 	stsfdg1
+			, 	stsfdg2
+			, 	stsfdg3
+			, 	stsfdg4
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{menuUrl}
+			, 	#{menuNm}
+			, 	#{stsfdg1}
+			, 	#{stsfdg2}
+			,	#{stsfdg3}
+			,	#{stsfdg4}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertOrderItemAllStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM order_item_all_stats WHERE stats_ym = #{statsYm};
+
+		INSERT INTO order_item_all_stats
+		(
+				stats_ym
+			, 	sale_count
+			, 	cancel_count
+			, 	sale_amount
+			,	cancel_amount
+			,	sum_count
+			,	sum_amount
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYm}
+			, 	#{saleCount}
+			, 	#{cancelCount}
+			, 	#{saleAmount}
+			,	#{cancelAmount}
+			,	#{sumCount}
+			,	#{sumAmount}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertOrderItemLocgovStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM order_item_locgov_stats WHERE stats_year = #{statsYear} AND locgov_code = #{locgovCode} AND company_name = #{companyName} AND item_name = #{itemName};
+
+		INSERT INTO order_item_locgov_stats
+		(
+				stats_year
+			, 	locgov_code
+			,	company_name
+			,	item_name
+			, 	sale_count
+			, 	cancel_count
+			, 	sale_amount
+			,	cancel_amount
+			,	sum_count
+			,	sum_amount
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYear}
+			, 	#{locgovCode}
+			, 	#{companyName}
+			, 	#{itemName}
+			,	#{saleCount}
+			,	#{cancelCount}
+			,	#{saleAmount}
+			,	#{cancelAmount}
+			,	#{sumCount}
+			,	#{sumAmount}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertOrderItemMonthLocgovStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM order_item_month_locgov_stats WHERE stats_ym = #{statsYm} AND locgov_code = #{locgovCode};
+
+		INSERT INTO order_item_month_locgov_stats
+		(
+				stats_ym
+			, 	locgov_code
+
+			,	item_total_cnt
+			, 	tour_cnt
+			, 	process_cnt
+			, 	daily_cnt
+			,	ticket_cnt
+			,	farm_cnt
+			,	aquatic_cnt
+			,	order_total_cnt
+			,	sale_price
+
+			,	top1
+			,	top2
+			,	top3
+
+			,	item_total_all
+			,	tour_total_all
+			,	process_total_all
+			,	daily_total_all
+			,	ticket_total_all
+			,	farm_total_all
+			,	aquatic_total_all
+			,	order_total_all
+			,	sale_price_total_all
+
+			,	all_top1
+			,	all_top2
+			,	all_top3
+
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYm}
+			, 	#{locgovCode}
+
+			,	#{itemTotalCnt}
+			, 	#{tourCnt}
+			, 	#{processCnt}
+			, 	#{dailyCnt}
+			,	#{ticketCnt}
+			,	#{farmCnt}
+			,	#{aquaticCnt}
+			,	#{orderTotalCnt}
+			,	#{salePrice}
+
+			,	#{top1}
+			,	#{top2}
+			,	#{top3}
+
+			,	#{itemTotalAll}
+			,	#{tourTotalAll}
+			,	#{processTotalAll}
+			,	#{dailyTotalAll}
+			,	#{ticketTotalAll}
+			,	#{farmTotalAll}
+			,	#{aquaticTotalAll}
+			,	#{orderTotalAll}
+			,	#{salePriceTotalAll}
+
+			,	#{allTop1}
+			,	#{allTop2}
+			,	#{allTop3}
+
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertVisitMonthStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM visit_month_stats WHERE stats_ym = #{statsYm};
+
+		INSERT INTO visit_month_stats
+		(
+				stats_ym
+			, 	title
+			,	visit_count
+			,	percent
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsYm}
+			, 	#{title}
+			, 	#{visitCount}
+			, 	#{percent}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertVisitDayStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM visit_day_stats WHERE stats_dt = #{statsDt};
+
+		INSERT INTO visit_day_stats
+		(
+				stats_dt
+			, 	visit_count
+			,	percent
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsDt}
+			, 	#{visitCount}
+			, 	#{percent}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertVisitDomainStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM visit_domain_stats WHERE stats_dt = #{statsDt} AND domains = #{domains};
+
+		INSERT INTO visit_domain_stats
+		(
+				stats_dt
+			,	domains
+			, 	visit_cnt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsDt}
+			,	#{domains}
+			, 	#{visitCnt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertVisitBrowserStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM visit_browser_stats WHERE stats_dt = #{statsDt} AND browser = #{browser};
+
+		INSERT INTO visit_browser_stats
+		(
+				stats_dt
+			,	browser
+			, 	visit_cnt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsDt}
+			,	#{browser}
+			, 	#{visitCnt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertVisitOsStats" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		DELETE FROM visit_os_stats WHERE stats_dt = #{statsDt} AND os = #{os};
+
+		INSERT INTO visit_os_stats
+		(
+				stats_dt
+			,	os
+			, 	visit_cnt
+			, 	frst_register_id
+			, 	frst_regist_pnttm
+		) VALUES
+		(
+				#{statsDt}
+			,	#{os}
+			, 	#{visitCnt}
+			,	'SYSTEM'
+			,	DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		)
+	</insert>
+
+	<insert id="insertUserCntrLocgovForNh" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		INSERT INTO stat_cntr_mber_loc
+		(
+				user_id
+			,	mber_ci
+			, 	sttemnt_pay_de
+			,	cntr_locgov_code
+			, 	cntr_amt
+		) VALUES
+		(
+				#{userId}
+			,	#{mberCi}
+			,	#{sttemntPayDe}
+			,	#{cntrLocgovCode}
+			,	#{cntrAmt}
+		)
+	</insert>
+
+	<insert id="insertUserCntrForNh" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		INSERT INTO stat_cntr_mber
+		(
+				user_id
+			,	mber_ci
+			, 	sttemnt_pay_de
+			, 	cntr_amt
+		) VALUES
+		(
+				#{userId}
+			,	#{mberCi}
+			,	#{sttemntPayDe}
+			,	#{cntrAmt}
+		)
+	</insert>
+
+	<insert id="insertLocgovForNh" parameterType="saleson.shop.analysis.domain.AnalysisVo">
+		INSERT INTO stat_locgov
+		(
+				locgov_code
+			,	locgov_nm
+			, 	upper_locgov_code
+			, 	upper_locgov_nm
+		) VALUES
+		(
+				#{locgovCode}
+			,	#{locgovNm}
+			,	#{upperLocgovCode}
+			,	#{upperLocgovNm}
+		)
+	</insert>
+
+	<delete id="deleteUserCntrLocgovForNh">
+		DELETE FROM stat_cntr_mber_loc WHERE 1=1
+	</delete>
+
+	<delete id="deleteUserCntrForNh">
+		DELETE FROM stat_cntr_mber WHERE 1=1
+	</delete>
+
+	<delete id="deleteLocgovForNh">
+		DELETE FROM stat_locgov WHERE 1=1
+	</delete>
+
+	<insert id="confirmDonationForReportBatch" parameterType="hashmap" >
+
+		insert into report_dashboard ( on_cntr_cnt,on_cntr_amt, off_cntr_cnt, off_cntr_amt, present_cnt, present_amt,call_kookmin,call_lov,call_giver,call_nhbank,call_amt, present, total_cntr, total_cntramt, total_user,created_date)
+		values(#{online-cntr},#{online-cntramt},#{offline-cntr},#{offline-cntramt},#{total-present},#{total-presentamt},#{callKookmin},#{callLov},#{callGiver},#{callNhbank},#{callAmt},#{present},#{total-cntr},#{total-cntramt},#{userAmt},#{createdDate})
+
+	</insert>
+
+	<delete id="deleteDashBoardReport" parameterType='hashmap' >
+		DELETE FROM REPORT_DASHBOARD
+		<![CDATA[WHERE created_date = #{shCntrDeStart}]]>
+	</delete>
+
+	<select id="dashBoardReport"  parameterType='saleson.shop.give.givestate.domain.GiveState' resultMap="callResult">
+		SELECT *
+		FROM REPORT_DASHBOARD
+		<![CDATA[WHERE created_date = #{shCntrDeStart}]]>
+		ORDER BY REPORT_CREATEDATE DESC
+		LIMIT 1
+	</select>
+
+	<select id="dashBoardReportForCal"  parameterType='saleson.shop.give.givestate.domain.GiveState' resultMap="callResult">
+		SELECT
+		total_cntr,
+		total_cntramt
+		FROM REPORT_DASHBOARD
+		<![CDATA[WHERE created_date = #{shCntrDeEnd}]]>
+		ORDER BY REPORT_CREATEDATE DESC
+		LIMIT 1
+	</select>
+
+	<insert id="insertOpuserBirthdayDecListBatch" parameterType="list" >
+		INSERT INTO OP_USER_BIRTHDAY_STATS
+			(
+				USER_ID
+				,BIRTHDAY
+				,CREATED_DATE
+			)
+		VALUES
+		<foreach collection="list" index="i" item="item" open="(" close=")" separator="),(">
+		 	#{item.user_id}, #{item.birthday}, #{item.created_date}
+		</foreach>
+	</insert>
+
+	<select id="selectMaxUserIdOpUserBirthday" resultType="string">
+		SELECT NVL(MAX(USER_ID), 0) as paramUserId FROM OP_USER_BIRTHDAY_STATS
+	</select>
+
+	<!-- 통계 현황보고 - 총 회원수 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForMbrTnocsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM MBR_TNOCS_STATS
+	</select>
+
+	<delete id="deleteListForMbrTnocsStats" parameterType="hashmap" >
+		DELETE FROM MBR_TNOCS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 1. 총 회원 수(월별) 인입 -->
+	<insert id="insertListForMbrTnocsStats" parameterType="hashmap" >
+		INSERT INTO MBR_TNOCS_STATS
+			(
+			crtr_yr
+			,mbr_tnocs
+			,mbr_cnt_jan
+			,mbr_cnt_feb
+			,mbr_cnt_mar
+			,mbr_cnt_apr
+			,mbr_cnt_may
+			,mbr_cnt_jun
+			,mbr_cnt_jul
+			,mbr_cnt_aug
+			,mbr_cnt_sep
+			,mbr_cnt_oct
+			,mbr_cnt_nov
+			,mbr_cnt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{TOTAL}
+			,#{MON_1}
+			,#{MON_2}
+			,#{MON_3}
+			,#{MON_4}
+			,#{MON_5}
+			,#{MON_6}
+			,#{MON_7}
+			,#{MON_8}
+			,#{MON_9}
+			,#{MON_10}
+			,#{MON_11}
+			,#{MON_12}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 기부현황 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForDntnTnocsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM DNTN_TNOCS_STATS
+	</select>
+
+	<delete id="deleteListForDntnTnocsStats" parameterType="hashmap" >
+		DELETE FROM DNTN_TNOCS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 2. 기부현황(월별,전년도포함) 인입 -->
+	<insert id="insertListForDntnTnocsStats" parameterType="hashmap" >
+		INSERT INTO DNTN_TNOCS_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,now_yr
+			,prvyr
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{NOW_YR}
+			,#{PRVYR}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 3-1. 기부건수-500만원 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForDntnTnocs500Stats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM DNTN_TNOCS_500_STATS
+	</select>
+	<!-- 통계 현황보고 - 3-2. 한도금액 기부건수-2000만원 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForDntnTnocsMaxAmtStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM DNTN_TNOCS_MAX_AMT_STATS
+	</select>
+
+	<delete id="deleteListForDntnTnocs500Stats" parameterType="hashmap" >
+		DELETE FROM DNTN_TNOCS_500_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+	<delete id="deleteListForDntnTnocsMaxAmtStats" parameterType="hashmap" >
+		DELETE FROM DNTN_TNOCS_MAX_AMT_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 3-1. 기부건수-500만원 (월별,전년도포함) 인입 -->
+	<insert id="insertListForDntnTnocs500Stats" parameterType="hashmap" >
+		INSERT INTO DNTN_TNOCS_500_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,now_yr
+			,prvyr
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{NOW_YR}
+			,#{PRVYR}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+	<!-- 통계 현황보고 - 3-2. 한도금액 기부건수-2000만원 (월별,전년도포함) 인입 -->
+	<insert id="insertListForDntnTnocsMaxAmtStats" parameterType="hashmap" >
+		INSERT INTO DNTN_TNOCS_MAX_AMT_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,now_yr
+			,prvyr
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{NOW_YR}
+			,#{PRVYR}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 4. 총 답례품건수 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForGdsTnocsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM GDS_TNOCS_STATS
+	</select>
+
+	<delete id="deleteListForGdsTnocsStats" parameterType="hashmap" >
+		DELETE FROM GDS_TNOCS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 4. 총 답례품건수 (월별,전년도포함) 인입 -->
+	<insert id="insertListForGdsTnocsStats" parameterType="hashmap" >
+		INSERT INTO GDS_TNOCS_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,now_yr
+			,prvyr
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{NOW_YR}
+			,#{PRVYR}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 5. 지자체별 기부현황(누계) 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForMctpvDntnStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM MCTPV_DNTN_STATS
+	</select>
+
+	<delete id="deleteListForMctpvDntnStats" parameterType="hashmap" >
+		DELETE FROM MCTPV_DNTN_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 5. 지자체별 기부현황(누계) 인입 -->
+	<insert id="insertListForMctpvDntnStats" parameterType="hashmap" >
+		INSERT INTO MCTPV_DNTN_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 6-1. 지자체별 기부현황(누계)-500만원 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForMctpvDntn500Stats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM MCTPV_DNTN_500_STATS
+	</select>
+
+	<!-- 통계 현황보고 - 6-2. 지자체별 기부현황(누계)-500만원 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForMctpvDntnMaxAmtStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM MCTPV_DNTN_MAX_AMT_STATS
+	</select>
+
+	<delete id="deleteListForMctpvDntn500Stats" parameterType="hashmap" >
+		DELETE FROM MCTPV_DNTN_500_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<delete id="deleteListForMctpvDntnMaxAmtStats" parameterType="hashmap" >
+		DELETE FROM MCTPV_DNTN_MAX_AMT_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 6-1. 지자체별 기부현황(누계)-500만원 인입 -->
+	<insert id="insertListForMctpvDntn500Stats" parameterType="hashmap" >
+		INSERT INTO MCTPV_DNTN_500_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 6-2. 지자체별 한도금액 기부현황(누계)-2000만원 인입 -->
+	<insert id="insertListForMctpvDntnMaxAmtStats" parameterType="hashmap" >
+		INSERT INTO MCTPV_DNTN_MAX_AMT_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 7. 243개 지자체별 기부금현황 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForLclgvAodStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM LCLGV_AOD_STATS
+	</select>
+
+	<delete id="deleteListForLclgvAodStats" parameterType="hashmap" >
+		DELETE FROM LCLGV_AOD_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 7. 243개 지자체별 기부금현황 인입 -->
+	<insert id="insertListForLclgvAodStats" parameterType="hashmap" >
+		INSERT INTO LCLGV_AOD_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,lclgv_nm
+			,lclgv_cd
+			,now_yr
+			,prvyr
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{LOCGOV_NM}
+			,#{LOCGOV_CODE}
+			,#{NOW_YR}
+			,#{PRVYR}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 8-1. 243개 지자체별 기부금현황-500만원 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForLclgvAod500Stats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM LCLGV_AOD_500_STATS
+	</select>
+
+	<!-- 통계 현황보고 - 8-2. 243개 지자체별 한도금액 기부금현황-2000만원 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForLclgvAodMaxAmtStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM LCLGV_AOD_MAX_AMT_STATS
+	</select>
+
+	<delete id="deleteListForLclgvAod500Stats" parameterType="hashmap" >
+		DELETE FROM LCLGV_AOD_500_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<delete id="deleteListForLclgvAodMaxAmtStats" parameterType="hashmap" >
+		DELETE FROM LCLGV_AOD_MAX_AMT_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 8-1. 243개 지자체별 기부금현황-500만원 인입 -->
+	<insert id="insertListForLclgvAod500Stats" parameterType="hashmap" >
+		INSERT INTO LCLGV_AOD_500_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,lclgv_nm
+			,lclgv_cd
+			,now_yr
+			,prvyr
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{LOCGOV_NM}
+			,#{LOCGOV_CODE}
+			,#{NOW_YR}
+			,#{PRVYR}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+	<!-- 통계 현황보고 - 8-2. 243개 지자체별 한도금액 기부금현황-2000만원 인입 -->
+	<insert id="insertListForLclgvAodMaxAmtStats" parameterType="hashmap" >
+		INSERT INTO LCLGV_AOD_MAX_AMT_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,lclgv_nm
+			,lclgv_cd
+			,now_yr
+			,prvyr
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{LOCGOV_NM}
+			,#{LOCGOV_CODE}
+			,#{NOW_YR}
+			,#{PRVYR}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 9. 지자체별 답례품제공현황 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForMctpvGdsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM MCTPV_GDS_STATS
+	</select>
+
+	<delete id="deleteListForMctpvGdsStats" parameterType="hashmap" >
+		DELETE FROM MCTPV_GDS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 9. 지자체별 답례품제공현황 인입 -->
+	<insert id="insertListForMctpvGdsStats" parameterType="hashmap" >
+		INSERT INTO MCTPV_GDS_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 - 10. 243개 지자체별 답례품제공현황 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForLclgvGdsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR),'2023') AS LASTYR FROM LCLGV_GDS_STATS
+	</select>
+
+	<delete id="deleteListForLclgvGdsStats" parameterType="hashmap" >
+		DELETE FROM LCLGV_GDS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 현황보고 - 10. 243개 지자체별 답례품제공현황 인입 -->
+	<insert id="insertListForLclgvGdsStats" parameterType="hashmap" >
+		INSERT INTO LCLGV_GDS_STATS
+			(
+			crtr_yr
+			,mctpv_nm
+			,mctpv_cd
+			,lclgv_nm
+			,lclgv_cd
+			,now_yr
+			,prvyr
+			,now_yr_jan
+			,prvyr_jan
+			,prvyr_now_yr_rt_jan
+			,now_yr_feb
+			,prvyr_feb
+			,prvyr_now_yr_rt_feb
+			,now_yr_mar
+			,prvyr_mar
+			,prvyr_now_yr_rt_mar
+			,now_yr_apr
+			,prvyr_apr
+			,prvyr_now_yr_rt_apr
+			,now_yr_may
+			,prvyr_may
+			,prvyr_now_yr_rt_may
+			,now_yr_jun
+			,prvyr_jun
+			,prvyr_now_yr_rt_jun
+			,now_yr_jul
+			,prvyr_jul
+			,prvyr_now_yr_rt_jul
+			,now_yr_aug
+			,prvyr_aug
+			,prvyr_now_yr_rt_aug
+			,now_yr_sep
+			,prvyr_sep
+			,prvyr_now_yr_rt_sep
+			,now_yr_oct
+			,prvyr_oct
+			,prvyr_now_yr_rt_oct
+			,now_yr_nov
+			,prvyr_nov
+			,prvyr_now_yr_rt_nov
+			,now_yr_dec
+			,prvyr_dec
+			,prvyr_now_yr_rt_dec
+			)
+		VALUES (
+			#{crtrYr}
+			,#{UPPER_LOCGOV_NM}
+			,#{UPPER_LOCGOV_CODE}
+			,#{LOCGOV_NM}
+			,#{LOCGOV_CODE}
+			,#{NOW_YR}
+			,#{PRVYR}
+			,#{NOW_YR_JAN}
+			,#{PRVYR_JAN}
+			,#{PRVYR_NOW_YR_RT_JAN}
+			,#{NOW_YR_FEB}
+			,#{PRVYR_FEB}
+			,#{PRVYR_NOW_YR_RT_FEB}
+			,#{NOW_YR_MAR}
+			,#{PRVYR_MAR}
+			,#{PRVYR_NOW_YR_RT_MAR}
+			,#{NOW_YR_APR}
+			,#{PRVYR_APR}
+			,#{PRVYR_NOW_YR_RT_APR}
+			,#{NOW_YR_MAY}
+			,#{PRVYR_MAY}
+			,#{PRVYR_NOW_YR_RT_MAY}
+			,#{NOW_YR_JUN}
+			,#{PRVYR_JUN}
+			,#{PRVYR_NOW_YR_RT_JUN}
+			,#{NOW_YR_JUL}
+			,#{PRVYR_JUL}
+			,#{PRVYR_NOW_YR_RT_JUL}
+			,#{NOW_YR_AUG}
+			,#{PRVYR_AUG}
+			,#{PRVYR_NOW_YR_RT_AUG}
+			,#{NOW_YR_SEP}
+			,#{PRVYR_SEP}
+			,#{PRVYR_NOW_YR_RT_SEP}
+			,#{NOW_YR_OCT}
+			,#{PRVYR_OCT}
+			,#{PRVYR_NOW_YR_RT_OCT}
+			,#{NOW_YR_NOV}
+			,#{PRVYR_NOV}
+			,#{PRVYR_NOW_YR_RT_NOV}
+			,#{NOW_YR_DEC}
+			,#{PRVYR_DEC}
+			,#{PRVYR_NOW_YR_RT_DEC}
+		)
+	</insert>
+
+	<!-- 통계 누계현황보고 - 1. 기부방법별 기부건수 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForDntnPathTnocsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR||LPAD(CRTR_MM,2,'0')),'000000') AS LASTYRMM FROM DNTN_PATH_TNOCS_STATS
+	</select>
+
+	<delete id="deleteListForDntnPathTnocsStats" parameterType="hashmap" >
+		DELETE FROM DNTN_PATH_TNOCS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 누계현황보고 - 1. 기부방법별 기부건수 테이블 인입 -->
+	<insert id="insertListForDntnPathTnocsStats" parameterType="hashmap" >
+		INSERT INTO DNTN_PATH_TNOCS_STATS
+			(
+			crtr_yr
+			,crtr_mm
+			,dntn_path
+			,dntn_path_cd
+			,tnocs
+			,rt
+			,gramt
+			,gramtrt
+			)
+		VALUES (
+			#{crtrYr}
+			,#{crtrMm}
+			,#{DNTN_PATH}
+			,#{DNTN_PATH_CD}
+			,#{TNOCS}
+			,#{RT}
+			,#{GRAMT}
+			,#{GRAMTRT}
+		)
+	</insert>
+
+	<!-- 통계 누계현황보고 - 2. 기부금액별 기부건수 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForDntnAmtTnocsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR||LPAD(CRTR_MM,2,'0')),'000000') AS LASTYRMM FROM DNTN_AMT_TNOCS_STATS
+	</select>
+
+	<delete id="deleteListForDntnAmtTnocsStats" parameterType="hashmap" >
+		DELETE FROM DNTN_AMT_TNOCS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 누계현황보고 - 2. 기부금액별 기부건수 테이블 인입 -->
+	<insert id="insertListForDntnAmtTnocsStats" parameterType="hashmap" >
+		INSERT INTO DNTN_AMT_TNOCS_STATS
+			(
+			crtr_yr
+			,CRTR_MM
+			,dntn_amt
+			,dntn_amt_cd
+			,tnocs
+			,rt
+			)
+		VALUES (
+			#{crtrYr}
+			,#{crtrMm}
+			,#{GRAMT}
+			,#{AMTCD}
+			,#{TNOCS}
+			,#{RT}
+		)
+	</insert>
+
+	<!-- 통계 누계현황보고 - 3. 연령별 기부건수 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForDntnAgeTnocsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR||LPAD(CRTR_MM,2,'0')),'000000') AS LASTYRMM FROM DNTN_AGE_TNOCS_STATS
+	</select>
+
+	<delete id="deleteListForDntnAgeTnocsStats" parameterType="hashmap" >
+		DELETE FROM DNTN_AGE_TNOCS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 누계현황보고 - 3. 연령별 기부건수 테이블 인입 -->
+	<insert id="insertListForDntnAgeTnocsStats" parameterType="hashmap" >
+		INSERT INTO DNTN_AGE_TNOCS_STATS
+			(
+			crtr_yr
+			,CRTR_MM
+			,dntn_age
+			,dntn_age_cd
+			,tnocs
+			,rt
+			)
+		VALUES (
+			#{crtrYr}
+			,#{crtrMm}
+			,#{AGES}
+			,#{AGECD}
+			,#{TNOCS}
+			,#{RT}
+		)
+	</insert>
+
+	<!-- 통계 누계현황보고 - 3. 연령별 기부건수 테이블 최근 인입연월 조회 -->
+	<select id="selectMaxYrMmForHabDntnMctpvTnocsStats" resultType="string">
+		SELECT NVL(MAX(CRTR_YR||LPAD(CRTR_MM,2,'0')),'000000') AS LASTYRMM FROM HAB_DNTN_MCTPV_TNOCS_STATS
+	</select>
+
+	<delete id="deleteListForHabDntnMctpvTnocsStats" parameterType="hashmap" >
+		DELETE FROM HAB_DNTN_MCTPV_TNOCS_STATS WHERE CRTR_YR = #{crtrYr};
+	</delete>
+
+	<!-- 통계 누계현황보고 - 3. 연령별 기부건수 테이블 인입 -->
+	<insert id="insertListForHabDntnMctpvTnocsStats" parameterType="hashmap" >
+		INSERT INTO HAB_DNTN_MCTPV_TNOCS_STATS
+			(
+			CRTR_YR
+			,CRTR_MM
+			,HAB_MCTPV_NM
+			,HAB_MCTPV_CD
+			,DNTN_CNT_SEOUL
+			,DNTN_CNT_BUSAN
+			,DNTN_CNT_DAEGU
+			,DNTN_CNT_INCHEON
+			,DNTN_CNT_GWANGJU
+			,DNTN_CNT_DAEJEON
+			,DNTN_CNT_ULSAN
+			,DNTN_CNT_SEJONG
+			,DNTN_CNT_GYEONGGI
+			,DNTN_CNT_CHUNGBUK
+			,DNTN_CNT_CHUNGNAM
+			,DNTN_CNT_JEONNAM
+			,DNTN_CNT_GYEONGBUK
+			,DNTN_CNT_GYEONGNAM
+			,DNTN_CNT_JEJU
+			,DNTN_CNT_GANGWON
+			,DNTN_CNT_JEONBUK
+			)
+		VALUES (
+			#{crtrYr}
+			,#{crtrMm}
+			,#{MCTPV_NM}
+			,#{MCTPV_CD}
+			,#{DNTN_CNT_SEOUL}
+			,#{DNTN_CNT_BUSAN}
+			,#{DNTN_CNT_DAEGU}
+			,#{DNTN_CNT_INCHEON}
+			,#{DNTN_CNT_GWANGJU}
+			,#{DNTN_CNT_DAEJEON}
+			,#{DNTN_CNT_ULSAN}
+			,#{DNTN_CNT_SEJONG}
+			,#{DNTN_CNT_GYEONGGI}
+			,#{DNTN_CNT_CHUNGBUK}
+			,#{DNTN_CNT_CHUNGNAM}
+			,#{DNTN_CNT_JEONNAM}
+			,#{DNTN_CNT_GYEONGBUK}
+			,#{DNTN_CNT_GYEONGNAM}
+			,#{DNTN_CNT_JEJU}
+			,#{DNTN_CNT_GANGWON}
+			,#{DNTN_CNT_JEONBUK}
+		)
+	</insert>
+
+	<!-- 통계 현황보고 데이터 조회 -->
+	<select id="getCrtrYearForMbrList" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT CRTR_YR
+		FROM MBR_TNOCS_STATS
+		WHERE 1=1
+		AND CRTR_YR > '2022'
+		GROUP BY CRTR_YR
+	</select>
+
+	<select id="getCrtrYearForDntnList" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT CRTR_YR
+		FROM DNTN_TNOCS_STATS
+		WHERE 1=1
+		AND CRTR_YR > '2022'
+		GROUP BY CRTR_YR
+	</select>
+
+	<select id="getCrtrYearForGdsList" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT CRTR_YR
+		FROM GDS_TNOCS_STATS
+		WHERE 1=1
+		AND CRTR_YR > '2022'
+		GROUP BY CRTR_YR
+	</select>
+
+	<select id="getMctpvForDntnList" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT MCTPV_NM, MCTPV_CD
+		FROM MCTPV_DNTN_STATS
+		WHERE 1=1
+		AND CRTR_YR > '2022'
+		AND MCTPV_CD != '00000'
+		GROUP BY MCTPV_CD
+	</select>
+
+	<select id="getMctpvForGdsList" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT MCTPV_NM, MCTPV_CD
+		FROM MCTPV_GDS_STATS
+		WHERE 1=1
+		AND CRTR_YR > '2022'
+		AND MCTPV_CD != '00000'
+		GROUP BY MCTPV_CD
+	</select>
+
+	<select id="getCrtrMonthForMbrList" parameterType="String" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT CRTR_MM
+		FROM MBR_TNOCS_STATS
+		WHERE 1=1
+		AND CRTR_YR = #{year}
+		GROUP BY CRTR_MM
+	</select>
+
+	<select id="getCrtrMonthForDntnList" parameterType="String" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT CRTR_MM
+		FROM DNTN_TNOCS_STATS
+		WHERE 1=1
+		AND CRTR_YR = #{year}
+		GROUP BY CRTR_MM
+	</select>
+
+	<select id="getCrtrMonthForGdsList" parameterType="String" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT CRTR_MM
+		FROM GDS_TNOCS_STATS
+		WHERE 1=1
+		AND CRTR_YR = #{year}
+		GROUP BY CRTR_MM
+	</select>
+
+	<select id="getLclgvForDntnList" parameterType="String" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT LCLGV_NM, LCLGV_CD
+		FROM LCLGV_AOD_STATS
+		WHERE 1=1
+		AND MCTPV_CD = #{mctpv}
+		AND LCLGV_CD != '00000'
+		GROUP BY LCLGV_CD
+	</select>
+
+	<select id="getLclgvForGdsList" parameterType="String" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT LCLGV_NM, LCLGV_CD
+		FROM LCLGV_GDS_STATS
+		WHERE 1=1
+		AND MCTPV_CD = #{mctpv}
+		AND LCLGV_CD != '00000'
+		GROUP BY LCLGV_CD
+	</select>
+
+
+	<select id="getListMbrTnocsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM MBR_TNOCS_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM MBR_TNOCS_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+		</if>
+	</select>
+
+	<select id="getListDntnTnocsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM DNTN_TNOCS_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM DNTN_TNOCS_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		ORDER BY MCTPV_CD
+	</select>
+
+	<select id="getListDntnTnocs500Stats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM DNTN_TNOCS_500_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM DNTN_TNOCS_500_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		ORDER BY MCTPV_CD
+	</select>
+
+	<select id="getListDntnTnocsMaxAmtStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM DNTN_TNOCS_MAX_AMT_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM DNTN_TNOCS_MAX_AMT_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		ORDER BY MCTPV_CD
+	</select>
+
+	<select id="getListGdsTnocsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM GDS_TNOCS_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM GDS_TNOCS_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		ORDER BY MCTPV_CD
+	</select>
+
+	<select id="getListDntnPathTnocsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM DNTN_PATH_TNOCS_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR||CRTR_MM = (SELECT MAX(CRTR_YR||CRTR_MM) FROM DNTN_PATH_TNOCS_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+			AND CRTR_MM = #{shMonth}
+		</if>
+		ORDER BY DNTN_PATH_CD
+	</select>
+
+	<select id="getListDntnAmtTnocsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM DNTN_AMT_TNOCS_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR||CRTR_MM = (SELECT MAX(CRTR_YR||CRTR_MM) FROM DNTN_AMT_TNOCS_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+			AND CRTR_MM = #{shMonth}
+		</if>
+		ORDER BY DNTN_AMT_CD
+	</select>
+
+	<select id="getListDntnAgeTnocsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM DNTN_AGE_TNOCS_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR||CRTR_MM = (SELECT MAX(CRTR_YR||CRTR_MM) FROM FROM DNTN_AGE_TNOCS_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+			AND CRTR_MM = #{shMonth}
+		</if>
+		ORDER BY DNTN_AGE_CD
+	</select>
+
+	<select id="getListHabDntnMctpvTnocsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM HAB_DNTN_MCTPV_TNOCS_STATS
+		WHERE 1=1
+		<if test='shYear == null'>
+			AND CRTR_YR||CRTR_MM = (SELECT MAX(CRTR_YR||CRTR_MM) FROM FROM HAB_DNTN_MCTPV_TNOCS_STATS)
+		</if>
+		<if test='shYear != null'>
+			AND CRTR_YR = #{shYear}
+			AND CRTR_MM = #{shMonth}
+		</if>
+		ORDER BY HAB_MCTPV_CD
+	</select>
+
+	<select id="getListMctpvDntnStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM MCTPV_DNTN_STATS
+		WHERE 1=1
+		<if test='shYear == null or shYear == ""'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM MCTPV_DNTN_STATS)
+		</if>
+		<if test='shYear != null and shYear != ""'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		<if test='shMctpv != null and shMctpv != ""'>
+			AND MCTPV_CD = #{shMctpv}
+			ORDER BY MCTPV_CD
+		</if>
+		<if test='shMctpv == null or shMctpv == ""'>
+			ORDER BY MCTPV_CD
+		</if>
+	</select>
+
+	<select id="getListMctpvDntn500Stats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM MCTPV_DNTN_500_STATS
+		WHERE 1=1
+		<if test='shYear == null or shYear == ""'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM MCTPV_DNTN_STATS)
+		</if>
+		<if test='shYear != null and shYear != ""'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		<if test='shMctpv != null and shMctpv != ""'>
+			AND MCTPV_CD = #{shMctpv}
+			ORDER BY MCTPV_CD
+		</if>
+		<if test='shMctpv == null or shMctpv == ""'>
+			ORDER BY MCTPV_CD
+		</if>
+	</select>
+
+	<select id="getListMctpvDntnMaxAmtStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM MCTPV_DNTN_MAX_AMT_STATS
+		WHERE 1=1
+		<if test='shYear == null or shYear == ""'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM MCTPV_DNTN_MAX_AMT_STATS)
+		</if>
+		<if test='shYear != null and shYear != ""'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		<if test='shMctpv != null and shMctpv != ""'>
+			AND MCTPV_CD = #{shMctpv}
+			ORDER BY MCTPV_CD
+		</if>
+		<if test='shMctpv == null or shMctpv == ""'>
+			ORDER BY MCTPV_CD
+		</if>
+	</select>
+
+	<select id="getListMctpvGdsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM MCTPV_GDS_STATS
+		WHERE 1=1
+		<if test='shYear == null or shYear == ""'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM MCTPV_DNTN_STATS)
+		</if>
+		<if test='shYear != null and shYear != ""'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		<if test='shMctpv != null and shMctpv != ""'>
+			AND MCTPV_CD = #{shMctpv}
+			ORDER BY MCTPV_CD
+		</if>
+		<if test='shMctpv == null or shMctpv == ""'>
+			ORDER BY MCTPV_CD
+		</if>
+	</select>
+
+	<select id="getListLclgvAodStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM LCLGV_AOD_STATS
+		WHERE 1=1
+		<if test='shYear == null or shYear == ""'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM LCLGV_AOD_STATS)
+		</if>
+		<if test='shYear != null and shYear != ""'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		<if test='shMctpv != null and shMctpv != ""'>
+			AND MCTPV_CD = #{shMctpv}
+			<if test='shLclgv != null and shLclgv != ""'>
+				AND LCLGV_CD = #{shLclgv}
+			</if>
+			ORDER BY MCTPV_CD, LCLGV_CD
+		</if>
+		<if test='shMctpv == null or shMctpv == ""'>
+			ORDER BY MCTPV_CD, LCLGV_CD
+		</if>
+	</select>
+
+	<select id="getListLclgvAod500Stats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM LCLGV_AOD_500_STATS
+		WHERE 1=1
+		<if test='shYear == null or shYear == ""'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM LCLGV_AOD_500_STATS)
+		</if>
+		<if test='shYear != null and shYear != ""'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		<if test='shMctpv != null and shMctpv != ""'>
+			AND MCTPV_CD = #{shMctpv}
+			<if test='shLclgv != null and shLclgv != ""'>
+				AND LCLGV_CD = #{shLclgv}
+			</if>
+			ORDER BY MCTPV_CD, LCLGV_CD
+		</if>
+		<if test='shMctpv == null or shMctpv == ""'>
+			ORDER BY MCTPV_CD, LCLGV_CD
+		</if>
+	</select>
+
+	<select id="getListLclgvAodMaxAmtStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM LCLGV_AOD_MAX_AMT_STATS
+		WHERE 1=1
+		<if test='shYear == null or shYear == ""'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM LCLGV_AOD_MAX_AMT_STATS)
+		</if>
+		<if test='shYear != null and shYear != ""'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		<if test='shMctpv != null and shMctpv != ""'>
+			AND MCTPV_CD = #{shMctpv}
+			<if test='shLclgv != null and shLclgv != ""'>
+				AND LCLGV_CD = #{shLclgv}
+			</if>
+			ORDER BY MCTPV_CD, LCLGV_CD
+		</if>
+		<if test='shMctpv == null or shMctpv == ""'>
+			ORDER BY MCTPV_CD, LCLGV_CD
+		</if>
+	</select>
+
+	<select id="getListLclgvGdsStats" resultType="saleson.shop.statistics.domain.StatisticsReport">
+		SELECT *
+		FROM LCLGV_GDS_STATS
+		WHERE 1=1
+		<if test='shYear == null or shYear == ""'>
+			AND CRTR_YR = (SELECT MAX(CRTR_YR) FROM LCLGV_GDS_STATS)
+		</if>
+		<if test='shYear != null and shYear != ""'>
+			AND CRTR_YR = #{shYear}
+		</if>
+		<if test='shMctpv != null and shMctpv != ""'>
+			AND MCTPV_CD = #{shMctpv}
+			<if test='shLclgv != null and shLclgv != ""'>
+				AND LCLGV_CD = #{shLclgv}
+			</if>
+			ORDER BY MCTPV_CD, LCLGV_CD
+		</if>
+		<if test='shMctpv == null or shMctpv == ""'>
+			ORDER BY MCTPV_CD, LCLGV_CD
+		</if>
+	</select>
+
+	<!-- 연간통계 지자체243 작년 총건수총금액 : 테이블 인입 (올해건수, 올해금액) -->
+	<insert id="insertListForYearSumAmtTnocs" parameterType="hashmap" >
+		INSERT INTO YEAR_SUM_AMT_TNOCS
+			(
+				CRTR_YR
+				,UPPER_LOCGOV_NM
+				,UPPER_LOCGOV_CODE
+				,LOCGOV_NM
+				,LOCGOV_CODE
+				,SUM_TNOCS
+				,SUM_AMT
+			)
+		VALUES
+			(
+				#{crtrYr}
+				,#{mctpvNm}
+				,#{mctpvCd}
+				,#{lclgvNm}
+				,#{lclgvCd}
+				,#{sumTnocs}
+				,#{sumAmt}
+			)
+	</insert>
+
+	<!-- 연간통계 지자체243 작년 기부경로별 총건수총금액 : 테이블 인입 (올해건수, 올해금액) -->
+	<insert id="insertListForYearPathAmtTnocs" parameterType="hashmap" >
+		INSERT INTO YEAR_PATH_AMT_TNOCS
+			(
+				CRTR_YR
+				,UPPER_LOCGOV_NM
+				,UPPER_LOCGOV_CODE
+				,LOCGOV_NM
+				,LOCGOV_CODE
+				,DNTN_PATH
+				,DNTN_PATH_CODE
+				,GRAMT
+				,TNOCS
+				,GRAMTRT
+				,RT
+			)
+		VALUES
+			(
+				#{crtrYr}
+				,#{mctpvNm}
+				,#{mctpvCd}
+				,#{lclgvNm}
+				,#{lclgvCd}
+				,#{dntnPath}
+				,#{dntnPathCd}
+				,#{gramt}
+				,#{tnocs}
+				,#{gramtrt}
+				,#{rt}
+			)
+	</insert>
+
+	<!-- 연간통계 지자체243 작년 기부금액별 총건수총금액 : 테이블 인입 (올해건수, 올해금액) -->
+	<insert id="insertListForYearPriceAmtTnocs" parameterType="hashmap" >
+		INSERT INTO YEAR_PRICE_AMT_TNOCS
+			(
+				CRTR_YR
+				,UPPER_LOCGOV_NM
+				,UPPER_LOCGOV_CODE
+				,LOCGOV_NM
+				,LOCGOV_CODE
+				,GRAMT
+				,TNOCS
+				,ATM
+				,ATMHUND
+			)
+		VALUES
+			(
+				#{crtrYr}
+				,#{mctpvNm}
+				,#{mctpvCd}
+				,#{lclgvNm}
+				,#{lclgvCd}
+				,#{gramt}
+				,#{tnocs}
+				,#{atm}
+				,#{atmhund}
+			)
+	</insert>
+
+	<!-- 연간통계 지자체243 작년 기부 연령별 총건수총금액 : 테이블 인입 (올해건수, 올해금액) -->
+	<insert id="insertListForYearAgesAmtTnocs" parameterType="hashmap" >
+		INSERT INTO YEAR_AGE_AMT_TNOCS
+			(
+				CRTR_YR
+				,UPPER_LOCGOV_NM
+				,UPPER_LOCGOV_CODE
+				,LOCGOV_NM
+				,LOCGOV_CODE
+				,AGES
+				,TNOCS
+				,RT
+				,ASUM
+			)
+		VALUES
+			(
+				#{crtrYr}
+				,#{mctpvNm}
+				,#{mctpvCd}
+				,#{lclgvNm}
+				,#{lclgvCd}
+				,#{ages}
+				,#{tnocs}
+				,#{rt}
+				,#{asum}
+			)
+	</insert>
+
+	<!-- 연간통계 지자체243 작년 기부 거지주별 총건수총금액 : 테이블 인입 (올해건수, 올해금액) --><!-- 사용안함 : JobPsintServiceImpl에서 jdbc사용해서 처리하고있음 -->
+	<insert id="insertListForYearPsintAmtTnocs" parameterType="hashmap" >
+		INSERT INTO YEAR_PSINT_AMT_TNOCS
+			(
+				CRTR_YR
+				,UPPER_LOCGOV_NM
+				,UPPER_LOCGOV_CODE
+				,LOCGOV_NM
+				,LOCGOV_CODE
+				,PSINT_UPPER_LOCGOV_NM
+				,PSINT_UPPER_LOCGOV_CODE
+				,PSINT_LOCGOV_NM
+				,PSINT_LOCGOV_CODE
+				,TNOCS
+				,ASUM
+				,TNOCS_RT
+				,ASUM_RT
+			)
+		VALUES
+			(
+				#{crtrYr}
+				,#{mctpvNm}
+				,#{mctpvCd}
+				,#{lclgvNm}
+				,#{lclgvCd}
+				,#{psintMctpvNm}
+				,#{psintMctpvCd}
+				,#{psintLclgvNm}
+				,#{psintLclgvCd}
+				,#{tnocs}
+				,#{asum}
+				,#{tnocsRt}
+				,#{asumRt}
+			)
+	</insert>
+
+	<!-- 연간통계 지자체243 작년 기부 거지주별 총건수총금액 : 테이블 인입 (올해건수, 올해금액) --><!-- 사용안함 : JobPsintServiceImpl에서 jdbc사용해서 처리하고있음 -->
+	<insert id="insertListForYearMonthAmtTnocs" parameterType="hashmap" >
+		INSERT INTO YEAR_MONTH_AMT_TNOCS
+			(
+				CRTR_YR
+				,UPPER_LOCGOV_NM
+				,UPPER_LOCGOV_CODE
+				,LOCGOV_NM
+				,LOCGOV_CODE
+				,CATE_MONTH
+				,TNOCS
+				,TNOCS_RT
+				,ASUM
+				,ASUM_RT
+				,UNIQ_ID
+			)
+		VALUES
+			(
+				#{crtrYr}
+				,#{mctpvNm}
+				,#{mctpvCd}
+				,#{lclgvNm}
+				,#{lclgvCd}
+				,#{cateMonth}
+				,#{snCnt}
+				,#{snCntRt}
+				,#{amtSum}
+				,#{amtSumRt}
+				,#{uniqId}
+			)
+	</insert>
+
+	<!-- 연간통계 지자체243 작년 답례품 인기순 : 테이블 인입 (판매 개수순) -->
+	<insert id="insertListForYearGoodsAmtTnocs" parameterType="hashmap" >
+		INSERT INTO YEAR_GOODS_AMT_TNOCS
+			(
+				CRTR_YR
+				,UPPER_LOCGOV_NM
+				,UPPER_LOCGOV_CODE
+				,LOCGOV_NM
+				,LOCGOV_CODE
+				,ITEM_CODE
+				,ITEM_NAME
+				,PRICE
+				,SUM_PRICE
+				,SUM_QUANTITY
+			)
+		VALUES
+			(
+				#{crtrYr}
+				,#{mctpvNm}
+				,#{mctpvCd}
+				,#{lclgvNm}
+				,#{lclgvCd}
+				,#{itemCode}
+				,#{itemName}
+				,#{price}
+				,#{sumPrice}
+				,#{quantitySum}
+			)
+	</insert>
+
+	<!-- 연간통계 집계된 통계테이블 총계-->
+	<select id="getListMbrTnocsStatsStored" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			CRTR_YR,
+			UPPER_LOCGOV_NM,
+			UPPER_LOCGOV_CODE,
+			LOCGOV_NM,
+			LOCGOV_CODE,
+			SUM_TNOCS,
+			SUM_AMT
+		FROM YEAR_SUM_AMT_TNOCS
+		WHERE 1=1
+		AND CRTR_YR = #{shYear}
+		AND UPPER_LOCGOV_CODE = #{shWdr}
+		AND LOCGOV_CODE = #{shLocgovCode}
+	</select>
+	<!-- 연간통계 집계된 통계테이블 기부방법별-->
+	<select id="getListDntnPathPastYearStatsStored" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			CRTR_YR,
+			UPPER_LOCGOV_NM,
+			UPPER_LOCGOV_CODE,
+			LOCGOV_NM,
+			LOCGOV_CODE,
+			DNTN_PATH,
+			GRAMT,
+			TNOCS,
+			GRAMTRT,
+			RT
+		FROM YEAR_PATH_AMT_TNOCS
+		WHERE 1=1
+		AND CRTR_YR = #{shYear}
+		AND UPPER_LOCGOV_CODE = #{shWdr}
+		AND LOCGOV_CODE = #{shLocgovCode}
+	</select>
+	<!-- 연간통계 집계된 통계테이블 기부금액별-->
+	<select id="getListDntnPricePastYearStatsStored" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			CRTR_YR,
+			UPPER_LOCGOV_NM,
+			UPPER_LOCGOV_CODE,
+			LOCGOV_NM,
+			LOCGOV_CODE,
+			GRAMT,
+			TNOCS,
+			ATM,
+			ATMHUND
+		FROM YEAR_PRICE_AMT_TNOCS
+		WHERE 1=1
+		AND CRTR_YR = #{shYear}
+		AND UPPER_LOCGOV_CODE = #{shWdr}
+		AND LOCGOV_CODE = #{shLocgovCode}
+	</select>
+	<!-- 연간통계 집계된 통계테이블 연령별-->
+	<select id="getListDntnAgesPastYearStatsStored" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			CRTR_YR,
+			UPPER_LOCGOV_NM,
+			UPPER_LOCGOV_CODE,
+			LOCGOV_NM,
+			LOCGOV_CODE,
+			AGES,
+			TNOCS,
+			RT,
+			ASUM
+		FROM YEAR_AGE_AMT_TNOCS
+		WHERE 1=1
+		AND CRTR_YR = #{shYear}
+		AND UPPER_LOCGOV_CODE = #{shWdr}
+		AND LOCGOV_CODE = #{shLocgovCode}
+		ORDER BY FRST_REG_DT
+	</select>
+	<!-- 연간통계 집계된 통계테이블 주소지(기부자)별-->
+	<select id="getListDntnPsintPastYearStatsStored" parameterType="hashMap" resultType="hashMap">
+		with categories as (
+			select '서울특별시' as gramt, 1 as od union all
+			select '부산광역시' as gramt, 2 as od union all
+			select '대구광역시' as gramt, 3 as od union all
+			select '인천광역시' as gramt, 4 as od union all
+			select '광주광역시' as gramt, 5 as od union all
+			select '대전광역시' as gramt, 6 as od union all
+			select '울산광역시' as gramt, 7 as od union all
+			select '세종특별자치시' as gramt, 8 as od union all
+			select '경기도' as gramt, 9 as od union all
+			select '충청북도' as gramt, 10 as od union all
+			select '충청남도' as gramt, 11 as od union all
+			select '전라남도' as gramt, 12 as od union all
+			select '경상북도' as gramt, 13 as od union all
+			select '경상남도' as gramt, 14 as od union all
+			select '강원특별자치도' as gramt, 15 as od union all
+			select '전북특별자치도' as gramt, 16 as od union all
+			select '제주특별자치도' as gramt, 17 as od union all
+			select '소계' as gramt, 18 as od
+		)
+		SELECT
+				decode(cs.gramt,'소계','합계',cs.gramt) as GRAMT,
+				nvl(yp.tnocs, 0) as TNOCS,
+				nvl(yp.asum, 0) as ASUM,
+				trunc(cast(nvl(yp.tnocs_rt, 0) as numeric(5,1)),1) as TNOCSRT,
+				trunc(cast(nvl(yp.asum_rt, 0) as numeric(5,1)),1) as ASUMRT
+		FROM categories cs
+		LEFT JOIN
+			(
+				SELECT
+						psint_upper_locgov_nm as gramt,
+						sum(tnocs) as tnocs,
+						sum(asum) as asum,
+						sum(tnocs_rt) as tnocs_rt,
+						sum(asum_rt) as asum_rt
+				FROM YEAR_PSINT_AMT_TNOCS
+				where 1=1
+				and crtr_yr = #{shYear}
+				and upper_locgov_code = #{shWdr}
+				and locgov_code = #{shLocgovCode}
+				group by psint_upper_locgov_nm, psint_upper_locgov_code
+				order by psint_upper_locgov_code, FRST_REG_DT
+			) yp on cs.gramt = yp.gramt
+		ORDER BY cs.od
+	</select>
+		<!-- 연간통계 집계된 통계테이블 주소지(기부자)별 지자체-->
+	<select id="getListDntnLocGovPastYearStatsStored" parameterType="hashMap" resultType="hashMap">
+with locgovinfo as (
+	select *
+	from (
+			select * from stat_locgov order by locgov_code
+		) union all
+	select '소계' as locgov_code , '소계' as locgov_nm , '소계' as upper_locgov_code , '소계' as upper_locgov_nm
+)
+   select lg.upper_locgov_nm
+	   , lg.upper_locgov_code
+	   , lg.locgov_nm
+	   , lg.locgov_code
+	   , nvl(yp.GRAMT, lg.upper_locgov_nm || ' ' || lg.locgov_nm) as GRAMT
+	   , nvl(yp.TNOCS,0) as TNOCS
+	   , nvl(yp.TNOCSRT,0) as TNOCSRT
+	   , nvl(yp.ASUM,0) as ASUM
+	   , nvl(yp.ASUMRT,0) as ASUMRT
+     from locgovinfo lg
+left join (
+			SELECT
+				case when PSINT_UPPER_LOCGOV_NM = '소계' then '합계'
+					else PSINT_UPPER_LOCGOV_NM || ' ' || PSINT_LOCGOV_NM
+				end AS GRAMT,
+				TNOCS ,
+				TNOCS_RT as TNOCSRT,
+				ASUM ,
+				ASUM_RT as ASUMRT,
+				psint_locgov_code
+			 FROM YEAR_PSINT_AMT_TNOCS
+			WHERE 1=1
+			  AND CRTR_YR = #{shYear}
+			  AND UPPER_LOCGOV_CODE = #{shWdr}
+			  AND LOCGOV_CODE = #{shLocgovCode}
+			ORDER BY PSINT_UPPER_LOCGOV_CODE
+		  )yp on lg.locgov_code = yp.psint_locgov_code
+	</select>
+	<!-- 연간통계 집계된 통계테이블 월별-->
+	<select id="getListDntnMonthPastYearStatsStored" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			CRTR_YR,
+			UPPER_LOCGOV_NM,
+			UPPER_LOCGOV_CODE,
+			LOCGOV_NM,
+			LOCGOV_CODE,
+			CATE_MONTH,
+			TNOCS,
+			TNOCS_RT,
+			ASUM,
+			ASUM_RT,
+			UNIQ_ID
+		FROM YEAR_MONTH_AMT_TNOCS
+		WHERE 1=1
+		AND CRTR_YR = #{shYear}
+		AND UPPER_LOCGOV_CODE = #{shWdr}
+		AND LOCGOV_CODE = #{shLocgovCode}
+		ORDER BY FRST_REG_DT
+	</select>
+	<!-- 연간통계 집계된 통계테이블 답례품 인기순별-->
+	<select id="getListDntnGoodsPastYearStatsStored" parameterType="hashMap" resultType="hashMap">
+		SELECT
+			CRTR_YR,
+			UPPER_LOCGOV_NM,
+			UPPER_LOCGOV_CODE,
+			LOCGOV_NM,
+			LOCGOV_CODE,
+			ITEM_CODE,
+			ITEM_NAME,
+			PRICE,
+			SUM_PRICE,
+			SUM_QUANTITY
+		FROM YEAR_GOODS_AMT_TNOCS
+		WHERE 1=1
+		AND CRTR_YR = #{shYear}
+		AND UPPER_LOCGOV_CODE = #{shWdr}
+		AND LOCGOV_CODE = #{shLocgovCode}
+		ORDER BY FRST_REG_DT
+	</select>
+
+	<!-- 연간통계시 테이블 작년 데이터 카운트후 없으면 통계집계한다. -->
+	<select id="getListForSumAmtTnocsStatsCnt"  parameterType="hashMap" resultType="Integer">
+		/* saleson.shop.statistics.ShopStatisticsMapper.getListForSumAmtTnocsStatsCnt */
+		SELECT COUNT(*) AS cnt FROM YEAR_SUM_AMT_TNOCS where crtr_yr = #{crtrYr}
+	</select>
+
+	<select id="getListForPathAmtTnocsStatsCnt"  parameterType="hashMap" resultType="Integer">
+		/* saleson.shop.statistics.ShopStatisticsMapper.getListForPathAmtTnocsStatsCnt */
+		SELECT COUNT(*) AS cnt FROM YEAR_PATH_AMT_TNOCS where crtr_yr = #{crtrYr}
+	</select>
+
+	<select id="getListPastYearForDntnAmtTnocsStatsCnt"  parameterType="hashMap" resultType="Integer">
+		/* saleson.shop.statistics.ShopStatisticsMapper.getListPastYearForDntnAmtTnocsStatsCnt */
+		SELECT COUNT(*) AS cnt FROM YEAR_PRICE_AMT_TNOCS where crtr_yr = #{crtrYr}
+	</select>
+
+	<select id="getListPastYearForAgeDntnAmtTnocsStatsCnt"  parameterType="hashMap" resultType="Integer">
+		/* saleson.shop.statistics.ShopStatisticsMapper.getListPastYearForAgeDntnAmtTnocsStatsCnt */
+		SELECT COUNT(*) AS cnt FROM YEAR_AGE_AMT_TNOCS where crtr_yr = #{crtrYr}
+	</select>
+
+	<select id="getListForMonthAmtTnocsStatsCnt"  parameterType="hashMap" resultType="Integer">
+		/* saleson.shop.statistics.ShopStatisticsMapper.getListForMonthAmtTnocsStatsCnt */
+		SELECT COUNT(*) AS cnt FROM YEAR_MONTH_AMT_TNOCS where crtr_yr = #{crtrYr}
+	</select>
+
+	<select id="getListForPsintAmtTnocsStatsCnt"  parameterType="hashMap" resultType="Integer">
+		/* saleson.shop.statistics.ShopStatisticsMapper.getListForPsintAmtTnocsStatsCnt */
+		SELECT COUNT(*) AS cnt FROM YEAR_PSINT_AMT_TNOCS where crtr_yr = #{crtrYr}
+	</select>
+
+	<select id="getListForPubGoodsPastYearStatsCnt"  parameterType="hashMap" resultType="Integer">
+		/* saleson.shop.statistics.ShopStatisticsMapper.getListForPubGoodsPastYearStatsCnt */
+		SELECT COUNT(*) AS cnt FROM YEAR_GOODS_AMT_TNOCS where crtr_yr = #{crtrYr}
+	</select>
+
+
+
+</mapper>

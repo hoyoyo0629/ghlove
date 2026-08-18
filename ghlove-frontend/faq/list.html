@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>고객센터 > FAQ | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+    <link rel="stylesheet" href="/static/css/event.css" />
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/ct_nov.css?d=2030619" />
+    <link rel="stylesheet" href="/static/css/research-box.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-customer-lnb-ali :menu-url="page.menuUrl"></layout-customer-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              고객센터 
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              FAQ
+            </span>
+            <h2 class="page-title-txt">FAQ</h2>
+            <p>분류를 선택하시면 해당 항목의 질문 답변을 확인하실수 있습니다.</p>
+          </div>
+        </section>
+
+        <section id="contents">
+          <div class="contents-wrap">
+            <div class="center">
+              <div class="s-contents list-wrapper">
+                <div class="list-select-area">
+                  <header name="customerSearch" class="list-search-header">
+                    <div class="list-count-box">전체 글 : {{ formatNumber(result.faqCount) }} 건</div>
+                    <form class="search-select" :onsubmit="page.onsubmitType">
+                      <label for="category" class="sr-only">검색구분</label>
+                      <div class="form-item category">
+                        <select title="분류선택" v-model="tempFaqType" @change="changeSelect">
+                          <option value="">분류선택</option>
+                          <option v-for="(data, index) in result.faqTypeList" :value="data.code">{{ data.title }}</option>
+                        </select>
+                      </div>
+                      <div class="form-item">
+                        <label for="category" class="sr-only">구분</label>
+                        <select aria-label="구분" v-model="param.where" id="category">
+                          <option value="title">제목</option>
+                        </select>
+                      </div>
+                      <div class="form-item search-field">
+                        <label for="keyword" class="sr-only">검색 키워드</label>
+                        <input type="search" v-model="tempQuery" @keyup.enter="search()" aria-labe="검색" id="keyword" placeholder="검색 키워드" />
+                        <button type="button" class="button search" @click="search()" aria-label="조회"></button>
+                      </div>
+                      <div class="m-field">
+                        <div class="form-item">
+                          <label for="orderBy" class="sr-only">정렬순서</label>
+                          <select aria-label="정렬순" v-model="selectedOrderBy" id="orderBy">
+                            <option v-for="(data, index) in orderByList" :value="data.value">{{ data.text }}</option>
+                          </select>
+                        </div>
+                        <div class="form-item">
+                          <label for="page" class="sr-only">목록수</label>
+                          <select aria-label="목록수" v-model="param.size" id="page">
+                            <option v-for="(data, index) in itemPerPageList" :value="data">{{ data }}개</option>
+                          </select>
+                        </div>
+                      </div>
+                    </form>
+                  </header>
+                  <div class="list-search-body faq">
+                    <ul class="list-search-group" v-if="!isNoData">
+                      <li class="list-items dropdown cursor" v-for="(data, index) in result.faqList" :key="index" accordion-option="toggle">
+                        <button
+                          aria-level="2"
+                          class="dropdown-toggle"
+                          data-toggle="dropdown"
+                          :id="'faq-q-' + index"
+                          :aria-controls="'faq-a-' + index"
+                          aria-expanded="false"
+                        >
+                          <img class="faq-icon" src="/static/images/icon/cli-icon_faq-q.png" alt="질문" />
+                          <div class="header-faq">
+                            <div class="status_c category">{{ getFaqTypeName(data.faqType) }}</div>
+                            <div class="faq_txt" style="white-space: normal">{{ unescapeHtml(data.title) }}</div>
+                            <div class="col_group">
+                              <div class="status_c date">{{ data.updatedDate }}</div>
+                            </div>
+                          </div>
+                        </button>
+                        <div :id="'faq-a-' + index" role="region" class="dropdown-menu" :aria-labelledby="'faq-q-' + index">
+                          <div class="notice-wrap">
+                            <img class="faq-icon" src="/static/images/icon/cli-icon_faq-a.png" alt="답변" />
+                            <div :id="'desc' + index" class="header-faq">
+                              <span class="status_c category">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                              <div class="faq_txt">
+                                <span v-html="appendCdnDomain(data.content)"></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                    <div class="list-none" v-if="isNoData">
+                      <img src="/static/images/icon/non-list.png" alt="게시물이 없음" />
+                      추후 업데이트 예정입니다.
+                    </div>
+                  </div>
+                  <pagination :current-page="result.currentPage" :total-pages="result.totalPages" @change="paging" v-if="!isNoData"></pagination>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          "layout-subsearch-ali": httpVueLoader("/components/layouts/subsearch_ali.vue"),
+          //"layout-customer-lnb-ali": httpVueLoader("/components/layouts/customer-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+        },
+        data: {
+          result: {
+            totalPages: 0,
+            currentPage: 0,
+            faqList: [],
+            faqCount: 0,
+            faqTypeList: [],
+          },
+          param: {
+            page: 1,
+            size: 10,
+            faqType: "",
+            where: "title",
+            query: "",
+            sort: "",
+            faqType: "",
+          },
+          page: {
+            onsubmitType: "return false;",
+            menuUrl: "/faq/list.html",
+          },
+          isNoData: true,
+          tempQuery: "",
+          tempFaqType: "",
+          selectedOrderBy: "updated,DESC",
+          orderByList: [
+            { value: "updated,DESC", text: "최신순" },
+            { value: "updated,ASC", text: "오래된순" },
+          ],
+          itemPerPageList: [10, 20, 30, 50],
+          isShowPopup: false,
+        },
+        methods: {
+          loadingMounted: function () {
+            this.submit();
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          submit: function () {
+            vm.showLoading(true);
+            //vm.result.faqList = [];
+            $s.api.getFaq(
+              vm.param,
+              function (response) {
+                if (response) {
+                  vm.result.faqTypeList = response.types;
+                  vm.result.totalPages = response.content.totalPages;
+                  vm.result.currentPage = response.content.number + 1;
+                  vm.result.faqCount = response.content.totalElements;
+                  vm.result.faqList = response.content.content;
+                  vm.isNoData = !response.content.totalElements;
+                  vm.showLoading(false);
+                  if (vm.isShowPopup) {
+                    $("li.list-items.dropdown").ready(function () {
+                      $("li.list-items.dropdown button").eq(0).trigger("click");
+                      vm.isShowPopup = false;
+                    });
+                  }
+                } else {
+                  vm.result.faqList = [];
+                  vm.showLoading(false);
+                }
+              },
+              function (err) {
+                vm.result.faqList = [];
+                vm.showLoading(false);
+              }
+            );
+          },
+          // 2023.03.07 추가 분류별 페이지 로딩
+          changeSelect: function () {
+            vm.param.faqType = this.tempFaqType;
+            vm.paging(1);
+          },
+          paging: function (page) {
+            vm.param.page = page;
+            vm.submit();
+          },
+          search: function () {
+            vm.param.query = vm.tempQuery;
+            vm.param.faqType = vm.tempFaqType;
+            vm.paging(1);
+          },
+          addHits: function (id) {
+            $s.api.updateFaqHits({ id: id }, function (response) {});
+          },
+          getFaqTypeName: function (faqType) {
+            if (vm.result.faqTypeList == null || vm.result.faqTypeList.length == 0) {
+              return "";
+            }
+
+            for (var i = 0; i < vm.result.faqTypeList.length; i++) {
+              if (faqType === vm.result.faqTypeList[i].code) {
+                return vm.result.faqTypeList[i].title;
+              }
+            }
+          },
+          // *************** ali-add methods
+          closeTableOverlap: function () {
+            $(".table-overlap").css("display", "none");
+          },
+          slideNoticeBody: function (index, id) {
+            var obj = $(".notice-body").eq(index);
+            $(obj).slideToggle(0, function () {
+              if ($(obj).css("display") == "block") {
+                vm.addHits(id);
+              }
+            });
+          },
+          toggleClass(i, e) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+              $("li.list-items.dropdown").eq(i).toggleClass("show");
+            }
+          },
+        },
+        watch: {
+          "param.size": function () {
+            vm.paging(1);
+          },
+          selectedOrderBy: function (newVal, oldVal) {
+            vm.param.sort = newVal;
+            vm.paging(1);
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init();
+
+            var txt = Common.getParameter("searchTxt");
+
+            if (txt == "popup") {
+              vm.tempQuery = "기부 전 팝업차단";
+              vm.param.query = "기부 전 팝업차단";
+              vm.isShowPopup = true;
+            }
+            vm.paging(1);
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

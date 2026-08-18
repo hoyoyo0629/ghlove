@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description" content="지역을 응원하는 가장 확실한 방법, 고향사랑기부제 정부/자치단체 공식 포털" />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta itemprop="description" content="지역을 응원하는 가장 확실한 방법, 고향사랑기부제 정부/자치단체 공식 포털" />
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta name="author" content="고향사랑e음" />
+    <meta name="robots" content="index, follow" />
+    <meta name="title" content="고향사랑e음" />
+    <meta name="description" content="지역을 응원하는 가장 확실한 방법, 고향사랑기부제 정부/자치단체 공식 포털 " />
+    <meta
+      name="keywords"
+      content="고향사랑e음, 고향사랑기부제, 답례품, 고향사랑, 세액공제, 기부, 고향사랑기부, 아이러브고향, 고향사랑이음, 기부금, 고향사랑 기부금"
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="고향사랑e음" />
+    <meta name="twitter:description" content="지역을 응원하는 가장 확실한 방법, 고향사랑기부제 정부/자치단체 공식 포털" />
+    <meta name="naver-site-verification" content="b2f7567fe53f7e956b808c16454ed2e474e4a170" />
+    <meta name="google-site-verification" content="I7B7cy461nFFcpcf6EO6hINjbNM0FiuxLuU_2gQhTwI" />
+    <link rel="canonical" href="https://www.ilovegohyang.go.kr/" />
+    <link rel="shortcut icon" href="https://www.ilovegohyang.go.kr/static/favicon.ico" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>메인 | 고향사랑e음</title>
+
+    <!-- 기존 코드 -->
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/new.css" />
+		<script>
+			const now = new Date();
+
+			const year = now.getFullYear();
+			const month = String(now.getMonth() + 1).padStart(2, '0');
+			const day= String(now.getDate()).padStart(2, '0');
+
+			const hour= String(now.getHours()).padStart(2, '0');
+			const min= String(now.getMinutes()).padStart(2, '0');
+			const sec= String(now.getSeconds()).padStart(2, '0');
+
+			const version= `${year}${month}${day}${hour}${min}${sec}`;
+
+			if (!location.search.includes("v=")) {
+				// location.href=location.pathname + "?v=" + version;
+
+			}
+		</script>
+  </head>
+
+  <body>
+    <div id="saleson" class="simple-m" v-cloak>
+    	<!-- 상단 배너 -->
+      <div class="simple-m__top-banner">
+        <div class="simple-m__banner-inner">고향사랑e음의 원활한 서비스를 위한 임시 화면입니다.</div>
+      </div>
+
+	    <div class="simple-m__content">
+	    	<!-- 로고 및 메인 타이틀 -->
+        <h1 class="simple-m__logo">
+          <a href="/">
+            <img src="/static/images/new/img_simple_logo.svg" alt="고향사랑e음" />
+          </a>
+        </h1>
+	    	<div class="simple-m__info">
+          <h2 class="simple-m__title">
+            기부 집중 시기
+            <br />
+            서비스가 지연될 수 있습니다.
+          </h2>
+        </div>
+
+        <div class="simple-m__items">
+          <!-- ################### 기부하기 ################### -->
+          <div class="simple-m__item" v-if="this.gibu_wait_user < std_smoothness">
+          	<!-- 원활 : 200명미만 -->
+            <div class="simple-m__status1"><span class="sr-only">원활</span></div>
+            <div class="simple-m__item-con">
+              <a :href="gibu_url" class="krds-btn medium">
+              		<button type="button">
+  		              기부하기
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+              <div class="simple-m__txt">
+                <span class="simple-m__pc">고향사랑e음</span>
+                기부 가능 시간 1:00 ~ 23:30
+              </div>
+            </div>
+          </div>
+
+          <div class="simple-m__item" v-else-if="this.gibu_wait_user >= std_smoothness && this.gibu_wait_user < std_delay">
+          	<!-- 지연 : 200명 이상 ~ 2000명 미만 -->
+            <div class="simple-m__status2"><span class="sr-only">지연</span></div>
+            <div class="simple-m__item-con">
+              <a :href="gibu_url" class="krds-btn medium">
+              		<button type="button">
+  		              기부하기
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+              <div class="simple-m__txt">
+                <span class="simple-m__pc">고향사랑e음</span>
+                기부 가능 시간 1:00 ~ 23:30
+              </div>
+            </div>
+          </div>
+
+          <div class="simple-m__item" v-else>
+          	<!-- 혼잡 : 2000명이상 -->
+            <div class="simple-m__status3"><span class="sr-only">혼잡</span></div>
+            <div class="simple-m__item-con">
+              <a :href="gibu_url" class="krds-btn medium">
+              		<button type="button">
+  		              기부하기
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+              <div class="simple-m__txt">
+                <span class="simple-m__pc">고향사랑e음</span>
+                기부 가능 시간 1:00 ~ 23:30
+              </div>
+            </div>
+          </div>
+
+          <!-- ################### 답례품 ################### -->
+          <div class="simple-m__item" v-if="this.item_wait_user < std_smoothness">
+          	<!-- 원활 : 200명미만 -->
+            <div class="simple-m__status1"><span class="sr-only">원활</span></div>
+            <div class="simple-m__item-con">
+              <a :href="item_url" class="krds-btn medium">
+              		<button type="button">
+  		              답례품몰
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+              <div class="simple-m__txt">
+<!--                 <a :href="catalog_url" class="krds-btn xsmall text"> -->
+                	<button type="button" @click="catalogConfirm()">
+	                  답례품 카탈로그 다운로드
+	                  <i class="svg-icon ico-down"></i>
+	                </button>
+<!--                 </a> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="simple-m__item" v-else-if="this.item_wait_user >= std_smoothness && this.item_wait_user < std_delay">
+          	<!-- 지연 : 200명 이상 ~ 2000명 미만 -->
+            <div class="simple-m__status2"><span class="sr-only">지연</span></div>
+            <div class="simple-m__item-con">
+              <a :href="item_url" class="krds-btn medium">
+              		<button type="button">
+  		              답례품몰
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+              <div class="simple-m__txt">
+<!--                 <a :href="catalog_url" class="krds-btn xsmall text"> -->
+                	<button type="button" @click="catalogConfirm()">
+	                  답례품 카탈로그 다운로드
+	                  <i class="svg-icon ico-down"></i>
+	                </button>
+<!--                 </a> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="simple-m__item" v-else>
+          	<!-- 혼잡 : 2000명이상 -->
+            <div class="simple-m__status3"><span class="sr-only">혼잡</span></div>
+            <div class="simple-m__item-con">
+              <a :href="item_url" class="krds-btn medium">
+              		<button type="button">
+  		              답례품몰
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+              <div class="simple-m__txt">
+<!--                 <a :href="catalog_url" class="krds-btn xsmall text"> -->
+                	<button type="button" @click="catalogConfirm()">
+	                  답례품 카탈로그 다운로드
+	                  <i class="svg-icon ico-down"></i>
+	                </button>
+<!--                 </a> -->
+              </div>
+            </div>
+          </div>
+
+          <!-- ################### 홈페이지 ################### -->
+          <div class="simple-m__item" v-if="this.main_wait_user < std_smoothness">
+          	<!-- 원활 : 200명미만 -->
+            <div class="simple-m__status1"><span class="sr-only">원활</span></div>
+            <div class="simple-m__item-con">
+              <a :href="main_url" class="krds-btn medium">
+              		<button type="button">
+  		              홈페이지
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+            </div>
+          </div>
+
+          <div class="simple-m__item" v-else-if="this.main_wait_user >= std_smoothness && main_wait_user < std_delay">
+          	<!-- 지연 : 200명 이상 ~ 2000명 미만 -->
+            <div class="simple-m__status2"><span class="sr-only">지연</span></div>
+            <div class="simple-m__item-con">
+              <a :href="main_url" class="krds-btn medium">
+              		<button type="button">
+  		              홈페이지
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+            </div>
+          </div>
+
+          <div class="simple-m__item" v-else>
+          	<!-- 혼잡 : 2000명이상 -->
+            <div class="simple-m__status3"><span class="sr-only">혼잡</span></div>
+            <div class="simple-m__item-con">
+              <a :href="main_url" class="krds-btn medium">
+              		<button type="button">
+  		              홈페이지
+	                <i class="svg-icon ico-angle right"></i>
+              	</button>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 대기안내 -->
+        <div class="simple-m__guide">
+          <div class="simple-m__guide-title">Tip!</div>
+          <ul class="simple-m__guide-text">
+            <li>
+              답례품몰의 접속이 지연될 경우
+              <span class="simple-m__guide-point">카탈로그를 다운로드하여 지역의 대표 답례품을 확인</span>
+              하실 수 있습니다.
+            </li>
+            <li>
+              기부포인트는
+              <span class="simple-m__guide-point">5년간 유효</span>
+              하며, 접속이 원활한 시기(내년 초)에 방문하시면 보다 편리하게 구매하실 수 있습니다.
+            </li>
+            <li>
+              <span class="simple-m__guide-point">18시 이후 혹은 휴일에는 비교적 원활</span>
+              하게 이용 가능하오니 참고 부탁드립니다.
+            </li>
+            <li>
+              2025년 세액공제를 위한
+              <span class="simple-m__guide-point">기부 마감은 2025.12.31.(수) 23:30</span>
+              에 종료됩니다.
+            </li>
+          </ul>
+        </div>
+
+        <!-- 푸터 -->
+        <div class="simple-m__footer">
+          <div class="footer-info">고객센터 1522-2431 (월 ~ 금 9:00 ~ 18:00, 공휴일 제외)</div>
+        </div>
+
+	    </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+
+    <script src="/static/js/swiper-bundle.min.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <script type="text/babel">
+			Vue.use(VueAwesomeSwiper);
+			var vm = new Vue({
+				el: "#saleson",
+				components: {
+				},
+				data: {
+					gibu_wait_user : 0,
+					item_wait_user : 0,
+					main_wait_user : 0,
+					std_smoothness : 200,
+					std_delay : 2000,
+					gibu_url : "/donation/donation.html",
+					item_url : "/goods/index.html",
+					main_url : "/index.html",
+					catalog_url : "https://drive.google.com/uc?export=download&id=1zqQmb0s3hi7xH6CN_HYHwiXzMHgWaPqn",
+				},
+				methods: {
+					getRealTimeWaitUser() {
+						$s.api.getRealTimeWaitUser(function(response) {
+								const actionList = response.data.actionList;
+								console.log(actionList);
+								vm.gibu_wait_user = actionList.gibu.stat.avg.wait_user;
+								vm.item_wait_user = actionList.shop.stat.avg.wait_user;
+								vm.main_wait_user = actionList.index.stat.avg.wait_user;
+						});
+					},
+					catalogConfirm() {
+						if(confirm('답례품 카탈로그의 용량은 13 메가바이트 정도입니다.\n가입하고 계신 통신 요금제나 다운로드 환경에 따라 요금이 발생할 수 있사오니 참고 부탁드립니다.')) {
+							window.open('https://drive.google.com/uc?export=download&id=1zqQmb0s3hi7xH6CN_HYHwiXzMHgWaPqn');
+						}
+					}
+				},
+				mounted: function() {
+					this.$nextTick(function () {
+						Saleson.init();
+						this.getRealTimeWaitUser();
+	    	  });
+				},
+			});
+    </script>
+  </body>
+
+  <style>
+  </style>
+</html>

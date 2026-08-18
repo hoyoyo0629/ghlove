@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="No-Cache">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>고객센터 > Q&amp;A > Q&amp;A 글쓰기 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/event.css">
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css?d=20230731">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/data_v.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-customer-lnb-ali :menu-url="page.menuUrl"></layout-customer-lnb-ali>
+
+
+            <section class="center">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        고객센터
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        Q&amp;A
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        Q&amp;A 글쓰기
+                    </span>
+                    <h2 class="page-title-txt">Q&amp;A 글쓰기</h2>
+                </div>
+            </section>
+            <section id="contents">
+                <div class="contents-wrap">
+                    <div class="center">
+                        <div class="s-contents list-page-wrapper">
+                            <div class="list-page-area">
+                                <div class="list-page-body qna">
+                                    <div class="page-title">
+                                        <div class="chk_box" style="text-align:left;margin-bottom:10px;">
+                                            <input type="checkbox" id="secretFlag" v-model="param.secretFlag">
+                                            <label for="secretFlag">비밀글</label>
+                                            <img class="faq-icon" src="/static/images/icon/blue_lock.png" alt="" aria-hidden="true">
+                                        </div>
+                                        <form class="title-select" :onsubmit="page.onsubmitType">
+                                            <div class="form-item">
+                                                <select id="qnaHeader" aria-label="말머리 선택" v-model="param.qnaGroup">
+                                                    <option value="">말머리 선택</option>
+                                                    <option v-for="(data, index) in qnaGroupCodeList" :key="index"
+                                                        :value="data.id">{{ data.label }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-item">
+                                                <input id="qnaTitle" aria-label="제목" type="text" placeholder="제목을 입력해주세요" v-model="param.subject"
+                                                    maxlength="100">
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="page-contents">
+                                        <textarea id="qnaContent" v-model="param.question" maxlength="500" aria-label="본문"></textarea>
+                                    </div>
+
+                                    <div class="page-file-list qna">
+                                        <div class="page-file-list-wrap">
+                                            <div class="file-list-label">
+                                                <input type="file" multiple id="findFile" @change="fileSelect($event)" ref="findFile">
+                                                <button type="submit" @keydown="findFiles($event)">
+                                                    <label for="findFile">
+                                                        <img class="icon-img" src="/static/images/icon/addfile-search.png" alt="첨부자료">
+                                                            파일찾기
+                                                    </label>
+                                                </button>
+                                                <span class="pointGray">
+                                                    jpg,gif,png,hwp,doc,ppt,pdf.. 등 이미지/문서파일만 등록 가능합니다.
+                                                </span>
+                                            </div>
+                                            <div class="file-add" v-show="param.fileList.length > 0">
+                                                <p v-for="(file, index) in param.fileList" :key="index">
+	                                                {{ file.name }}
+	                                                <button type="button" class="fileDelete" @click="fileDelete(index)">
+	                                                	<img class="icon-img" src="/static/images/icon/remove-file.png" alt="첨부파일 삭제">
+	                                                </button>
+                                                </p>
+                                            </div>
+
+                                            <captcha ref="captcha"></captcha>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 글쓰기 버튼그룹 -->
+                        <div class="btn-box many">
+                            <button type="button" class="blueBtn cancellation" @click="goToList()">
+                                목록<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt=""></span>
+                            </button>
+                            <button type="button" class="blueBtn u-confirm" @click="submit()">
+                                등록<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt=""></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+
+                //'layout-customer-lnb-ali': httpVueLoader('/components/layouts/customer-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'captcha': httpVueLoader('/components/ui/captcha.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue') //pagination
+            },
+            data: {
+                param: {
+                    qnaGroup: '',
+                    subject: '',
+                    question: '',
+                    secretFlag: 'Y',
+                    fileList: []
+                },
+                page: {
+                    onsubmitType: "return false;",
+                    menuUrl: "/qna/qna-open.html"
+                },
+                qnaGroupCodeList: [],
+                isFileUse: true
+            },
+            methods: {
+                getQnaGroupCode: function () {
+                    $s.api.getQnaGroupCode({},
+                        function (response) {
+                            vm.qnaGroupCodeList = response.list;
+                        }
+                    );
+                },
+                fileSelect: function (e) {
+                    var size = 5;
+                    var extensions = ['jpg', 'jpeg', 'gif', 'png', 'hwp', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'];
+                    var fileList = e.target.files;
+                    var tempFileList = [];
+
+                    // 유효성 체크
+                    for (var i = 0; i < fileList.length; i++) {
+                        var file = fileList[i];
+                        var fileExt = fileList[i].name;
+
+                        // 사이즈 체크
+                        if (fileExt != "") {
+                            if (file.size > (size * 1024 * 1024)) {
+                                $s.alert("파일크기는 " + size + "MB 이내로 등록 가능합니다.");
+                                return;
+                            }
+                        }
+
+                        // 확장자 체크
+                        fileExt = fileExt.slice(fileExt.lastIndexOf(".") + 1).toLowerCase();
+                        if (!extensions.includes(fileExt)) {
+                            $s.alert("이미지파일/문서파일만 등록 가능합니다.");
+                            return;
+                        }
+                    }
+
+                    for (var j = 0; j < fileList.length; j++) {
+                        vm.param.fileList.push(fileList[j]);
+                    }
+
+                    // 파일 object 초기화
+                    e.target.value = "";
+                },
+                fileDelete: function (index) {
+                    vm.param.fileList.splice(index, 1);
+                },
+                submit: function () {
+                    if (!vm.validator()) {
+                        return false;
+                    }
+
+                    $s.confirm("등록하시겠습니까?", function () {
+                        var formData = new FormData();
+                        formData.append("qnaGroup", vm.param.qnaGroup);
+                        formData.append("subject", vm.param.subject);
+                        formData.append("question", vm.param.question);
+                        formData.append("secretFlag", (vm.param.secretFlag == "Y" || vm.param.secretFlag == true) ? "Y" : "N");
+
+                        var fileList = vm.param.fileList;
+
+                        if (fileList != null && fileList.length > 0) {
+                            for (var i = 0; i < fileList.length; i++) {
+                                formData.append('qnaOpenFileList[' + i + ']', fileList[i]);
+                            }
+                        }
+
+                        $s.api.createQnaOpen(formData,
+                            function (response) {
+                                $s.alert("등록되었습니다.", function (response) {
+                                    vm.goToList();
+                                });
+
+                            }, function (error) {
+                                $s.alert(error.response.data.message);
+                            }
+                        )
+                    });
+                },
+                validator: function () {
+
+                    if (vm.param.qnaGroup.trim() == '') {
+                        $s.alert("말머리를 선택해주세요.", "qnaHeader");
+                        return false;
+                    }
+
+                    if (vm.param.subject.trim() == '') {
+                        $s.alert("제목을 입력해주세요.", "qnaTitle");
+                        return false;
+                    }
+
+                    if (vm.param.question.trim() == '') {
+                        $s.alert("내용을 입력해주세요.", "qnaContent");
+                        return false;
+                    }
+
+                    if (!this.$refs.captcha.isCaptcha()) {
+						$s.alert("자동 등록 방지 숫자를 입력해주세요.","captchaTxt");
+                        return false;
+					}
+
+                    return true;
+                },
+                // *************** ali-add methods
+                goToMain: function () {
+                    location.href = "UI_P02010.html"
+                },
+                goToList: function () {
+                    location.href = "/qna/qna-open.html"
+                },
+                closePopupLayer: function () {
+                    $(".black-bg").removeClass("show");
+                },
+                modalLayer: function (e) {
+                    $(".black-bg").addClass("show");
+                },
+                slideNoticeBody: function (index) {
+                    var obj = $(".notice-body").eq(index);
+                    $(obj).slideToggle();
+                },
+				findFiles: function (event) {
+					if (event.keyCode === 13) {
+						this.$refs.findFile.click();
+					}
+				},
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init({ loginPage: true });
+                    vm.getQnaGroupCode();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

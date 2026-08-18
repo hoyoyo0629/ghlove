@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko">
+ <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="../../../../favicon.ico"> 
+	<title>SalesOn :: 상품후기 작성-고향사랑e음</title> 
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">  
+	<!-- Custom styles for this template -->
+	<link rel="stylesheet" href="/static/css/swiper.min.css"> 
+	<link rel="stylesheet" href="/static/css/common.css">
+	<link rel="stylesheet" href="/static/css/layout.css">
+	<link rel="stylesheet" href="/static/css/item.css"> 
+	<link rel="stylesheet" href="/static/css/order.css">
+	<link rel="stylesheet" href="/static/css/mypage.css">
+	<link rel="stylesheet" href="/static/css/member.css">
+	<link rel="stylesheet" href="/static/css/customer.css">
+	<link rel="stylesheet" href="/static/css/etc.css">
+
+	 <script src="/static/js/jquery-3.4.1.min.js"></script>
+	 <script src="/modules/axios.js"></script>
+	 <script src="/modules/vue.js"></script>
+	 <script src="/modules/httpVueLoader.js"></script>
+	 <script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+	 <script src="/modules/op.vue.js"></script>
+ </head> 
+ <body>
+	<div class="pop_review" id="saleson">
+		<div class="modal-head">
+			<h1 class="tit">상품후기 작성</h1>
+		</div>
+		<div class="modal-body">
+			<div class="cart_list pop">
+				<div class="cart_area">
+					<div class="media">
+						<div class="thumb">
+							<a href="#"><img class="img-fluid" src="/static/images/thumb.png" alt="photo"></a>
+						</div>
+						<div class="media-body">
+							<a href="#">
+								<p class="brand"></p>
+								<p class="title">{{result.item.itemName}}</p>
+								<div class="option">
+									<p>{{result.item.itemOptions}}</p>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div> <!--// cart_area E -->
+			</div> <!--// cart_list E -->
+			<div class="form_wrap">
+				<form>
+					<fieldset>
+						<legend>상품후기 작성</legend>
+						<dl class="form-group">
+							<dt>평가점수</dt>
+							<dd class="rating_wrap">
+								<div class="total_rating_info typeB">
+									<span @click="rating(0)"></span>
+									<span @click="rating(1)"></span>
+									<span @click="rating(2)"></span>
+									<span @click="rating(3)"></span>
+									<span @click="rating(4)"></span>
+								</div>
+								<p class="rating_num"><span>0</span>/5</p>
+							</dd>
+						</dl> <!--// form-group E -->
+						<div class="form-group">
+							<select class="custom-select">
+								<option value="평가문구를 선택해주세요.">평가문구를 선택해주세요.</option>
+								<option value="평가문구를 선택해주세요.">평가문구를 선택해주세요.</option>
+								<option value="평가문구를 선택해주세요.">평가문구를 선택해주세요.</option>
+							</select>
+						</div> <!--// form-group E -->
+						<dl class="form-group">
+							<dt class="screen_out">
+								<label for="contents">평가 내용을 입력해주세요.</label>
+							</dt>
+							<dd>
+								<textarea id="contents" class="form-control" cols="20" rows="10" placeholder="평가 내용을 입력해주세요."></textarea>
+							</dd>
+						</dl> <!--// form-group E -->
+						<div class="file_group">
+							<ul>
+								<li v-show="showImage">
+									<a href="#">
+										<img src="/static/images/thumb.png" alt="thumb01" id="reviewSrc">
+									</a>
+									<a href="#" class="btn_fileDel" @click="fileDelete()"><img src="/static/images/icon/btn_fileDel.png" alt="파일삭제"></a>
+								</li>
+								<li>
+									<!--<input type="file" id="file1" multiple="multiple" name="reviewImageFile[]">-->
+									<input type="file" id="review-Image" ref="reviewImageFile" v-on:change="fileSelect()">
+									<label for="review-Image" class="file_add">
+										<img src="/static/images/icon/btn_fileAdd.png" alt="파일추가">
+									</label>
+								</li>
+							</ul>
+						</div> <!--// file_group E -->
+						<div class="row no-gutters btn-group">
+							<div class="col">
+								<a href="javascript:history.back();" class="btn btn_lg btn_outline_light">취소</a>
+							</div>
+							<div class="col"><button type="button" class="btn btn_lg btn_primary" @click="submit()">등록</button></div>
+						</div> <!--// btn-group E -->
+					</fieldset>
+				</form>
+			</div> <!--// form_wrap E -->
+		</div>
+		<a href="#" class="pop_close"><img src="/static/images/icon/btn_itemDel.png" alt="팝업창 닫기"></a>
+	</div> <!--// pop_review E -->
+	<script>
+		function test(){
+		    var t1 = "";
+		}
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+            },
+            data: {
+                param: {
+                    reviewImageFile : null,
+					itemId : 0,
+                    score : 0,
+                    subject : "",
+                    content : "",
+                    orderCode : ""
+                },
+				result : {
+					item : {}
+				}
+            },
+            methods: {
+                submit : function(){
+                    vm.param.itemId = vm.result.item.itemId;
+                    vm.param.subject = $(".custom-select").val();
+                    vm.param.content = $("#contents").val();
+
+                    if(vm.param.score === 0){
+                        alert("평가점수를 선택해주세요.");
+                        return false;
+                    } else if(vm.param.subject === ""){
+                        alert("평가문구를 선택해주세요.");
+                        return false;
+                    } else if(vm.param.content === ""){
+                        alert("평가내용을 입력해주세요.");
+                        return false;
+                    } else {
+                        var formData = new FormData();
+                        formData.append('itemId', vm.param.itemId);
+                        formData.append('orderCode', vm.param.orderCode);
+                        formData.append('subject', vm.param.subject);
+                        formData.append('content', vm.param.content);
+                        formData.append('score', vm.param.score);
+                        formData.append('reviewImageFile', vm.param.reviewImageFile);
+
+                        $s.api.review(formData, function(response) {
+                            if(response.status === "OK"){
+                                alert("후기가 작성되었습니다.");
+                                history.back();
+                            } else {
+                                alert(response);
+                            }
+                        });
+                    }
+				},
+
+				rating : function(num){
+                    $(".total_rating_info span").removeClass("on");
+                    for(var i = 0; i <= num; i++){
+                        $(".total_rating_info span").eq(i).attr("class", "on");
+					}
+                    $(".rating_num span").html(num+1);
+                    vm.param.score = num+1;
+				},
+
+				fileSelect : function(){
+                    vm.param.reviewImageFile = this.$refs.reviewImageFile.files[0];
+
+                    var reader = new FileReader();
+
+                    reader.onload = function(e){
+                        $("#reviewSrc").attr('src', e.target.result);
+					}
+					reader.readAsDataURL(vm.param.reviewImageFile);
+				},
+
+				fileDelete : function(){
+                    vm.param.reviewImageFile = null;
+                    $("#reviewSrc").attr("src","/static/images/thumb.png");
+				}
+            },
+            computed: {
+				showImage : function(){
+				    var flag = vm.param.reviewImageFile != null;
+				    return flag;
+				}
+            },
+            mounted: function() {
+
+	            this.$nextTick(function () {
+
+		            Saleson.init();
+
+		            var orderCode = $s.core.getParameter('itemUserCode');
+		            $s.api.getItem(orderCode, function(response) {
+			            vm.result = response;
+			            vm.param.orderCode = orderCode;
+		            });
+	            });
+            }
+        });
+
+	</script>
+
+	<script src="/static/js/swiper.min.js"></script>
+	<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+	<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+	<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+	<script src="/static/js/jquery.popupoverlay.js"></script>
+	<script src="/static/js/jquery.waypoints.min.js"></script>
+	<script src="/static/js/jquery.counterup.min.js"></script>
+	<script src="/static/js/common.js"></script>
+	<script src="/static/js/header.js"></script>
+	<script src="/static/js/footer.js"></script>
+ </body>
+</html>

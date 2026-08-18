@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="고향사랑e음" />
+  <meta
+    property="og:description"
+    content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+  />
+  <meta property="og:site_name" content="고향사랑e음" />
+  <meta
+    property="og:image"
+    content="/static/images/cli-logo.png"
+  />
+  <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+  <meta itemprop="name" content=" 고향사랑e음" />
+  <meta
+    itemprop="description"
+    content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+  />
+  <meta
+    itemprop="image"
+    content="/static/images/cli-logo.png"
+  />
+  <link rel="icon" href="/static/favicon.ico" />
+  <title>고향사랑e음 소식지</title>
+
+  <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+  <link rel="stylesheet" href="/static/css/common.css" />
+  <link rel="stylesheet" href="/newsletter/static/css/news_main.css">
+  <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+  <script src="/modules/babel.min.js"></script>
+  <script src="/modules/es6-promise.min.js"></script>
+  <script src="/modules/es6-promise.auto.min.js"></script>
+  <script src="/modules/axios.js"></script>
+  <script src="/modules/vue.js"></script>
+  <script src="/modules/httpVueLoader.js"></script>
+  <script src="/static/js/jquery-3.4.1.min.js"></script>
+  <script type="text/babel">
+    var vm = new Vue({
+      el: "#saleson",
+      components: {
+        "newsletter-header": httpVueLoader(
+          "/newsletter/components/header/header.vue"
+        ),
+      },
+      data: {
+
+      },
+      methods: {
+
+      },
+      mounted: function () {
+        this.$nextTick(function () {
+
+        });
+      },
+    });
+  </script>
+</head>
+
+<body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+  <div class="newsletter_main">
+    <div id="wrap">
+
+      <!-- <section class="main_banner_area">
+        <div class="newsletter_main_banner">
+          <img src="/newsletter/static/images/common/bg_img_on_v2.png" alt="고향과 국민을 잇습니다.">
+        </div>
+      </section> -->
+
+      <section id="contents" class="contents_area">
+        <!-- 기부제 소식 -->
+        <div class="content con01">
+      	<span id="con01" class="tab_zone">&nbsp;</span>
+          <div class="con_tit"><p>기부제 소식</p><span>&nbsp;</span></div>
+          <div class="con_list_wrap">
+            <ul>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_donation_p08.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+                  		<img class="item_img" src="/newsletter/static/images/vol001/detail_1.png" alt="고향사랑의 날 기념식과 박람회(고향은 사랑을 싣고) 기간 : 2024.09.04(수) ~ 09.07(토)">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑의 날 기념식과 박람회<br><span>(고향은 사랑을 싣고)</span><br>2024.09.04(수) ~ 09.07(토)</div>
+                    <p>행정안전부</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_donation_p10.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_2.png" alt="고향사랑기부제 시즌2 정보">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑기부제 시즌2, 이제 내 고향의 사업에 직접 기부하세요</div>
+                    <p>행정안전부</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_donation_p11.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_3_1.png" alt="키워드로 보는 언론속의 고향사랑 기부제">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">키워드로 보는 언론속의 '고향사랑 기부제'</div>
+                    <p>한국지방행정연구원</p>
+                  </div>
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+        <!-- // 기부제 소식 -->
+		
+        <!-- 고향 소식 -->
+        <div class="content con02">
+		  <span id="con02" class="tab_zone">&nbsp;</span>
+          <div class="con_tit"><p>고향 소식</p><span>&nbsp;</span></div>
+          <div class="con_list_wrap">
+            <ul>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p18.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_6.jpg" alt="강원고향사랑기부제 1+1+1 이벤트 진행. 강원특별자치도">
+                  	</div>
+	                <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">강원고향사랑기부제 1+1+1 이벤트 진행</div>
+                    <p>강원특별자치도청</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p19.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_7.png" alt="횡성군 고향사랑기부제가 수백초 물희스트링오케스트라를 응원합니다. 라고 쓰인 현수막을 들고 있는 학생 및 어른들의 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">성북초&#183;수백초 '꿈을 연주하는 시골 오케스트라' 지원</div>
+                    <p>강원특별자치도 횡성군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p21.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_8_1.png" alt="모니터로 수업을 진행하는 강사와 둘러앉은 수강생들의 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_8_2.png" alt="태블릿을 통해 디지털 드로잉을 하고 있는 수강생의 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑기부제로 작가의 꿈을 잇다</div>
+                    <p>경기도 수원시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p22.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_9_1.jpg" alt="상생하는 착한 답례품 용인시 조아용 굿즈">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_9_2.jpg" alt="상생하는 착한 답례품 용인시 텀블러">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">상생하는 착한 답례품 '용인시 조아용 굿즈'</div>
+                    <p>경기도 용인시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p23.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_10.png" alt="황토 쌀독이 쌓여있는 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">7대째 가업을 이어온 "한양도예 황토쌀독"</div>
+                    <p>경기도 화성시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p24.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_11.png" alt="밀양시 전국밀양향우연합회 초청 고향알기 행사 현수막을 들고있는 사람들의 사진과 밀양시 고향알기프로그램행사 고향사랑 기부자 초청 현수막을 들고 있는 사람들의 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">밀양만의 특색있는 기금사업</div>
+                    <p>경상남도 밀양시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p25.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_12.png" alt="현수막 아래에서 창원특례시 고향사랑기부제 답례품 입간판을 세워두고 고향사랑기부제를 홍보하고 있는 사진.">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑기부제 홍보를 위한 해군 입영식 방문</div>
+                    <p>경상남도 창원시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p26.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_13.png" alt="목에 메달을 걸고 있는 11명의 유소년 선수들의 사진.">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">"통영시 유소년 축구단 운영비 지원 사업" 추진 원활"</div>
+                    <p>경상남도 통영시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p27.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_14.png" alt="철창에 갇힌 개 5마리 배경에 흰색문구로 유기, 피학대 동물구조, 보호 지원사업이 쓰여져있는 사진과 하동군 취약계층 목욕이용권 지원사업을 홍보하고 있는 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑기부제, 하동의 도약</div>
+                    <p>경상남도 하동군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p28.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_15.png" alt="함안군 답례품 제품 사진, HEYRICH 제품 사진, 함안곶감의 제품 사진, 망고수박의 사진, '달콤함에 반하다 백자멜론' 라고 쓰인 백자멜론 사진, '은은한주홍빛 노을 품은'라고 쓰인 노을 멜론 사진, 일월삼주 제품 포장 및 상품 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">함안군 답례품 소개</div>
+                    <p>경상남도 함안군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p29.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_16.jpg" alt="2025 구미아시아육상경기 선수권대회 성공개최기원 GRC NIGHT RUN FESTIVAL이라고 쓰인 현수막을 들고있는 사람들 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">구미영 에너지 프로젝트 첫 시행사업 "나이트런 페스티벌"</div>
+                    <p>경상북도 구미시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p30.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_17.jpg" alt="예천군 답례품 몰 상품목록의 스크린샷 사진과 봉미엘프로폴리스 제품 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">예천사랑기부제 답례품 "다양화룰 위해 총력"</div>
+                    <p>경상북도 예천군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p33.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_19_2.jpg" alt="변화와 혁신! 이로훈 동래. 10만원 기부하고 13만원의 혜택을 돌려받는! 내 고향 동래를 살리는 고향사랑 기부제. 얼쑤 동래! 문구와 고향사랑e음 홈 바로가기(https://www.ilovegohyang.go.kr/main.html) QR코드가 있는 포스터 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_19_1.jpg" alt="부산광역시 동래구에 기부된 금액은 취약계층 지원 및 지역공동체 활성화 주민복리 증진사업에 사용된다는 내용과 동래구 답례품인 도자기류, 동래구 상징물 활용상품, 목용용품, 커피류, 온천수 활용 제품의 썸네일 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">내 고향 동래를 응원해 주세요</div>
+                    <p>부산광역시 동래구</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p34.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_20_1.jpg" alt="10kg 기장쌀 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_20_2.jpg" alt="커피원두 위에 Special Blend Gi Jang 아홉산 숲 Wug Coffee 라고 쓰인 종이가 놓여있는 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">기장군, 답례품 제공 품목 다양화</div>
+                    <p>부산광역시 기장군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p35.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_21_1.jpg" alt="부산광역시 금정구 답례품, 금막초 제품 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_21_2.jpg" alt="부산광역시 금정구 답례품, 금정구 사랑세트 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">"금정의 향기를 담다!", 특색있는 금정구 답례품 소개</div>
+                    <p>부산광역시 금정구</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p31.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_18_1.png" alt="청년노동자 공유주택조성사업 건물 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_18_2.png" alt="울산종합일보 전하만주오피스텔 입주를 축하합니다. 만주반상회. 2024.5.17 금요일 19시 동구청년센터 라고 쓰인 현수막을 들고있는 사람들 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">울산 동구 "청년노동자 공유주택 조성사업" 확대</div>
+                    <p>울산광역시 동구</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p36.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_22_1.jpg" alt="사람들이 모여 텃밭을 가리키며 얘기를 나누는 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_22_2.jpg" alt="텃밭 가꾸는 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">담양에 기부하고, '고향사랑 사계절 텃밭' 분양받자!</div>
+                    <p>전라남도 담양군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p37.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_23.jpg" alt="전라남도 목포시의 보호종료 아동 자립준비 교육비 지원사업 안내 사진과 보호종료아동 사업을 응원하는 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">목포시 '보호종료아동 교육비 지원사업' 추진</div>
+                    <p>전라남도 목포시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p38.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_24_1.png" alt="갓김치 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_24_2.png" alt="밭에서 일하는 사람들 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">가을 밥상 위 밥도둑 '돌산갓김치'</div>
+                    <p>전라남도 여수시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p39.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_25.jpg" alt="영암군 보건소의 '고향사랑 기금사업,소아청소년과'라고 쓰여있는 간판 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">영암군 소아청소년을 위한 마을 주치의!</div>
+                    <p>전라남도 영암군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p40.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_26_v2.png" alt="전라남도 해남군의 해남사랑군민증 신청을 위한 홍보 및 안내 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑기부자에게 '해남사랑군민증' 발급, 혜택도 가득</div>
+                    <p>전라남도 해남군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p42.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_27.jpg" alt="치매 어르신 인공지능 돌봄인형 사진과 돌봄인형을 안고있는 어르신의 뒷모습 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">기부자의 '사랑'과 '응원'으로 김제시민 삶의 질 UP!</div>
+                    <p>전북특별자치도 김제시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p46.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_29.png" alt="완주 사랑 상품권 추가 캐시백 지원 홍보하는 분홍색 돼지저금동 이미지 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">전국 최초! 완주군 고향사랑기부자 상품권 추가캐시백 지급</div>
+                    <p>전북특별자치도 완주군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p44.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_28_v2.png" alt="전북특별자치도 부안군의 야생벌 살리기 지정기부사업 홍보 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">야생벌 붕붕이를 지켜주세요!</div>
+                    <p>전북특별자치도 부안군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p48.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_30.png" alt="전북특별자치도청의 기부금 사용처를 나타내는 주택화재 안전꾸러미 설치 홍보 사진과 취약계층 위생용품(생리대) 지원 사업 홍보 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">답례품 포인트 재기부 통한 기부 행복 두배로!</div>
+                    <p>전북특별자치도청</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p50.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_31_1.jpg" alt="진료중인 치과의사 두 명의 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_31_2.jpg" alt="상패를 들고 서있는 사람 네 명의 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">"다양한 계층"을 위한 기금사업 시행</div>
+                    <p>충청남도 공주시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p51.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_32_1.png" alt="논산고향사랑기부 메인페이지 스크린샷. 메인페이지에 '논산 충청권 압도적 1위 논산시 답례품을 확인하세요.' 라고 적혀있다.">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_32_2.png" alt="논산고향사랑기부 상품목록페이지 스크린샷.">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">'논산고향사랑기부' 단독 페이지 개설!</div>
+                    <p>충청남도 논산시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p52.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_33.png" alt="'제 62회 회장기 전국 남여중고학생 탁구대회 문경을 찾아주신 선수단 여러분을 환영합니다'라는 현수막 아래, 우승기를 들고 상장과 상패를 바닥에 둔 사람들의 사진.">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">"정산 탁구부 지원사업" 지정기부 최초 목표액 달성</div>
+                    <p>충청남도 청양군</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_hometown_p54.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_34_1.png" alt="자전거를 끌고 모여있는 사람들 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_34_2.png" alt="영화관 의자에 앉아있는 아이들 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt"> <!-- 수정 240826 -->
+                    <div class="h4">'영동군' 시니어 세대와 아이들의 세대공존(共-ZONE) 여건 제공 사업시행</div>
+                    <p>충청북도 영동군</p>
+                  </div>
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+        <!-- // 고향 소식 -->
+
+        <!-- 우수 사례 -->
+        <div class="content con03">
+        <span id="con03" class="tab_zone">&nbsp;</span>
+          <div class="con_tit"><p>우수 사례</p><span>&nbsp;</span></div>
+          <div class="con_list_wrap">
+            <ul>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p57.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_35_1.jpg" alt="'위클리오늘 효준정밀 김영주 회장에 명예시민증 수여' 글자 하단에 상장과 꽃다발을 든 사람들의 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_35_2.jpg" alt="2024 고향사랑기부 명예의전당 스크린샷">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">태백시 고향사랑기부제 고액 기부자에 대한 차별화된 예우</div>
+                    <p>강원특별자치도 태백시</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p59.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_36_1.jpg" alt="부산광역시 남구 홈페이지의 기부자 명예의 전당 상세페이지 스크린샷">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_36_2.jpg" alt="부산광역시 남구 홈페이지의 기부자 명예의 전당 목록페이지 스크린샷">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑 고액기부자 명예의 전당 개설</div>
+                    <p>부산광역시 남구</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p60.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_37_1.png" alt="부엌 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_37_2.png" alt="아파트 경로당의 내부 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">해운대구 고향사랑기금사업 '소규모 아파트 경로당 보수지원' 완료</div>
+                    <p>부산광역시 해운대구</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p61.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_p61_1.png" alt="담양과 함께하는 고향사랑기부제 문구와 카타르_월드컵_국가대표 해시태그 및 나상호가 함께하겠습니다. 문구 사이에 축구공을 들고 서있는 나상호 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">철저한 준비와 선제적 대응으로 전국 모금 1위를 달성한 담양군</div>
+                    <p>한국지방행정연구원 (국내사례)</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p64.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_38.png" alt="오키나마현 키비추오초 고향납세 홈페이지 스크린샷">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt"> <!-- 수정 240826 -->
+                    <div class="h4">[일본] 오카야마현(岡山県)<br>키비추오초(吉備中央町)의 사례</div>
+                    <p>한국지방행정연구원 (해외사례)</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p67.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_39_1.png" alt="고향사랑기부제 현수막 앞에서 고향사랑기부제 팜플렛을 들고 있는 사람들 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_39_2.png" alt="고향사랑기부제 강원농협 시군별 농출특산물 지도사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">강원본부 1층 로비 홍보관 설치로 연중 홍보활동 지속 전개</div>
+                    <p>강원농협</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p69.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_40.jpg" alt="'100년 농촌을 위한 고향사랑기부 농협직원 동행 릴레이기부 기부금 16,000천원 농협태안군지부'라는 판넬을 들고있는 사람들 사진과 고향사랑기부제 협약식 현수막 아래 서있는 사람들 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">농협 직원 동행 릴레이 기부 집중 캠페인 실시 (1월~3월)</div>
+                    <p>농협 태안군지부</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p71.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_41_1.png" alt="NHCard Zgm.고향으로 고향사랑특별시 분홍색 카드 이미지">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_41_2.png" alt="NHCard Zgm.고향으로 고향사랑특별시 녹색 카드 이미지">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑기부제 특화 ZGM. 고향으로 카드 출시</div>
+                    <p>농협 카드회원 추진부</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p73.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_42_1.png" alt="한라봉이 놓인 테이블에 서서 제주도 고향사랑기부를 홍보하는 사람들 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_42_2.jpg" alt="한라봉을 어린이에게 나누어주며 고향사랑기부제를 홍보하는 사람들 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">설맞이 고향사랑기부제 홍보 캠페인 전개</div>
+                    <p>제주농협</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p75.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_43.jpg" alt="2024 영호남 상생협력 화합대축전 스크린 앞에서 고향사랑기부금 금액들이 적힌 판넬을 들고 있는 사람들 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">경북도청과 전남도청이 영호남 상생을 목적으로 축제를 개최하여 고향사랑기부금 교차기부를 실시</div>
+                    <p>전남 농협</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p77.html">
+                  <div class="thumb">
+                  	<div class="thumb_img_wrap">
+	                    <img class="item_img" src="/newsletter/static/images/vol001/detail_44.jpg" alt="현수막 아래서 농축산물과 고향사랑기부제를 홍보하는 사람들 사진">
+                  	</div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">경남 FC 개막전을 활용한 고향사랑기부제 홍보활동 진행</div>
+                    <p>경남농협</p>
+                  </div>
+                </a>
+              </li>
+
+              <li>
+                <a class="list_wrap" href="/newsletter/vol001/detail_goodex_p79.html">
+                  <div class="thumb">
+                    <div class="thumb_img_wrap">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_45_1.png" alt="'고향과 국민을 잇는 아름다운 기부 함께해요!' 현수막을 들고 선 사람들 사진">
+                      <img class="item_img" src="/newsletter/static/images/vol001/detail_45_2.png" alt="걷기 축제에 참가한 사람들 사진">
+                    </div>
+                    <span class="thumb_plus_btn">더보기 버튼</span>
+                  </div>
+                  <div class="sub_txt">
+                    <div class="h4">고향사랑의 날 기념 걷기 축제 참가 및 고향사랑기부제 홍보활동</div>
+                    <p>농협중앙회 광주본부</p>
+                  </div>
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+        <!-- // 우수 사례 -->
+      </section>
+
+
+      <section>
+        <a href="/newsletter/vol001/faq.html">
+          <div class="content con_faq">
+            <div class="con_inner">
+              <h4>자주묻는 질문</h4>
+              <p>서비스가 궁금한가요?</p>
+            </div>
+          </div>
+        </a>
+      </section>
+
+    </div>
+  </div>
+  </div>
+  </body>
+</html>

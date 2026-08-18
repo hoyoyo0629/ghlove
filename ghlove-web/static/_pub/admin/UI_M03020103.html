@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">회원관리</a> &gt; <a href="">지자체관리</a> &gt; <a href="" class="on">지자체관리</a> &gt; <a
+                            href="" class="on">등록</a>
+                    </div>
+                    <h3><span>지자체등록</span></h3>
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <!-- 20221205 수정 -->
+                                <col style="width:220px;">
+                                <col>
+                                <col style="width:220px;">
+                                <col>
+                                <!-- // 20221205 수정 -->
+                            </colgroup>
+                            <!-- 20221102 수정 -->
+                            <tbody>
+                                <tr>
+                                    <td class="label">지자체코드</td>
+                                    <td colspan="3">
+                                        <div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- 20221205 수정 -->
+                                    <td class="label"><span class="required_mark">*</span>지자체명</td>
+                                    <!-- // 20221205 수정 -->
+                                    <td colspan="3">
+                                        <div class="flex_box gap-08">
+                                            <select id="" name="" title="-시도 선택-" class="wd-150">
+                                                <option value="">-시도 선택-</option>
+                                            </select>
+                                            <select id="" name="" title="-시군구-" class="wd-150">
+                                                <option value="">-시군구-</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>사업자 등록번호</td>
+                                    <td colspan="3">
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter wd-100" type="text">
+                                            <span class="wave">-</span>
+                                            <input id="" name="" title="" class="input_txt required _filter wd-100" type="text">
+                                            <span class="wave">-</span>
+                                            <input id="" name="" title="" class="input_txt required _filter wd-100" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>담당자명</td>
+                                    <td colspan="3">
+                                        <div>
+                                            <input id="" name="" title="담당자명" class="input_txt required _filter wd-150"
+                                                type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>담당자 연락처</td>
+                                    <td colspan="3">
+                                        <div class="flex_box gap-08 item-center">
+                                            <select id="" name="" title="-선택-" class="wd-100">
+                                                <option value="">-선택-</option>
+                                            </select>
+                                            <span class="wave">-</span>
+                                            <input id="" name="" title="" class="input_txt required _filter wd-100" type="text">
+                                            <span class="wave">-</span>
+                                            <input id="" name="" title="" class="input_txt required _filter wd-100" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>지자체 홈페이지</td>
+                                    <td colspan="3">
+                                        <div>
+                                            <input id="" name="" title="지자체 홈페이지" class="input_txt required _filter full" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>지자체 소개</td>
+                                    <td colspan="3">
+                                        <div>
+                                            <span class="placeholder_wrap">
+                                                <span class="placeholder">140자 이내로 작성해주세요</span>
+                                                <textarea id="comments" name="comments" cols="30" rows="10"
+                                                    maxlength="140" class="required _filter" title="댓글"></textarea>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label" rowspan="2"><span class="required_mark">*</span>지자체 주소</td>
+                                    <td colspan="3">
+                                        <div class="flex_box">
+                                            <!-- 20221205 수정 -->
+                                            <input id="" name="" title="예산" class="input_txt required _filter wd-150" type="text" disabled>
+                                            <!-- // 20221205 수정 -->
+                                            <button type="button" class="btn btn-default btn-mini">주소찾기</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="flex_box gap-08">
+                                            <!-- 20221205 수정 -->
+                                            <input id="" name="" title="" class="input_txt required _filter half" type="text" disabled>
+                                            <!-- // 20221205 수정 -->
+                                            <input id="" name="" title="" class="input_txt required _filter half"
+                                                type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>예산</td>
+                                    <td colspan="3">
+                                        <!-- 20221205 수정 -->
+                                        <div>
+                                            <input id="" name="" title="예산" class="input_txt required _filter wd-150"
+                                                type="text" value=""> 백만원
+                                        </div>
+                                        <!-- // 20221205 수정 -->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>인구수</td>
+                                    <td colspan="3">
+                                        <div>
+                                            <!-- 20221205 수정 -->
+                                            <input id="" name="" title="인구수" class="input_txt required _filter wd-150"
+                                                type="text" value=""> 명
+                                            <!-- // 20221205 수정 -->
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>포인트 지급률</td>
+                                    <td colspan="3">
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter wd-150"
+                                                type="text">
+                                            <span class="wave">%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>부서명</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter wd-150" type="text">
+                                        </div>
+                                    </td>
+                                    <td class="label"><span class="required_mark">*</span>부서코드</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter wd-150" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>행정표준기관코드</td>
+                                    <td colspan="3">
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter wd-150" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <!-- // 20221102 수정 -->
+                        </table>
+                    </div>
+                    <div class="btn_all btn_center">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-dark-gray btn-small">등록</button>
+                            <button type="button" class="btn btn-defualt btn-small">취소</button>
+                        </div>
+                    </div>
+                    <!-- 지자체담당자용 화면 case -->
+                    <div class="location">
+                        <a href="">회원관리</a> &gt; <a href="">지자체관리</a>
+                    </div>
+                    <h3><span>지자체관리</span></h3>
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">지자체코드</td>
+                                    <td>
+                                        <div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">지자체명</td>
+                                    <td>
+                                        <div>
+                                            경상북도 상주시
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>담당자명</td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="담당자명" class="input_txt required _filter wd-150"
+                                                type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>담당자 연락처</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <select id="" name="" title="-선택-" class="wd-150">
+                                                <option value="">-선택-</option>
+                                            </select>
+                                            <span class="wave">-</span>
+                                            <input id="" class="basic" name="" title=""
+                                                class="input_txt required _filter half" type="text">
+                                            <span class="wave">-</span>
+                                            <input id="" class="basic" name="" title=""
+                                                class="input_txt required _filter half" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>지자체 홈페이지</td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="지자체 홈페이지"
+                                                class="input_txt required _filter half" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>지자체 소개</td>
+                                    <td>
+                                        <div>
+                                            <span class="placeholder_wrap">
+                                                <span class="placeholder">140자 이내로 작성해주세요</span>
+                                                <textarea id="comments" name="comments" cols="30" rows="10"
+                                                    maxlength="140" class="required _filter" title="댓글"></textarea>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label" rowspan="2"><span class="required_mark">*</span>지자체 주소</td>
+                                    <td>
+                                        <div class="flex_box">
+                                            <input id="" name="" title="예산" class="input_txt required _filter wd-150"
+                                                type="text">
+                                            <button type="button" class="btn btn-default btn-mini">주소찾기</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex_box gap-08">
+                                            <input id="" name="" title="예산" class="input_txt required _filter half"
+                                                type="text">
+                                            <input id="" name="" title="예산" class="input_txt required _filter half"
+                                                type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>예산</td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="예산" class="input_txt required _filter wd-150"
+                                                type="text" value=""> 천만원
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>인구수</td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="인구수" class="input_txt required _filter wd-150"
+                                                type="text" value=""> 만명
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>포인트 지급률</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter wd-150"
+                                                type="text">
+                                            <span class="wave">%</span>
+                                            <button type="button" class="btn btn-dark-gray btn-mini">적용</button>
+                                            <button type="button" class="btn btn-default btn-mini">이력확인</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn_all btn_center">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-dark-gray btn-small">저장</button>
+                        </div>
+                    </div>
+                    <!-- // 지자체담당자용 화면 case -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

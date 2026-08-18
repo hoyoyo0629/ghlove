@@ -1,0 +1,30 @@
+tasks.withType(Jar).configureEach{
+	if (!archiveFileName.get().contains('plain')) {
+		destinationDirectory = file("$rootDir/build/distributions")
+	}
+}
+
+springBoot {
+	mainClass = 'saleson.SalesonBatchApplication'
+}
+
+bootRun{
+    enabled = false
+
+    String activeProfile = System.properties['spring.profiles.active']
+    systemProperty "spring.profiles.active", activeProfile
+}
+
+dependencies {
+    implementation fileTree(dir: '../libs', includes: ['*.jar'])
+    implementation project(':ghlove-common')
+
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // Quartz
+    implementation "org.quartz-scheduler:quartz:2.2.0"
+
+    //implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

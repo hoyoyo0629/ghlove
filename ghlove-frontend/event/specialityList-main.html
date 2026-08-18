@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ko">
+
+<head id="saleson-head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>답례품 > 특산물관 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+    <link rel="stylesheet" href="/static/css/evt_card.css">
+    <link rel="stylesheet" href="/static/css/lclgv_chc/map.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css"> <!-- 모달 -->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <layout-header-ali ref="layoutHeader"></layout-header-ali>
+        <layout-header :menu-url="menuUrl" @show-map-select="showMapSelect" ref="layoutHeaderSearchPc"></layout-header>
+
+		<div id="wrap">
+            <!-- 지자체 선택 팝업  -->
+            <div class="black-bg" ref="getParentModal">
+                <div class="overlayer join-complete">
+                    <div class="overlayer-header" style="font-size: 26px; height: 60px;line-height: 60px;padding: 0;">지자체 선택</div>
+                    <div class="overlayer-body" style="padding-top: 30px; border-radius: 0 0 15px 15px;">
+                        <layout-map-select @show-loading="showLoading" @select-lclgv="selectLclgvPc"></layout-map-select>
+                    </div>
+                    <div class="btn-box">
+                        <button type="button" class="temp-button hidden_txt" title="지자체 선택팝업 닫기" style="top: 18px; right: 18px;" @click="closeMapSelect()">지자체 선택 팝업 닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="special page-title-box" id="contents">
+            <div class="center">
+                <h2 class="page-title-txt">특산물관</h2>
+                <p class="deepGray">
+                    지자체의 지역 특산물을 만나 보실수 있습니다.
+                </p>
+                <div class="loc_select_area">
+                    <span class="loc_select_group">
+                        <select title="시·도 선택" class="shirink_s" name="upperLocgovCode" id="upperLocgovCode"
+                            v-model="sidoCode" @change="changeSidoEvent">
+                            <option v-for="(sido, index) in sidoList" :value="sido.sidoCode" :key="index">
+                                {{sido.sidoName}}
+                            </option>
+                        </select>
+                        <select title="시·군·구 선택" class="shirink_s" name="locgovCodeSet" id="locgovCodeSet"
+                            v-model="sigunguCode">
+                            <option v-for="(sigungu, index) in sigunguList" :value="sigungu.cityCode" :key="index">
+                                {{sigungu.cityName}}
+                            </option>
+                        </select>
+                    </span>
+                    <div class="submit_btns">
+                        <button type="button" class="formBtn" @click="goPage">검색</button>
+                        <button type="button" class="formBtn reset_img" @click="initData"> <img
+                                src="/static/images/icon/loc_reset.png" alt="초기화" class="icon-img"></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="contents seasonCard">
+            <div class="center" v-if="isNoData">
+                <ul class="spe_group">
+                    <li class="spe_list cursor" v-for="(v,i) in dataList" :key="i"
+                        @click.prevent="jumpToDetails(v.locgovCode)" @keydown="keydownToDetails($event,v.locgovCode)"
+                        tabindex="0" role="관련 상품 보기">
+                        <img src="/static/images/icon/btn-shorcut_viewmore.png" alt="자세히 보기" class="icon-img">
+                        <div class="card_tit"> <span>{{v.upperLocgovNm}}<br>{{v.locgovNm}}</span> </div>
+                        <div class="card_list_items">{{v.spclItemInfo}}</div>
+                    </li>
+                </ul>
+                <pagination :current-page="currentPage" :total-pages="totalPage" @change="search" v-if="totalPage > 0">
+                </pagination>
+            </div>
+        </section>
+
+        <layout-fixed-btn></layout-fixed-btn>
+        <layout-tabbar-ali ref="layoutHeaderSearchMobile" :menu-url="menuUrl" @show-map-select="showMapSelect"></layout-tabbar-ali>
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/event.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/goods.item.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script type="text/babel">
+        // Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header': httpVueLoader('/components/layouts/header_g.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-tabbar-ali': httpVueLoader('/components/layouts/m_tabbar_g.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+                'layout-map-select': httpVueLoader('/components/ui/lclgv_chc/map.vue'),
+            },
+            data: {
+                dataList: [],
+                sidoList: [],
+                sigunguList: [],
+                sidoCode: '',
+                sigunguCode: '',
+                menuUrl: location.pathname,
+                totalPage: 0,
+                currentPage: 1,
+                isNoData: false
+            },
+            methods: {
+                jumpToDetails(locgovCode) {
+                    if(locgovCode.substr(0,1) == "U") {
+                        $s.redirect(`/event/specialityDetail.html?locgov=${locgovCode.replace("U","")}&sido=Y`);
+                    } else {
+                        $s.redirect(`/event/specialityDetail.html?locgov=${locgovCode}&sido=N`);
+                    }
+
+                },
+                keydownToDetails(e, locgovCode) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        vm.jumpToDetails(locgovCode);
+                    }
+                },
+
+                search(page) {
+                    const params = {
+                        page,
+                        itemsPerPage: 10,
+                        locgov: this.sigunguCode,
+                    };
+                    this.showLoading(true);
+                    $s.api.searchSpecialityInfo(params, function (response) {
+                        vm.showLoading(false);
+                        vm.dataList = response.content;
+                        vm.totalPage = response.totalPages;
+                        vm.currentPage = response.currentPage;
+                        // 데이터가 1건 이상일 경우에만 isNoData 비활성화
+                        if (vm.dataList.length > 0) {
+                            vm.isNoData = true;
+                        } else {	// 데이터가 없을 경우 isNoData 활성화
+                            vm.isNoData = false;
+                        }
+                    }, function (error) {
+                        //$s.error(error);
+                        vm.showLoading(false);
+                        $s.alert(error.response.data.message, function () {
+                            vm.historyBack();
+                            $s.closeAlert();
+                        });
+                        // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                        $('#saleson').on('click', '#op-alert', function () {
+                            vm.historyBack();
+                        });
+                    });
+                },
+                historyBack: function () {
+                    if (history.length == 1) {
+                        $s.redirect('/');
+                    } else {
+                        history.back();
+                    }
+                },
+                loadSido() {
+                    return $goods.getCommonRegionCode();
+                },
+                changeSidoEvent() {
+                    this.sigunguCode = '';
+                    return new Promise((resolve, reject) => {
+                        $goodsItem.loadSiGungu(this.sidoCode).then((res) => {
+                            this.sigunguList = res;
+                            resolve(this.sigunguList);
+                        }).catch((e) => {
+                            reject(e);
+                        });
+                    });
+                },
+                initData() {
+                    this.sigunguList = [{ cityCode: '', cityName: '시·군·구 선택' }];
+                    this.sidoCode = '';
+                    this.sigunguCode = '';
+                    this.totalPage = 0;
+                    this.currentPage = 1;
+                    this.search(1);
+                },
+                loadingMounted() {
+                    this.search(1);
+                },
+                showLoading(isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+                },
+                goPage() {
+                    if (!this.sidoCode) {
+                        $s.alert("시·도를 선택하세요.");
+                        return;
+                    }
+
+                    if (!this.sigunguCode) {
+                        //$s.alert("시·군·구를 선택하세요.");
+                        //return;
+                    }
+
+                    var locgov = "";
+
+                    if (this.sidoCode && !this.sigunguCode) {
+                        locgov = "U"+this.sidoCode;
+                    } else {
+                        locgov = this.sigunguCode;
+                    }
+
+                    this.jumpToDetails(locgov);
+                },
+                selectLclgvPc: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+                    this.$refs.layoutHeaderSearchPc.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+                    this.closeMapSelect();
+                },
+                selectLclgvMo: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+                    this.$refs.layoutHeaderSearchMobile.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+                    this.closeMapSelect();
+                },
+                showMapSelect: function () {
+                    this.$refs.getParentModal.setAttribute('style', 'display: block;top: 0;');
+                },
+                closeMapSelect: function () {
+                    this.$refs.getParentModal.removeAttribute('style');
+                },
+            },
+            mounted() {
+                this.$nextTick(function () {
+                    //Saleson.init({loginPage:true});
+                    Saleson.init();
+                    this.loadSido().then((res) => {
+                        this.sidoList = res;
+                    });
+                    this.sigunguList = [{ cityCode: '', cityName: '시·군·구 선택' }];
+                    // vm.getEvent();
+                });
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

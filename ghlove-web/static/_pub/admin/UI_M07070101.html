@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">통계</a> &gt; <a href="">기부금 모금현황</a> &gt; <a href="">기부인원통계</a> &gt; <a href="">상세</a>
+                    </div>
+                    <h3><span>기부인원통계</span></h3>
+                    <div class="board_write">
+                        <table class="board_write_table">
+                            <colgroup>
+                                <col style="width:220px;">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">기간</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <select id="" name="" title="년도" class="wd-150">
+                                                <option value="">2022</option>
+                                            </select>
+                                            <span>~</span>
+                                            <select id="" name="" title="년도" class="wd-150">
+                                                <option value="">2022</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="btn_all btn_right">
+                            <div class="flex_box juc-sbt">
+                                <div class="flex_box gap-08">
+                                    <button type="button" class="btn btn-dark-gray btn-mini">검색</button>
+                                    <button type="button" class="btn btn-dark-gray btn-mini">엑셀 다운로드</button>
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-default btn-mini">목록</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt50 fs24"><span>월별 기부인원통계</span></h3>
+                    <div class="chart_horizontal chart_detail">
+                        <ul>
+                            <li>
+                                <p class="name"><a href="">2022년 01월</a></p>
+                                <div class="bar_wrap">
+                                    <p class="bar yellow" style="width: 10%">
+                                        <span class="number" title="">10%</span>
+                                        <span class="number number_over" title=""></span>
+                                        <span class="tip"></span>
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <p class="name"><a href="">2022년 02월</a></p>
+                                <div class="bar_wrap">
+                                    <p class="bar yellow" style="width: 20%">
+                                        <span class="number" title="">20%</span>
+                                        <span class="number number_over" title=""></span>
+                                        <span class="tip"></span>
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <p class="name"><a href="">2022년 03월</a></p>
+                                <div class="bar_wrap">
+                                    <p class="bar yellow" style="width: ${monthStats.percent}%">
+                                        <span class="number" title=""></span>
+                                        <span class="number number_over" title=""></span>
+                                        <span class="tip"></span>
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    
+                    <h3 class="mt50 fs24"><span>2022년 1월 일별 기부인원통계</span></h3>
+                    <div id="day_stats">
+                        <div class="chart_vertical daily">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <p class="name">1</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">2</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: ${dayStats.percent}%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">3</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">4</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">5</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">6</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">7</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">8</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">9</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">10</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">11</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">12</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">13</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">14</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">15</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">16</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">17</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">18</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">19</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">20</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">21</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">22</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">23</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">24</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">25</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">26</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">27</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">28</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">29</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">30</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <p class="name">31</p>
+                                            <div class="bar_wrap">
+                                                <p class="bar" style="height: 10%">
+                                                    <span class="number">10%<br />(999)</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

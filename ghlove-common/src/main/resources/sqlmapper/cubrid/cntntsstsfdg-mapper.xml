@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.cntntsstsfdg.CntntsStsfdgMapper">
+
+	<select id="getCntntsStsfdgCount" parameterType="saleson.shop.cntntsstsfdg.support.CntntsStsfdgParam" resultType="Integer" >
+		SELECT COUNT(*) as cnt
+		from (
+			select
+				menu_url
+				, (select detail from op_common_code OCC where code_type = 'MENU_URL' and OCC.label = GS.menu_url) as menu_name
+				, sum(case stsfdg when 4 then 1 else 0 end) as stsfdg4
+				, sum(case stsfdg when 3 then 1 else 0 end) as stsfdg3
+				, sum(case stsfdg when 2 then 1 else 0 end) as stsfdg2
+				, sum(case stsfdg when 1 then 1 else 0 end) as stsfdg1
+			from g_stsfdg GS
+			where 1=1
+			<if test="menuUrl != null and menuUrl != ''">
+				and menu_url like concat('%', #{menuUrl}, '%')
+			</if>
+			group by menu_url
+			order by menu_url asc
+		)
+	</select>
+
+	<select id="getCntntsStsfdgList" parameterType="saleson.shop.cntntsstsfdg.support.CntntsStsfdgParam" resultType="saleson.shop.cntntsstsfdg.domain.CntntsStsfdg" >
+		<include refid="CommonMapper.paginationHeader" />
+			select
+				menu_url
+				, (select detail from op_common_code OCC where code_type = 'MENU_URL' and OCC.label = GS.menu_url) as menu_name
+				, sum(case stsfdg when 4 then 1 else 0 end) as stsfdg4
+				, sum(case stsfdg when 3 then 1 else 0 end) as stsfdg3
+				, sum(case stsfdg when 2 then 1 else 0 end) as stsfdg2
+				, sum(case stsfdg when 1 then 1 else 0 end) as stsfdg1
+			from g_stsfdg GS
+			where 1=1
+			<if test="menuUrl != null and menuUrl != ''">
+				and menu_url like concat('%', #{menuUrl}, '%')
+			</if>
+			group by menu_url
+			order by menu_url asc
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getCntntsStsfdgListAnalysis" resultType="saleson.shop.cntntsstsfdg.domain.CntntsStsfdg" >
+			select
+				menu_url
+				, (select detail from op_common_code OCC where code_type = 'MENU_URL' and OCC.label = GS.menu_url) as menu_name
+				, sum(case stsfdg when 4 then 1 else 0 end) as stsfdg4
+				, sum(case stsfdg when 3 then 1 else 0 end) as stsfdg3
+				, sum(case stsfdg when 2 then 1 else 0 end) as stsfdg2
+				, sum(case stsfdg when 1 then 1 else 0 end) as stsfdg1
+			from g_stsfdg GS
+			group by menu_url
+			order by menu_url asc
+	</select>
+
+
+	<select id="getCntntsStsfdgSum" parameterType="saleson.shop.cntntsstsfdg.support.CntntsStsfdgParam" resultType="saleson.shop.cntntsstsfdg.domain.CntntsStsfdg" >
+		select
+			menu_url
+			, sum(case stsfdg when 4 then 1 else 0 end) as stsfdg4
+			, sum(case stsfdg when 3 then 1 else 0 end) as stsfdg3
+			, sum(case stsfdg when 2 then 1 else 0 end) as stsfdg2
+			, sum(case stsfdg when 1 then 1 else 0 end) as stsfdg1
+			, count(*) as sumCount
+		from g_stsfdg
+		where 1=1
+		<if test="menuUrl != null and menuUrl != ''">
+			and menu_url = #{menuUrl}
+		</if>
+		<if test="searchYear != null and searchYear != ''">
+			and year(frst_regist_pnttm) = #{searchYear}
+		</if>
+		<if test="startCreateDate != null and startCreateDate !='' and endCreateDate != null and endCreateDate !=''">
+			and DATE_FORMAT(frst_regist_pnttm, '%Y%m%d') between #{startCreateDate} and #{endCreateDate}
+		</if>
+		group by menu_url
+	</select>
+
+
+
+
+	<select id="getCntntsStsfdgByDateCount" parameterType="saleson.shop.cntntsstsfdg.support.CntntsStsfdgParam" resultType="Integer" >
+		SELECT COUNT(*) as cnt
+		from (
+			select
+				DATE_FORMAT(frst_regist_pnttm, '%Y-%m-%d')as frstRegistPnttm
+				, sum(case stsfdg when 4 then 1 else 0 end) as stsfdg4
+				, sum(case stsfdg when 3 then 1 else 0 end) as stsfdg3
+				, sum(case stsfdg when 2 then 1 else 0 end) as stsfdg2
+				, sum(case stsfdg when 1 then 1 else 0 end) as stsfdg1
+				, count(*) as sumCount
+			from g_stsfdg
+			where 1=1
+			<if test="menuUrl != null and menuUrl != ''">
+				and menu_url = #{menuUrl}
+			</if>
+			<if test="startCreateDate != null and startCreateDate !='' and endCreateDate != null and endCreateDate !=''">
+				and DATE_FORMAT(frst_regist_pnttm, '%Y%m%d') between #{startCreateDate} and #{endCreateDate}
+			</if>
+			group by date(frst_regist_pnttm)
+			order by frst_regist_pnttm desc
+		) a
+	</select>
+
+	<select id="getCntntsStsfdgByDateList" parameterType="saleson.shop.cntntsstsfdg.support.CntntsStsfdgParam" resultType="saleson.shop.cntntsstsfdg.domain.CntntsStsfdg" >
+		<include refid="CommonMapper.paginationHeader" />
+			select
+				DATE_FORMAT(frst_regist_pnttm, '%Y-%m-%d') as frstRegistPnttm
+				, sum(case stsfdg when 4 then 1 else 0 end) as stsfdg4
+				, sum(case stsfdg when 3 then 1 else 0 end) as stsfdg3
+				, sum(case stsfdg when 2 then 1 else 0 end) as stsfdg2
+				, sum(case stsfdg when 1 then 1 else 0 end) as stsfdg1
+				, count(*) as sumCount
+			from g_stsfdg
+			where 1=1
+			<if test="menuUrl != null and menuUrl != ''">
+				and menu_url = #{menuUrl}
+			</if>
+			<if test="startCreateDate != null and startCreateDate !='' and endCreateDate != null and endCreateDate !=''">
+				and DATE_FORMAT(frst_regist_pnttm, '%Y%m%d') between #{startCreateDate} and #{endCreateDate}
+			</if>
+			group by date(frst_regist_pnttm)
+			order by frst_regist_pnttm desc
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getStatisticsByMonth" parameterType="saleson.shop.cntntsstsfdg.support.CntntsStsfdgParam" resultType="saleson.shop.cntntsstsfdg.domain.CntntsStsfdg" >
+		select month(frst_regist_pnttm) as frstRegistPnttm
+			   ,IFNULL(count(case when stsfdg = 4 then 1 end), 0) as stsfdg4
+			   ,IFNULL(count(case when stsfdg = 3 then 1 end), 0) as stsfdg3
+			   ,IFNULL(count(case when stsfdg = 2 then 1 end), 0) as stsfdg2
+			   ,IFNULL(count(case when stsfdg = 1 then 1 end), 0) as stsfdg1
+		  from g_stsfdg gs
+		 where year(frst_regist_pnttm) = #{searchYear}
+		   and menu_url = #{menuUrl}
+		 group by month(frst_regist_pnttm)
+	</select>
+
+</mapper>

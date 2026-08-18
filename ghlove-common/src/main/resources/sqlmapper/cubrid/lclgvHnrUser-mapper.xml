@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper">
+
+	<!-- 지자체 명예 사용자 수정 -->
+	<update id="updateLclgvHnrUserMng" parameterType="saleson.shop.lclgvHnrUser.domain.LclgvHnrUserMng">
+	/** saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.updateLclgvHnrUserMng 지자체 명예 사용자 수정 */
+		UPDATE G_LCLGV_HNR_USER_STNG_MNG SET
+			GLD_GRD_DNTN_AMT = #{gldGrdDntnAmt}
+			, SLVR_GRD_DNTN_AMT = #{slvrGrdDntnAmt}
+			, BRNZ_GRD_DNTN_AMT = #{brnzGrdDntnAmt}
+			, HNR_USER_STNG_TTL = #{hnrUserStngTtl}
+         	, HNR_USER_RWRD = #{hnrUserRwrd}
+         	<if test="rprsImgNm != null and rprsImgNm != ''">
+            , RPRS_IMG_NM = #{rprsImgNm}
+            </if>
+         	, HNR_USER_SLCTN_SE_CD = #{hnrUserSlctnSeCd}
+         	, USE_YN = #{useYn}
+			, LAST_REG_DT = SYS_DATETIME
+         	, LAST_RGTR_ID = #{lastRgtrId}
+		WHERE 1=1
+      	AND LCLGV_CD = #{lclgvCd}
+	</update>
+
+	<!-- 지자체 명예 사용자 목록 조회 -->
+	<select id="selectLclgvHnrUserMngList" parameterType="saleson.shop.lclgvHnrUser.support.LclgvHnrUserMngParam" resultType="saleson.shop.lclgvHnrUser.domain.LclgvHnrUserMng">
+	/** saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.selectLclgvHnrUserMngList 지자체 명예 사용자 목록 조회 */
+	<include refid="CommonMapper.paginationHeader" />
+		SELECT
+			  ROW_NUMBER() OVER(ORDER BY LCLGV_CD) AS ROW_NUMBER
+			, GL.UPPER_LOCGOV_CODE
+			, GL.UPPER_LOCGOV_NM
+			, A.LCLGV_CD
+			, GL.LOCGOV_NM AS LCLGV_CD_NM
+	     	, A.GLD_GRD_DNTN_AMT
+	     	, A.SLVR_GRD_DNTN_AMT
+	     	, A.BRNZ_GRD_DNTN_AMT
+	     	, A.HNR_USER_RWRD
+			, A.RPRS_IMG_NM
+			, A.HNR_USER_SLCTN_SE_CD
+			, B.LABEL AS HNR_USER_SLCTN_SE_CD_NM
+	     	, A.USE_YN
+	     	, A.last_reg_dt
+	     	, A.last_rgtr_id
+	  	FROM G_LCLGV_HNR_USER_STNG_MNG A, OP_COMMON_CODE B, G_LOCGOV GL
+	  	WHERE A.HNR_USER_SLCTN_SE_CD  = B.ID(+)
+	  	AND  A.LCLGV_CD = GL.LOCGOV_CODE(+)
+      	<if test="lclgvCd != null and lclgvCd != ''">
+		AND LCLGV_CD = #{lclgvCd}
+		</if>
+		<if test="upperLocgovCode != null and upperLocgovCode != ''">
+		AND GL.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+		</if>
+	<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 지자체 명예 사용자 상세 페이지 조회 -->
+	<select id="selectLclgvHnrUserMngDetail" parameterType="saleson.shop.lclgvHnrUser.support.LclgvHnrUserMngParam" resultType="saleson.shop.lclgvHnrUser.domain.LclgvHnrUserMng">
+		/** saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.selectLclgvHnrUserMngDetail 지자체 명예 사용자 상세 페이지 조회 */
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY LCLGV_CD) AS ROW_NUMBER
+	        , A.LCLGV_CD
+	        , GL.UPPER_LOCGOV_NM || ' ' || GL.LOCGOV_NM AS LCLGV_CD_NM
+	        , A.GLD_GRD_DNTN_AMT
+	        , A.SLVR_GRD_DNTN_AMT
+	        , A.BRNZ_GRD_DNTN_AMT
+			, A.HNR_USER_STNG_TTL
+	        , A.HNR_USER_RWRD
+	        , A.RPRS_IMG_NM
+	        , A.HNR_USER_SLCTN_SE_CD
+	        , B.LABEL AS HNR_USER_SLCTN_SE_CD_NM
+	        , A.USE_YN
+	        , A.LAST_REG_DT
+	        , A.LAST_RGTR_ID
+		FROM G_LCLGV_HNR_USER_STNG_MNG A, OP_COMMON_CODE B, G_LOCGOV GL
+		WHERE A.HNR_USER_SLCTN_SE_CD  = B.ID(+)
+		AND  A.LCLGV_CD = GL.LOCGOV_CODE(+)
+		<!-- <if test="lclgvCd != null and lclgvCd != ''"> -->
+		AND LCLGV_CD = #{lclgvCd}
+		<!-- </if> -->
+	</select>
+
+	<!-- 지자체 명예 사용자 목록 카운트 조회 -->
+	<select id="selectLclgvHnrUserMngListCnt" parameterType="saleson.shop.lclgvHnrUser.domain.LclgvHnrUserMng" resultType="Integer">
+	/** saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.selectLclgvHnrUserMngListCnt 지자체 명예 사용자 목록 카운트 조회 */
+		SELECT	COUNT(LCLGV_CD)
+		FROM	G_LCLGV_HNR_USER_STNG_MNG LHUS
+				LEFT JOIN G_LOCGOV L ON LHUS.LCLGV_CD = L.LOCGOV_CODE
+		WHERE	1 = 1
+		<if test="lclgvCd != null and lclgvCd != ''">
+		AND LHUS.LCLGV_CD = #{lclgvCd}
+		</if>
+		<if test="upperLocgovCode != null and upperLocgovCode != ''">
+		AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+		</if>
+	</select>
+
+	<!-- 지자체 명예 사용자 수정 -->
+	<update id="deleteItemFile" parameterType="String">
+		UPDATE 	G_LCLGV_HNR_USER_STNG_MNG
+		SET 	RPRS_IMG_NM = ''
+		WHERE 	LCLGV_CD = #{lclgvCd}
+	</update>
+
+
+	<!-- 회원 기준 명예시도민증 목록 조회 -->
+	<select id="getHnrUserInfoList" parameterType="long" resultType="saleson.shop.lclgvHnrUser.domain.HnrUserInfo">
+
+	/** saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.getHnrUserInfoList 회원 기준 명예시도민증 목록 조회 */
+		SELECT
+			CNTR_LOCGOV_CODE AS LCLGV_CD
+			, LOCGOV_NM AS LCLGV_NM
+			, HNR_USER_SLCTN_SE_CD
+			/*, CASE WHEN HNR_CNTR_CRTR_AMT <![CDATA[>=]]> GLD_GRD_DNTN_AMT
+					THEN 'GOLD'
+					WHEN HNR_CNTR_CRTR_AMT <![CDATA[>=]]> SLVR_GRD_DNTN_AMT
+					THEN 'SILVER'
+					ELSE 'BRONZE'
+				END AS HNR_GRD*/
+			, 'BRONZE' AS HNR_GRD
+			, EXPIRED_DATE AS EXPIRED_DATE
+			, HNR_CNTR_CRTR_AMT
+			/*, GLD_GRD_DNTN_AMT
+			, SLVR_GRD_DNTN_AMT*/
+			, BRNZ_GRD_DNTN_AMT
+			, OCC.DETAIL AS HNR_USER_SLCTN_SE_DTL
+			, HNR_USER_RWRD
+			, HNR_USER_STNG_TTL
+			, RPRS_IMG_NM
+			, NOW_CNTR_START_EXPIRED_DATE
+		FROM (
+			SELECT
+				T_A.CNTR_LOCGOV_CODE
+				, T_A.LOCGOV_NM
+				, CASE WHEN T_A.HNR_USER_SLCTN_SE_CD = 'JEJU_REQ_CRTR'
+							THEN MIN(CNTR_SUM) OVER (PARTITION BY CNTR_LOCGOV_CODE, CNTR_YEAR)
+						WHEN T_A.HNR_USER_SLCTN_SE_CD = 'BF_YR_1YR'
+							THEN MAX(BF_1YR_AMT) OVER (PARTITION BY CNTR_LOCGOV_CODE, CNTR_YEAR)
+						WHEN T_A.HNR_USER_SLCTN_SE_CD = 'NOW_CRTR_1YR_WTHN'
+							THEN MAX(NOW_1YR_AMT) OVER (PARTITION BY CNTR_LOCGOV_CODE, CNTR_YEAR)
+						ELSE 0
+					END AS HNR_CNTR_CRTR_AMT
+				, T_A.HNR_USER_SLCTN_SE_CD
+				, CASE WHEN T_A.HNR_USER_SLCTN_SE_CD = 'BF_YR_1YR'
+							THEN YEAR(SYSDATE) || '1231'
+						WHEN T_A.HNR_USER_SLCTN_SE_CD = 'JEJU_REQ_CRTR' AND JEJU_EXPIRED_DATE IS NOT NULL THEN DATE_FORMAT(ADDDATE(ADD_MONTHS(TO_DATE(MAX(JEJU_EXPIRED_DATE), 'yyyyMMdd'), 12), -1), '%Y%m%d')
+						ELSE DATE_FORMAT(ADDDATE(ADD_MONTHS(TO_DATE(T_A.JEJU_EXPIRED_DATE,'yyyyMMdd'), 12), -1), '%Y%m%d')
+					END AS EXPIRED_DATE
+				-- , MAX(T_A.CNTR_DE) AS NOW_CNTR_START_EXPIRED_DATE
+				, MIN(CASE WHEN T_A.CNTR_SUM2 <![CDATA[>=]]> T_A.BRNZ_GRD_DNTN_AMT THEN T_A.CNTR_DE END) AS NOW_CNTR_START_EXPIRED_DATE
+				/*, T_A.GLD_GRD_DNTN_AMT
+				, T_A.SLVR_GRD_DNTN_AMT*/
+				, T_A.BRNZ_GRD_DNTN_AMT
+				, T_A.NOW_1YR_AMT
+				, T_A.BF_1YR_AMT
+				, T_A.HNR_USER_RWRD
+				, T_A.HNR_USER_STNG_TTL
+				, T_A.RPRS_IMG_NM
+			FROM (
+				SELECT
+					*
+					, CASE WHEN HNR_USER_SLCTN_SE_CD = 'NOW_CRTR_1YR_WTHN'
+							THEN
+								CASE WHEN IS_WITH_IN = 'Y' THEN NOW_1YR_MIN_CNTR_DE
+								ELSE NULL
+								END
+						ELSE
+						 	CASE WHEN JEJU_CHECK <![CDATA[>=]]> MIN_JEJU_CHECK
+								THEN CNTR_DE
+							ELSE NULL
+							END
+						END AS JEJU_EXPIRED_DATE
+				FROM (
+					SELECT
+						*
+						, MIN(JEJU_CHECK) OVER (PARTITION BY CNTR_LOCGOV_CODE) AS MIN_JEJU_CHECK
+						, MIN(CASE WHEN HNR_USER_SLCTN_SE_CD = 'NOW_CRTR_1YR_WTHN' AND IS_WITH_IN = 'Y'
+									THEN CNTR_DE
+							  END) OVER(PARTITION BY CNTR_LOCGOV_CODE) AS NOW_1YR_MIN_CNTR_DE
+					FROM (
+						SELECT
+						*
+						, CASE WHEN JEJU_CHECK_AMT - BRNZ_GRD_DNTN_AMT <![CDATA[<]]> 0
+									THEN 9999999999
+								ELSE JEJU_CHECK_AMT - BRNZ_GRD_DNTN_AMT
+								END AS JEJU_CHECK
+						, 	SUM(CASE WHEN IS_WITH_IN = 'Y'
+									THEN CNTR_AMT
+								ELSE 0
+								END
+								) OVER (PARTITION BY CNTR_LOCGOV_CODE ORDER BY CNTR_DE) AS CNTR_SUM2
+						from (
+								SELECT
+									C.CNTR_SN
+									, C.CNTR_LOCGOV_CODE
+									, L.UPPER_LOCGOV_NM || ' ' || L.LOCGOV_NM AS LOCGOV_NM
+									, C.CNTR_DE
+									, C.CNTR_AMT
+									, SUM(C.CNTR_AMT) OVER (PARTITION BY C.CNTR_LOCGOV_CODE, DATE_FORMAT(TO_DATE(CNTR_DE, 'yyyyMMdd'), '%Y') ORDER BY C.CNTR_DE) AS CNTR_SUM
+									/*	, CASE WHEN HU.HNR_USER_SLCTN_SE_CD = 'JEJU_REQ_CRTR' THEN 9999999999 ELSE NVL(HU.GLD_GRD_DNTN_AMT, 9999999999) END AS GLD_GRD_DNTN_AMT
+										, CASE WHEN HU.HNR_USER_SLCTN_SE_CD = 'JEJU_REQ_CRTR' THEN 9999999999 ELSE NVL(HU.SLVR_GRD_DNTN_AMT, 9999999999) END AS SLVR_GRD_DNTN_AMT
+										, CASE WHEN HU.HNR_USER_SLCTN_SE_CD = 'JEJU_REQ_CRTR' THEN 100000 ELSE NVL(HU.BRNZ_GRD_DNTN_AMT, 9999999999) END AS BRNZ_GRD_DNTN_AMT
+									*/
+									, NVL(HU.BRNZ_GRD_DNTN_AMT, 9999999999) AS BRNZ_GRD_DNTN_AMT
+									, CASE WHEN HU.HNR_USER_SLCTN_SE_CD = 'JEJU_REQ_CRTR'
+												THEN DATE_FORMAT(TO_DATE(C.CNTR_DE, 'yyyyMMdd'), '%Y')
+											ELSE DATE_FORMAT(ADD_MONTHS(SYSDATE, -12), '%Y')
+										END AS CNTR_YEAR
+									, HU.HNR_USER_SLCTN_SE_CD
+									, SUM(CASE WHEN C.CNTR_DE <![CDATA[<=]]> DATE_FORMAT(ADD_MONTHS(SYSDATE, -12), '%Y%m%d')
+													THEN 0
+												ELSE C.CNTR_AMT
+											END) OVER (PARTITION BY C.CNTR_LOCGOV_CODE) AS NOW_1YR_AMT
+									, SUM(CASE WHEN C.CNTR_DE <![CDATA[<=]]> (DATE_FORMAT(ADD_MONTHS(SYSDATE, -12), '%Y') || '1231') AND C.CNTR_DE <![CDATA[>=]]> (DATE_FORMAT(ADD_MONTHS(SYSDATE, -12), '%Y') || '0101')
+													THEN C.CNTR_AMT
+												ELSE 0
+											END) OVER (PARTITION BY C.CNTR_LOCGOV_CODE) AS BF_1YR_AMT
+									, CASE WHEN HU.HNR_USER_SLCTN_SE_CD = 'NOW_CRTR_1YR_WTHN'
+												THEN CASE WHEN C.CNTR_DE <![CDATA[<=]]> DATE_FORMAT(ADD_MONTHS(SYSDATE, -12), '%Y%m%d')
+																THEN 'N'
+															ELSE 'Y'
+															END
+											WHEN HU.HNR_USER_SLCTN_SE_CD = 'BF_YR_1YR'
+												THEN CASE WHEN C.CNTR_DE <![CDATA[<=]]> (DATE_FORMAT(ADD_MONTHS(SYSDATE, -12), '%Y') || '1231') AND C.CNTR_DE <![CDATA[>=]]> (DATE_FORMAT(ADD_MONTHS(SYSDATE, -12), '%Y') || '0101')
+																THEN 'Y'
+															ELSE 'N'
+															END
+											ELSE 'Y'
+											END AS IS_WITH_IN
+									, HU.HNR_USER_RWRD
+									, HU.HNR_USER_STNG_TTL
+									, HU.RPRS_IMG_NM
+									, SUM(C.CNTR_AMT) OVER (PARTITION BY C.CNTR_LOCGOV_CODE, SUBSTR(C.CNTR_DE, 1,4) ORDER BY C.CNTR_DE) AS JEJU_CHECK_AMT
+								FROM
+									G_CNTR C
+								LEFT JOIN G_LOCGOV L ON
+									C.CNTR_LOCGOV_CODE = L.LOCGOV_CODE
+								LEFT JOIN G_LCLGV_HNR_USER_STNG_MNG HU ON
+									HU.LCLGV_CD = C.CNTR_LOCGOV_CODE
+									AND USE_YN = 'Y' /*AND GLD_GRD_DNTN_AMT > 0 AND SLVR_GRD_DNTN_AMT > 0*/
+									AND BRNZ_GRD_DNTN_AMT > 0
+								WHERE
+									1 = 1
+									AND C.USER_ID = #{userId}
+									AND C.USER_ID <![CDATA[>]]> 0
+									AND C.DELETE_AT = 'N'
+									AND C.STTEMNT_PAY_DE IS NOT NULL
+									AND C.CNTR_STTUS_CODE = '200'
+									AND C.CNTR_DE BETWEEN DATE_FORMAT(ADD_MONTHS(SYSDATE, -12), '%Y') || '0101' AND DATE_FORMAT(SYSDATE, '%Y') || '1231'
+								ORDER BY
+									C.CNTR_LOCGOV_CODE,
+									C.CNTR_DE
+						)
+					)
+				)
+			) T_A
+			WHERE T_A.HNR_USER_SLCTN_SE_CD IS NOT NULL
+			AND ((T_A.HNR_USER_SLCTN_SE_CD <![CDATA[<>]]> 'NOW_CRTR_1YR_WTHN' AND T_A.CNTR_SUM  <![CDATA[>=]]>  T_A.BRNZ_GRD_DNTN_AMT)
+				OR
+				 (T_A.HNR_USER_SLCTN_SE_CD = 'NOW_CRTR_1YR_WTHN' AND T_A.CNTR_SUM2  <![CDATA[>=]]>  T_A.BRNZ_GRD_DNTN_AMT))
+			--AND T_A.CNTR_SUM <![CDATA[>=]]> T_A.BRNZ_GRD_DNTN_AMT
+			AND T_A.IS_WITH_IN = 'Y'
+			GROUP BY T_A.CNTR_LOCGOV_CODE, T_A.CNTR_YEAR
+			<!-- ORDER BY EXPIRED_DATE DESC -->
+		) T_B
+			LEFT JOIN OP_COMMON_CODE OCC ON OCC.CODE_TYPE = 'HNR_USER_SLCTN_SE_CD' AND OCC.ID = HNR_USER_SLCTN_SE_CD
+		WHERE 1=1
+		AND T_B.HNR_CNTR_CRTR_AMT <![CDATA[>=]]> BRNZ_GRD_DNTN_AMT
+		AND T_B.EXPIRED_DATE <![CDATA[>=]]> DATE_FORMAT(SYSDATE, '%Y%m%d')
+		GROUP BY T_B.CNTR_LOCGOV_CODE
+		ORDER BY T_B.CNTR_LOCGOV_CODE
+
+	</select>
+
+	<!-- 지자체 명예 사용자 접근성 이미지 설명 조회 -->
+	<select id="selectImgDescListByPrjId" parameterType="String" resultType="saleson.shop.designateddonation.domain.PrjImageExplain">
+		/* saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.selectImgDescListByPrjId 지자체 명예 사용자 이미지 설명 조회 */
+		SELECT IMG_EXPLN AS PRJSVALUES
+		   ,IMG_SEQ AS PRJSINDEXES
+		FROM g_lclgv_hnr_user_rwrd_img_expln
+		WHERE lclgv_cd = #{lclgvCd}
+		ORDER BY IMG_SEQ ASC;
+	</select>
+
+	<!-- 지자체 명예 사용자 접근성 이미지 설명 등록 -->
+	<insert id="insertImgDescList" parameterType="saleson.shop.lclgvHnrUser.domain.LclgvHnrUserMng">
+			/* saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.insertImgDescList 지자체 명예 사용자 이미지 설명 등록 */
+			INSERT INTO G_LCLGV_HNR_USER_RWRD_IMG_EXPLN
+				(
+					lclgv_cd
+					, IMG_EXPLN
+					, IMG_SEQ
+					, FRST_RGTR_ID
+				)
+				VALUES
+				<foreach item="prjImageExplain" index="index" collection="prjImageExplain" separator=",">
+				(
+					#{lclgvCd}
+					, #{prjImageExplain.prjsValues}
+					, #{prjImageExplain.prjsIndexes}
+					, #{frstRgtrId}
+				)
+				</foreach>
+	</insert>
+
+	<!-- 지자체 명예 사용자 접근성 이미지 설명 삭제 -->
+	<delete id="deleteImgDescListByPrjId" parameterType="String">
+		/* saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.deleteImgDescList 지자체 명예 사용자 이미지 설명 삭제 */
+		DELETE G_LCLGV_HNR_USER_RWRD_IMG_EXPLN
+		WHERE lclgv_cd = #{lclgvCd}
+	</delete>
+
+	<!-- 기부혜택증 열람현황 조회 -->
+	<select id="lclgvHnrUserViewHist" parameterType="saleson.shop.lclgvHnrUser.support.LclgvHnrUserMngParam" resultType="saleson.shop.lclgvHnrUser.domain.LclgvHnrUserMng">
+	/** saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.lclgvHnrUserViewHist 기부혜택증 열람현황 조회 */
+	<include refid="CommonMapper.paginationHeader" />
+		SELECT
+				ROW_NUMBER() OVER(ORDER BY AAA.LCLGV_CD ASC, AAA.USER_NAME ASC) AS ROW_NUMBER,
+				AAA.*
+		FROM	(
+				SELECT
+						AA.VIEW_YM,
+						AA.USER_ID,
+						AA.LCLGV_CD,
+						AA.VIEW_CNT,
+						crypto_dec('normal',B.USER_NAME ,'',0) AS USER_NAME,
+						C.UPPER_LOCGOV_NM ,
+						C.UPPER_LOCGOV_CODE,
+						C.LOCGOV_NM AS LCLGV_CD_NM
+				FROM	(
+						SELECT
+								--A.VIEW_DT ,
+								TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') AS VIEW_YM,
+								A.USER_ID ,
+								A.LCLGV_CD,
+								COUNT(*) AS VIEW_CNT
+						FROM	OP_HONOR_VIEW_HIST A
+						WHERE	1=1
+
+						<if test='startDate != null and startDate != ""'>
+						AND A.VIEW_DT >= CONCAT(#{startDate}, '000000')
+						</if>
+
+						<if test='endDate != null and endDate != ""'>
+						AND A.VIEW_DT <![CDATA[<=]]> CONCAT(#{endDate}, '235959')
+						</if>
+
+						GROUP BY TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD'), A.USER_ID, A.LCLGV_CD
+						) AA
+						INNER JOIN
+						OP_USER B
+						ON AA.USER_ID = B.USER_ID
+						INNER JOIN
+						G_LOCGOV C
+						ON AA.LCLGV_CD = C.LOCGOV_CODE
+				) AAA
+		WHERE	1=1
+
+		<if test="userName != null and userName != ''">
+		AND		AAA.USER_NAME LIKE '%' || #{userName} || '%'
+		</if>
+
+		<if test="lclgvCd != null and lclgvCd != ''">
+		AND 	AAA.LCLGV_CD = #{lclgvCd}
+		</if>
+
+		<if test="upperLocgovCode != null and upperLocgovCode != ''">
+		AND 	AAA.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+		</if>
+	<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 기부혜택증 열람현황 카운트 조회 -->
+	<select id="lclgvHnrUserViewHistCnt" parameterType="saleson.shop.lclgvHnrUser.domain.LclgvHnrUserMng" resultType="Integer">
+	/** saleson.shop.lclgvHnrUser.LclgvHnrUserMngMapper.lclgvHnrUserViewHistCnt 기부혜택증 열람현황 카운트 조회 */
+		SELECT 	COUNT(*)
+		FROM	(
+				SELECT
+						AAA.*
+				FROM	(
+						SELECT
+								AA.VIEW_YM,
+								AA.USER_ID,
+								AA.LCLGV_CD,
+								AA.VIEW_CNT,
+								crypto_dec('normal',B.USER_NAME ,'',0) AS USER_NAME,
+								C.UPPER_LOCGOV_NM ,
+								C.UPPER_LOCGOV_CODE,
+								C.LOCGOV_NM AS LCLGV_CD_NM
+						FROM	(
+								SELECT
+										TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD') AS VIEW_YM,
+										A.USER_ID ,
+										A.LCLGV_CD,
+										COUNT(*) AS VIEW_CNT
+								FROM	OP_HONOR_VIEW_HIST A
+								WHERE	1=1
+
+								<if test='startDate != null and startDate != ""'>
+								AND A.VIEW_DT >= CONCAT(#{startDate}, '000000')
+								</if>
+
+								<if test='endDate != null and endDate != ""'>
+								AND A.VIEW_DT <![CDATA[<=]]> CONCAT(#{endDate}, '235959')
+								</if>
+
+								GROUP BY TO_CHAR(A.VIEW_DT, 'YYYY-MM-DD'), A.USER_ID, A.LCLGV_CD
+								) AA
+								INNER JOIN
+								OP_USER B
+								ON AA.USER_ID = B.USER_ID
+								INNER JOIN
+								G_LOCGOV C
+								ON AA.LCLGV_CD = C.LOCGOV_CODE
+						) AAA
+				WHERE	1=1
+
+				<if test="userName != null and userName != ''">
+				AND		AAA.USER_NAME LIKE '%' || #{userName} || '%'
+				</if>
+
+				<if test="lclgvCd != null and lclgvCd != ''">
+				AND 	AAA.LCLGV_CD = #{lclgvCd}
+				</if>
+
+				<if test="upperLocgovCode != null and upperLocgovCode != ''">
+				AND 	AAA.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+				</if>
+
+				)
+	</select>
+
+</mapper>

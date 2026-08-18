@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">답례품 관리</a> &gt; <a href="">주문관리</a> &gt; <a href="">전체주문관리</a> &gt; <a href="">상세</a>
+                    </div>
+                    <h3><span>전체주문관리</span></h3>
+
+                    <!-- 조회 조건 테이블 -->
+                    <div class="board_write">
+                        <table class="board_write_table">
+                            <colgroup>
+                                <col style="width: 220px" />
+                                <col>
+                                <col style="width: 220px" />
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">주문번호</td>
+                                    <td>
+                                        <div>16843165</div>
+                                    </td>
+                                    <td class="label">주문일시</td>
+                                    <td>
+                                        <div>
+                                            <span>2022-10-01</span>
+                                            <span>16:50:50</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">회원정보</td>
+                                    <td>
+                                        <div>
+                                            <span>홍길동</span>
+                                            <span>[agewrgerg]</span>
+                                        </div>
+                                    </td>
+                                    <td class="label">발송인</td>
+                                    <td>
+                                        <div>홍길동</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">구매자 휴대폰</td>
+                                    <td>
+                                        <div>010-1234-1234</div>
+                                    </td>
+                                    <td class="label">구매자 전화번호</td>
+                                    <td>
+                                        <div>--</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">구매자 이메일</td>
+                                    <td colspan="3">
+                                        <div>asdgas@naver.com</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> <!-- // board_write -->
+                    <!-- // 조회 조건 테이블 -->
+                    
+                    <h3 class="mt70"><span>취소/반품/교환 신청</span></h3>
+
+                    <div class="border_box mb50">
+                        <div class="flex_box gap-12">
+                            <div class="input-form">
+                                <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                <label for="rdo1-1">취소</label>
+                            </div>
+                            <div class="input-form">
+                                <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                <label for="rdo1-2">반품</label>
+                            </div>
+                            <div class="input-form">
+                                <input id="rdo1-3" name="rdo1" type="radio" value="">
+                                <label for="rdo1-3">교환</label>
+                            </div>
+                        </div>
+
+                        <div class="board_list">
+                            <table class="board_list_table">
+                                <colgroup>
+                                    <col style="width:50px;">
+                                    <col style="width:150px;">
+                                    <col style="width:500px;">
+                                    <col style="width:200px;">
+                                    <col style="width:200px;">
+                                    <col style="width:100px;">
+                                    <col style="width:200px;">
+                                    <col style="width:200px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="check_all" title="체크박스" /></th>
+                                        <th>이미지</th>
+                                        <th>상품정보</th>
+                                        <th>구분</th>
+                                        <th>판매가</th>
+                                        <th>수량</th>
+                                        <th>총금액</th>
+                                        <th>상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <!-- 체크박스 -->
+                                        <td>
+                                            <div>
+                                                <input type="checkbox" name="" value="" id="">
+                                            </div>
+                                        </td>
+                                        <!-- // 체크박스 -->
+                                        <!-- 이미지 -->
+                                        <td>
+                                            <div>
+                                                <c:choose>
+                                                    <c:otherwise>
+                                                        <a href="" target="_blank">
+                                                            <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품이미지" />
+                                                        </a>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                        </td>
+                                        <!-- // 이미지 -->
+                                        <!-- 상품정보 -->
+                                        <td class="left break-word">
+                                            <a href="javascript:Link.view('/opmanager/item/seller/edit/${item.itemUserCode}')" class="break-word">
+                                                <div>[G2000482080]<br>[ODC] 바이저 원 W21</div>
+                                            </a>
+                                        </td>
+                                        <!-- // 상품정보 -->
+                                        <!-- 구분 -->
+                                        <td>
+                                            <div>자사</div>
+                                        </td>
+                                        <!-- // 구분 -->
+                                        <!-- 판매가 -->
+                                        <td>
+                                            <div>6,000원</div>
+                                        </td>
+                                        <!-- // 판매가 -->
+                                        <!-- 수량 -->
+                                        <td>
+                                            <div>
+                                                <select id="" name="" title="수량">
+                                                    <option value="">1개</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <!-- // 수량 -->
+                                        <!-- 총금액 -->
+                                        <td>
+                                            <div>6,000원</div>
+                                        </td>
+                                        <!-- // 총금액 -->
+                                        <!-- 상태 -->
+                                        <td>
+                                            <div>배송준비중</div>
+                                        </td>
+                                        <!-- // 상태 -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="board_write">
+                            <table class="board_write_table">
+                                <colgroup>
+                                    <col style="width: 220px" />
+                                    <col>
+                                </colgroup>
+                                <tbody>
+                                    <!-- 취소 -->
+                                    <tr>
+                                        <td class="label">취소사유</td>
+                                        <td>
+                                            <div class="flex_box gap-08">
+                                                <select id="" name="" title="취소사유" class="">
+                                                    <option value="">판매자의 다른상품 구매</option>
+                                                </select>
+                                                <input id="" name="" title="취소사유" class="input_txt required _filter full" type="text" value="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">처리구분</td>
+                                        <td>
+                                            <div class="flex_box gap-08">
+                                                <div class="checkbox">
+                                                    <input type="checkbox" id="chk">
+                                                    <label for="chk">선택한 주문을 환불내역(신청 상태)으로 보냅니다.</label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- // 취소 -->
+                                    <!-- 반품 -->
+                                    <tr>
+                                        <td class="label">반품사유</td>
+                                        <td>
+                                            <div class="flex_box gap-08">
+                                                <select id="" name="" title="반품사유" class="">
+                                                    <option value="">상품이 잘못 배송됨</option>
+                                                </select>
+                                                <input id="" name="" title="반품사유" class="input_txt required _filter full" type="text" value="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- // 반품 -->
+                                    <!-- 교환 -->
+                                    <tr>
+                                        <td class="label">교환사유</td>
+                                        <td>
+                                            <div class="flex_box gap-08">
+                                                <select id="" name="" title="교환사유" class="">
+                                                    <option value="">상품이 잘못 배송됨</option>
+                                                </select>
+                                                <input id="" name="" title="교환사유" class="input_txt required _filter full" type="text" value="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- // 교환 -->
+                                </tbody>
+                            </table>
+                        </div> <!-- // board_list -->
+                        <div class="btn_all btn_center">
+                            <div class="flex_box gap-08">
+                                <button type="submit" class="btn btn-dark-gray btn-small">저장</button>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <!--탭 메뉴 영역 -->
+                    <ul class="tabs">
+                        <li><a href="#tab1">일반</a></li>
+                        <li><a href="#tab2">취소</a></li>
+                        <li><a href="#tab3">반품</a></li>
+                        <li><a href="#tab4">교환</a></li>
+                        <li><a href="#tab5">이력</a></li>
+                    </ul>
+                    <!--// 탭 메뉴 영역 -->
+                    <!--탭 콘텐츠 영역 -->
+                    <div class="tab_container">
+                        <div id="tab1" class="tab_content">
+                            <h3 class="mt70"><span>결제정보</span></h3>
+                            <div class="board_list">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:200px;">
+                                        <col style="width:200px;">
+                                        <col style="width:200px;">
+                                        <col style="width:200px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>상품금액</th>
+                                            <th>결제금액</th>
+                                            <th>결제상태</th>
+                                            <th>결제일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div>15,000</div>
+                                            </td>
+                                            <td>
+                                                <div>15,000</div>
+                                            </td>
+                                            <td>
+                                                <div>결제완료</div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h3 class="mt70"><span>배송정보</span></h3>
+                            <div class="board_write">
+                                <table class="board_write_table">
+                                    <colgroup>
+                                        <col style="width: 220px" />
+                                        <col>
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td class="label">배송정보</td>
+                                            <td>
+                                                <div>
+                                                    <div>홍길동</div>
+                                                    <div>02-123-1234 / 010-1234-1234</div>
+                                                    <div>[04766] 서울 성동구 서울숲길 17</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">배송시 요구사항</td>
+                                            <td>
+                                                <div>
+                                                    <div>부재시 맡겨주세요.</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">상품정보</td>
+                                            <td>
+                                                <div class="board_list">
+                                                    <table class="board_list_table">
+                                                        <colgroup>
+                                                            <col style="width:150px;">
+                                                            <col style="width:400px;">
+                                                            <col style="width:200px;">
+                                                            <col style="width:100px;">
+                                                            <col style="width:200px;">
+                                                            <col style="width:200px;">
+                                                            <col style="width:150px;">
+                                                        </colgroup>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>이미지</th>
+                                                                <th>상품정보</th>
+                                                                <th>판매자</th>
+                                                                <th>수량</th>
+                                                                <th>상품금액</th>
+                                                                <th>결제금액</th>
+                                                                <th>상태</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <!-- 이미지 -->
+                                                                <td>
+                                                                    <div>
+                                                                        <c:choose>
+                                                                            <c:otherwise>
+                                                                                <a href="" target="_blank">
+                                                                                    <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품이미지" />
+                                                                                </a>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
+                                                                    </div>
+                                                                </td>
+                                                                <!-- // 이미지 -->
+                                                                <!-- 상품정보 -->
+                                                                <td class="left break-word">
+                                                                    <div>
+                                                                        <a href="" class="break-word">
+                                                                            <div>[G2000482080]</div>
+                                                                            <div>[ODC] 바이저 원 W21</div>
+                                                                        </a>
+                                                                        <div>
+                                                                            <a href="" class="break-word bg-info">배송추적</a>
+                                                                            <span>CJ대한통운 [1312312312] (2022-06-02)</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <!-- // 상품정보 -->
+                                                                <!-- 판매자 -->
+                                                                <td>
+                                                                    <div>상호명</div>
+                                                                </td>
+                                                                <!-- // 판매자 -->
+                                                                <td>
+                                                                    <div>1개</div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>18,000</div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>18,000</div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>결제완료</div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div> 
+                            <div class="btn_all btn_center">
+                                <div class="flex_box gap-08">
+                                    <button type="submit" class="btn btn-default btn-small">목록</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab2" class="tab_content">
+                            <h3 class="mt70"><span>취소내역 (완료, 환불대기)</span></h3>
+                            <div class="board_list">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:400px;">
+                                        <col style="width:150px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                        <col style="width:200px;">
+                                        <col style="width:200px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>상품정보</th>
+                                            <th>상호명</th>
+                                            <th>수량</th>
+                                            <th>금액</th>
+                                            <th>상태</th>
+                                            <th>취소 신청일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-left">
+                                                <div>[G2000481961] 모노스윗 워싱 침구 3옵션형 test</div>
+                                                <div>색상 : 노랑</div>
+                                            </td>
+                                            <td>
+                                                <div>농원</div>
+                                            </td>
+                                            <td>
+                                                <div>2</div>
+                                            </td>
+                                            <td>
+                                                <div>18,000</div>
+                                            </td>
+                                            <td>
+                                                <div>취소 환불대기</div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h3 class="mt70"><span>취소처리</span></h3>
+                            <div class="board_list">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:50px;">
+                                        <col style="width:150px;">
+                                        <col style="width:400px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><input type="checkbox" id="check_all"></th>
+                                            <th>이미지</th>
+                                            <th>상품정보</th>
+                                            <th>상호명</th>
+                                            <th>수량</th>
+                                            <th>금액</th>
+                                            <th>상태</th>
+                                            <th>취소 신청일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <input type="checkbox" id="chk">
+                                                </div>
+                                            </td>
+                                            <!-- 이미지 -->
+                                            <td>
+                                                <div>
+                                                    <c:choose>
+                                                        <c:otherwise>
+                                                            <a href="" target="_blank">
+                                                                <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품이미지" />
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                            </td>
+                                            <!-- // 이미지 -->
+                                            <!-- 상품정보 -->
+                                            <td class="text-left">
+                                                <div>[G2000481961] 모노스윗 워싱 침구 3옵션형</div>
+                                                <div>상품구분 : 야구모자 / 색상 : 파랑 / 사이즈 : S (+1,000원)</div>
+                                            </td>
+                                            <!-- // 상품정보 -->
+                                            <!-- 상호명 -->
+                                            <td>
+                                                <div>농원</div>
+                                            </td>
+                                            <!-- // 상호명 -->
+                                            <!-- 수량 -->
+                                            <td>
+                                                <div>2</div>
+                                            </td>
+                                            <!-- // 수량 -->
+                                            <!-- 금액 -->
+                                            <td>
+                                                <div>18,000</div>
+                                            </td>
+                                            <!-- // 금액 -->
+                                            <!-- 상태 -->
+                                            <td>
+                                                <div>취소 환불대기</div>
+                                            </td>
+                                            <!-- // 상태 -->
+                                            <!-- 취소 신청일 -->
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                            <!-- // 취소 신청일 -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="board_write mt20">
+                                <table class="board_write_table">
+                                    <colgroup>
+                                        <col style="width: 220px" />
+                                        <col>
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td class="label">신청사유</td>
+                                            <td>
+                                                <div class="flex_box gap-12">
+                                                    <div class="input-form">
+                                                        <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                        <label for="rdo1-1">고객 사유</label>
+                                                    </div>
+                                                    <select id="" name="" title="고객 사유">
+                                                        <option value="">상품, 옵션 등 선택 실수</option>
+                                                    </select>
+                                                </div>
+                                                <div class="flex_box gap-12">
+                                                    <div class="input-form">
+                                                        <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                                        <label for="rdo1-2">판매자 사유</label>
+                                                    </div>
+                                                    <input id="" name="" title="판매자 사유" class="input_txt required _filter wd-300" type="text" value="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">처리구분</td>
+                                            <td>
+                                                <div class="flex_box gap-12">
+                                                    <div class="input-form">
+                                                        <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                        <label for="rdo1-1">취소 승인</label>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="board_list mt40">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:50px;">
+                                        <col style="width:150px;">
+                                        <col style="width:400px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><input type="checkbox" id="check_all"></th>
+                                            <th>이미지</th>
+                                            <th>상품정보</th>
+                                            <th>상호명</th>
+                                            <th>수량</th>
+                                            <th>금액</th>
+                                            <th>상태</th>
+                                            <th>취소 신청일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <input type="checkbox" id="chk">
+                                                </div>
+                                            </td>
+                                            <!-- 이미지 -->
+                                            <td>
+                                                <div>
+                                                    <c:choose>
+                                                        <c:otherwise>
+                                                            <a href="" target="_blank">
+                                                                <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품이미지" />
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                            </td>
+                                            <!-- // 이미지 -->
+                                            <!-- 상품정보 -->
+                                            <td class="text-left">
+                                                <div>[G2000481961] 핑크 배색 자켓</div>
+                                            </td>
+                                            <!-- // 상품정보 -->
+                                            <!-- 상호명 -->
+                                            <td>
+                                                <div>농원</div>
+                                            </td>
+                                            <!-- // 상호명 -->
+                                            <!-- 수량 -->
+                                            <td>
+                                                <div>2</div>
+                                            </td>
+                                            <!-- // 수량 -->
+                                            <!-- 금액 -->
+                                            <td>
+                                                <div>18,000</div>
+                                            </td>
+                                            <!-- // 금액 -->
+                                            <!-- 상태 -->
+                                            <td>
+                                                <div>취소 환불대기</div>
+                                            </td>
+                                            <!-- // 상태 -->
+                                            <!-- 취소 신청일 -->
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                            <!-- // 취소 신청일 -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="board_write mt20">
+                                <table class="board_write_table">
+                                    <colgroup>
+                                        <col style="width: 220px" />
+                                        <col>
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td class="label">신청사유</td>
+                                            <td>
+                                                <div class="flex_box gap-12">
+                                                    <div class="input-form">
+                                                        <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                        <label for="rdo1-1">고객 사유</label>
+                                                    </div>
+                                                    <select id="" name="" title="고객 사유">
+                                                        <option value="">상품, 옵션 등 선택 실수</option>
+                                                    </select>
+                                                </div>
+                                                <div class="flex_box gap-12">
+                                                    <div class="input-form">
+                                                        <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                                        <label for="rdo1-2">판매자 사유</label>
+                                                    </div>
+                                                    <input id="" name="" title="판매자 사유" class="input_txt required _filter wd-300" type="text" value="">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">처리구분</td>
+                                            <td>
+                                                <div class="flex_box gap-12">
+                                                    <div class="input-form">
+                                                        <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                        <label for="rdo1-1">취소 승인</label>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="point">!!신청을 승인하면 환불관리 목록에 노출됩니다.</p>
+                                                    <p class="point">!!환불이 처리될 때까지 사용자 화면에는 ＇환불 처리중’ 으로 표기됩니다.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="btn_all btn_center">
+                                <div class="flex_box gap-08">
+                                    <button type="submit" class="btn btn-dark-gray btn-small">주문 처리</button>
+                                    <button type="submit" class="btn btn-default btn-small">목록</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab3" class="tab_content">
+                            <h3 class="mt70"><span>반품 내역 (완료, 환불대기)</span></h3>
+                            <div class="board_list">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:400px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:150px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>상품정보</th>
+                                            <th>상호명</th>
+                                            <th>수량</th>
+                                            <th>상태</th>
+                                            <th>반품 신청일</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-left">
+                                                <div>[G2000481961] 모노스윗 워싱 침구 3옵션형 test</div>
+                                                <div>색상 : 노랑</div>
+                                            </td>
+                                            <td>
+                                                <div>농원</div>
+                                            </td>
+                                            <td>
+                                                <div>2</div>
+                                            </td>
+                                            <td>
+                                                <div>반품완료</div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="flex_box juc-center gap-08">
+                                                    <button type="button" class="btn btn-default btn-sm">상세</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h3 class="mt70"><span>반품처리</span></h3>
+                            <div class="board_list">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:50px;">
+                                        <col style="width:150px;">
+                                        <col style="width:400px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><input type="checkbox" id="check_all"></th>
+                                            <th>이미지</th>
+                                            <th>상품정보</th>
+                                            <th>상호명</th>
+                                            <th>수량</th>
+                                            <th>환불금액(상품)</th>
+                                            <th>상태</th>
+                                            <th>반품 신청일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="2">
+                                                <div>
+                                                    <input type="checkbox" id="chk">
+                                                </div>
+                                            </td>
+                                            <!-- 이미지 -->
+                                            <td class="border_left">
+                                                <div>
+                                                    <c:choose>
+                                                        <c:otherwise>
+                                                            <a href="" target="_blank">
+                                                                <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품이미지" />
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                            </td>
+                                            <!-- // 이미지 -->
+                                            <!-- 상품정보 -->
+                                            <td class="text-left">
+                                                <div>[G2000481961] 모노스윗 워싱 침구 3옵션형</div>
+                                                <div>상품구분 : 야구모자 / 색상 : 파랑 / 사이즈 : S (+1,000원)</div>
+                                            </td>
+                                            <!-- // 상품정보 -->
+                                            <!-- 상호명 -->
+                                            <td>
+                                                <div>농원</div>
+                                            </td>
+                                            <!-- // 상호명 -->
+                                            <!-- 수량 -->
+                                            <td>
+                                                <div>2</div>
+                                            </td>
+                                            <!-- // 수량 -->
+                                            <!-- 금액 -->
+                                            <td>
+                                                <div>18,000</div>
+                                            </td>
+                                            <!-- // 금액 -->
+                                            <!-- 상태 -->
+                                            <td>
+                                                <div>신청</div>
+                                            </td>
+                                            <!-- // 상태 -->
+                                            <!-- 취소 신청일 -->
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                            <!-- // 취소 신청일 -->
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" class="border_left">
+                                                <div class="board_write">
+                                                    <table class="board_write_table">
+                                                        <colgroup>
+                                                            <col style="width: 220px" />
+                                                            <col>
+                                                            <col style="width: 220px" />
+                                                            <col>
+                                                        </colgroup>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="label">신청사유</td>
+                                                                <td>
+                                                                    <div class="text-left">[판매자 신청]</div>
+                                                                    <div class="flex_box gap-12">
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                                            <label for="rdo1-1">고객 사유</label>
+                                                                        </div>
+                                                                        <select id="" name="" title="고객 사유">
+                                                                            <option value="">상품, 옵션 등 선택 실수</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="flex_box gap-12">
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                                                            <label for="rdo1-2">판매자 사유</label>
+                                                                        </div>
+                                                                        <input id="" name="" title="판매자 사유" class="input_txt required _filter wd-300" type="text" value="">
+                                                                    </div>
+                                                                </td>
+                                                                <td class="label">회수 송장 정보</td>
+                                                                <td>
+                                                                    <div class="flex_box gap-08 item-center">
+                                                                        <select id="" name="" title="회수 송장 정보" class="wd-150">
+                                                                            <option value="">선택</option>
+                                                                        </select>
+                                                                        <input id="" name="" title="회수 송장 정보" class="input_txt required _filter wd-400" type="text" value="">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="label">회수 요청지</td>
+                                                                <td>
+                                                                    <div>
+                                                                        <div class="flex_box gap-12">
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter half" type="text" value="">
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter half" type="text" value="" disabled>
+                                                                            <button type="button" class="btn btn-default btn-sm">우편번호</button>
+                                                                        </div>
+                                                                        <div class="flex_box col mt6">
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter full" type="text" value="" disabled>
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter full" type="text" value="">
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter half" type="text" value="">
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="label">반송지 주소</td>
+                                                                <td class="text-left">
+                                                                    <div>[물류센터]</div>
+                                                                    <div>(15406) 경기 안산시 단원구 중앙대로 224 (서안산IC주유소)테스트 주소 입니다.</div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="label">처리구분</td>
+                                                                <td>
+                                                                    <div class="flex_box gap-12">
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                                            <label for="rdo1-1">회수중</label>
+                                                                        </div>
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                                                            <label for="rdo1-2">회수 완료</label>
+                                                                        </div>
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-3" name="rdo1" type="radio" value="">
+                                                                            <label for="rdo1-3">반품 승인</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-left">
+                                                                        <p class="point">!!처리할 항목을 선택하세요</p>
+                                                                        <!-- 회수중 case -->
+                                                                        <p class="point">!!반품신청 후 상품이 발송하여 배송되는 중입니다.</p>
+                                                                        <p class="point">!!사용자 화면에는 '반품 처리중'으로 표기됩니다.</p>
+                                                                        <!-- 회수중 case -->
+                                                                        <!-- 회수 완료 case -->
+                                                                        <p class="point">!!반품신청 후 고객이 발송한 상품이 확인중입니다.</p>
+                                                                        <p class="point">!!사용자 화면에는 '반품 처리중'으로 표기됩니다.</p>
+                                                                        <!-- 회수 완료 case -->
+                                                                        <!-- 반품 승인 case -->
+                                                                        <p class="point">!!반품신청을 승인하면 환불내역으로 이동합니다.</p>
+                                                                        <p class="point">!!사용자 화면에는 '환불 처리중'으로 표기됩니다.</p>
+                                                                        <!-- 반품 승인 case -->
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="btn_all btn_center">
+                                <div class="flex_box gap-08">
+                                    <button type="submit" class="btn btn-dark-gray btn-small">주문 처리</button>
+                                    <button type="submit" class="btn btn-default btn-small">목록</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab4" class="tab_content">
+                            <h3 class="mt70"><span>교환 내역 (완료, 발송)</span></h3>
+                            <div class="board_list">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:400px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:150px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>상품정보</th>
+                                            <th>상호명</th>
+                                            <th>수량</th>
+                                            <th>상태</th>
+                                            <th>교환 신청일</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-left">
+                                                <div>[G2000481961] 모노스윗 워싱 침구 3옵션형 test</div>
+                                                <div>색상 : 노랑</div>
+                                            </td>
+                                            <td>
+                                                <div>농원</div>
+                                            </td>
+                                            <td>
+                                                <div>2</div>
+                                            </td>
+                                            <td>
+                                                <div>교환상품 발송</div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="flex_box juc-center gap-08">
+                                                    <button type="button" class="btn btn-default btn-sm">상세</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h3 class="mt70"><span>교환 처리</span></h3>
+                            <div class="board_list">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:50px;">
+                                        <col style="width:150px;">
+                                        <col style="width:400px;">
+                                        <col style="width:200px;">
+                                        <col style="width:100px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><input type="checkbox" id="check_all"></th>
+                                            <th>이미지</th>
+                                            <th>상품정보</th>
+                                            <th>판매자</th>
+                                            <th>수량</th>
+                                            <th>상태</th>
+                                            <th>교환 신청일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="2">
+                                                <div>
+                                                    <input type="checkbox" id="chk">
+                                                </div>
+                                            </td>
+                                            <!-- 이미지 -->
+                                            <td class="border_left">
+                                                <div>
+                                                    <c:choose>
+                                                        <c:otherwise>
+                                                            <a href="" target="_blank">
+                                                                <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품이미지" />
+                                                            </a>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                            </td>
+                                            <!-- // 이미지 -->
+                                            <!-- 상품정보 -->
+                                            <td class="text-left">
+                                                <div>[G2000481961] 모노스윗 워싱 침구 3옵션형</div>
+                                                <div>상품구분 : 야구모자 / 색상 : 파랑 / 사이즈 : S (+1,000원)</div>
+                                            </td>
+                                            <!-- // 상품정보 -->
+                                            <!-- 상호명 -->
+                                            <td>
+                                                <div>농원</div>
+                                            </td>
+                                            <!-- // 상호명 -->
+                                            <!-- 수량 -->
+                                            <td>
+                                                <div>2</div>
+                                            </td>
+                                            <!-- // 수량 -->
+                                            <!-- 상태 -->
+                                            <td>
+                                                <div>신청</div>
+                                            </td>
+                                            <!-- // 상태 -->
+                                            <!-- 취소 신청일 -->
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                            <!-- // 취소 신청일 -->
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7" class="border_left">
+                                                <div class="board_write">
+                                                    <table class="board_write_table">
+                                                        <colgroup>
+                                                            <col style="width: 220px" />
+                                                            <col>
+                                                            <col style="width: 220px" />
+                                                            <col>
+                                                        </colgroup>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="label">신청사유</td>
+                                                                <td>
+                                                                    <div class="text-left">[구매자 신청]</div>
+                                                                    <div class="flex_box gap-12">
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                                            <label for="rdo1-1">고객 사유</label>
+                                                                        </div>
+                                                                        <select id="" name="" title="고객 사유">
+                                                                            <option value="">상품이 잘못 배송됨</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="flex_box gap-12">
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                                                            <label for="rdo1-2">판매자 사유</label>
+                                                                        </div>
+                                                                        <input id="" name="" title="판매자 사유" class="input_txt required _filter wd-300" type="text" value="">
+                                                                    </div>
+                                                                </td>
+                                                                <td class="label">회수 송장 정보</td>
+                                                                <td>
+                                                                    <div class="flex_box gap-08 item-center">
+                                                                        <select id="" name="" title="회수 송장 정보" class="wd-150">
+                                                                            <option value="">선택</option>
+                                                                        </select>
+                                                                        <input id="" name="" title="회수 송장 정보" class="input_txt required _filter wd-400" type="text" value="">
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="label">회수 요청지</td>
+                                                                <td>
+                                                                    <div>
+                                                                        <div class="flex_box gap-12">
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter half" type="text" value="">
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter half" type="text" value="" disabled>
+                                                                            <button type="button" class="btn btn-default btn-sm">우편번호</button>
+                                                                        </div>
+                                                                        <div class="flex_box col mt6">
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter full" type="text" value="" disabled>
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter full" type="text" value="">
+                                                                            <input id="" name="" title="회수 요청지" class="input_txt required _filter half" type="text" value="">
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="label">반송지 주소</td>
+                                                                <td class="text-left">
+                                                                    <div>[물류센터]</div>
+                                                                    <div>(15406) 경기 안산시 단원구 중앙대로 224 (서안산IC주유소)테스트 주소 입니다.</div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="label">처리구분</td>
+                                                                <td>
+                                                                    <div class="flex_box gap-12">
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                                            <label for="rdo1-1">회수중</label>
+                                                                        </div>
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                                                            <label for="rdo1-2">회수 완료</label>
+                                                                        </div>
+                                                                        <div class="input-form">
+                                                                            <input id="rdo1-3" name="rdo1" type="radio" value="">
+                                                                            <label for="rdo1-3">교환상품 발송</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-left">
+                                                                        <p class="point">!!처리할 항목을 선택하세요</p>
+                                                                        <!-- 회수중 case -->
+                                                                        <p class="point">!!교환신청 후 상품이 발송하여 배송되는 중입니다.</p>
+                                                                        <p class="point">!!사용자 화면에는 ＇교환 처리중’ 으로 표기됩니다.</p>
+                                                                        <!-- 회수중 case -->
+                                                                        <!-- 회수 완료 case -->
+                                                                        <p class="point">!!교환신청 후 고객이 발송한 상품이 확인중입니다.</p>
+                                                                        <p class="point">!!사용자 화면에는 ＇교환 처리중’ 으로 표기됩니다.</p>
+                                                                        <!-- 회수 완료 case -->
+                                                                        <!-- 교환상품 발송 case -->
+                                                                        <p class="point">!!배송정보를 입력하세요.</p>
+                                                                        <p class="point">!!사용자 화면에는 ＇교환 배송중’ 으로 표기됩니다.</p>
+                                                                        <!-- 교환상품 발송 case -->
+                                                                    </div>
+                                                                </td>
+                                                                <!-- 처리구분 교환상품 발송일때 노출 -->
+                                                                <td class="label">재발송 정보</td>
+                                                                <td>
+                                                                    <div>
+                                                                        <div class="flex_box gap-12 item-center">
+                                                                            <span>택배사 : </span>
+                                                                            <select id="" name="" title="재발송 정보" class="wd-150">
+                                                                                <option value="">선택</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="flex_box gap-12 item-center mt20">
+                                                                            <span>송장번호 : </span>
+                                                                            <input id="" name="" title="재발송 정보" class="input_txt required _filter wd-400" type="text" value="">
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <!-- // 처리구분 교환상품 발송일때 노출 -->
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="btn_all btn_center">
+                                <div class="flex_box gap-08">
+                                    <button type="submit" class="btn btn-dark-gray btn-small">주문 처리</button>
+                                    <button type="submit" class="btn btn-default btn-small">목록</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab5" class="tab_content">
+                            <h3 class="mt70"><span>주문 상태 변경 이력결제정보</span></h3>
+                            <div class="board_list">
+                                <table class="board_list_table">
+                                    <colgroup>
+                                        <col style="width:50px;">
+                                        <col style="width:200px;">
+                                        <col style="width:200px;">
+                                        <col style="width:200px;">
+                                        <col style="width:200px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>주문 상품</th>
+                                            <th>상태 변경</th>
+                                            <th>처리자</th>
+                                            <th>변경일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div>1</div>
+                                            </td>
+                                            <td>
+                                                <div>모노스윗 워싱 침구 3옵션형 test</div>
+                                            </td>
+                                            <td>
+                                                <div>결제완료 > 배송준비중</div>
+                                            </td>
+                                            <td>
+                                                <div><span>상호명</span><span>(asdfsdf)</span></div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <span>2022-10-10</span>
+                                                    <span>16:50:50</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--// 탭 콘텐츠 영역 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+    <!-- tab jquery -->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".tab_content").hide();
+            $("ul.tabs li:first").addClass("active").show();
+            $(".tab_content:first").show();
+            $("ul.tabs li").click(function () {
+                $("ul.tabs li").removeClass("active");
+                $(this).addClass("active");
+                $(".tab_content").hide();
+                var activeTab = $(this).find("a").attr("href");
+                $(activeTab).show();
+                return false;
+            });
+        });
+    </script>
+    <!-- tab jquery -->
+</body>
+</html>

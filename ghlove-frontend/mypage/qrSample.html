@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>지정기부-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <!-- <link rel="stylesheet" href="/static/css/event.css"> -->
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+    <link rel="stylesheet" href="/static/css/designation.css">
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali></layout-mypage-lnb-ali>
+
+        <section class="main_contents" style="margin:50px;text-align:center;">
+        	<div>
+        		<img class="item_img" :src="qrCodeData" alt="qr 데이터 이미지" style="width:300px;height:300px;">
+        	</div>
+        	<div>
+        		남은시간 : {{remainSeconds}}<br><br>
+        		이름 : {{userName}}<br>
+        		발급일시 : {{makeQrDateTIme}}<br>
+        		주소지 : {{userLocNm}}<br><br>
+
+        		명예시민증 발급 지자체 : {{locNm}}
+        	</div>
+            <div>
+            	<img alt="" src="/static/images/btn_pagePrev.png" @click="qrIndexChange(-1)">
+            	<img alt="" src="/static/images/btn_pageNext.png" @click="qrIndexChange(1)">
+            </div>
+            <div>
+            	<img alt="" src="/static/images/icon/loc_reset.png" @click="getQrCode">
+            </div>
+        </section>
+        <layout-fixed-btn></layout-fixed-btn>
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                //'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali_dsg.vue'),
+                //'layout-mypage-lnb-ali': httpVueLoader('/components/layouts/mypage-lnb_ali.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue')
+            },
+            data: {
+                menuUrl: location.pathname,
+				qrCodeData: '',
+				qrIndex: 0,
+				qrCodes: [],
+				userName: '',
+				makeQrDateTIme: '',
+				userLocNm: '',
+				locNm: '',
+				remainSeconds: 0,
+				interval: {}
+            },
+            methods: {
+                showLoading: function (isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+                },
+                initCallFunction: function () {
+					this.getQrCode();
+                },
+                loadingMounted: function () {
+                    this.initCallFunction();
+                },
+				getQrCode: function () {
+					this.clearInfo();
+					this.showLoading(true);
+					$s.api.getQrCode(
+						function (response) {
+							vm.showLoading(false);
+							if (response.errCode) {
+								$s.alert(response.errMsg, function () {
+                                	vm.historyBack();
+                                	$s.closeAlert();
+                            	});
+							} else {
+								vm.qrCodes = response.qrCodes;
+								vm.qrCodeData = vm.qrCodes[vm.qrIndex].qrCode;
+								vm.userName = vm.qrCodes[vm.qrIndex].userName;
+								vm.makeQrDateTIme = vm.qrCodes[vm.qrIndex].makeQrDateTIme;
+								vm.locNm = vm.qrCodes[vm.qrIndex].locNm;
+								vm.userLocNm = vm.qrCodes[vm.qrIndex].userLocNm;
+								vm.remainSeconds = response.timeDif;
+								vm.interval = setInterval(function () {
+									if (vm.remainSeconds > 0) {
+										vm.remainSeconds--;
+									} else {
+										clearInterval(vm.interval);
+									}
+								}, 1000);
+							}
+						}
+						, function (error) {
+							vm.showLoading(false);
+							$s.alert(error.response.data.message, function () {
+                                vm.historyBack();
+                                $s.closeAlert();
+                            });
+						}
+					);
+				},
+				getQrData: function () {
+					return this.qrCodeData;
+				},
+				qrIndexChange: function (value) {
+					this.qrIndex += value;
+				},
+                historyBack: function () {
+                    if (history.length == 1) {
+                        $s.redirect('/');
+                    } else {
+                        history.back();
+                    }
+                },
+				clearInfo: function () {
+					vm.qrCodes = '';
+					vm.qrCodeData = '';
+					vm.userName = '';
+					vm.makeQrDateTIme = '';
+					vm.locNm = '';
+					vm.userLocNm = '';
+					vm.remainSeconds = 0;
+					clearInterval(vm.interval);
+				},
+            },
+            watch: {
+                qrIndex: function (val) {
+					let maxIndex = this.qrCodes.length - 1;
+					if (val < 0) {
+						this.qrIndex = maxIndex;
+						return;
+					} else if (val > maxIndex) {
+						this.qrIndex = 0;
+						return;
+					}
+                    this.qrCodeData = this.qrCodes[this.qrIndex].qrCode;
+					this.userName = this.qrCodes[this.qrIndex].userName;
+					this.makeQrDateTIme = this.qrCodes[this.qrIndex].makeQrDateTIme;
+					this.locNm = this.qrCodes[this.qrIndex].locNm;
+					this.userLocNm = this.qrCodes[vm.qrIndex].userLocNm;
+                },
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init();
+                });
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

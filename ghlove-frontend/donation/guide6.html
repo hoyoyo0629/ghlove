@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>안내사항 > 고향사랑기부 주의사항 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/donation_guge.css" />
+    <link rel="stylesheet" href="/static/css/research-box.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-donation-lnb-ali
+          :menu-url="page.menuUrl"
+        ></layout-donation-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"
+                ><img
+                  class="icon-img"
+                  src="/static/images/icon/cli-icon_home.png"
+                  alt="홈으로"
+              /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              안내사항
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              고향사랑기부 주의사항
+            </span>
+            <h2 class="page-title-txt pc">고향사랑기부 주의사항</h2>
+            <h2 class="page-title-txt tablet">고향사랑기부 주의사항</h2>
+            <h2 class="page-title-txt mobile" style="font-size: 27px">
+              고향사랑기부 주의사항
+            </h2>
+          </div>
+        </section>
+        <section id="contents">
+          <div class="">
+            <div class="center">
+              <div class="s-contents d-guide guoff first">
+                <img
+                  src="/static/images/guide/PC_GUIDE6/1.png"
+                  class="dt-info"
+                  alt="고향사랑 기부가 불가능한 경우는 본인 거주지 기부는 불가능합니다. 기부자 본인의 주민등록등본 상 거주지에 해당하는 시·도, 시·군·구를 제외하고 기부가 가능합니다, 법인의 기부는 불가능합니다. 고향사랑 기부는 단체가 아닌 개인만 할 수 있습니다. 이해관계자의 기부는 불가능 합니다. 고용, 업부, 계약, 처분 등으로 재산상 권리, 이익 또는 그 밖의 관계가 있는 지방자치단체를 제외하고 기부가 가능합니다. 타인 명의로 기부는 불가능합니다. 기부자 본인의 명의로 고향사랑 기부를 할 수 있습니다. 가명 기부는 불가능 합니다. 기부자 본인을 인증하고 고향사랑 기부를 할 수 있습니다. 누구든지 업무·고용 그 밖의 관계를 이용하여 다른 사람에게 기부 또는 모금을 강요하는 행위는 금지됩니다."
+                />
+
+                <img
+                  src="/static/images/guide/M_GUIDE6/1.png"
+                  class="m-info"
+                  style="width: 100%"
+                  alt="고향사랑 기부가 불가능한 경우는 본인 거주지 기부는 불가능합니다. 기부자 본인의 주민등록등본 상 거주지에 해당하는 시·도, 시·군·구를 제외하고 기부가 가능합니다, 법인의 기부는 불가능합니다. 고향사랑 기부는 단체가 아닌 개인만 할 수 있습니다. 이해관계자의 기부는 불가능 합니다. 고용, 업부, 계약, 처분 등으로 재산상 권리, 이익 또는 그 밖의 관계가 있는 지방자치단체를 제외하고 기부가 가능합니다. 타인 명의로 기부는 불가능합니다. 기부자 본인의 명의로 고향사랑 기부를 할 수 있습니다. 가명 기부는 불가능 합니다. 기부자 본인을 인증하고 고향사랑 기부를 할 수 있습니다. 누구든지 업무·고용 그 밖의 관계를 이용하여 다른 사람에게 기부 또는 모금을 강요하는 행위는 금지됩니다."
+                />
+              </div>
+
+							<!-- [250828] 고객 요청에 의하여 안내사항에 있는 6개 화면 설문조사 삭제 처리 -->
+              <!-- 콘텐츠 만족도 -->
+              <!-- <layout-content-stsfdg></layout-content-stsfdg> -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader(
+            "/components/layouts/header_ali.vue"
+          ),
+
+          //"layout-donation-lnb-ali": httpVueLoader("/components/layouts/donation_info-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader(
+            "/components/layouts/footer_ali.vue"
+          ),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+          "layout-content-stsfdg": httpVueLoader(
+            "/components/layouts/content-stsfdg/stsfdg.vue"
+          ),
+        },
+        data: {
+          // ali data
+          userName: "",
+          userGrade: "",
+          selectedSurvey: "01",
+          result: {},
+          page: {
+            menuUrl: "/donation/guide6.html",
+          },
+        },
+        methods: {
+          // *************** ali-add methods
+          // init: function () { // page init
+          //     $(".lnb-bar_2dep li").eq(1).addClass("currentT").siblings("li").removeClass("currentT");
+          //     $(".lnb-bar_3dep").eq(0).show();
+          //     $(".lnb-bar_3dep:eq(0) li:eq(4) a").addClass("currentP");
+          // },
+          radioChange: function (e) {
+            // radio button checked value
+            vm.selectedSurvey = e.target.value;
+          },
+          goToSurvey: function () {
+            // 현재 페이지 만족도
+
+            var message = "";
+            if (vm.selectedSurvey != null && vm.selectedSurvey != "") {
+              message = "만족도 평가를 등록하였습니다. 감사합니다.";
+            } else {
+              message = "만족도 평가 항목을 선택해 주세요";
+            }
+
+            $s.alert(message, function () {
+              location.reload();
+            });
+          },
+        },
+        computed: {},
+        mounted: function () {
+          this.$nextTick(function () {
+            // 페이지 로딩 후 실행
+            Saleson.init();
+            //setTimeout(() => this.init(), 100);
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

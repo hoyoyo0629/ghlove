@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.give.statistics.GiveStatisticsMapper">
+
+
+	<!-- 전체 기부 건수 -->
+	<select id="getGiveStatisticsAllCount" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsTotalSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsTotal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveStatisticsAllCount */
+		SELECT IFNULL(COUNT(GC.USER_ID), 0) AS CNTR_CNT
+		       ,IFNULL(COUNT(DISTINCT(USER_ID)), 0) AS CNTR_PERSON
+		       ,IFNULL(SUM(GC.CNTR_AMT), 0) AS CNTR_AMT
+		  FROM G_CNTR GC
+		 WHERE 1=1
+		   AND YEAR(GC.STTEMNT_PAY_DE) = #{shCntrYear}
+		   AND GC.DELETE_AT = 'N'
+		   AND GC.CNTR_STTUS_CODE = '200'
+           AND GC.STTEMNT_PAY_DE IS NOT NULL
+           <if test="shLocgovCode != null and shLocgovCode != ''">
+				AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+		   </if>
+		   <if test='foreignerFlag == "Y"'>
+		   		AND GC.FOREIGN_STATUS_CODE != '0'
+		   </if>
+	</select>
+
+	<!-- 월별 기부 현황 -->
+	<select id="statisticsGiveAllTotalByMonth" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsTotalSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsTotal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.statisticsGiveAllTotalByMonth */
+		SELECT MONTH(STTEMNT_PAY_DE) AS CNTR_MONTH
+			   ,IFNULL(COUNT(GC.USER_ID), 0) AS CNTR_CNT
+			   ,IFNULL(COUNT(DISTINCT(USER_ID)), 0) AS CNTR_PERSON
+			   ,IFNULL(SUM(GC.CNTR_AMT), 0) AS CNTR_AMT
+			   ,IFNULL(COUNT(CASE WHEN CNTR_PATH_CODE = '100' THEN 1 END), 0) AS CNTR_ONLINE
+			   ,IFNULL(COUNT(CASE WHEN CNTR_PATH_CODE IN ('200', '300') THEN 1 END), 0) AS CNTR_OFFLINE
+		  FROM G_CNTR GC
+		 WHERE YEAR(STTEMNT_PAY_DE) = #{shCntrYear}
+		   AND GC.DELETE_AT = 'N'
+		   AND GC.CNTR_STTUS_CODE = '200'
+		   AND GC.STTEMNT_PAY_DE IS NOT NULL
+		   <if test="shLocgovCode != null and shLocgovCode != ''">
+				AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+		   </if>
+		   <if test='foreignerFlag == "Y"'>
+		   		AND GC.FOREIGN_STATUS_CODE != '0'
+		   </if>
+		GROUP BY CNTR_MONTH
+	</select>
+
+	<select id="statisticsGiveLocgovByMonth" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsTotalSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsTotal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.statisticsGiveLocgovByMonth */
+		SELECT MONTH(STTEMNT_PAY_DE) AS CNTR_MONTH
+			   ,GC.cntr_locgov_code AS LOCGOV_CODE
+			   ,IFNULL(COUNT(GC.USER_ID), 0) AS CNTR_CNT
+			   ,IFNULL(COUNT(DISTINCT(USER_ID)), 0) AS CNTR_PERSON
+			   ,IFNULL(SUM(GC.CNTR_AMT), 0) AS CNTR_AMT
+			   ,IFNULL(COUNT(CASE WHEN CNTR_PATH_CODE = '100' THEN 1 END), 0) AS CNTR_ONLINE
+			   ,IFNULL(COUNT(CASE WHEN CNTR_PATH_CODE IN ('200', '300') THEN 1 END), 0) AS CNTR_OFFLINE
+		  FROM G_CNTR GC
+		 WHERE YEAR(STTEMNT_PAY_DE) = #{shCntrYear}
+		   AND GC.DELETE_AT = 'N'
+		   AND GC.CNTR_STTUS_CODE = '200'
+		   AND GC.STTEMNT_PAY_DE IS NOT NULL
+		GROUP BY CNTR_MONTH, GC.cntr_locgov_code
+	</select>
+
+	<!-- 나이대별 기부 현황 -->
+	<select id="statisticsGiveAllTotalByAge" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsTotalSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsTotal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.statisticsGiveAllTotalByAge */
+		SELECT (CASE WHEN AGE <![CDATA[<]]> 20 THEN '10'
+	                 WHEN AGE <![CDATA[>=]]> 70 THEN '70'
+	                 ELSE TRUNC(AGE/10,0) * 10||'' END) AS CNTR_AGE
+	           ,COUNT(USER_ID) AS CNTR_CNT
+	           ,SUM(CNTR_AMT) AS CNTR_AMT
+	      FROM ( SELECT TRUNC(MONTHS_BETWEEN(NOW(), TO_DATE(CRYPTO_DEC('normal', OUD.BIRTHDAY , '', 0),'YYYYMMDD'))/12, 0) AS AGE
+	                    ,GC.USER_ID
+	                    ,GC.CNTR_AMT
+	               FROM G_CNTR GC, OP_USER OU, OP_USER_DETAIL OUD
+                  WHERE GC.USER_ID = OU.USER_ID
+                    AND OU.USER_ID = OUD.USER_ID
+                    AND YEAR(STTEMNT_PAY_DE) = #{shCntrYear}
+		            AND GC.DELETE_AT = 'N'
+		            AND GC.CNTR_STTUS_CODE = '200'
+		            AND GC.STTEMNT_PAY_DE IS NOT NULL
+                    AND OUD.BIRTHDAY  IS NOT NULL
+                    <if test="shLocgovCode != null and shLocgovCode != ''">
+						AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+				    </if>
+				   <if test='foreignerFlag == "Y"'>
+				   		AND GC.FOREIGN_STATUS_CODE != '0'
+				   </if>
+               )
+         GROUP BY CNTR_AGE
+	</select>
+
+	<select id="statisticsGiveLocgovByAge" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsTotalSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsTotal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.statisticsGiveLocgovByAge */
+		SELECT
+				GC.CNTR_LOCGOV_CODE
+				,(CASE WHEN AGE <![CDATA[<]]> 20 THEN '10'
+	                 WHEN AGE <![CDATA[>=]]> 70 THEN '70'
+	                 ELSE TRUNC(AGE/10,0) * 10||'' END) AS CNTR_AGE
+	           ,COUNT(USER_ID) AS CNTR_CNT
+	           ,SUM(CNTR_AMT) AS CNTR_AMT
+	      FROM ( SELECT TRUNC(MONTHS_BETWEEN(NOW(), TO_DATE(CRYPTO_DEC('normal', OUD.BIRTHDAY , '', 0),'YYYYMMDD'))/12, 0) AS AGE
+	                    ,GC.USER_ID
+	                    ,GC.CNTR_AMT
+	               FROM G_CNTR GC, OP_USER OU, OP_USER_DETAIL OUD
+                  WHERE GC.USER_ID = OU.USER_ID
+                    AND OU.USER_ID = OUD.USER_ID
+                    AND YEAR(STTEMNT_PAY_DE) = #{shCntrYear}
+		            AND GC.DELETE_AT = 'N'
+		            AND GC.CNTR_STTUS_CODE = '200'
+		            AND GC.STTEMNT_PAY_DE IS NOT NULL
+                    AND OUD.BIRTHDAY  IS NOT NULL
+               )
+         GROUP BY GC.CNTR_LOCGOV_CODE, CNTR_AGE
+	</select>
+
+	<!-- 시간대별 기부 현황 -->
+	<select id="statisticsGiveAllTotalByHour" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsTotalSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsTotal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.statisticsGiveAllTotalByHour */
+		SELECT HOUR(GC.FRST_REGIST_PNTTM) AS CNTR_HOUR
+			   ,SUM(CNTR_AMT) AS CNTR_AMT
+		  FROM G_CNTR GC
+		 WHERE 1 = 1
+		   AND CNTR_DE = #{shCntrDate}
+		   AND GC.DELETE_AT = 'N'
+		   AND GC.CNTR_STTUS_CODE = '200'
+		   AND GC.STTEMNT_PAY_DE IS NOT NULL
+		   <if test='foreignerFlag == "Y"'>
+		   		AND GC.FOREIGN_STATUS_CODE != '0'
+		   </if>
+		 GROUP BY CNTR_HOUR
+	</select>
+
+	<select id="statisticsGiveLocgovByHour" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsTotalSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsTotal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.statisticsGiveLocgovByHour */
+		SELECT GC.CNTR_LOCGOV_CODE
+				,HOUR(GC.FRST_REGIST_PNTTM) AS CNTR_HOUR
+			   ,SUM(CNTR_AMT) AS CNTR_AMT
+		  FROM G_CNTR GC
+		 WHERE 1 = 1
+		   AND CNTR_DE = #{shCntrDate}
+		   AND GC.DELETE_AT = 'N'
+		   AND GC.CNTR_STTUS_CODE = '200'
+		   AND GC.STTEMNT_PAY_DE IS NOT NULL
+		 GROUP BY GC.CNTR_LOCGOV_CODE, CNTR_HOUR
+	</select>
+
+    <!-- 기부인원 통계 목록 count -->
+	<select id="getGivePersonStatisticsCount" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsSearch" resultType="Integer" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonStatisticsCount */
+        SELECT COUNT(*)
+		FROM
+		(
+	        SELECT
+			    year(GC.STTEMNT_PAY_DE) as CNTR_YEAR
+	            , GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+	            , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+	            , GL.LOCGOV_CODE AS LOCGOV_CODE
+	            , GL.LOCGOV_NM AS LOCGOV_NM
+	            , SUM(GC.CNTR_AMT) AS CNTR_AMT
+	            , COUNT(DISTINCT(USER_ID)) AS GIVE_PERSONS
+	            , SUM(GC.CNTR_POINT) AS CNTR_POINT
+	            , COUNT(USER_ID) AS GIVE_CNT
+			FROM G_CNTR GC, G_LOCGOV GL
+			WHERE 1=1
+			AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+			AND GC.DELETE_AT = 'N'
+			and GC.cntr_sttus_code = '200'
+	        and GC.sttemnt_pay_de is not NULL
+			<if test="shLocgovCode != null and shLocgovCode != ''">
+			AND GL.LOCGOV_CODE = #{shLocgovCode}
+			</if>
+			<if test="shCntrYear != null and shCntrYear != ''">
+			AND year(GC.STTEMNT_PAY_DE) = #{shCntrYear}
+			</if>
+		   <if test='foreignerFlag == "Y"'>
+		   		AND GC.FOREIGN_STATUS_CODE != '0'
+		   </if>
+			GROUP BY year(GC.STTEMNT_PAY_DE)
+				     , GL.UPPER_LOCGOV_CODE
+				     , GL.LOCGOV_CODE
+	     )
+	</select>
+
+    <!-- 기부인원 통계 -->
+	<select id="getGivePersonStatisticsList" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		<include refid="CommonMapper.paginationHeader" />
+			/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonStatisticsList */
+			SELECT
+	            year(GC.STTEMNT_PAY_DE) as CNTR_YEAR
+	            , GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+	            , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+	            , GL.LOCGOV_CODE AS LOCGOV_CODE
+	            , GL.LOCGOV_NM AS LOCGOV_NM
+	            , SUM(GC.CNTR_AMT) AS CNTR_AMT
+	            , COUNT(DISTINCT(USER_ID)) AS GIVE_PERSONS
+	            , SUM(GC.CNTR_POINT) AS CNTR_POINT
+	            , COUNT(USER_ID) AS GIVE_CNT
+	        FROM G_CNTR GC, G_LOCGOV GL
+	        WHERE 1=1
+	        AND GC.CNTR_LOCGOV_CODE = GL.LOCGOV_CODE
+	        AND GC.DELETE_AT = 'N'
+	        and GC.cntr_sttus_code = '200'
+	        and GC.STTEMNT_PAY_DE is not NULL
+	       <if test="shLocgovCode != null and shLocgovCode != ''">
+            AND GL.LOCGOV_CODE = #{shLocgovCode}
+            </if>
+            <if test="shCntrYear != null and shCntrYear != ''">
+            AND year(GC.STTEMNT_PAY_DE) = #{shCntrYear}
+            </if>
+		   <if test='foreignerFlag == "Y"'>
+		   		AND GC.FOREIGN_STATUS_CODE != '0'
+		   </if>
+	        GROUP BY year(GC.STTEMNT_PAY_DE)
+	                 , GL.UPPER_LOCGOV_CODE
+	                 , GL.LOCGOV_CODE
+	        ORDER BY
+	        <choose>
+	        	<when test="'person'.equals(itemsOrder)"> COUNT(DISTINCT(USER_ID)) desc, </when>
+	        	<when test="'amt'.equals(itemsOrder)"> SUM(GC.CNTR_AMT) desc, </when>
+	        	<when test="'cnt'.equals(itemsOrder)"> COUNT(USER_ID) desc, </when>
+	        </choose>
+	        		 year(GC.STTEMNT_PAY_DE) DESC
+                     , GL.UPPER_LOCGOV_CODE
+                     , GL.LOCGOV_CODE
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 월별 기부인원 -->
+	<select id="getGivePersonStatisticsDetail" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonStatisticsDetail */
+		SELECT DT AS CNTR_MONTH
+       		   ,GIVE_PERSONS
+       		   ,(CASE WHEN GIVE_ALL <![CDATA[>]]> 0 THEN TO_CHAR(ROUND(GIVE_PERSONS * 1.0/GIVE_ALL * 100,1))
+			         ELSE 0 END) AS PERCENT
+          FROM ( SELECT GY.DT
+		                ,COUNT(DISTINCT(USER_ID)) AS GIVE_PERSONS
+		                ,SUM(COUNT(DISTINCT USER_ID)) OVER() as GIVE_ALL
+		           FROM ( SELECT TO_CHAR(ADD_MONTHS(A.SETMONTH, LEVEL -1), 'YYYYMM') AS DT
+                            FROM ( SELECT TO_DATE(#{fromYear}||'01','YYYYMM') AS SETMONTH ) A
+                         CONNECT BY LEVEL <![CDATA[<=]]> (#{toYear} - #{fromYear} + 1) * 12
+                        ) GY
+                   LEFT OUTER JOIN G_CNTR GC
+                     ON GY.DT = SUBSTRING(GC.CNTR_DE,1,6)
+		            AND YEAR(GC.CNTR_DE) BETWEEN #{fromYear} AND #{toYear}
+		            AND GC.DELETE_AT = 'N'
+		            AND GC.CNTR_STTUS_CODE = '200'
+                    AND GC.STTEMNT_PAY_DE IS NOT NULL
+		            AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+	              GROUP BY GY.DT
+	     ) A
+	</select>
+
+	<!-- 일별 기부인원 -->
+	<select id="getGivePersonStatisticsDetailByDate" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonStatisticsDetailByDate */
+		SELECT DAY(DT) AS CNTR_DATE
+			   ,GIVE_PERSONS
+			   ,(CASE WHEN GIVE_ALL <![CDATA[>]]> 0 THEN TO_CHAR(ROUND(GIVE_PERSONS * 1.0/GIVE_ALL * 100,1))
+			         ELSE 0 END) AS PERCENT
+		  FROM ( SELECT DT
+		  				,COUNT(DISTINCT GC.USER_ID) AS GIVE_PERSONS
+		  				,SUM(COUNT(DISTINCT USER_ID)) OVER() AS GIVE_ALL
+				   FROM ( SELECT TO_CHAR(ADDDATE(A.SETMONTH, LEVEL -1), 'YYYYMMDD') AS DT
+ 							FROM ( SELECT TO_DATE(#{cntrMonth},'YYYYMM') AS SETMONTH ) A
+				CONNECT BY LEVEL <![CDATA[<=]]> EXTRACT(DAY FROM LAST_DAY(A.SETMONTH))
+			            ) GD
+		           LEFT OUTER JOIN G_CNTR GC
+		             ON GD.DT = GC.CNTR_DE AND GC.DELETE_AT = 'N'
+		            AND GC.CNTR_STTUS_CODE = '200'
+                    AND GC.STTEMNT_PAY_DE IS NOT NULL
+                    AND SUBSTRING(GC.CNTR_DE,1,6) = #{cntrMonth}
+                    AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		          WHERE 1=1
+                  GROUP BY DT
+              ) A
+	</select>
+
+	<!-- 지자체별 기부인원 엑셀 -->
+	<select id="getGivePersonStatisticsDetailExcel" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonStatisticsDetailExcel */
+		SELECT CNTR_DE
+		       ,COUNT(DISTINCT(USER_ID)) AS GIVE_PERSONS
+		       ,SUM(CNTR_AMT) AS GIVE_AMT
+		       ,COUNT(USER_ID) AS GIVE_CNT
+		  FROM G_CNTR GC
+		 WHERE 1=1
+		   AND YEAR(GC.CNTR_DE) BETWEEN #{fromYear} AND #{toYear}
+		   AND GC.DELETE_AT = 'N'
+		   AND GC.CNTR_STTUS_CODE = '200'
+           AND GC.STTEMNT_PAY_DE IS NOT NULL
+		   AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+	     GROUP BY CNTR_DE
+	</select>
+
+	<!-- 월별 기부금액 -->
+	<select id="getGiveAmountStatisticsDetail" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveAmountStatisticsDetail */
+		SELECT DT AS CNTR_MONTH
+       		   ,GIVE_AMT
+       		   ,(CASE WHEN GIVE_ALL <![CDATA[>]]> 0 THEN TO_CHAR(ROUND(GIVE_AMT * 1.0/GIVE_ALL * 100,1))
+			         ELSE 0 END) AS PERCENT
+          FROM ( SELECT GY.DT
+		                ,SUM(CNTR_AMT) AS GIVE_AMT
+		                ,SUM(SUM(CNTR_AMT)) OVER() as GIVE_ALL
+		           FROM ( SELECT TO_CHAR(ADD_MONTHS(A.SETMONTH, LEVEL -1), 'YYYYMM') AS DT
+                            FROM ( SELECT TO_DATE(#{fromYear}||'01','YYYYMM') AS SETMONTH ) A
+                         CONNECT BY LEVEL <![CDATA[<=]]> (#{toYear} - #{fromYear} + 1) * 12
+                        ) GY
+                   LEFT OUTER JOIN G_CNTR GC
+                     ON GY.DT = SUBSTRING(GC.CNTR_DE,1,6)
+		            AND YEAR(GC.CNTR_DE) BETWEEN #{fromYear} AND #{toYear}
+		            AND GC.DELETE_AT = 'N'
+		            AND GC.CNTR_STTUS_CODE = '200'
+                    AND GC.STTEMNT_PAY_DE IS NOT NULL
+		            AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+	              GROUP BY GY.DT
+	     ) A
+	</select>
+
+	<!-- 일별 기부금액 -->
+	<select id="getGiveAmountStatisticsDetailByDate" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveAmountStatisticsDetailByDate */
+		SELECT DAY(DT) AS CNTR_DATE
+			   ,GIVE_AMT
+			   ,(CASE WHEN GIVE_ALL <![CDATA[>]]> 0 THEN TO_CHAR(ROUND(GIVE_AMT * 1.0/GIVE_ALL * 100,1))
+			         ELSE 0 END) AS PERCENT
+		  FROM ( SELECT DT
+		  				,SUM(CNTR_AMT) AS GIVE_AMT
+		  				,SUM(SUM(CNTR_AMT)) OVER() AS GIVE_ALL
+				   FROM ( SELECT TO_CHAR(ADDDATE(A.SETMONTH, LEVEL -1), 'YYYYMMDD') AS DT
+ 							FROM ( SELECT TO_DATE(#{cntrMonth},'YYYYMM') AS SETMONTH ) A
+				CONNECT BY LEVEL <![CDATA[<=]]> EXTRACT(DAY FROM LAST_DAY(A.SETMONTH))
+			            ) GD
+		           LEFT OUTER JOIN G_CNTR GC
+		             ON GD.DT = GC.CNTR_DE AND GC.DELETE_AT = 'N'
+		            AND GC.CNTR_STTUS_CODE = '200'
+                    AND GC.STTEMNT_PAY_DE IS NOT NULL
+                    AND SUBSTRING(GC.CNTR_DE,1,6) = #{cntrMonth}
+                    AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		          WHERE 1=1
+                  GROUP BY DT
+              ) A
+	</select>
+
+	<!-- 월별 기부건수 -->
+	<select id="getGiveNumberStatisticsDetail" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveNumberStatisticsDetail */
+		SELECT DT AS CNTR_MONTH
+       		   ,GIVE_CNT
+       		   ,(CASE WHEN GIVE_ALL <![CDATA[>]]> 0 THEN TO_CHAR(ROUND(GIVE_CNT * 1.0/GIVE_ALL * 100,1))
+			         ELSE 0 END) AS PERCENT
+          FROM ( SELECT GY.DT
+		                ,COUNT(USER_ID) AS GIVE_CNT
+		                ,SUM(COUNT(USER_ID)) OVER() AS GIVE_ALL
+		           FROM ( SELECT TO_CHAR(ADD_MONTHS(A.SETMONTH, LEVEL -1), 'YYYYMM') AS DT
+                            FROM ( SELECT TO_DATE(#{fromYear}||'01','YYYYMM') AS SETMONTH ) A
+                         CONNECT BY LEVEL <![CDATA[<=]]> (#{toYear} - #{fromYear} + 1) * 12
+                        ) GY
+                   LEFT OUTER JOIN G_CNTR GC
+                     ON GY.DT = SUBSTRING(GC.CNTR_DE,1,6)
+		            AND YEAR(GC.CNTR_DE) BETWEEN #{fromYear} AND #{toYear}
+		            AND GC.DELETE_AT = 'N'
+		            AND GC.CNTR_STTUS_CODE = '200'
+                    AND GC.STTEMNT_PAY_DE IS NOT NULL
+		            AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+	              GROUP BY GY.DT
+	     ) A
+	</select>
+
+
+	<!-- 일별 기부건수 -->
+	<select id="getGiveNumberStatisticsDetailByDate" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveNumberStatisticsDetailByDate */
+		SELECT DAY(DT) AS CNTR_DATE
+			   ,GIVE_CNT
+			   ,(CASE WHEN GIVE_ALL <![CDATA[>]]> 0 THEN TO_CHAR(ROUND(GIVE_CNT * 1.0/GIVE_ALL * 100,1))
+			         ELSE 0 END) AS PERCENT
+		  FROM ( SELECT DT
+		  				,COUNT(USER_ID) AS GIVE_CNT
+		  				,SUM(COUNT(USER_ID)) OVER() AS GIVE_ALL
+				   FROM ( SELECT TO_CHAR(ADDDATE(A.SETMONTH, LEVEL -1), 'YYYYMMDD') AS DT
+ 							FROM ( SELECT TO_DATE(#{cntrMonth},'YYYYMM') AS SETMONTH ) A
+				CONNECT BY LEVEL <![CDATA[<=]]> EXTRACT(DAY FROM LAST_DAY(A.SETMONTH))
+			            ) GD
+		           LEFT OUTER JOIN G_CNTR GC
+		             ON GD.DT = GC.CNTR_DE AND GC.DELETE_AT = 'N'
+		            AND GC.CNTR_STTUS_CODE = '200'
+                    AND GC.STTEMNT_PAY_DE IS NOT NULL
+                    AND SUBSTRING(GC.CNTR_DE,1,6) = #{cntrMonth}
+                    AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		          WHERE 1=1
+                  GROUP BY DT
+              ) A
+	</select>
+
+
+	<!-- 일별 기부건수 -->
+	<select id="getGiveDateStatisticsDetail" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveDateStatisticsDetail */
+		SELECT GC.CNTR_DE
+	           ,SUM(GC.CNTR_AMT) AS GIVE_AMT
+	           ,COUNT(DISTINCT(USER_ID)) AS GIVE_PERSONS
+	           ,SUM(GC.CNTR_POINT) AS GIVE_POINT
+	           ,COUNT(USER_ID) AS GIVE_CNT
+	      FROM G_CNTR GC
+	     WHERE 1=1
+	       AND GC.DELETE_AT = 'N'
+	       AND GC.CNTR_STTUS_CODE = '200'
+	       AND GC.STTEMNT_PAY_DE IS NOT NULL
+	       <if test="shCntrDeStart != null and shCntrDeStart != ''">
+	       AND GC.CNTR_DE <![CDATA[>=]]> #{shCntrDeStart}
+	       </if>
+	       <if test="shCntrDeEnd != null and shCntrDeEnd != ''">
+	       AND GC.CNTR_DE <![CDATA[<=]]> #{shCntrDeEnd}
+	       </if>
+	       AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+	     GROUP BY GC.CNTR_DE
+	     ORDER BY GC.CNTR_DE DESC
+	</select>
+
+	<!-- 일별 기부 합계 -->
+	<select id="getGiveDateStatisticsDetailTotal" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatistics" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveDateStatisticsDetailTotal */
+		SELECT SUM(GIVE_AMT) AS GIVE_AMT
+		       ,SUM(GIVE_PERSONS) AS GIVE_PERSONS
+		       ,SUM(GIVE_POINT) AS GIVE_POINT
+		       ,SUM(GIVE_CNT) AS GIVE_CNT
+		  FROM ( SELECT GC.CNTR_DE
+			            ,SUM(GC.CNTR_AMT) AS GIVE_AMT
+			            ,COUNT(DISTINCT(USER_ID)) AS GIVE_PERSONS
+			            ,SUM(GC.CNTR_POINT) AS GIVE_POINT
+			            ,COUNT(USER_ID) AS GIVE_CNT
+			       FROM G_CNTR GC
+			      WHERE 1=1
+			        AND GC.DELETE_AT = 'N'
+			        AND GC.CNTR_STTUS_CODE = '200'
+			        AND GC.STTEMNT_PAY_DE IS NOT NULL
+			        <if test="shCntrDeStart != null and shCntrDeStart != ''">
+			        AND GC.CNTR_DE <![CDATA[>=]]> #{shCntrDeStart}
+			        </if>
+			        <if test="shCntrDeEnd != null and shCntrDeEnd != ''">
+			        AND GC.CNTR_DE <![CDATA[<=]]> #{shCntrDeEnd}
+			        </if>
+			        AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+			      GROUP BY GC.CNTR_DE
+			      ORDER BY GC.CNTR_DE DESC
+	           )
+	</select>
+
+	<!-- 일자별 통계 > 일별 상세 내역 -->
+	<select id="getGiveDateStatisticsDetailByDate" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsSeparate" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveDateStatisticsDetailByDate */
+		SELECT GC.ELCTRN_PAY_NO
+		       ,GC.CNTR_AMT
+		       ,GC.CNTR_POINT
+		       ,(SELECT LABEL
+		           FROM OP_COMMON_CODE OCC
+		          WHERE ID = GC.CNTR_PATH_CODE
+		            AND CODE_TYPE = 'CNTR_PATH'
+		            AND USE_YN = 'Y') AS CNTR_PATH_NAME
+	     FROM G_CNTR GC
+	    WHERE 1=1
+	      AND GC.DELETE_AT = 'N'
+	      AND GC.CNTR_STTUS_CODE = '200'
+	      AND GC.STTEMNT_PAY_DE IS NOT NULL
+	      AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+	      AND GC.CNTR_DE = #{shCntrDeStart}
+	    ORDER BY GC.ELCTRN_PAY_NO
+	</select>
+
+	<!-- 인원별통계 > 상세 내역 -->
+	<select id="getGivePersonalStatisticsDetail" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsPersonal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonalStatisticsDetail */
+		SELECT B.USER_ID
+			   ,CRYPTO_DEC('normal', OU.USER_NAME, '', 0) USER_NAME
+		       ,CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) LOGIN_ID
+		       ,B.GIVE_CNT
+		       ,B.GIVE_AMT
+		       ,B.GIVE_POINT
+		  FROM ( SELECT USER_ID
+		  				,SUM(1) AS GIVE_CNT
+		         	    ,SUM(CNTR_AMT) AS GIVE_AMT
+		         	    ,SUM(CNTR_POINT) AS GIVE_POINT
+		           FROM G_CNTR GC
+		          WHERE 1=1
+		         	AND YEAR(GC.CNTR_DE) BETWEEN #{fromYear} AND #{toYear}
+		         	AND GC.DELETE_AT = 'N'
+		         	AND GC.CNTR_STTUS_CODE = '200'
+		         	AND GC.STTEMNT_PAY_DE IS NOT NULL
+		         	AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		         	GROUP BY USER_ID
+		       ) B, OP_USER OU
+		 WHERE B.USER_ID = OU.USER_ID
+		<choose>
+	     	<when test="'cnt'.equals(itemsOrder)"> ORDER BY B.GIVE_CNT DESC </when>
+	        <when test="'amt'.equals(itemsOrder)"> ORDER BY B.GIVE_AMT DESC </when>
+	        <when test="'point'.equals(itemsOrder)"> ORDER BY B.GIVE_POINT DESC </when>
+	        <otherwise>
+	        	ORDER BY B.GIVE_CNT DESC, B.GIVE_AMT DESC, B.GIVE_POINT DESC
+	        </otherwise>
+	    </choose>
+	</select>
+
+	<!-- 인원별통계 > 총계 -->
+	<select id="getGivePersonalStatisticsDetailTotal" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsPersonal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonalStatisticsDetailTotal */
+		SELECT SUM(B.GIVE_CNT) AS GIVE_CNT
+		       ,SUM(B.GIVE_AMT) AS GIVE_AMT
+		       ,SUM(B.GIVE_POINT) AS GIVE_POINT
+		  FROM ( SELECT USER_ID
+		  				,SUM(1) AS GIVE_CNT
+		         	    ,SUM(CNTR_AMT) AS GIVE_AMT
+		         	    ,SUM(CNTR_POINT) AS GIVE_POINT
+		           FROM G_CNTR GC
+		          WHERE 1=1
+		         	AND YEAR(GC.CNTR_DE) BETWEEN #{fromYear} AND #{toYear}
+		         	AND GC.DELETE_AT = 'N'
+		         	AND GC.CNTR_STTUS_CODE = '200'
+		         	AND GC.STTEMNT_PAY_DE IS NOT NULL
+		         	AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		         	GROUP BY USER_ID
+		       ) B, OP_USER OU
+		 WHERE B.USER_ID = OU.USER_ID
+	</select>
+
+	<!-- 인원별통계 > 총계 -->
+	<select id="getGivePersonalStatisticsDetailByUser" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsPersonal" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonalStatisticsDetailByUser */
+		SELECT DATE_FORMAT(GC.LAST_UPDT_PNTTM,'%Y-%m-%d') AS STTEMNT_PAY_DE
+			   ,GC.ELCTRN_PAY_NO
+		       ,GC.CNTR_AMT as GIVE_AMT
+		       ,GC.CNTR_POINT as GIVE_POINT
+		       ,(SELECT LABEL
+		           FROM OP_COMMON_CODE OCC
+		          WHERE ID = GC.CNTR_PATH_CODE
+		            AND CODE_TYPE = 'CNTR_PATH'
+		            AND USE_YN = 'Y') AS CNTR_PATH_NAME
+	      FROM G_CNTR GC
+	     WHERE 1=1
+	       AND GC.DELETE_AT = 'N'
+	       AND GC.CNTR_STTUS_CODE = '200'
+	       AND GC.STTEMNT_PAY_DE IS NOT NULL
+	       AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+	       AND GC.USER_ID = #{userId}
+	     ORDER BY STTEMNT_PAY_DE DESC
+	</select>
+
+	<!-- 기부금 운영현황 > 리스트 총계 -->
+	<select id="getGiveOperateListCount" parameterType="saleson.shop.give.statistics.domain.GiveOperateSearch" resultType="int" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveOperateListCount */
+		SELECT COUNT(1)
+	      FROM ( SELECT GL.LOCGOV_CODE
+	                    ,GL.UPPER_LOCGOV_CODE
+	                    ,GL.LOCGOV_NM
+					    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '100' THEN GCO.EXPNDTR_AMT END),0) AS AMT_100
+					    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '200' THEN GCO.EXPNDTR_AMT END),0) AS AMT_200
+					    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '300' THEN GCO.EXPNDTR_AMT END),0) AS AMT_300
+					    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '400' THEN GCO.EXPNDTR_AMT END),0) AS AMT_400
+				   FROM G_LOCGOV GL
+				   LEFT OUTER JOIN ( SELECT REGIST_SN
+				   							,LOCGOV_CODE
+				   							,BSNS_PURPS_CODE
+				   							,EXPNDTR_DE
+				   							,EXPNDTR_AMT
+				   					   FROM G_CTBNY_OPRATN
+				   					  WHERE 1 = 1
+				   					  <if test="shCntrYear != null and !''.equals(shCntrYear)">
+									    AND YEAR(EXPNDTR_DE) = #{shCntrYear}
+									  </if> ) GCO
+				     ON GL.LOCGOV_CODE = GCO.LOCGOV_CODE
+				  WHERE 1 = 1
+				  <if test="shLocgovCode != null and !''.equals(shLocgovCode)">
+				    AND GL.LOCGOV_CODE = #{shLocgovCode}
+				  </if>
+				  GROUP BY GL.LOCGOV_CODE, GL.UPPER_LOCGOV_CODE )
+	</select>
+
+	<!-- 기부금 운영현황 > 리스트 -->
+	<select id="getGiveOperateList" parameterType="saleson.shop.give.statistics.domain.GiveOperateSearch" resultType="saleson.shop.give.statistics.domain.GiveOperate" >
+		<include refid="CommonMapper.paginationHeader" />
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveOperateList */
+		SELECT UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
+	           ,(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+	           ,LOCGOV_CODE AS LOCGOV_CODE
+	           ,LOCGOV_NM AS LOCGOV_NM
+	           ,AMT_100
+	           ,AMT_200
+	           ,AMT_300
+	           ,AMT_400
+	           ,AMT_100 + AMT_200 + AMT_300 + AMT_400 AS EXPNDTR_SUM
+	      FROM ( SELECT GL.LOCGOV_CODE
+	                    ,GL.UPPER_LOCGOV_CODE
+	                    ,GL.LOCGOV_NM
+					    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '100' THEN GCO.EXPNDTR_AMT END),0) AS AMT_100
+					    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '200' THEN GCO.EXPNDTR_AMT END),0) AS AMT_200
+					    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '300' THEN GCO.EXPNDTR_AMT END),0) AS AMT_300
+					    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '400' THEN GCO.EXPNDTR_AMT END),0) AS AMT_400
+				   FROM G_LOCGOV GL
+				   LEFT OUTER JOIN ( SELECT REGIST_SN
+				   							,LOCGOV_CODE
+				   							,BSNS_PURPS_CODE
+				   							,EXPNDTR_DE
+				   							,EXPNDTR_AMT
+				   					   FROM G_CTBNY_OPRATN
+				   					  WHERE 1 = 1
+				   					  <if test="shCntrYear != null and !''.equals(shCntrYear)">
+									    AND YEAR(EXPNDTR_DE) = #{shCntrYear}
+									  </if> ) GCO
+				     ON GL.LOCGOV_CODE = GCO.LOCGOV_CODE
+				  WHERE 1 = 1
+				  <if test="shLocgovCode != null and !''.equals(shLocgovCode)">
+				    AND GL.LOCGOV_CODE = #{shLocgovCode}
+				  </if>
+				  GROUP BY GL.LOCGOV_CODE, GL.UPPER_LOCGOV_CODE )
+		 ORDER BY UPPER_LOCGOV_CODE, LOCGOV_CODE
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 기부금 운영현황 > 상세 -->
+	<select id="getGiveOperateListByLocgov" parameterType="saleson.shop.give.statistics.domain.GiveOperateSearch" resultType="saleson.shop.give.statistics.domain.GiveOperate" >
+		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGiveOperateListByLocgov */
+		SELECT NVL(CNTR_YEAR,0) AS CNTR_YEAR
+		       ,AMT_100
+		       ,CNT_100
+		       ,AMT_200
+		       ,CNT_200
+		       ,AMT_300
+		       ,CNT_300
+		       ,AMT_400
+		       ,CNT_400
+		       ,NVL(AMT_100 + AMT_200 + AMT_300 + AMT_400, 0) AS EXPNDTR_SUM
+		       ,NVL(CNT_100 + CNT_200 + CNT_300 + CNT_400, 0) AS EXPNDTR_CNT
+		  FROM ( SELECT YEAR(GCO.EXPNDTR_DE) AS CNTR_YEAR
+		                ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '100' THEN GCO.EXPNDTR_AMT END),0) AS AMT_100
+		          	    ,NVL(COUNT(CASE WHEN GCO.BSNS_PURPS_CODE = '100' THEN 1 END),0) AS CNT_100
+		          	    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '200' THEN GCO.EXPNDTR_AMT END),0) AS AMT_200
+		          	    ,NVL(COUNT(CASE WHEN GCO.BSNS_PURPS_CODE = '200' THEN 1 END),0) AS CNT_200
+		          	    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '300' THEN GCO.EXPNDTR_AMT END),0) AS AMT_300
+		          	    ,NVL(COUNT(CASE WHEN GCO.BSNS_PURPS_CODE = '300' THEN 1 END),0) AS CNT_300
+		          	    ,NVL(SUM(CASE WHEN GCO.BSNS_PURPS_CODE = '400' THEN GCO.EXPNDTR_AMT END),0) AS AMT_400
+		          	    ,NVL(COUNT(CASE WHEN GCO.BSNS_PURPS_CODE = '400' THEN 1 END),0) AS CNT_400
+		           FROM G_CTBNY_OPRATN GCO
+	              WHERE LOCGOV_CODE = #{shLocgovCode}
+		          GROUP BY YEAR(GCO.EXPNDTR_DE)
+		           WITH ROLLUP )
+	     ORDER BY CNTR_YEAR DESC
+	</select>
+
+</mapper>

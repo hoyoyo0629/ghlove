@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 기부 > 기부내역현황 > 영수증 출력 | 고향사랑e음</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+
+    <link rel="stylesheet" href="/static/css/popup.css" />
+
+    <!-- ali custom Style -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+
+    <script src="/webDrm/fsw.js"></script>
+  </head>
+  <style>
+    .btn_lg {
+      background-color: #004cce;
+    }
+    .modal-content .pop_txt {
+      margin-bottom: 40px;
+    }
+  </style>
+
+  <body>
+    <div id="OZViewer" style="width: 98%; height: 98%"></div>
+    <script type="text/javascript">
+      var scriptLoadArr = [
+        "/oz80/ozhviewer/jquery-2.0.3.min.js",
+        "/oz80/ozhviewer/jquery-ui.min.js",
+        "/oz80/ozhviewer/jquery.dynatree.js",
+        "/oz80/ozhviewer/OZJSViewer.js",
+      ];
+      var cssArr = ["/oz80/ozhviewer/jquery-ui.css", "/oz80/ozhviewer/ui.dynatree.css"];
+
+      var cntrSn = "";
+      var locgovCode = "";
+
+      function loadCss(index) {
+        if (index >= cssArr.length) {
+          loadScript(0);
+          return false;
+        }
+
+        var src = cssArr[index];
+        var link = document.createElement("link");
+        link.href = $s.config.ozDomain + src;
+        link.async = false;
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        document.head.appendChild(link);
+
+        link.onload = function () {
+          loadCss(++index);
+        };
+      }
+
+      function loadScript(index) {
+        if (index >= scriptLoadArr.length) {
+          init();
+          return false;
+        }
+
+        var src = scriptLoadArr[index];
+        var head = document.getElementsByTagName("head")[0];
+        var script = document.createElement("script");
+        script.src = $s.config.ozDomain + src;
+        script.async = false;
+        document.head.appendChild(script);
+
+        script.onload = function () {
+          loadScript(++index);
+        };
+      }
+
+      $(function () {
+        $s.core.authenticationFilter(function () {
+          if (!$s.pages.isAllowAnonymous()) {
+            $s.alert("로그인 후 이용이 가능합니다.", function () {
+              self.close();
+            });
+            $s.authenticationException("로그인 후 이용이 가능합니다.");
+          }
+        });
+        loadCss(0);
+      });
+
+      function init() {
+        var params = {
+          cntrSn: getParameter("cntrSn"),
+        };
+
+        $.ajax({
+          url: $s.config.apiDomain + "/api/mypage/receipt-print",
+          type: "POST",
+          headers: $s.api.getAuthorizationHeader(),
+          data: params,
+          success: function (response) {
+            if (response.cntr) {
+              cntrSn = response.cntr.cntrSn;
+              locgovCode = response.cntr.locgovCode;
+
+              start_ozjs("OZViewer", $s.config.ozDomain + "/oz80/ozhviewer/");
+            } else {
+              $s.alert("영수증 정보가 없습니다.", function () {
+                self.close();
+              });
+            }
+          },
+        });
+      }
+
+      function getParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+
+      function OZPostCommand_OZViewer(cmd, msg) {
+        var saveBtn = $("#OZViewer .btnSAVEAS2").length > 0 ? $("#OZViewer .btnSAVEAS2") : $("#OZViewer .btnSAVEAS");
+        var printBtn = $("#OZViewer .btnPRINT2").length > 0 ? $("#OZViewer .btnPRINT2") : $("#OZViewer .btnPRINT");
+
+        // 저장버튼 disabled 후
+        saveBtn.attr("disabled", true);
+        // 저장버튼 안보이게
+        saveBtn.hide();
+
+        printBtn.attr("onclick", "").unbind("click");
+
+        printBtn.click(function () {
+          document.getElementById("OZViewer").ScriptEx("print", "print.mode=false;print.printername=DEFAULT_PRINTER", ";");
+        });
+      }
+
+      function OZPrintCommand_OZViewer(msg, code, reportname, printname, printcopy, printpages, printrange, username) {
+        if (code == "0") {
+          var params = {
+            cntrSn: getParameter("cntrSn"),
+          };
+          $.ajax({
+            url: $s.config.apiDomain + "/api/mypage/receipt-print/insert",
+            type: "POST",
+            headers: $s.api.getAuthorizationHeader(),
+            data: params,
+            success: function (response) {},
+          });
+        }
+      }
+
+      function SetOZParamters_OZViewer() {
+        var oz;
+
+        oz = document.getElementById("OZViewer");
+        oz.sendToActionScript("connection.servlet", $s.config.ozDomain + "/oz80/server");
+        oz.sendToActionScript("information.debug", "true");
+        oz.sendToActionScript("connection.reportname", "/3.cntr_receipt_new.ozr");
+        oz.sendToActionScript("odi.odinames", "3_cntr_receipt");
+
+        oz.sendToActionScript("odi.3_cntr_receipt.pcount", "1");
+        oz.sendToActionScript("odi.3_cntr_receipt.args1", "CNTR_SN=" + cntrSn);
+
+        oz.sendToActionScript("connection.pcount", "2");
+        oz.sendToActionScript("connection.args1", "seal_url=" + $s.config.apiDomain + "/api/common/sealView/" + locgovCode);
+
+        oz.sendToActionScript("viewer.printcommand", "true");
+        oz.sendToActionScript("viewer.postcommand", "command;message");
+        oz.sendToActionScript("viewer.lockopt", "true");
+
+        return true;
+      }
+    </script>
+
+    <div id="op-alert" class="modal fade p_notitle" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="pop_txt">
+              <p></p>
+            </div>
+            <div class="row no-gutters btn-group alert-type">
+              <div class="">
+                <button type="button" class="btn btn_lg btn_primary op-modal-ok" data-dismiss="modal" @click="clickEvent">확인</button>
+              </div>
+            </div>
+            <div class="row no-gutters btn-group confirm-type">
+              <div class="">
+                <button type="button" class="btn btn_lg btn_default op-modal-cancel" data-dismiss="modal" @click="cancelEvent">취소</button>
+              </div>
+              <div class="">
+                <button type="button" class="btn btn_lg btn_primary op-modal-ok" data-dismiss="modal" @click="clickEvent">확인</button>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="modal_close" data-dismiss="modal">
+            <span class="screen_out">닫기</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.seasonalfood.SeasonalFoodMapper">
+
+	<resultMap id="SeasonalFoodDto" type="saleson.shop.seasonalfood.domain.SeasonalFood">
+		<result property="seasonalFoodMonth" column="SEASON_FOOD_MONTH" />
+		<result property="seasonalFoodKeyword" column="SEASON_FOOD_KEYWORD" />
+		<result property="regSeq" column="REG_SEQ" />
+		<result property="frstRegisterId" column="FRST_REGISTER_ID" />
+		<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" />
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID" />
+		<result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM" />
+	</resultMap>
+	
+	
+	
+	<!-- <select id="getSeasonalItemByKeyword" parameterType="List" resultType="int">
+			
+		SELECT
+				COUNT(1)
+			FROM OP_ITEM
+			WHERE 
+				<foreach collection="array" item="keyword"  open="item_name like concat('%'," separator=", '%') or item_name like concat('%'," close=", '%')">
+					#{keyword}
+				</foreach>
+				
+	</select> -->
+	
+	
+	<select id="getSeasonalFood" resultMap="SeasonalFoodDto" parameterType="saleson.shop.seasonalfood.domain.SeasonalFood">
+			
+		SELECT
+			*
+			FROM G_SEASON_FOOD
+			<if test='seasonalFoodMonth != null and seasonalFoodMonth != ""'>
+			WHERE SEASON_FOOD_MONTH = #{seasonalFoodMonth}
+			</if>
+	</select>
+	
+	
+	<select id="getSeasonalFoodDisplay" resultMap="SeasonalFoodDto">
+			
+		SELECT SEASON_FOOD_MONTH
+			, (
+					SELECT 
+						GROUP_CONCAT(SEASON_FOOD_KEYWORD) 
+						FROM (SELECT 
+								SEASON_FOOD_KEYWORD 
+								FROM G_SEASON_FOOD 
+								WHERE SEASON_FOOD_MONTH = FOOD.SEASON_FOOD_MONTH
+								ORDER BY REG_SEQ)
+			) AS SEASON_FOOD_KEYWORD
+		FROM G_SEASON_FOOD FOOD
+		GROUP BY SEASON_FOOD_MONTH
+		ORDER BY SEASON_FOOD_MONTH
+				
+	</select>
+	
+	
+	<!-- <update id="saveSeasonalFood" parameterType="saleson.shop.seasonalfood.domain.SeasonalFood" >
+			
+		MERGE INTO OP_SEASONAL_FOOD
+			USING DB_ROOT
+				ON SEASON_FOOD_MONTH = #{seasonalFoodMonth}
+			WHEN MATCHED THEN			조건문에 해당하는 데이터가 있을 때 UPDATE문 실행
+				UPDATE SET SEASON_FOOD_KEYWORD = #{seasonalFoodKeyword}
+			WHEN NOT MATCHED THEN		조건문에 해당하는 데이터가 없을 때 INSERT문 실행
+				INSERT
+						(SEASON_FOOD_MONTH
+						, SEASON_FOOD_KEYWORD)
+					VALUES
+						(#{seasonalFoodMonth}
+						, #{seasonalFoodKeyword})
+			
+	</update> -->
+	
+	
+	<insert id="insertSeasonalFood" parameterType="saleson.shop.seasonalfood.domain.SeasonalFood" >
+			
+		INSERT INTO G_SEASON_FOOD
+						(
+						SEASON_FOOD_MONTH
+						, SEASON_FOOD_KEYWORD
+						, REG_SEQ
+						, FRST_REGISTER_ID
+						, FRST_REGIST_PNTTM
+						, LAST_UPDUSR_ID
+						, LAST_UPDT_PNTTM
+						)
+					VALUES
+						(
+						#{seasonalFoodMonth}
+						, #{seasonalFoodKeyword}
+						, #{regSeq}
+						, #{frstRegisterId}
+						, #{frstRegistPnttm}
+						, #{lastUpdusrId}
+						, #{lastUpdtPnttm}
+						)
+			
+	</insert>
+	
+	<delete id="deleteSeasonalFood" parameterType="saleson.shop.seasonalfood.domain.SeasonalFood" >
+			
+		DELETE FROM G_SEASON_FOOD
+			WHERE SEASON_FOOD_MONTH = #{seasonalFoodMonth}
+			
+	</delete>
+	
+	
+	
+</mapper>

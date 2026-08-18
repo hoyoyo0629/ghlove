@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>영암군 소아청소년을 위한 마을 주치의 ! : 고향사랑e음 고향소식</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+  </head>
+
+  <body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page hometown10">
+      <div id="wrap">
+
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <img src="/newsletter/static/images/vol001/detail_25.jpg" alt="영암군 보건소 간판 사진. 청년기획도시 영암. 고향사랑 기금사업 소아 청소년과라고 적혀있다.">
+              <!-- <div class="banner_link_btn">
+                <a href="#;">자세히 보기&nbsp;&nbsp;+</a>
+              </div> -->
+            </div>
+            <div class="tit_area">
+              <h4>전라남도 영암군</h4>
+              <h3>
+                영암군 소아청소년을 위한 <br/>
+                <span class="blue">마을 주치의 !</span>
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar"></div>
+          <section id="" class="detail_contents_area">
+            <ul class="deco-arrow blue-deco blue">
+              <li>
+                전남 영암군은 고향사랑기금으로 소아청소년과를 신설하여 8월 19일부터 영암군 보건소와 삼호보건지소에서 진료에 들어간다고 밝혔다.
+              </li>
+              <li>
+                지금까지 영암군에는 소아청소년 전문의나 병원이 없어 소아청소년이 진료를 받기 위해서는 타지로 나가야하는 불편함이 있었다. 열악한 정주여건을 개선하기 위해 고향사랑기금으로 소아청소년과 전문의와 간호사를 채용하게 됐다. 이들은 앞으로 주 5일 9시부터 17시까지 영암 소아청소년의 마을 주치의 역할을 담당할 계획이다.
+              </li>
+              <li>
+                우승희 영암군수는 “소아청소년과 신설로 부모와 아이가 안심할 수 있는 필수 의료서비스를 제공할 수 있게 됐다. 이런 일을 가능하게 해준 전국의 기부자들에게 감사드린다. 공공산후조리원 건립 등 다양한 보건정책으로 아이 키우기 좋은 영암을 선도하겠다.”고 말했다.
+              </li>
+            </ul>
+            <div class="bar blue-bar"></div>
+            <ul class="deco-circle blue-deco">
+              <li>
+                일 시 : 주 5회(월&#126;금) / 09:00 &#126; 17:00
+              </li>
+              <li>
+                장 소 : 영암군 보건소(화, 목), 삼호보건지소(월, 수, 금)
+              </li>
+              <li>
+                주요내용 : 소아청소년과 전문의 신설 및 운영
+              </li>
+              <li>
+                문 의 : 군정홍보과 담당 노유지 (☏ <a href="tel:0614702632" class="tel">061-470-2632</a>)
+              </li>
+            </ul>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

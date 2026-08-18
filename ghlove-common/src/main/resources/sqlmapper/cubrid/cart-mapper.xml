@@ -1,0 +1,655 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.cart.CartMapper">
+
+	<resultMap id="CartResult" type="saleson.shop.cart.domain.Cart">
+		<result property="cartId" column="CART_ID" />
+		<result property="sessionId" column="SESSION_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="itemId" column="ITEM_ID" />
+		<result property="quantity" column="QUANTITY" />
+		<result property="options" column="OPTIONS" />
+		<result property="shippingPaymentType" column="SHIPPING_PAYMENT_TYPE" />
+		<result property="additionItemFlag" column="ADDITION_ITEM_FLAG" />
+		<result property="parentItemId" column="PARENT_ITEM_ID" />
+		<result property="createdDate" column="CART_CREATED_DATE" />
+	</resultMap>
+
+	<resultMap id="CartListResult" type="saleson.shop.order.domain.BuyItem" extends="saleson.shop.order.OrderMapper.BuyItemResult">
+		<id property="cartId" column="CART_ID" />
+		<id property="textOption" column="TEXT_OPTION" />
+		<id property="cartCreatedDate" column="CART_CREATED_DATE" />
+ 	</resultMap>
+
+	<resultMap id="CartSetListResult" type="saleson.shop.order.domain.BuyItem" extends="saleson.shop.order.OrderMapper.BuyItemResult">
+		<id property="cartId" column="CART_ID" />
+		<id property="itemId" column="ITEM_ID" />
+	</resultMap>
+
+	<select id="getCartAvailableInsertValidationCountForItemTypeByCartParam" parameterType="saleson.shop.cart.support.CartParam" resultType="Integer">
+		/* saleson.shop.cart.CartMapper.getCartAvailableInsertValidationCountForItemTypeByCartParam */
+		SELECT COUNT(*)
+		FROM OP_CART C
+			INNER JOIN OP_ITEM I ON C.ITEM_ID = I.ITEM_ID
+		<where>
+			<choose>
+				<when test="isLogin == true"><include refid="sqlCartUserWhere" /></when>
+				<otherwise><include refid="sqlCartGuestWhere" /></otherwise>
+			</choose>
+
+			AND I.ITEM_TYPE != (
+				SELECT ITEM_TYPE FROM OP_ITEM WHERE ITEM_ID = #{itemId}
+			)
+		</where>
+	</select>
+
+	<select id="getCartSetList" parameterType="saleson.shop.cart.support.CartParam" resultMap="CartSetListResult">
+		/* saleson.shop.cart.CartMapper.getCartSetList */
+		SELECT
+			C.CART_ID,
+			C.ITEM_ID,
+			C.QUANTITY,
+			C.OPTIONS,
+			C.CREATED_DATE AS CART_CREATED_DATE,
+			I.ITEM_ID,
+			I.SELLER_ID,
+			I.ITEM_CODE,
+			I.ITEM_USER_CODE,
+			I.ITEM_NAME,
+			I.ITEM_SUMMARY,
+			I.ITEM_DATA_TYPE,
+			I.ITEM_TYPE,
+			I.ITEM_NEW_FLAG,
+			I.ITEM_LABEL,
+			I.ITEM_TYPE1,
+			I.ITEM_TYPE2,
+			I.ITEM_TYPE3,
+			I.ITEM_TYPE4,
+			I.ITEM_TYPE5,
+			I.ITEM_TYPE6,
+			I.ITEM_TYPE7,
+			I.ITEM_TYPE8,
+			I.ITEM_TYPE9,
+			I.ITEM_TYPE10,
+			I.BRAND_ID,
+			I.BRAND,
+			I.SOLD_OUT,
+			I.STOCK_FLAG,
+			I.STOCK_QUANTITY,
+			I.NONMEMBER_ORDER_TYPE,
+			I.TAX_TYPE,
+			I.COMMISSION_TYPE,
+			I.COMMISSION_RATE,
+			I.PRICE_CRITERIA,
+
+			I.ITEM_PRICE,
+			I.COST_PRICE,
+			I.SUPPLY_PRICE,
+			I.SALE_PRICE,
+			I.SALE_PRICE_NONMEMBER_FLAG,
+			I.SALE_PRICE_NONMEMBER,
+
+			I.SPOT_FLAG,
+			I.SPOT_DATE_TYPE,
+			I.SPOT_TYPE,
+			I.SPOT_APPLY_GROUP,
+			I.SPOT_DISCOUNT_AMOUNT,
+			I.SPOT_START_DATE,
+			I.SPOT_END_DATE,
+			I.SPOT_START_TIME,
+			I.SPOT_END_TIME,
+			I.SPOT_WEEK_DAY,
+
+			I.SELLER_DISCOUNT_FLAG,
+			I.SELLER_DISCOUNT_TYPE,
+			I.SELLER_DISCOUNT_AMOUNT,
+			I.SELLER_POINT_FLAG,
+
+			I.SET_DISCOUNT_TYPE,
+			I.SET_DISCOUNT_AMOUNT,
+			I.ITEM_IMAGE,
+			I.ITEM_OPTION_FLAG,
+			I.ITEM_OPTION_TYPE,
+			I.ITEM_OPTION_TITLE1,
+			I.ITEM_OPTION_TITLE2,
+			I.ITEM_OPTION_TITLE3,
+			I.DATA_STATUS_CODE,
+			I.DISPLAY_FLAG,
+			I.COUPON_USE_FLAG,
+			I.NAVER_SHOPPING_ITEM_NAME,
+			I.NAVER_SHOPPING_FLAG,
+			I.NAVER_PAY_FLAG,
+
+			I.PRIVATE_TYPE,
+			<!-- (SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV WHERE LOCGOV_CODE = I.LOCGOV_CODE) AS LOCGOV_NM, 상품에 자치구코드 삭제, 판매자 자치구코드 바라보도록 수정 필요 -->
+			<!-- I.LOCGOV_CODE, -->
+			I.REPRESENTATIVE_ITEM_YN,
+			I.MINOR_ALLOW_FLAG,
+			I.ORIGIN_COUNTRY,
+			I.MANUFACTURER,
+			I.COLOR,
+			I.WEIGHT,
+			I.SALE_POINT,
+
+			I.STOCK_CODE,
+			I.STOCK_SCHEDULE_AUTO_FLAG,
+			I.STOCK_SCHEDULE_TYPE,
+			I.STOCK_SCHEDULE_DATE,
+			I.STOCK_SCHEDULE_TEXT,
+			I.ORDER_MIN_QUANTITY,
+			I.ORDER_MAX_QUANTITY,
+			I.SALE_QUANTITY,
+
+			I.ITEM_ADDITION_FLAG,
+			I.FREE_GIFT_FLAG,
+			I.FREE_GIFT_NAME,
+			I.ITEM_KEYWORD,
+			I.ITEM_NOTICE_CODE,
+			I.TEAM,
+			I.OPENTIME,
+			I.OTHER_FLAG,
+			I.RECOMMEND_FLAG,
+			I.RELATION_ITEM_DISPLAY_TYPE,
+			I.DELIVERY_COMPANY_ID,
+			I.DELIVERY_COMPANY_NAME,
+			I.DELIVERY_TYPE,
+			I.ITEM_RETURN_FLAG,
+			I.HITS,
+
+			I.MD_ID,
+			I.MD_NAME,
+
+			I.SHIPPING_TYPE,
+			I.SHIPPING,
+			I.SHIPPING_FREE_AMOUNT,
+
+			I.UPDATED_USER_ID,
+			I.UPDATED_DATE,
+			I.CREATED_USER_ID,
+			I.CREATED_DATE,
+			I.ERP_EXCEPTION_TYPE,
+			I.SHIPMENT_ID,
+			I.SHIPMENT_GROUP_CODE,
+			I.SHIPMENT_RETURN_TYPE,
+			I.SHIPMENT_RETURN_ID,
+			I.SHIPPING_TYPE,
+			I.SHIPPING_GROUP_CODE,
+			I.SHIPPING,
+			I.SHIPPING_FREE_AMOUNT,
+			I.SHIPPING_ITEM_COUNT,
+			I.SHIPPING_EXTRA_CHARGE1,
+			I.SHIPPING_EXTRA_CHARGE2,
+			I.SHIPPING_RETURN,
+			S.SELLER_NAME
+			<if test="isLogin == true">
+				, IFNULL((
+				SELECT UL.DISCOUNT_RATE
+				FROM OP_USER_DETAIL UD
+				INNER JOIN OP_USER_LEVEL UL ON UD.LEVEL_ID = UL.LEVEL_ID
+				WHERE
+				UD.USER_ID = #{userId}
+				), 0) AS USER_LEVEL_DISCOUNT_RATE
+			</if>
+		FROM OP_CART_SET C
+		INNER JOIN OP_ITEM I ON C.ITEM_ID = I.ITEM_ID
+		INNER JOIN OP_SELLER S ON I.SELLER_ID = S.SELLER_ID AND S.STATUS_CODE = '2'
+		<where>
+			C.PARENT_CART_ID = #{parentCartId}
+			<if test="cartSetIds != null and !cartSetIds.isEmpty()">
+				AND C.CART_ID IN
+				<foreach item="cartId" index="index" collection="cartSetIds" open="(" separator="," close=")">
+					#{cartId}
+				</foreach>
+			</if>
+		</where>
+		ORDER BY C.CART_ID <!-- ASC --> DESC
+	</select>
+
+	<select id="getCartList" parameterType="saleson.shop.cart.support.CartParam" resultMap="CartListResult">
+		/* saleson.shop.cart.CartMapper.getCartList */
+		SELECT
+			C.CART_ID,
+			C.SESSION_ID,
+			C.USER_ID,
+			C.ITEM_ID,
+			C.QUANTITY,
+			C.OPTIONS,
+			C.SHIPPING_PAYMENT_TYPE,
+			C.ADDITION_ITEM_FLAG,
+			C.PARENT_ITEM_ID,
+			C.SET_ITEM_FLAG,
+			C.CREATED_DATE AS CART_CREATED_DATE,
+			I.ITEM_ID,
+			I.SELLER_ID,
+			I.ITEM_CODE,
+			I.ITEM_USER_CODE,
+			I.ITEM_NAME,
+			I.ITEM_SUMMARY,
+			I.ITEM_DATA_TYPE,
+			I.ITEM_TYPE,
+			I.ITEM_NEW_FLAG,
+			I.ITEM_LABEL,
+			I.ITEM_TYPE1,
+			I.ITEM_TYPE2,
+			I.ITEM_TYPE3,
+			I.ITEM_TYPE4,
+			I.ITEM_TYPE5,
+			I.ITEM_TYPE6,
+			I.ITEM_TYPE7,
+			I.ITEM_TYPE8,
+			I.ITEM_TYPE9,
+			I.ITEM_TYPE10,
+			I.BRAND_ID,
+			I.BRAND,
+			I.SOLD_OUT,
+			I.STOCK_FLAG,
+			I.STOCK_QUANTITY,
+
+			I.NONMEMBER_ORDER_TYPE,
+			I.TAX_TYPE,
+			I.COMMISSION_TYPE,
+			I.COMMISSION_RATE,
+			I.PRICE_CRITERIA,
+
+			I.ITEM_PRICE,
+			I.COST_PRICE,
+			I.SUPPLY_PRICE,
+			I.SALE_PRICE,
+			I.SALE_PRICE_NONMEMBER_FLAG,
+			I.SALE_PRICE_NONMEMBER,
+
+			I.SPOT_FLAG,
+			I.SPOT_DATE_TYPE,
+			I.SPOT_TYPE,
+			I.SPOT_APPLY_GROUP,
+			I.SPOT_DISCOUNT_AMOUNT,
+			I.SPOT_START_DATE,
+			I.SPOT_END_DATE,
+			I.SPOT_START_TIME,
+			I.SPOT_END_TIME,
+			I.SPOT_WEEK_DAY,
+
+			I.SELLER_DISCOUNT_FLAG,
+			I.SELLER_DISCOUNT_TYPE,
+			I.SELLER_DISCOUNT_AMOUNT,
+			I.SELLER_POINT_FLAG,
+
+			I.SET_DISCOUNT_TYPE,
+			I.SET_DISCOUNT_AMOUNT,
+			I.ITEM_IMAGE,
+			I.ITEM_OPTION_FLAG,
+			I.ITEM_OPTION_TYPE,
+			I.ITEM_OPTION_TITLE1,
+			I.ITEM_OPTION_TITLE2,
+			I.ITEM_OPTION_TITLE3,
+			I.DATA_STATUS_CODE,
+			I.DISPLAY_FLAG,
+			I.COUPON_USE_FLAG,
+			I.NAVER_SHOPPING_ITEM_NAME,
+			I.NAVER_SHOPPING_FLAG,
+			I.NAVER_PAY_FLAG,
+
+			I.PRIVATE_TYPE,
+			<!-- (SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV WHERE LOCGOV_CODE = I.LOCGOV_CODE) AS LOCGOV_NM, -->
+			(SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV WHERE LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM,
+			S.LOCGOV_CODE,
+			I.REPRESENTATIVE_ITEM_YN,
+			I.MINOR_ALLOW_FLAG,
+			I.ORIGIN_COUNTRY,
+			I.MANUFACTURER,
+			I.COLOR,
+			I.WEIGHT,
+			I.SALE_POINT,
+
+			I.STOCK_CODE,
+			I.STOCK_SCHEDULE_AUTO_FLAG,
+			I.STOCK_SCHEDULE_TYPE,
+			I.STOCK_SCHEDULE_DATE,
+			I.STOCK_SCHEDULE_TEXT,
+			I.ORDER_MIN_QUANTITY,
+			I.ORDER_MAX_QUANTITY,
+			I.SALE_QUANTITY,
+
+			I.ITEM_ADDITION_FLAG,
+			I.FREE_GIFT_FLAG,
+			I.FREE_GIFT_NAME,
+			I.ITEM_KEYWORD,
+			I.ITEM_NOTICE_CODE,
+			I.TEAM,
+			I.OPENTIME,
+			I.OTHER_FLAG,
+			I.RECOMMEND_FLAG,
+			I.RELATION_ITEM_DISPLAY_TYPE,
+			I.DELIVERY_COMPANY_ID,
+			I.DELIVERY_COMPANY_NAME,
+			I.DELIVERY_TYPE,
+			I.ITEM_RETURN_FLAG,
+			I.HITS,
+
+			I.MD_ID,
+			I.MD_NAME,
+
+			I.SHIPPING_TYPE,
+			I.SHIPPING,
+			I.SHIPPING_FREE_AMOUNT,
+
+			I.UPDATED_USER_ID,
+			I.UPDATED_DATE,
+			I.CREATED_USER_ID,
+			I.CREATED_DATE,
+			I.ERP_EXCEPTION_TYPE,
+			I.SHIPMENT_ID,
+			I.SHIPMENT_GROUP_CODE,
+			I.SHIPMENT_RETURN_TYPE,
+			I.SHIPMENT_RETURN_ID,
+			I.SHIPPING_TYPE,
+			I.SHIPPING_GROUP_CODE,
+			I.SHIPPING,
+			I.SHIPPING_FREE_AMOUNT,
+			I.SHIPPING_ITEM_COUNT,
+			I.SHIPPING_EXTRA_CHARGE1,
+			I.SHIPPING_EXTRA_CHARGE2,
+			I.SHIPPING_RETURN,
+			I.MOBILE_ITEM_YN,
+			S.COMPANY_NAME,
+			S.SELLER_NAME,
+			<!-- 필수 추가정보 -->
+			C.TEXT_OPTION
+			<if test="isLogin == true">
+				, IFNULL((
+					SELECT UL.DISCOUNT_RATE
+					FROM OP_USER_DETAIL UD
+						INNER JOIN OP_USER_LEVEL UL ON UD.LEVEL_ID = UL.LEVEL_ID
+					WHERE UD.USER_ID = #{userId}
+				), 0) AS USER_LEVEL_DISCOUNT_RATE
+			</if>
+		FROM OP_CART C
+			INNER JOIN OP_ITEM I ON C.ITEM_ID = I.ITEM_ID
+			INNER JOIN OP_SELLER S ON I.SELLER_ID = S.SELLER_ID AND S.STATUS_CODE = '2'
+		<where>
+			<choose>
+				<when test="isLogin == true">
+					C.USER_ID = #{userId}
+					AND I.DATA_STATUS_CODE = '1'
+					AND I.DISPLAY_FLAG = 'Y'
+					<if test="entryPage != null and entryPage == 'cart'">
+						AND I.ITEM_TYPE IN ('1', '3')
+					</if>
+					<if test="itemType != null and itemType != '' and entryPage != 'cart'">
+						AND I.ITEM_TYPE = #{itemType}
+					</if>
+				</when>
+				<otherwise>
+					C.SESSION_ID = #{sessionId}
+					AND I.DATA_STATUS_CODE = '1'
+					AND I.DISPLAY_FLAG = 'Y'
+					AND NONMEMBER_ORDER_TYPE = '1'
+					<if test="entryPage != null and entryPage == 'cart'">
+						AND I.ITEM_TYPE IN ('1', '3')
+					</if>
+					<if test="itemType != null and itemType != '' and entryPage != 'cart'">
+						AND I.ITEM_TYPE = #{itemType}
+					</if>
+				</otherwise>
+			</choose>
+
+			<if test="cartIds != null and !cartIds.isEmpty()">
+				AND C.CART_ID IN
+				<foreach item="cartId" index="index" collection="cartIds" open="(" separator="," close=")">
+					#{cartId}
+				</foreach>
+			</if>
+		</where>
+		ORDER BY C.CART_ID <!-- ASC --> DESC
+	</select>
+
+	<select id="getCartListBySessionId" parameterType="String" resultMap="CartResult">
+		/* saleson.shop.cart.CartMapper.getCartListBySessionId */
+		SELECT * FROM OP_CART
+		WHERE SESSION_ID = #{sessionId}
+		ORDER BY CART_ID DESC
+	</select>
+
+	<select id="getCountForUserItemByUserId" parameterType="long" resultType="Integer">
+		/* saleson.shop.cart.CartMapper.getCountForUserItemByUserId */
+		SELECT COUNT(*) FROM OP_CART WHERE USER_ID = #{value}
+	</select>
+
+	<select id="getGuestConvertibleItems" parameterType="saleson.shop.cart.support.CartParam" resultMap="CartResult">
+		/* saleson.shop.cart.CartMapper.getGuestConvertibleItems */
+		SELECT * FROM OP_CART C INNER JOIN OP_ITEM I
+			ON C.ITEM_ID = I.ITEM_ID
+		WHERE
+			C.SESSION_ID = #{sessionId}
+		  	AND I.ITEM_TYPE IN ('1', '3')
+	  	ORDER BY C.CART_ID DESC
+	</select>
+
+	<select id="getDuplicateCart" parameterType="saleson.shop.cart.domain.Cart" resultMap="CartResult">
+		/* saleson.shop.cart.CartMapper.getDuplicateCart */
+		SELECT *
+		FROM OP_CART
+		<where>
+			<choose>
+				<when test="isLogin == true">
+					USER_ID = #{userId}
+				</when>
+				<otherwise>
+					SESSION_ID = #{sessionId}
+				</otherwise>
+			</choose>
+
+			AND ITEM_ID = #{itemId}
+
+			<if test="options != null and options != ''">
+				AND OPTIONS = #{options}
+			</if>
+
+			AND ADDITION_ITEM_FLAG = #{additionItemFlag}
+		</where>
+		ORDER BY CART_ID DESC
+	</select>
+
+	<update id="updateDuplicateCartQuantity" parameterType="saleson.shop.cart.domain.Cart">
+		/* saleson.shop.cart.CartMapper.updateDuplicateCartQuantity */
+		UPDATE OP_CART
+		SET QUANTITY = #{quantity}
+		<where>
+			<choose>
+				<when test="isLogin == true">
+					USER_ID = #{userId}
+				</when>
+				<otherwise>
+					SESSION_ID = #{sessionId}
+				</otherwise>
+			</choose>
+
+			AND ITEM_ID = #{itemId}
+
+			<if test="options != null and options != ''">
+				AND OPTIONS = #{options}
+			</if>
+
+			AND ADDITION_ITEM_FLAG = #{additionItemFlag}
+		</where>
+	</update>
+
+	<sql id="sqlCartUserWhere">
+		C.USER_ID = #{userId}
+		AND I.DATA_STATUS_CODE = '1'
+		AND I.DISPLAY_FLAG = 'Y'
+		<if test="entryPage != null and entryPage == 'cart'">
+			AND I.ITEM_TYPE IN ('1', '3')
+		</if>
+		<if test="itemType != null and itemType != '' and entryPage != 'cart'">
+			AND I.ITEM_TYPE = #{itemType}
+		</if>
+	</sql>
+
+	<sql id="sqlCartGuestWhere">
+		C.SESSION_ID = #{sessionId}
+		AND I.DATA_STATUS_CODE = '1'
+		AND I.DISPLAY_FLAG = 'Y'
+		AND NONMEMBER_ORDER_TYPE = '1'
+		<if test="entryPage != null and entryPage == 'cart'">
+			AND I.ITEM_TYPE IN ('1', '3')
+		</if>
+		<if test="itemType != null and itemType != '' and entryPage != 'cart'">
+			AND I.ITEM_TYPE = #{itemType}
+		</if>
+	</sql>
+
+	<insert id="insertCart" parameterType="saleson.shop.cart.domain.Cart">
+		/* saleson.shop.cart.CartMapper.insertCart */
+		INSERT INTO OP_CART (CART_ID, SESSION_ID, USER_ID, ITEM_ID, QUANTITY, OPTIONS, SHIPPING_PAYMENT_TYPE, SHIPPING_GROUP_CODE, ADDITION_ITEM_FLAG, PARENT_ITEM_ID, SET_ITEM_FLAG, CREATED_DATE, TEXT_OPTION)
+		VALUES (#{cartId}, #{sessionId}, #{userId}, #{itemId}, #{quantity}, #{options}, #{shippingPaymentType},#{shippingGroupCode}, #{additionItemFlag}, #{parentItemId}, #{setItemFlag}, <include refid="CommonMapper.datetime" />, #{textOption})
+	</insert>
+
+	<insert id="insertCartSet" parameterType="saleson.shop.cart.domain.Cart">
+		/* saleson.shop.cart.CartMapper.insertCartSet */
+		INSERT INTO OP_CART_SET (CART_ID, ITEM_ID, QUANTITY, OPTIONS, PARENT_CART_ID, CREATED_DATE)
+		VALUES (#{cartId}, #{itemId}, #{quantity}, #{options}, #{parentCartId}, <include refid="CommonMapper.datetime" />)
+	</insert>
+
+	<update id="updateQuantity" parameterType="saleson.shop.cart.support.CartParam">
+		/* saleson.shop.cart.CartMapper.updateQuantity */
+		UPDATE OP_CART
+		SET QUANTITY = #{quantity}
+		<where>
+			CART_ID = #{cartId}
+			<choose>
+				<when test="isLogin == true">
+					AND USER_ID = #{userId}
+				</when>
+				<otherwise>
+					AND SESSION_ID = #{sessionId}
+				</otherwise>
+			</choose>
+		</where>
+	</update>
+
+	<update id="updateSetQuantity" parameterType="saleson.shop.cart.support.CartParam">
+		/* saleson.shop.cart.CartMapper.updateSetQuantity */
+		UPDATE OP_CART_SET
+		SET QUANTITY = #{quantity}
+		<where>
+			PARENT_CART_ID = #{parentCartId}
+			AND ITEM_ID = #{itemId}
+		</where>
+	</update>
+
+	<update id="updateUserIdByCart" parameterType="saleson.shop.cart.domain.Cart">
+		/* saleson.shop.cart.CartMapper.updateUserIdByCart */
+		UPDATE OP_CART
+		SET USER_ID = #{userId},
+			QUANTITY = #{quantity}
+		WHERE
+			CART_ID = #{cartId}
+	</update>
+
+
+
+	<delete id="deleteCart" parameterType="saleson.shop.cart.support.CartParam">
+		/* saleson.shop.cart.CartMapper.deleteCart */
+		DELETE FROM OP_CART
+		<where>
+			CART_ID = #{cartId}
+			<choose>
+				<when test="isLogin == true">
+					AND USER_ID = #{userId}
+				</when>
+				<otherwise>
+					AND SESSION_ID = #{sessionId}
+				</otherwise>
+			</choose>
+		</where>
+	</delete>
+
+	<delete id="deleteCartByCartIds" parameterType="saleson.shop.cart.support.CartParam">
+		/* saleson.shop.cart.CartMapper.deleteCartByCartIds */
+		DELETE FROM OP_CART
+		<where>
+			CART_ID IN
+			<foreach item="cartId" index="index" collection="cartIds" open="(" separator="," close=")">
+				#{cartId}
+			</foreach>
+			<choose>
+				<when test="isLogin == true">
+					AND USER_ID = #{userId}
+				</when>
+				<otherwise>
+					AND SESSION_ID = #{sessionId}
+				</otherwise>
+			</choose>
+		</where>
+	</delete>
+
+	<delete id="deleteCartByItemIds" parameterType="saleson.shop.cart.support.CartParam">
+		/* saleson.shop.cart.CartMapper.deleteCartByItemIds */
+		DELETE FROM OP_CART
+		<where>
+			ITEM_ID IN
+			<foreach item="itemId" index="index" collection="itemIds" open="(" separator="," close=")">
+				#{itemId}
+			</foreach>
+			<choose>
+				<when test="isLogin == true">
+					AND USER_ID = #{userId}
+				</when>
+				<otherwise>
+					AND SESSION_ID = #{sessionId}
+				</otherwise>
+			</choose>
+		</where>
+	</delete>
+
+	<delete id="deleteDuplicateCart" parameterType="saleson.shop.cart.domain.Cart">
+		/* saleson.shop.cart.CartMapper.deleteDuplicateCart */
+		DELETE FROM OP_CART
+		<where>
+			<choose>
+				<when test="isLogin == true">
+					USER_ID = #{userId}
+				</when>
+				<otherwise>
+					SESSION_ID = #{sessionId}
+				</otherwise>
+			</choose>
+
+			AND ITEM_ID = #{itemId}
+
+			<if test="options != null and options != ''">
+				AND OPTIONS = #{options}
+			</if>
+		</where>
+	</delete>
+
+	<update id="updateShippingPaymentType" parameterType="saleson.shop.cart.support.CartParam">
+		/* saleson.shop.cart.CartMapper.updateShippingPaymentType */
+		UPDATE OP_CART
+		SET SHIPPING_PAYMENT_TYPE = #{shippingPaymentType}
+		<where>
+			CART_ID = #{cartId}
+			<!--SHIPPING_GROUP_CODE = #{shippingGroupCode}-->
+			<choose>
+				<when test="isLogin == true">
+					AND USER_ID = #{userId}
+				</when>
+				<otherwise>
+					AND SESSION_ID = #{sessionId}
+				</otherwise>
+			</choose>
+		</where>
+	</update>
+
+	<delete id="deleteCartBatch">
+		/* saleson.shop.cart.CartMapper.deleteCartBatch */
+        <!-- DELETE FROM OP_CART
+        WHERE DATE_FORMAT(CREATED_DATE,'%Y%m%d') <![CDATA[ <= ]]> DATE_FORMAT(ADDDATE(NOW(), interval -30 DAY) ,'%Y%m%d') -->
+        DELETE FROM OP_CART
+        WHERE CREATED_DATE <![CDATA[ <= ]]> CONCAT(DATE_FORMAT(ADDDATE(NOW(), interval -30 DAY) ,'%Y%m%d'), '999999')
+    </delete>
+
+</mapper>

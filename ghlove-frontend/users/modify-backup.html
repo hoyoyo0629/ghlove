@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="max-age=0, no-cache, no-store, must-revalidate, private">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>마이페이지 > 회원정보수정 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/change-info.css">
+    <link rel="stylesheet" href="/static/css/change-pw.css">
+
+    <link rel="stylesheet" href="/static/css/authentication-modal.css">
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+
+            <!-- 본인인증 -->
+            <layout-auth></layout-auth>
+
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+
+
+            <section class="changeInfo center" v-if="modifyResult == ''">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        <a href="/mypage/index.html">마이페이지</a>
+                    </span>
+                    <h2 class="page-title-txt">회원 정보 수정</h2>
+                    <div class="user-grade">
+                        <span class="grade-bg">
+                            회원님의 주소는
+                            <span class="blue-txt">{{param.upperLocgovNm}} {{param.locgovNm}}</span>
+                            입니다.
+                    </div>
+
+                </div>
+
+                <form action="/" id="add-info" name="join" class="member-edit" @submit.prevent>
+                    <!-- 회원정보입력 -->
+                    <fieldset>
+                        <div class="add-info-area center">
+                            <div class="lable-field">
+                                <h3><span>회원정보&nbsp;</span><span>입력</span></h3>
+                            </div>
+                            <div class="info-field">
+                                <div class="info-field-group">
+                                    <div class="info-field-items memberGroup">
+                                        <label for="memberLevel" class="flied-title">회원구분<span class="essential">
+                                                *</span></label>
+                                        <div class="form-field">
+                                            <div class="m-field">
+                                                <input type="text" name="memberLevel" id="memberLevel" :value="디폴트등급"
+                                                    readonly>
+                                                <button class="formBtn" v-if="param.userKeyYN=='Y'" type="button"
+                                                    @click="onepassCancel()">디지털원패스<br>연동 해지</button>
+                                                <button class="formBtn" v-if="param.mberCiYN=='N'" type="button"
+                                                    @click="authLayer()">본인인증</button>
+                                            </div>
+                                            <div class="m-field" v-if="param.mberCiYN=='N'">
+                                                <span class="s-txt">본인 인증 <strong class="pointRed">미완료</strong>상태
+                                                    입니다.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="info-field-items member">
+                                        <label for="userName" class="flied-title">이름<span class="essential">
+                                                *</span></label>
+                                        <div class="form-field">
+                                            <input type="text" name="userName" id="userName" :value="param.userName"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="line" v-if="param.userKeyYN!='Y'"></div>
+
+                                <div class="info-field-group" v-if="param.userKeyYN!='Y'">
+                                    <div class="info-field-items">
+                                        <label for="userID" class="flied-title">아이디<span class="essential">
+                                                *</span></label>
+                                        <span class="form-field">
+                                            <input type="text" name="loginId" id="loginId" :value="param.loginId"
+                                                readonly>
+
+                                        </span>
+                                    </div>
+                                    <div class="info-field-items password">
+                                        <label for="userPW" class="flied-title">비밀번호<span class="essential">
+                                                *</span></label>
+                                        <span class="form-field">
+                                            <button class="formBtn" type="button" @click="getMobileAuth()">비밀번호
+                                                변경</button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="line"></div>
+
+                                <div class="info-field-group">
+                                    <div class="info-field-items userNum">
+                                        <label for="userNumer" class="flied-title">휴대폰<span class="essential">
+                                                *</span></label>
+
+                                        <span class="form-field">
+                                            <select name="phoneCode" id="phoneCode" v-model="param.phoneCode">
+                                                <option v-for="code in phoneCodes" :value="code.key.id">{{code.label}}
+                                                </option>
+                                            </select>
+                                            <span class="s-txt">-</span>
+                                            <input type="number" name="phoneMid" id="phoneMid" v-model="param.phoneMid"
+                                                maxlength="4"
+                                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                                            <span class="s-txt">-</span>
+                                            <input type="number" name="phoneLast" id="phoneLast"
+                                                v-model="param.phoneLast" maxlength="4"
+                                                oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                                        </span>
+                                    </div>
+                                    <div class="info-field-items userEmail">
+                                        <label for="userEmail" class="flied-title">이메일<span class="essential">
+                                                *</span></label>
+                                        <span class="form-field">
+                                            <span class="m-field">
+                                                <input type="text" name="emailFirst" id="emailFirst" v-model="param.emailFirst" aria-label="이메일 주소 @앞자리를 입력하세요">
+                                                <span class="s-txt">@</span>
+                                            </span>
+                                            <input id="emailAddress" type="text" v-model="param.emailAddress" aria-label="이메일 주소 @뒷자리를 작성하세요. 직접 작성하지 않고 선택하려면 다음으로 탭">
+                                            <select id="emailL" :name="param.emailCode" :id="param.emailCode" v-model="param.emailCode" @change="emailChange($event)" aria-label="이메일 주소 @뒷자리를 선택하세요">
+                                                <option v-for="code in emailCodes" :value="code.key.id">{{code.label}}
+                                                </option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="info-field-items userAddress">
+                                        <label for="userAddress" class="flied-title">주소<span class="essential">
+                                                *</span></label>
+                                        <div class="form-field">
+                                            <div class="search-address m-field">
+                                                <input type="text" name="post" id="post" v-model="param.post" readonly="readonly" aria-label="주소찾기 버튼으로 주소를 입력하세요.">
+                                                <button type="button" class="formBtn" @click="searchAddress()">주소찾기</button>
+                                            </div>
+                                            <div class="input-address">
+                                                <input type="text" name="address" id="address" v-model="param.address" readonly="readonly" aria-label="주소찾기 버튼으로 주소를 입력하세요.">
+                                                <input type="text" name="addressDetail" id="addressDetail" v-model="param.addressDetail" aria-label="상세주소를 입력하세요.">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="line"></div>
+                                <div class="info-field-group">
+                                    <div class="info-field-items subscribe">
+                                        <label for="" class="flied-title">알림서비스 수신동의</label>
+                                        <div class="form-field">
+                                            <!-- 추가 개발 필요 -->
+                                            <div class="m-field">
+                                                <span class="s-txt"> 국민비서·SMS 수신동의</span>
+                                                <div class="subscribe-select">
+                                                    <input type="radio" name="sms_selectAgree" id="smsAgree" value="0"
+                                                        v-model="param.receiveSms">
+                                                    <label for="sns_agree">동의</label>
+                                                </div>
+                                                <div class="subscribe-select">
+                                                    <input type="radio" name="sms_selectAgree" id="smsDisAgree"
+                                                        value="1" v-model="param.receiveSms">
+                                                    <label for="sns_notAgree">동의안함</label>
+                                                </div>
+                                            </div>
+                                            <!--  //추가 개발 필요 -->
+                                            <div class="m-field">
+                                                <span class="s-txt"> EMAIL 수신동의</span>
+                                                <div class="subscribe-select">
+                                                    <input type="radio" name="selectAgree" id="agree" value="0"
+                                                        v-model="param.receiveEmail">
+                                                    <label for="agree">동의</label>
+                                                </div>
+                                                <div class="subscribe-select">
+                                                    <input type="radio" name="selectAgree" id="notAgree" value="1"
+                                                        v-model="param.receiveEmail">
+                                                    <label for="notAgree">동의안함</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="add-info-area center">
+                            <h3><span>관심정보&nbsp;</span><span> 선택</span></h3>
+                            <div class="info-field">
+                                <div class="info-field-group">
+                                    <div class="info-field-items favo">
+                                        <label for="upperLocgovCode" class="flied-title">관심지자체</label>
+                                        <div class="form-field">
+                                            <span class="s-txt">관심 지자체를 선택해 주세요</span>
+                                            <div class="select-location">
+                                                <div class="select-location-items">
+                                                    <span class="s-txt">시·도</span>
+                                                    <select title="시·도 선택" name="upperLocgovCode" id="upperLocgovCode"
+                                                        v-model="param.upperLocgovCode"
+                                                        @change="getSubLocGovList($event)">
+                                                        <option value="n">시·도 선택</option>
+                                                        <option v-for="(data, index) in wdrList" :value="index">{{
+                                                            data.label }}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="select-location-items">
+                                                    <span class="s-txt">시·군·구</span>
+                                                    <select title="시·군·구 선택" name="locgovCodeSet" id="locgovCodeSet"
+                                                        v-model="param.locgovCodeSet">
+                                                        <option value="n">시·군·구 선택</option>
+                                                        <option v-for="(data, index) in subLocGovList" :value="index">{{
+                                                            data.locgovNm }}</option>
+                                                    </select>
+                                                </div>
+                                                <button class="formBtn addbtn" type="button" @click="addRow();"><img
+                                                        src="/static/images/icon/btn_add.png" alt="추가하기"></button>
+                                            </div>
+                                            <div class="selected-location">
+                                                <div class="attention-location"
+                                                    v-for="(data, index) in param.interestLocGov">
+                                                    {{data.upperLocgovNm}} {{data.locgovNm}}<button type="button" class="delete"
+                                                        @click="deleteRow(data, index)">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="line favo"></div>
+                                <div class="info_txt_wrap">
+                                    <ul>
+                                        <li class="s_txt">※ 관심 지자체를 추가해 두시면 마이페이지 > 관심지자체에서 기부금 현황을 쉽게 확인할 수 있고 바로 기부하기
+                                            페이지로 이동도 가능합니다.</li>
+                                        <li class="s_txt">※ 자신의 주민등록 주소지에는 기부가 불가능합니다.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 버튼그룹 -->
+                        <div class="btn-box many">
+                            <button type="button" class="blueBtn cancellation" @click="goToSecede()"
+                                v-if="param.userKeyYN=='N'">
+                                회원탈퇴
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                            <button type="button" class="blueBtn u-confirm" @click="submit()">
+                                확인
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </section>
+
+
+            <section class="find-idpw center" v-if="modifyResult == '1'">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        회원정보 수정
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        비밀번호 변경
+                    </span>
+                    <h2 class="page-title-txt">비밀번호 변경</h2>
+
+                </div>
+
+
+                <!-- 비밀번호 인증완료 -->
+                <form action="/" id="changePwdForm" name="changePwdForm" class="member-edit" @submit.prevent>
+                    <div class="change-info-area">
+                        <div class="info-mess">
+                            <p class="sub-title">인증이 완료 되었습니다. 비밀번호를 초기화 합니다.</p>
+                            <p class="title"><strong>새로운 비밀번호</strong>를<br>입력해 주세요.</p>
+                        </div>
+                        <div class="line"></div>
+                        <div class="info-field-group">
+                            <div class="info-field-items newpw">
+                                <label for="userNewPW" class="flied-title">새 비밀번호 입력</label>
+                                <input type="password" name="password" id="password" value="" v-model="param.password"
+                                    autocomplete="new-password">
+                            </div>
+                            <div class="info-field-items newpw">
+                                <label for="userNewPwC" class="flied-title">새 비밀번호 확인</label>
+                                <input type="password" name="corfirmPassword" id="corfirmPassword" value=""
+                                    v-model="param.corfirmPassword" autocomplete="new-password" @keyup="checkPwd();">
+                            </div>
+                            <div class="info-field-items">
+                                <div class="pw-validation-area">
+                                    <ul>
+                                        <li>
+                                            <span class="pw-validation"><img src="/static/images/icon/pw-unavailable.png" alt="사용불가-아래 항목을 모두 만족해야 합니다"></span>
+                                            <span class="txt_box">
+                                                <span class="txt_items">
+                                                    비밀번호 보안도 :
+                                                    <strong
+                                                        :class="[password.redPoint.weekPwd? 'pointRed' : '']">약함</strong>
+                                                    /
+                                                    <strong
+                                                        :class="[password.redPoint.strongPwd? 'pointRed' : '']">강함</strong>
+                                                </span>
+                                                <span class="txt_items">( 4가지 체크 완료 시 V 표시 )</span>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <span class="pw-validation"><img src="/static/images/icon/pw-unavailable.png" alt="사용불가-숫자, 기호, 영문자 미포함"></span>1. 숫자, 기호, 영문자 포함
+                                        </li>
+                                        <li>
+                                            <span class="pw-validation"><img src="/static/images/icon/pw-unavailable.png" alt="사용불가-3개 이상 연속 문자/숫자 제외"></span>2. 3개 이상 연속 문자/숫자 제외
+                                        </li>
+                                        <li>
+                                            <span class="pw-validation"><img src="/static/images/icon/pw-unavailable.png" alt="사용불가-아이디를 포함할 수 없음"></span>3. 아이디를 포함할 수 없음
+                                        </li>
+                                        <li>
+                                            <span class="pw-validation"><img src="/static/images/icon/pw-unavailable.png" alt="사용불가-최소 9자, 최대 20자"></span>4. 최소 9~20자
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼그룹 -->
+                    <div class="btn-box">
+                        <button type="button" class="blueBtn u-confirm" @click="changPwd()">
+                            확인
+                            <span>
+                                <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <!-- SNS 계정 연동 -->
+    <script src="/modules/crypto-js.min.js"></script>
+    <script src="/modules/hmac-sha256.min.js"></script>
+    <script src="/modules/enc-base64.min.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-subsearch-ali': httpVueLoader('/components/layouts/subsearch_ali.vue'),
+                //'layout-mypage-lnb-ali': httpVueLoader('/components/layouts/mypage-lnb_ali.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+
+                'layout-auth': httpVueLoader('/components/layouts/auth/auth.vue'),
+                'layout-mobile_auth': httpVueLoader('/components/layouts/join/mobile_auth.vue')
+            },
+            data: {
+                // ali data
+                디폴트등급: ["일반회원"],
+                param: {
+                    locgovCode: "",
+                    upperLocgovNm: "",
+                    locgovNm: "",
+                    userName: "",
+                    loginId: "",
+                    phoneNumber: "",
+                    email: "",
+                    post: "",
+                    address: "",
+                    addressDetail: "",
+                    receiveEmail: "",
+                    receiveSms: "",
+                    userKeyYN: "",
+                    mberCiYN: "",
+                    password: "",
+                    corfirmPassword: "",
+                    upperLocgovCode: "",
+                    locgovCodeSet: "",
+                    interestLocGov: [],
+                    emailFirst: "",
+                    phoneMid: "",
+                    phoneLast: "",
+                    locGovList: [],
+                    emailAddress: "",
+                    loginPathCode: ""
+                },
+                pwdParam: {
+                    password: "",
+                    corfirmPassword: "",
+                    mberCi: ""
+                },
+                phoneCodes: [],
+                emailCodes: [],
+                wdrList: [],
+                subLocGovList: [],
+                modifyResult: "",
+                savedInterestLocGov: [],
+                authClick: "",
+                passwordChangeClick: "",
+                password: {
+                    redPoint: {
+                        weekPwd: true,
+                        strongPwd: false
+                    }
+                },
+                page: {
+                    menuUrl: "/users/modify.html"
+                }
+            },
+            methods: {
+                // *************** ali-add methods
+                changPwd: function () {
+
+                    if (vm.param.password == '') { $s.alert("비밀번호를 설정해주세요"); return false; }
+
+                    //비밀번호 확인 ,me-030
+                    if (!vm.checkPwd() || vm.param.corfirmPassword == '' || (vm.param.password != vm.param.corfirmPassword)
+                        || vm.param.password.search(/\s/) != -1 || vm.param.corfirmPassword.search(/\s/) != -1) {
+                        $s.alert("비밀번호를 확인해주세요");
+                        return false;
+                    }
+
+                    vm.pwdParam.password = vm.param.password;
+                    vm.pwdParam.corfirmPassword = vm.param.corfirmPassword;
+
+                    $s.api.postSubmit('/api/user/changeUserPassword', vm.pwdParam, function (response) {
+                        $s.alert("비밀번호가 변경되었습니다.", function () {
+                            vm.login();
+                            $s.closeAlert();
+                        });
+                    }, function (error) {
+                        $s.alert(error.response.data.message);
+                    });
+                },
+                login: function () {
+                    var params = {};
+                    params.loginType = 'ROLE_USER';
+                    params.loginId = vm.param.loginId;
+                    params.password = vm.param.password;
+                    params.financ = null;
+                    $s.api.getAuthToken(params, function () {
+                        var order = $s.core.getSession($s.const.BUY_ORDER);
+                        if (order != null) {
+                            $s.core.removeSession($s.const.BUY_ORDER);
+
+                            vm.order = JSON.parse(order);
+                            vm.order.noMemberLogin = true;
+
+                            $s.api.buyOrder(vm.order, function () { }
+                                , function (error) {
+                                    $s.error(error); // 실패시 이전 주문정보 조회 (redirect 진행)
+                                });
+                        }
+                        $s.redirect('/users/modify.html');
+                    }, function (error) {
+                        var message = '아이디 또는 비밀번호를 확인 하세요.';
+                        if (error.response.data.code == 'UNAUTHORIZED_LOCK') {
+                            message = error.response.data.message;
+                        }
+                    });
+                },
+                goToSecede: function () {
+                    location.href = "/users/secede.html"
+                },
+                goToMain: function () {
+                    location.href = $s.pages.INDEX;
+                    // 메인화면 URL 지정하기
+                },
+                getInitData: function () {
+                    $s.api.postSubmit('/api/user/getUserInfo', vm.param, function (response) {
+                        vm.param.locgovCode = response.userInfo.locgovCode;
+                        vm.param.upperLocgovNm = response.userInfo.upperLocgovNm;
+                        vm.param.locgovNm = response.userInfo.locgovNm;
+                        vm.param.userName = response.userInfo.userName;
+                        vm.param.loginId = response.userInfo.loginId;
+                        vm.param.phoneNumber = response.userInfo.phoneNumber;
+                        vm.param.email = response.userInfo.email;
+                        vm.param.post = response.userInfo.post;
+                        vm.param.address = response.userInfo.address;
+                        vm.param.addressDetail = response.userInfo.addressDetail;
+                        vm.param.receiveEmail = response.userInfo.receiveEmail;
+                        vm.param.receiveSms = response.userInfo.receiveSms ? response.userInfo.receiveSms : '1';
+
+
+
+
+                        vm.param.userKeyYN = response.userInfo.userKeyYN;
+                        vm.param.mberCiYN = response.userInfo.mberCiYN;
+
+                        if (response.userInfo.loginPathCode != null) {
+							vm.param.loginPathCode = response.userInfo.loginPathCode;
+						}
+
+                        vm.phoneCodes = response.phoneCodes;
+                        vm.emailCodes = response.emailCodes;
+                        vm.wdrList = response.wdrList;
+                        vm.param.interestLocGov = response.interestLocGov;
+
+                        vm.param.phoneCode = response.phoneCodes[0].key.id;
+                        vm.param.emailCode = response.emailCodes[0].key.id;
+
+                        var email = response.userInfo.email;
+                        var emailIndex = email.lastIndexOf("@");
+                        if (emailIndex != -1) {
+                            vm.param.emailFirst = email.substring(0, emailIndex);
+                            var emailCode = email.substring(emailIndex + 1);
+                            var emailCodes = vm.emailCodes;
+                            var existEmailCode = false;
+                            if (emailCodes != null) {
+                                for (var i = 0; i < emailCodes.length; i++) {
+                                    if (emailCodes[i].key.id == emailCode) {
+                                        existEmailCode = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!existEmailCode) {
+                                vm.param.emailCode = response.emailCodes[0].key.id;
+                                vm.param.emailAddress = emailCode;
+                                $("#emailAddress").attr("readonly", false);
+                            } else {
+                                vm.param.emailCode = emailCode;
+                                vm.param.emailAddress = emailCode;
+                                $("#emailAddress").attr("readonly", true);
+                            }
+                        }
+
+                        var phoneNumber = response.userInfo.phoneNumber.split("-");
+                        if (phoneNumber != null && phoneNumber.length == 3) {
+                            vm.param.phoneCode = phoneNumber[0];
+                            vm.param.phoneMid = phoneNumber[1];
+                            vm.param.phoneLast = phoneNumber[2];
+                        }
+
+                        vm.param.upperLocgovCode = 'n';
+                        vm.param.locgovCodeSet = 'n';
+
+                        $(".lnb-bar_2dep li").eq(4).addClass("currentT");
+
+                    });
+                },
+                emailChange: function (event) {
+                    // $("#emailAddress").hide();
+                    if (event.target.value == 0) {
+                        vm.param.emailAddress = '';
+                        // $("#emailAddress").show();
+                        $("#emailAddress").attr("readonly", false);
+                    } else {
+                        // $("#emailAddress").hide();
+                        vm.param.emailAddress = event.target.value;
+                        $("#emailAddress").attr("readonly", true);
+                    }
+                },
+                searchAddress: function () {
+                    Common.popup("/users/jusoPopup.html", "pop", "570", "420", "yes");
+                },
+                getSubLocGovList: function (event) {
+                    var code = vm.param.upperLocgovCode;
+                    if (code == 'n') {
+                        vm.subLocGovList = null;
+                        vm.param.locgovCodeSet = 'n';
+                        return false;
+                    }
+                    var params = {};
+                    params.upperLocgovCode = vm.wdrList[code]['key'].id;
+                    $s.api.postSubmit('/api/join/getSubLocGov', params, function (response) {
+                        vm.subLocGovList = response.subLocGovList;
+                    });
+                    vm.param.locgovCodeSet = 'n';
+                },
+                addRow: function () {
+                    var list = vm.param.interestLocGov;
+                    var upperLocgovCodeIdx = vm.param.upperLocgovCode;
+                    var locgovCodeIdx = vm.param.locgovCodeSet;
+
+                    if (upperLocgovCodeIdx == 'n') {
+                        $s.alert("시를 선택해주세요");
+                        return false;
+                    }
+
+                    if (locgovCodeIdx == 'n') {
+                        $s.alert('군.구를 선택해주세요');
+                        return false;
+                    }
+
+                    var upperLocgovInfo = vm.wdrList[upperLocgovCodeIdx];
+                    var locgovCodeInfo = vm.subLocGovList[locgovCodeIdx];
+                    var codeTxt = locgovCodeInfo.locgovCode;
+
+                    var tempList = [];
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].locgovCode != codeTxt) {
+                            tempList.push(list[i]);
+                        }
+                    }
+
+                    var param = {};
+                    param.locgovCode = locgovCodeInfo.locgovCode;
+                    param.upperLocgovNm = upperLocgovInfo.label;
+                    param.locgovNm = locgovCodeInfo.locgovNm;
+                    tempList.push(param);
+                    vm.param.interestLocGov = tempList;
+                },
+                deleteRow: function (data, index) {
+                    vm.param.interestLocGov.splice(index, 1);
+                },
+                onepassCancel: function () {
+
+                    if (!vm.getCookieValue("userKey") && !vm.getCookieValue("intfToken")) {
+                        $s.alert("연동해지를 위해서는 디지털 원패스로 다시 로그인 해주세요.");
+                    } else {
+						var callback = vm.param.loginPathCode == '300' ? vm.openpassCancelCallback : vm.openpassUnlinkCallback;
+                        $s.confirm('디지털원패스 회원 연동해지를 하시겠습니까?', callback);
+                    }
+
+                },
+                openpassUnlinkCallback: function () {
+					var params = {
+                        userKey: this.getCookieValue("userKey"),
+                        intfToken: this.getCookieValue("intfToken")
+                    };
+
+
+					$s.api.postSubmit("/api/auth/onepass-unlink", params, function (response) {
+                        if (response.info.value == "00") {
+                            $s.alert(response.info.message, function () {
+                                location.reload();
+                            });
+                        } else {
+                            $s.alert(response.info.message);
+                            // console.log("error occurred - " + response.info.message);
+                        }
+                    });
+
+				},
+				openpassCancelCallback: function () {
+					$s.closeAlert();
+                    location.href = "/users/onepass_secede.html";
+				},
+                getCookieValue: function (key) {
+                    let cookieKey = key + "=";
+                    let result = "";
+                    const cookieArr = document.cookie.split(";");
+
+                    for (let i = 0; i < cookieArr.length; i++) {
+                        if (cookieArr[i][0] === " ") {
+                            cookieArr[i] = cookieArr[i].substring(1);
+                        }
+
+                        if (cookieArr[i].indexOf(cookieKey) === 0) {
+                            result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
+                            return result;
+                        }
+                    }
+                    return result;
+                },
+                getMobileAuth: function () {
+                    if (vm.param.mberCiYN == 'N') {
+                        $s.alert("본인인증 미완료 상태입니다.\n 본인인증 완료 후 비밀번호를 변경하시길 바랍니다.");
+                        return false;
+                    }
+
+                    vm.authClick = '';
+                    vm.passwordChangeClick = 'Y';
+
+                    $s.api.mobileAuth(function (response) {
+                        // console.log('response', response);
+                        // console.log('response.reqInfo', response.reqInfo);
+                        // console.log('response.retUrl', response.retUrl);
+                        // console.log('response.verSion', response.verSion);
+
+                        var PCC_window = window.open('', 'PCCV3Window', 'width=400, height=630, resizable=1, scrollbars=no, status=0, titlebar=0, toolbar=0, left=300, top=200');
+                        if (PCC_window == null) {
+                            alert(" ※ 윈도우 XP SP2 또는 인터넷 익스플로러 7 사용자일 경우에는 \n    화면 상단에 있는 팝업 차단 알림줄을 클릭하여 팝업을 허용해 주시기 바랍니다. \n\n※ MSN,야후,구글 팝업 차단 툴바가 설치된 경우 팝업허용을 해주시기 바랍니다.");
+                        }
+
+                        var form = document.createElement("form");
+                        form.setAttribute('target', 'PCCV3Window');
+                        // form.setAttribute("charset", "UTF-8");
+                        form.setAttribute("method", "Post");
+                        form.setAttribute("action", "https://pcc.siren24.com/pcc_V3/jsp/pcc_V3_j10_v2.jsp");
+
+                        var hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", "reqInfo");
+                        hiddenField.setAttribute("value", response.reqInfo);
+                        form.appendChild(hiddenField);
+
+                        hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", "retUrl");
+                        hiddenField.setAttribute("value", response.retUrl);
+                        form.appendChild(hiddenField);
+
+                        hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", "verSion");
+                        hiddenField.setAttribute("value", response.verSion);
+                        form.appendChild(hiddenField);
+
+                        document.body.appendChild(form);
+                        form.submit();
+
+                    });
+                },
+                checkPwd: function () {
+                    var val = vm.param.corfirmPassword
+                    var password = vm.param.password;
+                    var isPwdOk = false;
+                    vm.password.redPoint.weekPwd = false;
+                    vm.password.redPoint.strongPwd = false;
+
+                    var isPwdVail1 = false; // 숫자, 기호, 영문자 포함
+                    var isPwdVail2 = false; // 3개이상 연속 문자/숫자 제외
+                    var isPwdVail3 = false; // 아이디 포함
+                    var isPwdVail4 = false; // 길이
+
+                    var number = val.search(/[0-9]/g);
+                    var english = val.search(/[a-zA-Z]/g);
+                    var sword = val.search(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g);
+
+                    // 숫자나 기호, 영문자 포함
+                    if (number < 0 || english < 0 || sword < 0) {
+                        $("span.pw-validation").eq(1).removeClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-unavailable.png').attr('alt',"사용불가-숫자, 기호, 영문자 미포함");
+                    } else {
+                        $("span.pw-validation").eq(1).addClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-available.png').attr('alt',"사용가능-숫자, 기호, 영문자 포함");
+                        isPwdVail1 = true;
+                    }
+
+                    if (/(\w)\1\1/.test(val) || password == '' || val == '' || !vm.isContinued(val)) {
+                        $("span.pw-validation").eq(2).removeClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-unavailable.png').attr('alt',"사용불가-3개 이상 연속 문자/숫자 제외");
+                    } else {
+                        $("span.pw-validation").eq(2).addClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-available.png').attr('alt',"사용가능-3개 이상 연속 문자/숫자 없음");
+                        isPwdVail2 = true;
+                    }
+
+                    var loginId = vm.param.loginId;
+                    if (val.indexOf(loginId) > -1) {
+                        $("span.pw-validation").eq(3).removeClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-unavailable.png').attr('alt',"사용불가-아이디를 포함할 수 없음");
+                    } else {
+                        $("span.pw-validation").eq(3).addClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-available.png').attr('alt',"사용가능-아이디를 포함하지 않음");
+                        isPwdVail3 = true;
+                    }
+
+                    if (!(val.length >= 9 && val.length <= 20)) {
+                        $("span.pw-validation").eq(4).removeClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-unavailable.png').attr('alt',"사용불가-최소 9자, 최대 20자");
+                    } else {
+                        isPwdVail4 = true;
+                        $("span.pw-validation").eq(4).addClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-available.png').attr('alt',"사용가능-최소 9자, 최대 20자");
+                    }
+
+                    if (!isPwdVail1 || !isPwdVail2 || !isPwdVail3 || !isPwdVail4) {
+                        $("span.pw-validation").eq(0).removeClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-unavailable.png').attr('alt',"사용불가-아래 항목을 모두 만족해야 합니다");
+                        vm.password.redPoint.weekPwd = true;
+                        vm.password.redPoint.strongPwd = false;
+                    } else {
+                        $("span.pw-validation").eq(0).addClass("vali-confirm").children('img').attr('src','/static/images/icon/pw-available.png').attr('alt',"사용가능-아래 항목을 모두 만족");
+                        vm.password.redPoint.weekPwd = false;
+                        vm.password.redPoint.strongPwd = true;
+                        isPwdOk = true;
+                    }
+                    return isPwdOk;
+                },
+                isContinued: function (obj) {
+                    // 연속된 문자 확인
+                    var ascSeqCharCnt = 0; // 오름차순 연속 문자 카운트
+                    var descSeqCharCnt = 0; // 내림차순 연속 문자 카운트
+
+                    var char_0;
+                    var char_1;
+                    var char_2;
+
+                    var diff_0_1;
+                    var diff_1_2;
+
+                    for (var i = 0; i < obj.length; i++) {
+                        // charAt(): 문자값 반환
+                        char_0 = obj.charAt(i);
+                        char_1 = obj.charAt(i + 1);
+                        char_2 = obj.charAt(i + 2);
+
+                        // charCodeAt(): 유니코드값 반환
+                        diff_0_1 = char_0.charCodeAt(0) - char_1.charCodeAt(0);
+                        diff_1_2 = char_1.charCodeAt(0) - char_2.charCodeAt(0);
+
+                        if (diff_0_1 === 1 && diff_1_2 === 1) {
+                            ascSeqCharCnt += 1;
+                        }
+
+                        if (diff_0_1 === -1 && diff_1_2 === -1) {
+                            descSeqCharCnt += 1;
+                        }
+                    }
+                    if (ascSeqCharCnt >= 1 || descSeqCharCnt >= 1) {
+                        return false;
+                    }
+                    return true;
+                },
+                submit: function () {
+
+                    if (vm.param.emailCode == '0') {
+                        vm.param.email = vm.param.emailFirst + '@' + vm.param.emailAddress;
+                    } else {
+                        vm.param.email = vm.param.emailFirst + '@' + vm.param.emailCode;
+                    }
+
+                    vm.param.phoneNumber = vm.param.phoneCode + '' + vm.param.phoneMid + '' + vm.param.phoneLast;
+
+                    if (!vm.checkFormValue()) {
+                        return false;
+                    }
+
+                    var locGovList = vm.param.interestLocGov;
+                    var list = [];
+                    vm.param.locGovList = [];
+
+                    for (var i = 0; i < locGovList.length; i++) {
+                        list.push(locGovList[i].locgovCode);
+                    }
+                    vm.param.locGovList = list;
+                    $s.log(vm.param);
+                    $s.api.postSubmit("/api/user/modifyUser", vm.param, function (response) {
+                        $s.alert("수정되었습니다", function () {
+                            vm.getInitData();
+                            $s.closeAlert();
+                        });
+                    });
+                },
+                checkFormValue: function () {
+
+                    if (vm.param.userName == '' || vm.param.loginId == '') {
+                        $s.alert("회원정보가 없습니다.");
+                        return false;
+                    }
+
+                    //휴대폰번호 미입력 ,me-031
+                    ///^[0-9]{3}-[0-9]{3,4}-[0-9]{4}/.test(args)
+                    var phonePattern1 = /^[0-9]{3}$/g;
+                    var phonePattern2 = /^[0-9]{3,4}$/g;
+                    var phonePattern3 = /^[0-9]{4}$/g;
+                    if (vm.param.phoneCode == '' || vm.param.phoneMid == '' || vm.param.phoneLast == ''
+                        || !phonePattern1.test(vm.param.phoneCode) || !phonePattern2.test(vm.param.phoneMid) || !phonePattern3.test(vm.param.phoneLast)) {
+                        $s.alert("휴대폰 번호를 입력하세요");
+                        return false;
+                    }
+
+                    //이메일주소 미입력 : me-032
+                    var regex = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+                    if (vm.param.emailFirst == '' || vm.param.emailCode == '' || !regex.test(vm.param.email)) {
+                        $s.alert("이메일 주소를 입력해주세요");
+                        return false;
+                    }
+
+                    //주소 미입력 : me-033
+                    if (vm.param.post == '' || vm.param.address == '' || vm.param.addressDetail == '' ||
+                        vm.param.post == null || vm.param.address == null || vm.param.addressDetail == null) {
+                        $s.alert("주소찾기 버튼을 클릭해주세요");
+                        return false;
+                    }
+
+                    return true;
+                },
+                authLayer: function () {
+
+                    vm.authClick = "Y";
+                    vm.passwordChangeClick = '';
+
+                    var child = Vue.child('layout-auth');
+                    if (child != null) {
+                        child.nextStep();
+                        $("#signBox").hide();
+                    }
+                }
+                ,
+                modifyMobileAuth: function (response) {
+                    var param = {};
+                    param.mberCi = response.mberCi;
+                    param.mberDi = response.mberDi;
+                    param.birthday = response.birthday;
+                    param.gender = (response.gender == 'M') ? '0' : '1';
+                    param.loginId = vm.param.loginId;
+                    $s.api.postSubmit('/api/user/modifyMobileAuth', param, function (response) {
+                        vm.getInitData();
+                    });
+                },
+                checkMobileAuth: function (response) {
+                    var param = {};
+                    param.mberCi = response.mberCi;
+                    vm.pwdParam.mberCi = response.mberCi;
+                    $s.api.postSubmit('/api/user/checkMobileAuth', param, function (response) {
+                        if (!response.info.loginId) {
+                            vm.modifyResult = '';
+                            vm.pwdParam.mberCi = '';
+                            $s.alert("본인인증 정보가 없습니다.");
+                        } else {
+                            vm.modifyResult = '1';
+                        }
+                    });
+                }
+
+            },
+            computed: {
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    // Saleson.init();
+                    Saleson.init({ loginPage: true });
+                    vm.getInitData();
+                    $(".black-bg").addClass("show");
+                });
+            }
+        });
+        window.app = vm;
+
+        // 캐시 초기화
+        window.addEventListener('unload', function(){});
+		window.addEventListener('beforeunload', function(){});
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+            window.addEventListener("message", mobileAuthResponse);
+            window.addEventListener("message", jusoCallBack);
+        });
+
+        // 휴대폰 인증 후 실행 method
+        function mobileAuthResponse(response) {
+            if (response.data.userName != undefined) {
+                if (vm.authClick == "Y") {
+                    vm.authClick = '';
+                    // 본인인증 시
+                    $(".black-bg").removeClass("show");
+                    vm.modifyMobileAuth(response.data);
+                }
+
+                if (vm.passwordChangeClick == "Y") {
+                    vm.passwordChangeClick = '';
+                    // 비밀번호 변경 시
+                    vm.checkMobileAuth(response.data);
+                }
+            }
+        }
+        // function jusoCallBack(roadFullAddr, roadAddrPart1, addrDetail, roadAddrPart2, engAddr, jibunAddr, zipNo, admCd, rnMgtSn, bdMgtSn, detBdNmList, bdNm, bdKdcd, siNm, sggNm, emdNm, liNm, rn, udrtYn, buldMnnm, buldSlno, mtYn, lnbrMnnm, lnbrSlno, emdNo) {
+        //     // 팝업페이지에서 주소입력한 정보를 받아서, 현 페이지에 정보를 등록합니다.
+        //     vm.param.post = zipNo;
+        //     vm.param.address = roadAddrPart1 + roadAddrPart2;
+        //     vm.param.locgovCode = (admCd) ? admCd.substring(0, 5) : "";
+        //     vm.param.addressDetail = addrDetail;
+        // }
+        function jusoCallBack(response) {
+            if (response.data.admCd != undefined) {
+                // 팝업페이지에서 주소입력한 정보를 받아서, 현 페이지에 정보를 등록합니다.
+                vm.param.post = response.data.zipNo;
+                vm.param.address = response.data.roadAddrPart1 + response.data.roadAddrPart2;
+                vm.param.locgovCode = (response.data.admCd) ? response.data.admCd.substring(0, 5) : "";
+                vm.param.addressDetail = response.data.addrDetail;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

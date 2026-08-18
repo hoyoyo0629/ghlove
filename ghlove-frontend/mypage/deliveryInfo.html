@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 배송지관리 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <!-- <link rel="stylesheet" href="/static/css/swiper.min.css"> -->
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+    <link rel="stylesheet" href="/static/css/order-modal.css?d=202306191" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              마이페이지
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              배송지 관리
+            </span>
+            <h2 class="page-title-txt">배송지 관리</h2>
+          </div>
+        </section>
+        <section class="myAddList" id="contents">
+          <div class="center">
+            <div class="s-contents mylist">
+              <div class="btn_area">
+                <button class="formBtn del" @click="openAddressList('4')" id="addDeliveryBtn">배송지 추가</button>
+              </div>
+              <!--
+                        <div class="address_list_wrap mypage" v-show="userDeliveryList.length > 0">
+                            <div class="list-title">
+                                <div class="date-col s_radio">선택</div>
+                                <div class="address_wrap">
+                                    <div class="date-col a_name">배송지명</div>
+                                    <div class="date-col a_info">
+                                        <span class="a_address">주소</span>
+                                        <span class="a_nacell">
+                                            <span class="p_name">받는사람</span>
+                                            <span class="p_phone">휴대전화번호</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="date-col modify">수정</div>
+                            </div>
+                            <ul class="list-search-group">
+                                <li class="list-items" v-for="(data, index) in userDeliveryList" :key="index">
+                                    <div class="date-col s_radio">
+                                        <input type="radio" name="selectedAdd" :id="index" :value="data.userDeliveryId"
+                                            v-model="selectedDeliveryId">
+                                    </div>
+                                    <label :for="index" class="address_wrap">
+                                        <span class="date-col a_name">
+                                            <a href="" @click.prevent="openAddressList('3', data.userDeliveryId)" title="수정팝업 호출">{{ data.title }}</a>
+                                        </span>
+                                        <span class="a_info">
+                                            <span class="a_address">
+                                                <span class="a_tag" v-show="data.defaultFlag === 'Y'">
+                                                    <button class="formBtn default">기본배송지</button>
+                                                </span>
+                                                <span class="">{{ data.address }}&nbsp;&nbsp;{{ data.addressDetail
+                                                    }}</span>
+                                            </span>
+                                            <span class="a_nacell">
+                                                <span class="p_name">{{ data.userName }}</span>
+                                                <span class="vLine">|</span>
+                                                <span class="p_phone">{{ data.mobile }}</span>
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <div class="date-col modify">
+                                        <img class="icon-img" src="/static/images/icon/list-modify.png" alt="수정팝업 호출" tabindex="0" :id="'modBtn' + data.userDeliveryId"
+                                            @click="openAddressList('3', data.userDeliveryId)" @keydown.enter="openAddressList('3', data.userDeliveryId)">
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        -->
+
+              <!-- 웹접근성 수정 241030 -->
+              <div class="list_body table-container w3c_v_2410">
+                <!-- 접근성 적용 클래스명 : w3c_v_2410 -->
+                <div class="list_wrap mypage">
+                  <table>
+                    <caption>
+                      배송지관리 - 배송지명, 주소, 받는사람, 휴대폰전화번호로 구성
+                    </caption>
+                    <thead class="list-title">
+                      <tr class="items_wrap">
+                        <th class="date-col s_radio" scope="col">선택</th>
+                        <th class="date-col a_name" scope="col">배송지명</th>
+                        <th class="date-col a_address" scope="col">주소</th>
+                        <th class="date-col p_name" scope="col">받는사람</th>
+                        <th class="date-col p_phone" scope="col">휴대전화번호</th>
+                        <th class="date-col modify" scope="col">수정</th>
+                      </tr>
+                    </thead>
+                    <tbody class="item_list-group">
+                      <tr class="list-items" v-for="(data, index) in userDeliveryList" :key="index">
+                        <td class="date-col s_radio">
+                          <input type="radio" name="selectedAdd" :id="index" :value="data.userDeliveryId" v-model="selectedDeliveryId" />
+                        </td>
+                        <td class="date-col a_name">
+                          <a href="" @click.prevent="openAddressList('3', data.userDeliveryId)" title="수정팝업 호출">{{ data.title }}</a>
+                        </td>
+                        <td class="date-col a_address">
+                          <label :for="index">
+                            <span class="a_tag" v-show="data.defaultFlag === 'Y'">
+                              <button class="formBtn default">기본배송지</button>
+                            </span>
+                            <span>{{ data.address }}&nbsp;&nbsp;{{ data.addressDetail}}</span>
+                          </label>
+                        </td>
+                        <td class="date-col p_name">{{ data.userName }}</td>
+                        <td class="date-col p_phone">{{ data.mobile }}</td>
+                        <td class="date-col modify">
+                          <button
+                            type="button"
+                            aria-label="배송지 수정"
+                            :id="'modBtn' + data.userDeliveryId"
+                            @click="openAddressList('3', data.userDeliveryId)"
+                            @keydown.enter="openAddressList('3', data.userDeliveryId)"
+                          >
+                            <img class="icon-img" src="/static/images/icon/list-modify.png" alt="" />
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="table-overlap">
+                  <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br />
+                  <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                </div>
+              </div>
+
+              <div class="list-none" v-show="userDeliveryList.length == 0">등록된 배송지가 없습니다.</div>
+            </div>
+
+            <!-- 버튼그룹 -->
+            <div class="btn-box many">
+              <button type="button" class="blueBtn cancellation" @click="setDefaultDelivery" id="defaultDeliveryBtn">
+                기본배송지로 선택
+                <span>
+                  <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" />
+                </span>
+              </button>
+              <button type="button" class="blueBtn u-confirm" @click="deleteDeliveryClick" id="deleteDeliveryBtn">
+                삭제
+                <span>
+                  <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" />
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <modal-order-add
+          @set-default-delivery="setDefaultDelivery"
+          :delivery-list="userDeliveryList"
+          :view-mode="addViewMode"
+          :phone-codes="phoneCodes"
+          :delivery-open-page="deliveryOpenPage"
+          :tel-codes="telCodes"
+          @set-view-mode="setAddViewMode"
+          @open-daum-postcode="openDaumPostcode"
+          :add-delivery-info="addDeliveryInfo"
+          @save-new-delivery-info="saveNewDeliveryInfo"
+          @copy-delivery-info-by-list="copyDeliveryInfoByList"
+          ref="deliveryModal"
+        ></modal-order-add>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <layout-address ref="daumAddress"></layout-address>
+        <!-- footer component -->
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <!-- <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script> -->
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+    <script type="text/babel">
+      // Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+
+          "modal-order-add": httpVueLoader("/components/ui/address/order_add.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          "layout-address": httpVueLoader("/components/ui/daum/address-layer.vue"),
+        },
+        data: function () {
+          return {
+            param: {
+              page: 1,
+              itemsPerPage: 10,
+            },
+            page: {
+              onsubmitType: "return false;",
+              menuUrl: "/mypage/deliveryInfo.html",
+            },
+            userDeliveryList: [],
+            addViewMode: "2", // 3 : 배송지 수정, 4: 배송지 추가(배송지 관리)
+            phoneCodes: [],
+            telCodes: [],
+            addDeliveryInfo: {}, // 배송지 추가할 검색 정보
+            selectedDeliveryId: 0,
+            deliveryOpenPage: "deliveryInfo",
+          };
+        },
+        methods: {
+          openAddressList: function (viewMode, userDeliveryId) {
+            this.addViewMode = viewMode;
+            this.addDeliveryInfo = {};
+            if (viewMode == "3") {
+              let length = vm.userDeliveryList.length;
+              for (let i = 0; i < length; i++) {
+                if (vm.userDeliveryList[i].userDeliveryId == userDeliveryId) {
+                  vm.addDeliveryInfo = vm.userDeliveryList[i];
+                  if (vm.addDeliveryInfo.defaultFlag === "Y") {
+                    vm.addDeliveryInfo.isDefault = true;
+                  }
+                  break;
+                }
+              }
+            }
+            this.$refs.deliveryModal.$refs.addModal.style.display = "block";
+            $("body").css("overflow-y", "hidden");
+            try {
+              setTimeout(() => {
+                $("#aNameModal").focus();
+              }, 100);
+            } catch (e) {
+              console.log = () => {};
+            }
+          },
+          openDaumPostcode: function () {
+            var searchAddress = vm.searchAddress;
+            var child = Vue.child("layout-address");
+            if (child != null) {
+              child.openDaumAddress(function (response) {
+                Vue.set(vm.addDeliveryInfo, "address", response.roadAddress);
+                Vue.set(vm.addDeliveryInfo, "sido", response.sido);
+                Vue.set(vm.addDeliveryInfo, "sigungu", response.sigungu);
+                Vue.set(vm.addDeliveryInfo, "eupmyeondong", response.eupmyeondong);
+                Vue.set(vm.addDeliveryInfo, "zipcode", response.zipcode);
+                Vue.set(vm.addDeliveryInfo, "newZipcode", response.newZipcode);
+              }, "searchAddressBtnModal");
+            }
+          },
+          closeFunction: function (closeFocusId) {
+            $("#" + closeFocusId).focus();
+          },
+          saveNewDeliveryInfo: function () {
+            this.showLoading(true);
+            if (this.addDeliveryInfo.isDefault) {
+              this.addDeliveryInfo.defaultFlag = "Y";
+            } else {
+              this.addDeliveryInfo.defaultFlag = "N";
+            }
+            $s.api.saveShipping(
+              this.addDeliveryInfo,
+              function (saveShippingResponse) {
+                if (saveShippingResponse.status == "OK") {
+                  vm.initCallFunction("modBtn" + vm.addDeliveryInfo.userDeliveryId);
+                } else {
+                  vm.showLoading(false);
+                  $s.alert("배송지 저장에 실패했습니다.", "modBtn" + vm.addDeliveryInfo.userDeliveryId);
+                }
+              },
+              vm.commError
+            );
+          },
+          copyDeliveryInfoByList: function (userDelivery) {},
+          loadingMounted: function () {
+            this.initCallFunction();
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          // 최초 실행 함수
+          initCallFunction: function (focusId) {
+            vm.showLoading(true);
+            vm.selectedDeliveryId = 0;
+            $s.api.getShipping(function (response) {
+              vm.showLoading(false);
+              vm.userDeliveryList = response.content;
+              vm.phoneCodes = response.phoneCodes;
+              vm.telCodes = response.telCodes;
+              vm.$refs.deliveryModal.modalClose();
+              try {
+                let length = vm.userDeliveryList.length;
+                for (let i = 0; i < length; i++) {
+                  if (vm.userDeliveryList[i].defaultFlag === "Y") {
+                    vm.selectedDeliveryId = vm.userDeliveryList[i].userDeliveryId;
+                    break;
+                  }
+                }
+              } catch (e) {
+                console.log = () => {};
+              }
+
+              try {
+                setTimeout(() => {
+                  if (focusId) {
+                    $("#" + focusId).focus();
+                  }
+                }, 100);
+              } catch (e) {
+                console.log = () => {};
+              }
+              // $(".lnb-bar_2dep li").eq(2).addClass("currentT");
+              // $(".lnb-bar_3dep").eq(2).show();
+            }, vm.commError);
+          },
+          commError: function (error) {
+            vm.showLoading(false);
+            $s.api.handleApiExeption(error, "contents");
+          },
+          deleteDeliveryClick: function () {
+            // todo :: me-072(선택하신 배송지를 삭제 하시겠습니까?) me-053(디지털원패스 회원 연동을 진행하시겠습니까? me-064(기본배송지입니다. 삭제하시겠습니까?) 적용)
+            vm.showLoading(true);
+            if (vm.selectedDeliveryId > 0) {
+              let isDefault = false;
+              let length = vm.userDeliveryList.length;
+              for (let i = 0; i < length; i++) {
+                if (vm.userDeliveryList[i].userDeliveryId == vm.selectedDeliveryId) {
+                  if (vm.userDeliveryList[i].defaultFlag === "Y") {
+                    isDefault = true;
+                  }
+                  break;
+                }
+              }
+              vm.showLoading(false);
+              if (isDefault) {
+                $s.confirm2("기본배송지입니다. 삭제하시겠습니까?", "예", "아니오", vm.deleteDeliveryInfo, "deleteDeliveryBtn"); // me-064
+              } else {
+                $s.confirm2("선택하신 배송지를 삭제 하시겠습니까?", "예", "아니오", vm.deleteDeliveryInfo, "deleteDeliveryBtn"); // me-072
+              }
+            } else {
+              vm.showLoading(false);
+              $s.alert("배송지를 선택해주세요.", "deleteDeliveryBtn"); // me-041
+            }
+          },
+          deleteDeliveryInfo: function () {
+            vm.showLoading(true);
+            let param = { mode: "delete", userDeliveryId: vm.selectedDeliveryId };
+            $s.api.shippingListAction(
+              param,
+              function (shippingListActionResponse) {
+                if (shippingListActionResponse.status == "OK") {
+                  $s.api.getShipping(function (getShippingResponse) {
+                    $s.closeAlert();
+                    vm.showLoading(false);
+                    vm.userDeliveryList = getShippingResponse.content;
+                    setTimeout(() => {
+                      $("#deleteDeliveryBtn").focus();
+                    }, 100);
+                  }, vm.commError);
+                } else {
+                  vm.showLoading(false);
+                  $s.alert("배송지 삭제에 실패했습니다.", "deleteDeliveryBtn");
+                }
+              },
+              vm.commError
+            );
+          },
+          setDefaultDelivery: function () {
+            // me-071(선택하신 상품을 반품신청 하시겠습니까? 잘못된거 같아서 me-073(정보를 수정 하시겠습니까?) 적용) me-041(배송지를 선택해 주세요.)
+            if (vm.selectedDeliveryId > 0) {
+              $s.confirm(
+                "정보를 수정 하시겠습니까?",
+                function () {
+                  vm.showLoading(true);
+                  let param = { mode: "mod", userDeliveryId: vm.selectedDeliveryId };
+                  $s.api.shippingListAction(
+                    param,
+                    function (shippingListActionResponse) {
+                      if (shippingListActionResponse.status == "OK") {
+                        $s.closeAlert();
+                        $s.api.getShipping(function (getShippingResponse) {
+                          vm.showLoading(false);
+                          vm.userDeliveryList = getShippingResponse.content;
+                          try {
+                            setTimeout(() => {
+                              $("#defaultDeliveryBtn").focus;
+                            }, 100);
+                          } catch (e) {
+                            console.log = () => {};
+                          }
+                        }, vm.commError);
+                      } else {
+                        vm.showLoading(false);
+                        $s.alert("기본배송지 변경에 실패했습니다.", "defaultDeliveryBtn");
+                      }
+                    },
+                    vm.commError
+                  );
+                },
+                "defaultDeliveryBtn"
+              );
+            } else {
+              vm.showLoading(false);
+              $s.alert("배송지를 선택해주세요.", "defaultDeliveryBtn");
+            }
+          },
+          closeTableOverlap: function () {
+            $(".table-overlap").css("display", "none");
+          },
+          setAddViewMode: function (mode, selectedData) {
+            if (selectedData) {
+              this.addDeliveryInfo = selectedData;
+            }
+            this.addViewMode = mode;
+          },
+          onPageShow: function () {
+            this.loadingMounted();
+          },
+        },
+        /*watch: {
+                'param.itemsPerPage': function () {
+                    vm.paging(1);
+                },
+
+            },*/
+        computed: {
+          /*viewImageSwiper() {
+                    return this.$refs.awesomeViewImageSwiper.swiper
+                },
+                viewThumbsSwiper() {
+                    return this.$refs.awesomeViewThumbsSwiper.swiper
+                },*/
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init({ loginPage: true });
+            // vm.paging(1);
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

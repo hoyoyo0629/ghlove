@@ -1,0 +1,338 @@
+.mypage-wrap.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.page-title-box .user-grade .grade-bg {
+    background-color: var(--gray5);
+    padding: calc(var(--margin-padding-8)*1) 6%;
+    font-size: 16px;
+    border-radius: 40px;
+    color: var(--gray2);
+}
+
+
+.contents-wrap.mypage {
+    color: var(--gray2);
+    margin-bottom: 150px;
+}
+
+.contents-wrap.mypage .mypage-wrap,
+.contents-wrap.mypage .shortcut-wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.contents-wrap.mypage .mypage-wrap {
+    margin-bottom: 30px;
+}
+
+/* 기부하기 */
+
+.contents-wrap.mypage>div.shortcut-wrap {
+    padding-bottom: 60px;
+    align-items: flex-end;
+
+}
+
+.contents-wrap.mypage>div.shortcut-wrap>span {
+    width: 49%;
+    height: 140px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--gray4);
+    background-color: var(--gray5);
+    border-radius: 30px 30px 30px 0;
+    padding: 0 5%;
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--sub-color1);
+    position: relative;
+    /* margin-left: 2.8125%; */
+}
+
+.contents-wrap.mypage>div.shortcut-wrap>span:nth-child(2) {
+    /* border-radius: 30px 30px 0px 30px; */
+    margin-left: 1%;
+}
+
+.contents-wrap.mypage>div.shortcut-wrap>span span.item_txt {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.contents-wrap.mypage>div.shortcut-wrap>span.shortcut-items:hover {
+    background-color: var(--gray4);
+    color: var(--sub-color1);
+}
+
+.contents-wrap.mypage>div.shortcut-wrap>span .round-illustBtn {
+    transform: scale(0.65, 0.65) translateY(3px);
+    position: relative;
+    z-index: 99;
+}
+
+.contents-wrap.mypage>div.shortcut-wrap>span .txt {
+    position: relative;
+    z-index: 99;
+
+}
+
+.contents-wrap.mypage>div.shortcut-wrap>span:hover button.round-illustBtn span {
+    width: 30px;
+    background-image: url('/static/images/icon/cli-icon_btn-illust-arrow3.png');
+}
+
+.contents-wrap.mypage>div.shortcut-wrap>span:hover button.round-illustBtn span::after {
+    transform: scale(1, 1);
+}
+
+/* 기부안내 */
+.contents-wrap.mypage .mypage-wrap .mylist {
+    border: 1px solid var(--gray4);
+    border-radius: 30px 30px 0px 30px;
+    transition: background-color 0.2s, color 0.2s;
+    width: 24%;
+    min-height: 442px;
+    padding: calc(var(--margin-padding-8)*11) calc(var(--margin-padding-8)*5) calc(var(--margin-padding-8)*6);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    position: relative;
+}
+
+.contents-wrap.mypage .mypage-wrap .mylist:nth-child(2),
+.contents-wrap.mypage .mypage-wrap .mylist:nth-child(4) {
+    border-radius: 30px 30px 30px 0px;
+}
+
+.contents-wrap.mypage .mypage-wrap>div.onn {
+    border-radius: 30px 30px 30px 0;
+    background-color: var(--gray5);
+}
+
+.contents-wrap.mypage .mypage-wrap>div.onn h3 {
+    color: var(--gray2);
+}
+
+.contents-wrap.mypage .mypage-wrap h3 {
+    line-height: 42px;
+    color: var(--gray3);
+    margin-bottom: calc(var(--margin-padding-8)*4);
+    display: flex;
+    flex-direction: column;
+}
+
+.contents-wrap.mypage .mypage-wrap p {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.contents-wrap.mypage .mypage-wrap>div .data-box {
+    position: relative;
+    width: 100%;
+    font-size: 26px;
+    color: var(--gray2);
+    align-self: center;
+    z-index: 99;
+}
+
+.contents-wrap.mypage .mypage-wrap>div .data-box .data-field {
+    background-color: #fff;
+    border: 1px solid var(--gray4);
+    border-radius: 14px;
+    padding: calc(var(--margin-padding-8)*3) 10%;
+    z-index: 99;
+    width: 100%;
+    text-align: center;
+    /* min-height: 95px; */
+}
+
+.contents-wrap.mypage .mypage-wrap>div .data-box .bg-field {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: -5px;
+    background-color: var(--gray5);
+    z-index: -1;
+    border: 1px solid var(--gray4);
+    border-radius: 12px;
+    padding: calc(var(--margin-padding-8)*4) 20px;
+}
+
+.contents-wrap.mypage .mypage-wrap .mylist button {
+   align-self: flex-end;
+}
+
+.contents-wrap.mypage .mypage-wrap>div.on:hover {
+    background-color: var(--sub-color1);
+    color: #fff;
+
+}
+
+.contents-wrap.mypage .mypage-wrap>div.on {
+    background-color: var(--main-color2);
+    color: #fff;
+}
+
+.contents-wrap.mypage .mypage-wrap>div.on:hover h3,
+.contents-wrap.mypage .mypage-wrap>div.on h3 {
+    color: #fff;
+}
+
+
+.contents-wrap.mypage .mypage-wrap>div:hover {
+    background-color: var(--gray4);
+    /* box-shadow: 8px 20px 24px rgba(0, 0, 0, 0.3); */
+    /* border: none; */
+    color: var(--gray1);
+}
+
+.contents-wrap.mypage .mypage-wrap>div:hover h3 {
+    color: var(--gray2);
+}
+
+.contents-wrap.mypage .mypage-wrap>div:hover>button.round-illustBtn span {
+    width: 30px;
+    background-image: url('/static/images/icon/cli-icon_btn-illust-arrow3.png');
+
+}
+
+.contents-wrap.mypage .mypage-wrap>div:hover>button.round-illustBtn span::after {
+    transform: scale(1, 1);
+}
+
+@media screen and (max-width:1280px) {
+    .contents-wrap.mypage .mypage-wrap {
+        flex-wrap: wrap;
+        margin-bottom: 0px;
+    }
+
+
+    .contents-wrap.mypage .mypage-wrap .mylist {
+        /* flex-direction: row; */
+        /* align-items: center; */
+        min-width: 49.3%;
+        margin-bottom: 10px;
+        min-height: 25px;
+        padding: calc(var(--margin-padding-8)*5) 20px;
+    }
+
+    .contents-wrap.mypage .mypage-wrap .mylist h3 {
+        /* font-size: 26px; */
+        line-height: 1.25em;
+        margin-bottom: 30px;
+        flex-direction: row;
+    }
+    .contents-wrap.mypage .mypage-wrap .mylist.nono h3 {
+        margin-bottom: 0;
+    }
+
+    .contents-wrap.mypage .mypage-wrap:not(:last-child) .mylist p {
+        width: 95%;
+    }
+
+    .contents-wrap.mypage .mypage-wrap>div .data-box {
+        /* margin-right: 8%; */
+        /* width: 60%; */
+    }
+
+    .contents-wrap.mypage .mypage-wrap .mylist button {
+        position: absolute;
+        top: 30px; right: 20px;
+    }
+}
+
+@media screen and (max-width:1030px) {
+
+
+    .contents-wrap.mypage .mypage-wrap .mylist h3 {
+        font-size: 24px;
+    }
+
+    .contents-wrap.mypage .mypage-wrap>div .data-box {
+        font-size: 22px;
+    }
+}
+
+@media screen and (max-width:768px) {
+    .page-title-box .user-grade .grade-bg {
+        font-size: 13px;
+        padding: calc(var(--margin-padding-8)*1) 15%;
+    }
+
+
+    .contents-wrap.mypage>div.shortcut-wrap {
+        /* flex-direction: column;
+        align-items: center;*/
+        padding-bottom: 0px; 
+    }
+
+    .contents-wrap.mypage>div.shortcut-wrap>div {
+        margin-bottom: 20px;
+    }
+
+    .contents-wrap.mypage>div.shortcut-wrap>span {
+        width: 100%;
+        height: 100px;
+        margin-bottom: 20px;
+        margin-left: 0;
+        font-size: 20px;
+        padding: 0 5%
+    }
+    
+    .contents-wrap.mypage>div.shortcut-wrap>span .shortcut-img{
+        height: 62px;
+    }
+    .contents-wrap.mypage .mypage-wrap .mylist{
+        min-width: 100%;
+        max-width: 100%;
+        min-height: 100px;
+        padding: 30px;
+    }
+    .contents-wrap.mypage .mypage-wrap .mylist h3 {
+        /* width: 80%; */
+        color: var(--gray2);
+        font-size: 26px;
+    }
+
+}
+
+@media screen and (max-width:680px) {
+    .contents-wrap.mypage>div.shortcut-wrap>span.shortcut-items:first-child {
+        display: none;
+    }
+
+    .contents-wrap.mypage .mypage-wrap {
+        flex-direction: column;
+    }
+
+    .contents-wrap.mypage>div.shortcut-wrap>span.shortcut-items:nth-of-type(1) {
+        display: none;
+    }
+    .contents-wrap.mypage .mypage-wrap .mylist button {
+        top: 20px; right: 30px;
+        transform: scale(0.8);
+        transform-origin: right;
+    }
+    .contents-wrap.mypage .mypage-wrap .mylist h3 {
+        margin-bottom: 20px;
+    }
+    .contents-wrap.mypage .mypage-wrap .mylist.nono h3 {
+        margin-bottm: 0;
+        flex-direction: row;
+    }
+}
+
+@media screen and (max-width:460px) {
+    .contents-wrap.mypage .mypage-wrap .mylist h3 {
+        flex-direction: column;
+    }
+
+    .contents-wrap.mypage .mypage-wrap .mylist button {
+        align-self: flex-start;
+    }
+}

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.onlinepowers.framework.file.mapper.FileMapper">
+
+	<resultMap id="FileResult" type="UploadFile">
+		<result property="refCode" 			column="REF_CODE"  />	
+		<result property="refId" 			column="REF_ID" 	/>
+		<result property="fileId" 			column="FILE_ID"  />
+		<result property="fileName" 		column="FILE_NAME"  />
+		<result property="fileSize" 		column="FILE_SIZE"  />
+		<result property="fileType" 		column="FILE_TYPE"  />
+		<result property="fileDescription" 	column="FILE_DESCRIPTION"  />
+		<result property="uploadType" 		column="UPLOAD_TYPE"  />
+		<result property="useEncrypt" 		column="USE_ENCRYPT"  />
+		<result property="downloadCount" 	column="DOWNLOAD_COUNT"  />
+		<result property="ordering" 		column="ORDERING"  />
+		<result property="statusCode" 		column="STATUS_CODE"  />
+		<result property="createdDate" 	column="CREATED_DATE"  />
+	</resultMap>
+
+	<insert id="add" parameterType="UploadFile">
+		INSERT INTO OP_FILE (REF_CODE, REF_ID, FILE_ID, FILE_NAME, FILE_SIZE, FILE_TYPE, FILE_DESCRIPTION, UPLOAD_TYPE, USE_ENCRYPT, DOWNLOAD_COUNT, ORDERING, STATUS_CODE, CREATED_DATE) 
+		VALUES (#{refCode}, #{refId}, #{fileId}, #{fileName}, #{fileSize}, #{fileType}, #{fileDescription}, #{uploadType}, #{useEncrypt}, #{downloadCount}, #{ordering}, #{statusCode}, <include refid="CommonMapper.datetime"/>)
+  	</insert>
+  	
+  	
+  	<insert id="addFileTemp" parameterType="UploadFile">
+		INSERT INTO OP_FILE_TEMP (REF_CODE, REF_ID, FILE_ID, FILE_NAME, FILE_SIZE, FILE_TYPE, FILE_DESCRIPTION, UPLOAD_TYPE, USE_ENCRYPT, DOWNLOAD_COUNT, ORDERING, STATUS_CODE, CREATED_DATE) 
+		VALUES (#{refCode}, #{refId}, #{fileId}, #{fileName}, #{fileSize}, #{fileType}, #{fileDescription}, #{uploadType}, #{useEncrypt}, #{downloadCount}, #{ordering}, #{statusCode}, DATE_FORMAT(NOW(), '%Y%m%d'))
+  	</insert>
+  	
+  	
+  	<update id="updateUploadFile" parameterType="UploadFile">
+  		UPDATE OP_FILE 
+  		<set>
+  			<if test="fileDescription != null">
+  				FILE_DESCRIPTION = #{fileDescription}, 
+  			</if>
+  			<if test="statusCode != null and statusCode != ''">
+  				STATUS_CODE = #{statusCode}, 
+  			</if>
+  		</set>
+  		WHERE FILE_ID = #{fileId}
+  	</update>
+  	
+  	<select id="getById" parameterType="Integer" resultMap="FileResult">
+  		SELECT * FROM OP_FILE
+  		WHERE FILE_ID = #{value}
+  	</select>
+  	
+  	
+  	<select id="getByTempId" parameterType="Integer" resultMap="FileResult">
+  		SELECT * FROM OP_FILE_TEMP
+  		WHERE FILE_ID = #{value}
+  	</select>
+  	
+  	
+  	
+  	<select id="getUploadFileList" parameterType="UploadFile" resultMap="FileResult">
+  		SELECT * FROM OP_FILE
+  		WHERE REF_CODE = #{refCode} AND REF_ID = #{refId} AND STATUS_CODE = '1'
+  		<if test="uploadType != null and uploadType != ''">
+			AND UPLOAD_TYPE = #{uploadType}
+		</if>
+  	</select>
+  	
+  	<select id="getMaxSeq" parameterType="java.util.HashMap" resultType="Integer">
+  		SELECT IFNULL(MAX(ORDERING),0) + 1 FROM OP_FILE
+  		WHERE REF_CODE = #{refCode} AND REF_ID = #{refId}
+  	</select>
+  	
+  	<select id="getFileCount" parameterType="java.util.HashMap" resultType="Integer">
+  		SELECT COUNT(*) FROM OP_FILE
+  		WHERE REF_CODE = #{refCode} AND REF_ID = #{refId} AND STATUS_CODE = '1' AND UPLOAD_TYPE = '1'
+  	</select>
+  	
+  	<select id="getFileCountByUploadFile" parameterType="UploadFile" resultType="Integer">
+  		SELECT COUNT(*) FROM OP_FILE
+  		WHERE REF_CODE = #{refCode} AND REF_ID = #{refId} AND STATUS_CODE = '1' AND UPLOAD_TYPE = '1'
+  	</select>
+  	
+  		
+	<select id="getCreationDateList" parameterType="String" resultType="String">
+		SELECT DISTINCT CREATED_DATE FROM OP_FILE_TEMP
+		WHERE REF_CODE = #{value}
+	</select>
+  	
+  	<delete id="deleteById" parameterType="Integer">
+  		DELETE FROM OP_FILE
+  		WHERE FILE_ID = #{value}
+  	</delete>
+  	
+  	<delete id="deleteByUploadFile" parameterType="UploadFile">
+  		DELETE FROM OP_FILE
+  		WHERE REF_CODE = #{refCode} AND REF_ID = #{refId}
+  	</delete>
+  	
+  	<delete id="deleteByToken" parameterType="String">
+  		DELETE FROM OP_FILE_TEMP
+  		WHERE REF_CODE = #{value}
+  	</delete>
+  	
+
+
+</mapper>

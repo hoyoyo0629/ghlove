@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head id="saleson-head">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 관심답례품 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+    <link rel="stylesheet" href="/static/css/favo_info.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <layout-header-ali></layout-header-ali>
+      <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+      <section class="cart_contents">
+        <div class="page-title-box">
+          <span class="ali_breadcrumb">
+            <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            <a href="/mypage/index.html">마이페이지</a>
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            관심답례품
+          </span>
+          <h2 class="page-title-txt">관심답례품</h2>
+        </div>
+      </section>
+      <section class="contents" id="contents">
+        <form class="center cart_wrap needs-validation">
+          <div class="contents_wrap" v-show="result.content.length > 0">
+            <div class="s-contents">
+              <div class="cart_top">
+                <div class="chk_box check-level1">
+                  <input type="checkbox" id="all" name="selectedAll" v-model="selectedAll" />
+                  <label for="all">전체선택</label>
+                </div>
+                <div class="btn_area">
+                  <button type="button" class="formBtn del" @click="deleteWishItems" id="deleteWishItemsBtn">선택 삭제</button>
+                </div>
+              </div>
+
+              <!-- <div class="list_body">
+                            <div class="list_wrap">
+                                <div class="list-title">
+                                    <div class="date-col chk_date">
+                                        <div class="check_input"><input type="checkbox" name="" id=""></div>
+                                    </div>
+                                    <div class="date-col info_loc">지자체명</div>
+                                    <div class="date-col g_info_wrap">답례품정보</div>
+                                    <div class="date-col sel_status">상태</div>
+
+                                </div>
+
+                                <ul class="item_list-group" v-show="result.content.length > 0">
+                                    <li class="list-items" v-for="(data, i) in result.content" :key="data.itemId">
+                                        <div class="date-col chk_date">
+                                            <div class="check_input">
+                                                <input type="checkbox" name="item" v-model="selectedItems" :value="data.wishlistId" :aria-label="data.item.itemName + ' 선택'">
+                                            </div>
+                                        </div>
+                                        <div class="items_wrap">
+                                            <div class="date-col info_loc">{{data.item.locgovNm}}</div>
+                                            <div class="date-col g_info_wrap" tabindex="0" @click="goItemPage(data.item.itemUserCode)" :role="data.item.itemName + ' 상세 페이지로 이동'">
+                                                <div class="g_info__img"><img
+                                                    :src="itemImage(data.item.imageSrc)" alt="답례품이미지"></div>
+                                                <div class="g_info__txt">
+                                                    <div class="info_title">{{data.item.itemName}}</div>
+                                                    <div class="g_info__price">{{formatNumber(data.item.salePrice)}} P</div>
+                                                </div>
+                                            </div>
+                                            <div class="date-col sel_status" v-if="data.item.itemSoldOut"><span>품절</span></div>
+                                            <div class="date-col sel_status" v-else-if="data.item.dataStatusCode === '1'"><span>판매중</span></div>
+                                            <div class="date-col sel_status" v-else><span>판매중지</span></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div> -->
+
+              <!-- 수정 241024 -->
+              <div class="list_body table-container w3c_v_2410">
+                <!-- 접근성 적용 클래스명 : w3c_v_2410 -->
+                <div class="list_wrap">
+                  <table>
+                    <caption>
+                      관심지자체 - 기부지자체, 나의 기부현황, 기부하기, 바로가기로 구성
+                    </caption>
+                    <thead class="list-title">
+                      <tr class="items_wrap">
+                        <th class="date-col chk_date">
+                          <div class="check_input">
+                            <label for=checkboxForSr class="sr-only">
+                              <input type="checkbox" name="" id="checkboxForSr" />
+                            </label>
+                          </div>
+                        </th>
+                        <th class="date-col info_loc" scope="col">지자체명</th>
+                        <th class="date-col g_info_wrap" scope="col">답례품정보</th>
+                        <th class="date-col sal_status" scope="col">상태</th>
+                        <th class="date-col btn_col" scope="col">바로가기</th>
+                      </tr>
+                    </thead>
+                    <tbody class="item_list-group" v-show="result.content.length > 0">
+                      <tr class="list-items" v-for="(data, i) in result.content" :key="data.itemId">
+                        <td class="date-col chk_date">
+                          <div class="check_input">
+                          <label :for="i" class="sr-only"></label>
+                            <input
+                              type="checkbox"
+                              name="item"
+                              v-model="selectedItems"
+                              :value="data.wishlistId"
+                              :aria-label="data.item.itemName + ' 선택'"
+                              :id="i"
+                            />
+                          </div>
+                        </td>
+                        <td class="date-col info_loc">{{data.item.locgovNm}}</td>
+                        <td class="date-col g_info_wrap" tabindex="0">
+                          <div class="g_info__img">
+                            <img :src="itemImage(data.item.imageSrc)" alt="답례품이미지" />
+                          </div>
+                          <div class="g_info__txt">
+                            <div class="info_title">{{data.item.itemName}}</div>
+                            <div class="g_info__price">{{formatNumber(data.item.salePrice)}} P</div>
+                          </div>
+                        </td>
+                        <td class="date-col sal_status" v-if="data.item.itemSoldOut">
+                          <span>품절</span>
+                        </td>
+                        <td class="date-col sal_status" v-if="data.item.itemSoldOut">
+                          <span>품절</span>
+                        </td>
+                        <td class="date-col sal_status" v-else-if="data.item.dataStatusCode === '1'">
+                          <span>판매중</span>
+                        </td>
+                        <td class="date-col sal_status" v-else>
+                          <span>판매중지</span>
+                        </td>
+                        <td class="date-col btn_col">
+                          <button
+                            type="button"
+                            class="formBtn intrs"
+                            @click="goItemPage(data.item.itemUserCode)"
+                            :role="data.item.itemName + ' 상세 페이지로 이동'"
+                          >
+                            답례품몰
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="table-overlap">
+                  <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br />
+                  <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="common_none" v-show="result.content.length === 0">
+            <p>관심답례품이 없습니다.</p>
+          </div>
+        </form>
+      </section>
+      <!-- <modal-order-add v-show="stepStatus == '2'"></modal-order-add> -->
+      <layout-fixed-btn></layout-fixed-btn>
+      <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+        },
+        data: {
+          param: {
+            page: 1,
+            itemsPerPage: 999999,
+            //locgovCode: ""
+          },
+          result: {
+            currentPage: 1,
+            totalPages: 0,
+            totalElements: 0,
+            content: [],
+            totalCnt: 0,
+          },
+          selectedItems: [],
+          menuUrl: location.pathname,
+          page: {
+            menuUrl: "/mypage/favorItem.html",
+          },
+        },
+        methods: {
+          closeTableOverlap: function () {
+            $(".table-overlap").css("display", "none");
+          },
+          loadingMounted: function () {
+            this.initCallFunction(true);
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          commError: function (error) {
+            vm.showLoading(false);
+            $s.api.handleApiExeption(error, "fixedBtn");
+          },
+          // 최초 실행 함수
+          initCallFunction: function (isInit) {
+            // $(".lnb-bar_2dep li").eq(3).addClass("currentT");
+            // $(".lnb-bar_3dep").eq(3).show();
+            vm.paging(1, isInit);
+          },
+          paging: function (page, isInit) {
+            vm.showLoading(true);
+            vm.param.page = page;
+            $s.api.getWishlist(
+              vm.param,
+              function (response) {
+                vm.showLoading(false);
+                vm.result = response;
+                setTimeout(() => {
+                  try {
+                    if (!isInit) {
+                      if (response.numberOfElements > 0) {
+                        $("#deleteWishItemsBtn").focus();
+                      } else {
+                        location.href = "#contents";
+                      }
+                    }
+                  } catch (e) {
+                    $s.error(e);
+                  }
+                }, 100);
+              },
+              vm.commError
+            );
+          },
+          goItemPage: function (itemUserCode) {
+            $s.redirect("/items/details.html?code=" + itemUserCode);
+          },
+          deleteWishItems: function () {
+            // me-073(정보를 수정 하시겠습니까?) me-040(상품을 선택해 주세요.)
+            let length = this.selectedItems.length;
+            if (length > 0) {
+              $s.confirm2(
+                "정보를 수정 하시겠습니까?",
+                "예",
+                "아니오",
+                function () {
+                  vm.showLoading(true);
+                  let param = { id: vm.selectedItems };
+                  vm.selectedItems = [];
+                  $s.api.delWishlist(
+                    param,
+                    function (response) {
+                      vm.showLoading(false);
+                      if (response.status == "OK") {
+                        // $s.closeAlert();
+                        $("#op-alert").modal("hide");
+                        vm.initCallFunction();
+                      } else {
+                        $s.alert("잠시 후 다시 시도해주세요.", "deleteWishItemsBtn");
+                      }
+                    },
+                    vm.commError
+                  );
+                },
+                "deleteWishItemsBtn"
+              );
+            } else {
+              $s.alert("선택된 답례품이 없습니다.", "deleteWishItemsBtn");
+            }
+          },
+          onPageShow: function () {
+            this.loadingMounted();
+          },
+        },
+        computed: {
+          selectedAll: {
+            get: function () {
+              return this.selectedItems.length > 0 ? this.selectedItems.length === this.result.content.length : false;
+            },
+            set: function (value) {
+              this.selectedItems = [];
+              if (value) {
+                let length = this.result.content.length;
+                for (let i = 0; i < length; i++) {
+                  this.selectedItems.push(this.result.content[i].wishlistId);
+                }
+              }
+            },
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init({ loginPage: true });
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

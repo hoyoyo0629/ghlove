@@ -1,0 +1,109 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" 	uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="page" 	tagdir="/WEB-INF/tags/page"%>
+<%@ taglib prefix="op" 		uri="/WEB-INF/tlds/functions" %>
+<%@ taglib prefix="shop"	uri="/WEB-INF/tlds/shop" %>
+
+
+<style>
+.table_btn {position: absolute; top: 77px; right: 18px;}
+</style>
+
+
+<div class="popup_wrap">
+	<div id="pop_header">
+		<h1 class="popup_title">송장번호 수정</h1>
+		<a href="javascript:self.close();" class="btn_close"><img src="/content/opmanager/images/btn/btn_close.png" alt="닫기"></a>
+	</div>
+	<div class="popup_contents">
+
+		<form:form modelAttribute="orderItem" method="post">
+			<form:hidden path="orderCode" />
+			<form:hidden path="orderSequence" />
+			<form:hidden path="itemSequence" />
+			<div class="board_write">
+				<table class="board_write_table">
+					<caption>송장번호 수정</caption>
+	                <colgroup>
+	                    <col style="width: 100px" />
+	                    <col />
+	                </colgroup>
+					<tbody>
+						<tr>
+							<td class="label">주문번호</td>
+							<td>
+								<div>${fn:escapeXml(orderItem.orderCode)}</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="label">상품정보</td>
+							<td>
+								<div>
+									[${fn:escapeXml(orderItem.itemUserCode)}] ${fn:escapeXml(orderItem.itemName)}
+									<c:if test="${!empty orderItem.options}">
+										<p>${shop:viewItemOptions(orderItem.setItemFlag, orderItem.options)}</p>
+									</c:if>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="label">배송정보</td>
+							<td>
+								<div>
+									<c:choose>
+										<c:when test="${empty orderItem.deliveryNumber}">
+											<!-- 직접수령 -->
+											<c:out value="${empty orderItem.deliveryCompanyName ? '택배사 정보 없음' : orderItem.deliveryCompanyName}"></c:out> [송장정보 없음]
+										</c:when>
+										<c:otherwise>
+											${fn:escapeXml(orderItem.deliveryCompanyName)}
+											[${fn:escapeXml(orderItem.deliveryNumber)}]
+										</c:otherwise>
+									</c:choose>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="label">변경</td>
+							<td>
+								<div class="flex_box gap-08">
+									<form:select path="deliveryCompanyId" cssClass="required" title="배송업체">
+										<form:option value="0" label="-선택-" />
+										<c:forEach items="${deliveryCompanyList}" var="deliveryCompany">
+											<option value="${fn:escapeXml(deliveryCompany.deliveryCompanyId)}" ${op:selected(deliveryCompany.deliveryCompanyName, orderItem.deliveryCompanyId)}>${fn:escapeXml(deliveryCompany.deliveryCompanyName)}</option>
+										</c:forEach>
+									</form:select>
+									<form:input path="deliveryNumber" maxlength="30" cssClass="required" title="송장번호" />
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p class="popup_btns">
+				<button type="submit" class="btn btn-active">수정</span></button>
+			</p>
+		</form:form>
+
+	<a href="#" class="popup_close">창 닫기</a>
+</div>
+
+<script type="text/javascript">
+	$(function(){
+		$("#orderItem").validator({
+			'requiredClass' : 'required',
+			'submitHandler' : function() {
+
+				if ($('#deliveryCompanyId').val() == '0') {
+					alert('배송업체를 선택해 주세요');
+					return false;
+				}
+
+			}
+		});
+
+	})
+</script>

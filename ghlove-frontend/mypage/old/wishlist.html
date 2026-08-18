@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+    <title>지역정보개발원-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/mypage.css">
+</head>
+<body>
+<div id="saleson" v-cloak>
+    <layout-header></layout-header>
+
+    <section class="contents wishlist_contents">
+        <div class="tit_wrap">
+            <h2 class="tit">관심답례품</h2>
+        </div>
+        <div class="wishlist_wrap">
+            <div class="container">
+                <div class="cart_top">
+                    <div class="check_area">
+                        <input type="checkbox" id="checkAll" @click="checkAll()">
+                        <label for="checkAll">전체선택</label>
+                    </div>
+                    <p class="total">총 <span>{{result.totalElements}}</span>건</p>
+                </div>
+                <div class="item_list check del">
+                    <template v-if="typeof result.content !== 'undefined' && result.content.length > 0">
+                        <div class="list_area" v-for="data in result.content">
+                            <div class="item_top">
+                                <div class="check_area">
+                                    <input type="checkbox" :id="data.wishlistId" title="선택">
+                                    <label :for="data.wishlistId"></label>
+                                </div>
+                                <button type="button" class="btn_item_del" @click="checkItemDelete(data.wishlistId)">
+                                    <span class="screen_out">답례품 지우기</span>
+                                </button>
+                            </div>
+                            <div class="img_area">
+                                <a href="javascript:void(0)" @click="viewDetails('/items/details.html?code=' + data.item.itemUserCode, 'paging', 'wishlist')">
+                                    <img :src="itemImage(data.item.itemImage)" :alt="unescapeHtml(data.item.itemName)">
+                                </a>
+                            </div>
+                            <div class="txt_area">
+                                <p class="brand"></p>
+                                <p class="title">{{data.item.itemName}}</p>
+                                <p class="option">{{data.itemOption}}</p>
+                                <div class="price_area">
+                                    <p class="before" v-if="data.item.listPrice != 0"><span>{{data.item.listPrice}}</span>원</p>
+                                    <div class="sale_area">
+                                        <!--<p class="sale"><span>30</span>%</p>-->
+                                        <p class="price total"><span>{{formatNumber(data.item.presentPrice)}}</span>원</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stock_area">
+                                <p class="sub_tit">답례품재고</p>
+                                <p class="txt" v-if="data.item.itemSoldOutFlag === 'N'">재고 있음</p>
+                                <p class="txt" v-else>재고 없음</p>
+                            </div>
+                        </div>
+                    </template>
+                    <div class="common_none" v-else><p>조회 된 관심답례품이 없습니다.</p></div>
+                </div>
+                <div class="btn_left">
+                    <button type="button" class="btn btn_m btn_default" @click="deleteAll()">선택 답례품 삭제</button>
+                </div>
+                <pagination :current-page="result.currentPage" :total-pages="result.totalPages" @change="paging"></pagination>
+            </div>
+        </div>
+    </section>
+
+    <layout-footer></layout-footer>
+</div>
+
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+
+
+<script src="/modules/babel.min.js"></script>
+<script src="/modules/es6-promise.min.js"></script>
+<script src="/modules/es6-promise.auto.min.js"></script>
+<script src="/modules/axios.js"></script>
+<script src="/modules/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+
+<script type="text/babel">
+    Vue.use(VueAwesomeSwiper);
+    var vm = new Vue({
+        el: '#saleson',
+        components: {
+            'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+            'layout-header': httpVueLoader('/components/layouts/header.vue'),
+            'pagination': httpVueLoader('/components/ui/pagination.vue')
+        },
+        data: {
+            param : {
+                page: 1
+            },
+            result : {}
+        },
+        methods: {
+            submit : function(){
+                $s.api.getWishlist(vm.param,
+                    function (response) {
+                        vm.result = response;
+                    }
+                );
+            },
+
+            delWishlist : function(){
+                $s.api.delWishlist(vm.param,
+                    function (response) {
+                        if(response.status === "OK"){
+                            $s.alert("삭제되었습니다.");
+                            location.reload();
+                        } else {
+                            $s.alert(response);
+                        }
+                    }
+                );
+            },
+            deleteAll : function(){
+                if($('.item_list input[type=checkbox]:checked').length === 0){
+                    $s.alert("답례품을 선택해주세요.");
+                    return false;
+                }
+                $s.confirm("해당 답례품을 삭제하시겠습니까?", function(){
+                    var id = new Array();
+                    $(".list_area input[type='checkbox']:checked").each(function(e){
+                        id.push(this.id);
+                    });
+                    vm.param.id = id;
+                    vm.delWishlist();
+                });
+
+            },
+            paging: function (page) {
+                vm.param.page = page;
+                vm.submit();
+            },
+            checkAll : function(){
+                if($("#checkAll:checked").val()=="on"){
+                    $("input[type='checkbox']").prop("checked", true);
+                } else {
+                    $("input[type='checkbox']").prop("checked", false);
+                }
+            },
+            checkItemDelete : function(id){
+                $s.confirm("해당 답례품을 삭제하시겠습니까?", function(){
+                    var ids = new Array();
+                    ids.push(id);
+                    vm.param.id = ids;
+                    vm.delWishlist();
+                });
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+
+                Saleson.init({loginPage:true});
+                vm.getHistory("paging", "wishlist");
+
+                vm.submit();
+            });
+        }
+    });
+</script>
+
+
+
+</body>
+</html>

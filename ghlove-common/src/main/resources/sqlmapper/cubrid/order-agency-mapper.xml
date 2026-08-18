@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.orderagency.OrderAgencyMapper">
+	
+	<insert id="insertAgencyLoginConfirmInfo" parameterType="saleson.shop.orderagency.domain.OrderAgencyLoginConfirmInfo">
+
+		/* saleson.shop.orderagency.OrderAgencyMapper.insertAgencyLoginConfirmInfo 대행 주문 로그인 정보 저장 */
+
+		INSERT INTO G_AGENCY_LOGIN_CONFIRM_INFO
+		(
+			USER_SESSION_ID
+			, VALID_ACCESS_CD
+			, MANAGER_ID
+			, CNTRBTR_MOBILE
+			, PRIVATE_KEY
+		)
+		VALUE
+		(
+			#{userSessionId}
+			, #{validAccessCd}
+			, #{managerId}
+			, CRYPTO_ENC('normal', #{cntrbtrMobile}, '')
+			, #{privateKey}
+		)
+
+	</insert>
+	
+	<delete id="deleteAgencyLoginConfirmInfo" parameterType="saleson.shop.orderagency.domain.OrderAgencyLoginConfirmInfo">
+	
+		/* saleson.shop.orderagency.OrderAgencyMapper.deleteAgencyLoginConfirmInfo 대행 주문 로그인 정보 삭제 */
+		
+		DELETE G_AGENCY_LOGIN_CONFIRM_INFO
+		WHERE MANAGER_ID = #{managerId}
+	
+	</delete>
+	
+	<select id="selectAgencyLoginConfirmInfo" parameterType="saleson.shop.orderagency.domain.OrderAgencyLoginConfirmInfo" resultType="saleson.shop.orderagency.domain.OrderAgencyLoginConfirmInfo">
+	
+		/* saleson.shop.orderagency.OrderAgencyMapper.selectAgencyLoginConfirmInfo 대행주문 로그인 정보 조회 */
+		
+		SELECT
+			USER_SESSION_ID
+			, VALID_ACCESS_CD
+			, PRIVATE_KEY
+			, MANAGER_ID
+			, CRYPTO_DEC('normal', CNTRBTR_MOBILE, '', 0) AS CNTRBTR_MOBILE
+			, CNTRBTR_ID
+			, FRST_REG_DT
+		FROM G_AGENCY_LOGIN_CONFIRM_INFO
+		WHERE 1=1
+		AND USER_SESSION_ID = #{userSessionId}
+		AND VALID_ACCESS_CD = #{validAccessCd}
+	
+	</select>
+	
+	<update id="updateCntrbtrMobileInfo" parameterType="saleson.shop.orderagency.domain.OrderAgencyLoginConfirmInfo">
+	
+		/* saleson.shop.orderagency.OrderAgencyMapper.updateCntrbtrMobileInfo 대행주문 로그인 정보 기부자 아이디 추가 */
+		UPDATE G_AGENCY_LOGIN_CONFIRM_INFO
+			SET CNTRBTR_ID = #{cntrbtrId}
+		WHERE 1=1
+		AND USER_SESSION_ID = #{userSessionId}
+		AND VALID_ACCESS_CD = #{validAccessCd}
+	
+	</update>
+	
+	<select id="selectOrderAgencyManagerInfo" parameterType="long" resultType="saleson.shop.orderagency.domain.OrderAgencyManagerInfo">
+	/* saleson.shop.orderagency.OrderAgencyMapper.selectOrderAgencyManagerInfo 대행주문 관리자 조회 */
+		SELECT
+			LOCGOV_NM
+			, PBADMS_WLFR_CNTR_NM
+			, CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+			, PBADMS_WLFR_CNTR_ID
+		FROM (
+			SELECT
+				M.LOCGOV_CODE 
+				, L.UPPER_LOCGOV_NM || ' ' || L.LOCGOV_NM AS LOCGOV_NM
+				, CASE WHEN UR.AUTHORITY = 'ROLE_ADMIN_11' 
+						THEN LPWCM.PBADMS_WLFR_CNTR_NM
+						ELSE R.ROLE_NAME
+						END AS PBADMS_WLFR_CNTR_NM
+				, CASE WHEN UR.AUTHORITY = 'ROLE_ADMIN_11' 
+						THEN LPWCM.PBADMS_WLFR_CNTR_ID
+						ELSE 0
+						END AS PBADMS_WLFR_CNTR_ID
+				, M.USER_NAME
+			FROM OP_MANAGER M
+				JOIN OP_USER_ROLE UR ON M.USER_ID = UR.USER_ID AND UR.AUTHORITY LIKE 'ROLE_ADMIN_%' 
+									 AND UR.AUTHORITY != 'ROLE_ADMIN_CALL'
+				LEFT JOIN G_LOCGOV L ON M.LOCGOV_CODE = L.LOCGOV_CODE
+				LEFT JOIN G_LCLGV_PBADMS_WLFR_CNTR_MNG LPWCM ON M.BANK_CODE = LPWCM.PBADMS_WLFR_CNTR_ID
+				LEFT JOIN OP_ROLE R ON UR.AUTHORITY = R.AUTHORITY
+			WHERE 1=1
+			AND M.USER_ID = #{userId}
+			AND M.STATUS_CODE = '9'
+		)
+	
+	</select>
+	
+	
+	<select id="selectOrderAgencyOrderList" parameterType="saleson.shop.order.support.OrderParam" resultType="saleson.shop.orderagency.domain.OrderAgencyOrderListInfo">
+		/* saleson.shop.orderagency.OrderAgencyMapper.selectOrderAgencyOrderList 대행주문 목록 조회 */
+		SELECT 
+			LOCGOV_NM
+			, DATE_FORMAT(STR_TO_DATE(PAY_DATE, '%Y%m%d%H%i%S'), '%Y-%m-%d %H:%i:%S') AS PAY_DATE
+			, ORDER_CODE
+			, CRYPTO_DEC('normal', BUYER_NAME, '', 0) AS BUYER_NAME
+			, CRYPTO_DEC('normal', RECEIVE_NAME, '', 0) AS RECEIVE_NAME
+			, ITEM_NAME
+			, CRYPTO_DEC('normal', MANAGER_NM, '', 0) AS MANAGER_NM
+			, MANAGER_ID
+			, PBADMS_WLFR_CNTR_NM
+		FROM (
+			<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				L.UPPER_LOCGOV_NM || ' ' || L.LOCGOV_NM AS LOCGOV_NM
+				, OI.PAY_DATE
+				, OI.ORDER_CODE
+				, O.BUYER_NAME
+				, OSI.RECEIVE_NAME
+				, OI.ITEM_NAME
+				, OAOL.MANAGER_NM
+				, OAOL.MANAGER_ID
+				, CASE WHEN OAOL.PBADMS_WLFR_CNTR_ID > 0
+						THEN LPWCM.PBADMS_WLFR_CNTR_NM
+						ELSE R.ROLE_NAME
+					END AS PBADMS_WLFR_CNTR_NM
+			FROM G_ORDER_AGENCY_ORDER_LOG OAOL
+				LEFT JOIN OP_ORDER O ON OAOL.ORDER_CODE = O.ORDER_CODE
+				LEFT JOIN OP_ORDER_ITEM OI ON OI.ORDER_CODE = OAOL.ORDER_CODE
+											AND OI.ORDER_SEQUENCE = OAOL.ORDER_SEQUENCE
+											AND OI.ITEM_SEQUENCE = OAOL.ITEM_SEQUENCE
+				LEFT JOIN OP_ORDER_SHIPPING_INFO OSI ON OI.ORDER_CODE = OSI.ORDER_CODE
+				LEFT JOIN G_LOCGOV L ON OAOL.MANAGER_LCLGV_CD = L.LOCGOV_CODE
+				LEFT JOIN OP_USER_ROLE UR ON OAOL.MANAGER_ID = UR.USER_ID 
+											AND UR.AUTHORITY LIKE 'ROLE_ADMIN_%'
+											AND UR.AUTHORITY != 'ROLE_ADMIN_CALL'
+				LEFT JOIN OP_ROLE R ON UR.AUTHORITY = R.AUTHORITY
+				LEFT JOIN G_LCLGV_PBADMS_WLFR_CNTR_MNG LPWCM ON LPWCM.PBADMS_WLFR_CNTR_ID = OAOL.PBADMS_WLFR_CNTR_ID
+			WHERE 1=1
+			<if test="userId > 0">
+				AND OAOL.MANAGER_ID = #{userId}
+			</if>
+			<if test='searchStartDate != null and searchStartDate != ""
+						and searchEndDate != null and searchEndDate != ""'>
+				AND OI.PAY_DATE BETWEEN #{searchStartDate} || '000000' AND #{searchEndDate} || '235959' 
+			</if>
+			<choose>
+				<when test="upperLocgovCode != null and upperLocgovCode != ''">
+					<choose>
+						<when test="locgovCode != null and locgovCode != ''">
+							AND OAOL.MANAGER_LCLGV_CD = #{locgovCode}
+						</when>
+						<otherwise>
+							AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+						</otherwise>
+					</choose>
+				</when>
+				<when test="locgovCode != null and locgovCode != ''">
+					AND OAOL.MANAGER_LCLGV_CD = #{locgovCode}
+				</when>
+			</choose>
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "ORDER_CODE"'>
+						AND OAOL.ORDER_CODE LIKE '%' || #{query} || '%'
+					</when>
+					<when test='where == "USER_NAME"'>
+						AND O.BUYER_NAME = (CRYPTO_ENC('normal', #{query}, ''))
+					</when>
+					<when test='where == "RECEIVE_NAME"'>
+						AND OSI.RECEIVE_NAME = (CRYPTO_ENC('normal', #{query}, ''))
+					</when>
+					<when test='where == "ITEM_NAME"'>
+						AND OI.ITEM_NAME LIKE '%' || #{query} || '%'
+					</when>
+					<when test='where == "MANAGER_NAME"'>
+						AND OAOL.MANAGER_NM = (CRYPTO_ENC('normal', #{query}, ''))
+					</when>
+				</choose>
+			</if>
+			ORDER BY OI.PAY_DATE DESC
+			<include refid="CommonMapper.paginationFooter" />
+		)
+	
+	</select>
+	
+	
+	<select id="selectOrderAgencyOrderCnt" parameterType="saleson.shop.order.support.OrderParam" resultType="int">
+	
+		/* saleson.shop.orderagency.OrderAgencyMapper.selectOrderAgencyOrderCnt 대행주문 목록 카운트 조회 */
+		SELECT
+			COUNT(*)
+		FROM G_ORDER_AGENCY_ORDER_LOG OAOL
+			LEFT JOIN OP_ORDER O ON OAOL.ORDER_CODE = O.ORDER_CODE
+			LEFT JOIN OP_ORDER_ITEM OI ON OI.ORDER_CODE = OAOL.ORDER_CODE
+										AND OI.ORDER_SEQUENCE = OAOL.ORDER_SEQUENCE
+										AND OI.ITEM_SEQUENCE = OAOL.ITEM_SEQUENCE
+			LEFT JOIN OP_ORDER_SHIPPING_INFO OSI ON OI.ORDER_CODE = OSI.ORDER_CODE
+			LEFT JOIN G_LOCGOV L ON OI.LOCGOV_CODE = L.LOCGOV_CODE
+		WHERE 1=1
+			<if test="userId > 0">
+				AND OAOL.MANAGER_ID = #{userId}
+			</if>
+			<if test='searchStartDate != null and searchStartDate != ""
+						and searchEndDate != null and searchEndDate != ""'>
+				AND OI.PAY_DATE BETWEEN #{searchStartDate} || '000000' AND #{searchEndDate} || '235959' 
+			</if>
+			<choose>
+				<when test="upperLocgovCode != null and upperLocgovCode != ''">
+					<choose>
+						<when test="locgovCode != null and locgovCode != ''">
+							AND OAOL.MANAGER_LCLGV_CD = #{locgovCode}
+						</when>
+						<otherwise>
+							AND L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+						</otherwise>
+					</choose>
+				</when>
+				<when test="locgovCode != null and locgovCode != ''">
+					AND OAOL.MANAGER_LCLGV_CD = #{locgovCode}
+				</when>
+			</choose>
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "ORDER_CODE"'>
+						AND OAOL.ORDER_CODE LIKE '%' || #{query} || '%'
+					</when>
+					<when test='where == "USER_NAME"'>
+						AND O.BUYER_NAME = (CRYPTO_ENC('normal', #{query}, ''))
+					</when>
+					<when test='where == "RECEIVE_NAME"'>
+						AND OSI.RECEIVE_NAME = (CRYPTO_ENC('normal', #{query}, ''))
+					</when>
+					<when test='where == "ITEM_NAME"'>
+						AND OI.ITEM_NAME LIKE '%' || #{query} || '%'
+					</when>
+					<when test='where == "MANAGER_NAME"'>
+						AND OAOL.MANAGER_NM = (CRYPTO_ENC('normal', #{query}, ''))
+					</when>
+				</choose>
+			</if>
+	
+	</select>
+	
+	
+	
+</mapper>

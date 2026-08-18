@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.seller.main.SellerMapper">
+
+	<resultMap id="SellerResult" type="saleson.seller.main.domain.Seller">
+		<result property="sellerId" column="SELLER_ID" />
+		<result property="sellerName" column="SELLER_NAME" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="password" column="PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="telephoneNumber" column="TELEPHONE_NUMBER" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="faxNumber" column="FAX_NUMBER" />
+		<result property="email" column="EMAIL" />
+		<result property="post" column="POST" />
+		<result property="address" column="ADDRESS" />
+		<result property="addressDetail" column="ADDRESS_DETAIL" />
+
+		<result property="secondUserName" column="SECOND_USER_NAME" />
+		<result property="secondTelephoneNumber" column="SECOND_TELEPHONE_NUMBER" />
+		<result property="secondPhoneNumber" column="SECOND_PHONE_NUMBER" />
+		<result property="secondEmail" column="SECOND_EMAIL" />
+
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="representativeName" column="REPRESENTATIVE_NAME" />
+		<result property="businessNumber" column="BUSINESS_NUMBER" />
+		<result property="businessLocation" column="BUSINESS_LOCATION" />
+		<result property="businessType" column="BUSINESS_TYPE" />
+		<result property="businessItems" column="BUSINESS_ITEMS" />
+		<result property="commissionRate" column="COMMISSION_RATE" />
+		<result property="remittanceType" column="REMITTANCE_TYPE" />
+		<result property="remittanceDay" column="REMITTANCE_DAY" />
+		<result property="bankName" column="BANK_NAME" />
+		<result property="bankInName" column="BANK_IN_NAME" />
+		<result property="bankAccountNumber" column="BANK_ACCOUNT_NUMBER" />
+		<result property="shippingFlag" column="SHIPPING_FLAG" />
+		<result property="shipping" column="SHIPPING" />
+		<result property="shippingFreeAmount" column="SHIPPING_FREE_AMOUNT" />
+		<result property="shippingExtraCharge1" column="SHIPPING_EXTRA_CHARGE1" />
+		<result property="shippingExtraCharge2" column="SHIPPING_EXTRA_CHARGE2" />
+
+		<result property="itemApprovalType" column="ITEM_APPROVAL_TYPE" />
+		<result property="smsSendTime" column="SMS_SEND_TIME" />
+		<result property="mdId" column="MD_ID" />
+		<result property="mdName" column="MD_NAME" />
+		<result property="headerContent" column="HEADER_CONTENT" />
+
+		<result property="statusCode" column="STATUS_CODE" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="createdUserId" column="CREATED_USER_ID" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="updatedUserId" column="UPDATED_USER_ID" />
+		<result property="mailOrderNumber" column="MAIL_ORDER_NUMBER" />
+		<result property="buySafetyUseConfirmNumber" column="BUY_SAFETY_USE_CONFIRM_NUMBER" />
+		<result property="taxType" column="TAX_TYPE" />
+		<result property="fileNameCertificate1" column="FILE_NAME_CERTIFICATE1" />
+		<result property="fileNameCertificate2" column="FILE_NAME_CERTIFICATE2" />
+		<result property="fileNameCertificate3" column="FILE_NAME_CERTIFICATE3" />
+		<result property="locgovNm" column="LOCGOV_NM" />
+		<result property="adultItemYn" column="ADULT_ITEM_YN" />
+		<result property="emailBefore" column="EMAIL_BEFORE" />
+		<result property="emailAfter" column="EMAIL_AFTER" />
+		<result property="userId" column="USER_ID" />
+		<result property="mberDn" column="MBER_DN" />
+		<result property="mberFinDn" column="MBER_FIN_DN" />
+		<result property="mberCi" column="MBER_CI" />
+		<result property="receiveSms" column="RECEIVE_SMS" />
+	</resultMap>
+
+	<resultMap id="SellerCategoryResult" type="saleson.seller.main.domain.SellerCategory">
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="categoryClass" column="CATEGORY_CLASS" />
+		<result property="categoryName" column="CATEGORY_NAME" />
+		<result property="itemCount" column="ITEM_COUNT" />
+	</resultMap>
+
+	<sql id="sqlSellerWhere">
+		<where>
+
+			<if test='statusCode != null and statusCode != ""'>
+				AND STATUS_CODE = #{statusCode}
+			</if>
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "SELLER_NAME"'>
+						AND SELLER_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "USER_NAME"'>
+						AND USER_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "COMPANY_NAME"'>
+						AND COMPANY_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "LOGIN_ID"'>
+						AND LOGIN_ID LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "REPRESENTATIVE_NAME"'>
+						AND REPRESENTATIVE_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "PHONE_NUMBER"'>
+						AND PHONE_NUMBER LIKE CONCAT('%', #{query} , '%')
+					</when>
+				</choose>
+			</if>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+			<if test='startDate != null and startDate != ""'>
+				AND CREATED_DATE >= CONCAT(#{startDate}, '000000')
+			</if>
+
+			<if test='endDate != null and endDate != ""'>
+				AND CREATED_DATE <![CDATA[<=]]> CONCAT(#{endDate}, '235959')
+			</if>
+			<if test='itemApprovalType != null and itemApprovalType != ""'>
+				AND ITEM_APPROVAL_TYPE = #{itemApprovalType}
+			</if>
+			<if test='locgov != null and locgov != ""'>
+				AND LOCGOV_CODE = #{locgov}
+			</if>
+			<!-- <if test='shLocgovCode != null'>
+				AND LOCGOV_CODE = #{shLocgovCode}
+			</if>	 -->
+		</where>
+	</sql>
+
+	<select id="getAllSellerList" resultMap="SellerResult" >
+			SELECT
+				SELLER_ID,
+				SELLER_NAME,
+				LOGIN_ID,
+				PASSWORD,
+				USER_NAME,
+				TELEPHONE_NUMBER,
+				PHONE_NUMBER,
+				FAX_NUMBER,
+				EMAIL,
+				POST,
+				ADDRESS,
+				ADDRESS_DETAIL,
+
+				SECOND_USER_NAME,
+				SECOND_TELEPHONE_NUMBER,
+				SECOND_PHONE_NUMBER,
+				SECOND_EMAIL,
+
+				COMPANY_NAME,
+				REPRESENTATIVE_NAME,
+				BUSINESS_NUMBER,
+				BUSINESS_LOCATION,
+				BUSINESS_TYPE,
+				BUSINESS_ITEMS,
+				COMMISSION_RATE,
+				BANK_NAME,
+				BANK_IN_NAME,
+				BANK_ACCOUNT_NUMBER,
+				STATUS_CODE,
+				CREATED_DATE
+			FROM OP_SELLER
+	</select>
+
+	<select id="getSellerListByParam" parameterType="saleson.seller.main.support.SellerParam" resultMap="SellerResult" >
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				<choose>
+					<when test='conditionType == "SELLER_LIST_FOR_SELECTBOX"'>
+						S.SELLER_ID,
+						S.SELLER_NAME,
+						S.LOGIN_ID
+					</when>
+					<otherwise>
+						S.SELLER_ID,
+						S.SELLER_NAME,
+						S.LOGIN_ID,
+						S.PASSWORD,
+						S.USER_NAME,
+						S.TELEPHONE_NUMBER,
+						S.PHONE_NUMBER,
+						S.FAX_NUMBER,
+						S.EMAIL,
+						S.POST,
+						S.ADDRESS,
+						S.ADDRESS_DETAIL,
+						S.ITEM_APPROVAL_TYPE,
+						S.SECOND_USER_NAME,
+						S.SECOND_TELEPHONE_NUMBER,
+						S.SECOND_PHONE_NUMBER,
+						S.SECOND_EMAIL,
+						S.COMPANY_NAME,
+						S.REPRESENTATIVE_NAME,
+						S.BUSINESS_NUMBER,
+						S.BUSINESS_LOCATION,
+						S.BUSINESS_TYPE,
+						S.BUSINESS_ITEMS,
+						S.COMMISSION_RATE,
+						S.BANK_NAME,
+						S.BANK_IN_NAME,
+						S.BANK_ACCOUNT_NUMBER,
+						(
+							SELECT
+							CONCAT(LOCGOV.UPPER_LOCGOV_NM, ' ', LOCGOV.LOCGOV_NM)
+							FROM G_LOCGOV LOCGOV
+							WHERE LOCGOV.LOCGOV_CODE = S.LOCGOV_CODE
+						) AS LOCGOV_NM,
+						CASE WHEN SU.mber_dn IS NULL OR SU.mber_dn = ''
+						THEN 'N'
+						ELSE 'Y'
+						END AS MBER_DN,
+						CASE WHEN SU.mber_fin_dn IS NULL OR SU.mber_fin_dn = ''
+						THEN 'N'
+						ELSE 'Y'
+						END AS MBER_FIN_DN,
+						CASE WHEN SU.mber_ci IS NULL OR SU.mber_ci = ''
+						THEN 'N'
+						ELSE 'Y'
+						END AS MBER_CI,
+						S.STATUS_CODE,
+						S.CREATED_DATE
+					</otherwise>
+				</choose>
+			FROM
+			OP_SELLER S inner join
+		 	OP_SELLER_USER SU on s.login_id = su.login_id
+			<where>
+
+			<if test='statusCode != null and statusCode != ""'>
+				AND S.STATUS_CODE = #{statusCode}
+			</if>
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "SELLER_NAME"'>
+						AND S.SELLER_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "USER_NAME"'>
+						AND S.USER_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "COMPANY_NAME"'>
+						AND S.COMPANY_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "LOGIN_ID"'>
+						AND S.LOGIN_ID LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "REPRESENTATIVE_NAME"'>
+						AND S.REPRESENTATIVE_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+					<when test='where == "PHONE_NUMBER"'>
+						AND S.PHONE_NUMBER LIKE CONCAT('%', #{query} , '%')
+					</when>
+				</choose>
+			</if>
+			<if test="defaultOpmanagerSellerId > 0">
+				AND S.SELLER_ID != #{defaultOpmanagerSellerId}
+			</if>
+			<if test='startDate != null and startDate != ""'>
+				AND S.CREATED_DATE >= CONCAT(#{startDate}, '000000')
+			</if>
+
+			<if test='endDate != null and endDate != ""'>
+				AND S.CREATED_DATE <![CDATA[<=]]> CONCAT(#{endDate}, '235959')
+			</if>
+			<if test='itemApprovalType != null and itemApprovalType != ""'>
+				AND S.ITEM_APPROVAL_TYPE = #{itemApprovalType}
+			</if>
+			<if test='locgov != null and locgov != ""' >
+				AND S.LOCGOV_CODE = #{locgov}
+			</if>
+			</where>
+		ORDER BY S.CREATED_DATE DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getSellerCount" parameterType="saleson.seller.main.support.SellerParam" resultType="Integer">
+		SELECT COUNT(DISTINCT SELLER_ID)
+		FROM OP_SELLER
+		<include refid="sqlSellerWhere" />
+	</select>
+
+
+	<!-- 판매자 로그인 아이디로 정보 조회. -->
+	<select id="getSellerByLoginId" parameterType="String" resultMap="SellerResult" >
+		SELECT *
+		FROM OP_SELLER
+		WHERE
+			LOGIN_ID = #{loginId}
+	</select>
+
+	<!-- 판매자 ID로 판매자 정보 조회. -->
+	<select id="getSellerById" parameterType="long" resultMap="SellerResult" >
+		SELECT
+			S.*
+			, (SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV WHERE LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM
+			, SUBSTR(S.EMAIL, 0, INSTR(S.EMAIL, '@')-1) AS EMAIL_BEFORE
+			, SUBSTR(S.EMAIL, INSTR(S.EMAIL, '@')+1) AS EMAIL_AFTER
+			<!-- , (SELECT USER_ID FROM OP_SELLER_USER WHERE LOGIN_ID = I.LOGIN_ID) AS USER_ID -->
+			, SU.USER_ID
+			, CASE WHEN SU.MBER_CI IS NULL OR SU.MBER_CI = ''
+				THEN 'N'
+				ELSE 'Y'
+				END AS MBER_CI
+			, SU.RECEIVE_SMS
+		FROM OP_SELLER S
+			, OP_SELLER_USER SU
+		WHERE
+			S.SELLER_ID = #{sellerId}
+			AND SU.LOGIN_ID = S.LOGIN_ID
+	</select>
+
+	<!-- 판매자 ID 생성 -->
+	<select id="makeSellerId" parameterType="saleson.seller.main.domain.Seller" resultType="String">
+		SELECT RPAD(#{locgovNm}, 10, LPAD(COUNT(*)+#{plusSeq}, 5, '0')) FROM OP_SELLER_USER WHERE LOGIN_ID LIKE CONCAT(#{locgovNm}, '%')
+	</select>
+
+	<insert id="insertSeller" parameterType="saleson.seller.main.domain.Seller">
+		INSERT INTO OP_SELLER (SELLER_ID, SELLER_NAME, LOGIN_ID, PASSWORD, USER_NAME, TELEPHONE_NUMBER, PHONE_NUMBER, FAX_NUMBER, EMAIL, POST, ADDRESS, ADDRESS_DETAIL, SECOND_USER_NAME, SECOND_TELEPHONE_NUMBER, SECOND_PHONE_NUMBER, SECOND_EMAIL, COMPANY_NAME, REPRESENTATIVE_NAME, BUSINESS_NUMBER, BUSINESS_LOCATION, BUSINESS_TYPE, BUSINESS_ITEMS, COMMISSION_RATE, REMITTANCE_TYPE, REMITTANCE_DAY, BANK_NAME, BANK_IN_NAME, BANK_ACCOUNT_NUMBER, SHIPPING_FLAG, SHIPPING, SHIPPING_FREE_AMOUNT, SHIPPING_EXTRA_CHARGE1, SHIPPING_EXTRA_CHARGE2, ITEM_APPROVAL_TYPE, SMS_SEND_TIME, MD_ID, MD_NAME, STATUS_CODE, CREATED_DATE, CREATED_USER_ID, UPDATED_DATE, UPDATED_USER_ID, MAIL_ORDER_NUMBER, BUY_SAFETY_USE_CONFIRM_NUMBER, TAX_TYPE, FILE_NAME_CERTIFICATE1, FILE_NAME_CERTIFICATE2, FILE_NAME_CERTIFICATE3, LOCGOV_CODE, ADULT_ITEM_YN, COMMUNITY_BUSINESS_YN)
+		VALUES (#{sellerId}, #{sellerName}, #{loginId}, #{password}, #{userName}, #{telephoneNumber}, #{phoneNumber}, #{faxNumber}, #{email}, #{post}, #{address}, #{addressDetail}, #{secondUserName}, #{secondTelephoneNumber}, #{secondPhoneNumber}, #{secondEmail}, #{companyName}, #{representativeName}, #{businessNumber}, #{businessLocation}, #{businessType}, #{businessItems}, #{commissionRate}, #{remittanceType}, #{remittanceDay}, #{bankName}, #{bankInName}, #{bankAccountNumber}, #{shippingFlag}, #{shipping}, #{shippingFreeAmount}, #{shippingExtraCharge1}, #{shippingExtraCharge2}, #{itemApprovalType}, #{smsSendTime}, #{mdId}, #{mdName}, #{statusCode}, <include refid="CommonMapper.datetime" />, #{createdUserId}, <include refid="CommonMapper.datetime" />, #{updatedUserId}, #{mailOrderNumber}, #{buySafetyUseConfirmNumber}, #{taxType}, #{fileNameCertificate1}, #{fileNameCertificate2}, #{fileNameCertificate3}, #{locgovCode}, #{adultItemYn}, #{communityBusinessYn})
+	</insert>
+
+
+
+	<!-- UPDATE -->
+	<update id="updateSeller" parameterType="saleson.seller.main.domain.Seller">
+		UPDATE OP_SELLER S, OP_SELLER_USER SU
+		<set>
+			<if test="sellerName != null and sellerName != ''">
+			S.SELLER_NAME = #{sellerName},
+			SU.USER_NAME = #{sellerName},
+			</if>
+			<if test="password != null and password != ''">
+			S.PASSWORD = #{password},
+			SU.PASSWORD = #{password},
+			</if>
+			<if test="userName != null and userName != ''">
+			S.USER_NAME = #{userName},
+			</if>
+			<if test="telephoneNumber != null">
+			S.TELEPHONE_NUMBER = #{telephoneNumber},
+			</if>
+			<if test="phoneNumber != null and phoneNumber != ''">
+			S.PHONE_NUMBER = #{phoneNumber},
+			SU.PHONE_NUMBER = #{phoneNumber},
+			</if>
+			<if test="faxNumber != null">
+			S.FAX_NUMBER = #{faxNumber},
+			</if>
+			<if test="email != null">
+			S.EMAIL = #{email},
+			SU.EMAIL = #{email},
+			</if>
+			<if test="post != null and post != ''">
+			S.POST = #{post},
+			</if>
+			<if test="address != null and address != ''">
+			S.ADDRESS = #{address},
+			</if>
+			<if test="addressDetail != null and addressDetail != ''">
+			S.ADDRESS_DETAIL = #{addressDetail},
+			</if>
+
+			<if test="secondUserName != null">
+			S.SECOND_USER_NAME = #{secondUserName},
+			</if>
+			<if test="secondTelephoneNumber != null">
+			S.SECOND_TELEPHONE_NUMBER = #{secondTelephoneNumber},
+			</if>
+			<if test="secondPhoneNumber != null">
+			S.SECOND_PHONE_NUMBER = #{secondPhoneNumber},
+			</if>
+			<if test="secondEmail != null">
+			S.SECOND_EMAIL = #{secondEmail},
+			</if>
+
+			<if test="companyName != null and companyName != ''">
+			S.COMPANY_NAME = #{companyName},
+			</if>
+			<if test="representativeName != null and representativeName != ''">
+			S.REPRESENTATIVE_NAME = #{representativeName},
+			</if>
+			<if test="businessNumber != null and businessNumber != ''">
+			S.BUSINESS_NUMBER = #{businessNumber},
+			</if>
+			<if test="businessLocation != null and businessLocation != ''">
+			S.BUSINESS_LOCATION = #{businessLocation},
+			</if>
+			<if test="businessType != null and businessType != ''">
+			S.BUSINESS_TYPE = #{businessType},
+			</if>
+			<if test="businessItems != null and businessItems != ''">
+			S.BUSINESS_ITEMS = #{businessItems},
+			</if>
+			<if test="commissionRate != null and commissionRate != ''">
+			S.COMMISSION_RATE = #{commissionRate},
+			</if>
+			<if test="remittanceType != null and remittanceType != ''">
+			S.REMITTANCE_TYPE = #{remittanceType},
+			</if>
+			<if test="remittanceDay != null and remittanceDay != ''">
+			S.REMITTANCE_DAY = #{remittanceDay},
+			</if>
+			<if test="bankName != null and bankName != ''">
+			S.BANK_NAME = #{bankName},
+			</if>
+			<if test="bankInName != null and bankInName != ''">
+			S.BANK_IN_NAME = #{bankInName},
+			</if>
+			<if test="bankAccountNumber != null and bankAccountNumber != ''">
+			S.BANK_ACCOUNT_NUMBER = #{bankAccountNumber},
+			</if>
+			<if test="shippingFlag != null and shippingFlag != ''">
+			S.SHIPPING_FLAG = #{shippingFlag},
+			</if>
+			<if test="shipping != null and shipping != ''">
+			S.SHIPPING = #{shipping},
+			</if>
+			<if test="shippingFreeAmount != null">
+			S.SHIPPING_FREE_AMOUNT = #{shippingFreeAmount},
+			</if>
+			<if test="shippingExtraCharge1 != null">
+			S.SHIPPING_EXTRA_CHARGE1 = #{shippingExtraCharge1},
+			</if>
+			<if test="shippingExtraCharge2 != null">
+			S.SHIPPING_EXTRA_CHARGE2 = #{shippingExtraCharge2},
+			</if>
+
+			<if test="itemApprovalType != null">
+				S.ITEM_APPROVAL_TYPE = #{itemApprovalType},
+			</if>
+			<if test="smsSendTime != null">
+				S.SMS_SEND_TIME = #{smsSendTime},
+			</if>
+			<if test="mdId != null">
+				S.MD_ID = #{mdId},
+			</if>
+			<if test="mdName != null">
+				S.MD_NAME = #{mdName},
+			</if>
+
+			<if test="statusCode != null and statusCode != ''">
+				S.STATUS_CODE = #{statusCode},
+				<!-- SU.STATUS_CODE = #{statusCode}, -->
+				SU.STATUS_CODE = (
+									CASE WHEN #{statusCode} = '1'			<!-- 영업진행중 -->
+											THEN '9'						<!-- 정상 -->
+										WHEN #{statusCode} = '2'			<!-- 정상 -->
+											THEN '9'						<!-- 정상 -->
+										WHEN #{statusCode} = '3'			<!-- 영업중지 -->
+											THEN '2'						<!-- 차단 -->
+										WHEN #{statusCode} = '4'			<!-- 계약해지/폐정 -->
+											THEN '3'						<!-- 탈퇴 -->
+										WHEN #{statusCode} = '5'			<!-- 승인대기 -->
+											THEN '1'						<!-- 가입대기 -->
+										ELSE '2'							<!-- 차단 -->
+										END
+								),
+			</if>
+
+			<if test="mailOrderNumber != null">
+				S.MAIL_ORDER_NUMBER = #{mailOrderNumber},
+			</if>
+
+			<if test="buySafetyUseConfirmNumber != null">
+				S.BUY_SAFETY_USE_CONFIRM_NUMBER = #{buySafetyUseConfirmNumber},
+			</if>
+
+			<if test="taxType != null and taxType != ''">
+				S.TAX_TYPE = #{taxType},
+			</if>
+
+			<if test="fileNameCertificate1 != null and fileNameCertificate1 != ''">
+				S.FILE_NAME_CERTIFICATE1 = #{fileNameCertificate1},
+			</if>
+
+			<if test="fileNameCertificate2 != null and fileNameCertificate2 != ''">
+				S.FILE_NAME_CERTIFICATE2 = #{fileNameCertificate2},
+			</if>
+
+			<if test="fileNameCertificate3 != null and fileNameCertificate3 != ''">
+				S.FILE_NAME_CERTIFICATE3 = #{fileNameCertificate3},
+			</if>
+
+			<if test="adultItemYn != null and adultItemYn != ''">
+				S.ADULT_ITEM_YN = #{adultItemYn},
+			</if>
+			S.UPDATED_DATE = <include refid="CommonMapper.datetime" />,
+			S.UPDATED_USER_ID = #{updatedUserId},
+			SU.RECEIVE_SMS = #{receiveSms},
+			<if test="communityBusinessYn != null and communityBusinessYn != ''">
+			S.COMMUNITY_BUSINESS_YN = #{communityBusinessYn}
+			</if>
+		</set>
+		WHERE SELLER_ID = #{sellerId}
+		  AND S.LOGIN_ID = SU.LOGIN_ID
+
+	</update>
+
+	<!-- UPDATE -->
+	<update id="updateSellerMinimall" parameterType="saleson.seller.main.domain.Seller">
+		UPDATE OP_SELLER
+		SET
+			HEADER_CONTENT = #{headerContent}
+		WHERE SELLER_ID = #{sellerId}
+	</update>
+
+	<!-- DELETE -->
+	<delete id="deleteSeller" parameterType="saleson.seller.main.domain.Seller" >
+		DELETE FROM OP_SELLER
+		WHERE SELLER_ID = #{sellerId}
+	</delete>
+
+	<!-- 입점업체 상품 1차 카테고리 -->
+	<select id="getSellerCategoriesById" parameterType="long" resultMap="SellerCategoryResult">
+		SELECT
+			C1.CATEGORY_ID,
+			C1.CATEGORY_CLASS1 AS CATEGORY_CLASS,
+			C1.CATEGORY_NAME,
+			COUNT(*) AS ITEM_COUNT
+		FROM OP_SELLER S
+			INNER JOIN OP_ITEM I ON S.SELLER_ID = I.SELLER_ID AND S.STATUS_CODE = '2' AND I.DISPLAY_FLAG = 'Y' AND I.DATA_STATUS_CODE = '1'
+			INNER JOIN OP_ITEM_CATEGORY IC ON I.ITEM_ID = IC.ITEM_ID
+			INNER JOIN OP_CATEGORY C ON IC.CATEGORY_ID = C.CATEGORY_ID AND C.CATEGORY_FLAG = 'Y'
+			INNER JOIN OP_CATEGORY C1 ON C.CATEGORY_CLASS1 = C1.CATEGORY_CLASS1 AND C1.CATEGORY_LEVEL = '1' AND C1.CATEGORY_FLAG = 'Y'
+		WHERE
+			 S.SELLER_ID = #{value}
+		GROUP BY
+			C1.CATEGORY_ID, C1.CATEGORY_NAME
+		ORDER BY
+			C1.CATEGORY_NAME
+
+	</select>
+
+	<!--  -->
+	<select id="getSellerIdBySmsSendTime" parameterType="String" resultMap="SellerResult">
+		SELECT
+			*
+		FROM OP_SELLER S
+		WHERE SMS_SEND_TIME = #{value}
+
+	</select>
+
+	<update id="updateSellerPassword" parameterType="saleson.seller.main.domain.Seller">
+		UPDATE OP_SELLER
+		<set>
+			PASSWORD = #{password},
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />,
+			UPDATED_USER_ID = #{updatedUserId}
+		</set>
+		WHERE SELLER_ID = #{sellerId}
+
+	</update>
+
+	<!-- UPDATE -->
+	<update id="deleteFile" parameterType="saleson.seller.main.domain.Seller">
+		UPDATE OP_SELLER
+		<set>
+			<if test="delelteFile != null and delelteFile != ''">
+				<choose>
+					<when test='delelteFile == "file1"'>
+						FILE_NAME_CERTIFICATE1 = NULL,
+					</when>
+					<when test='delelteFile == "file2"'>
+						FILE_NAME_CERTIFICATE2 = NULL,
+					</when>
+					<when test='delelteFile == "file3"'>
+						FILE_NAME_CERTIFICATE3 = NULL,
+					</when>
+				</choose>
+			</if>
+
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />,
+			UPDATED_USER_ID = #{updatedUserId}
+		</set>
+		WHERE SELLER_ID = #{sellerId}
+
+	</update>
+
+	<select id="getSellerHasRole" parameterType="long" resultType="String">
+		SELECT CASE WHEN COUNT(*) > 0 THEN 'Y' ELSE 'N' END
+		  FROM OP_USER_ROLE
+		 WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="getDuplicateUserCheck" parameterType="String" resultType="String">
+		SELECT CASE WHEN COUNT(1) > 0 THEN 'Y' ELSE 'N' END
+		  FROM OP_USER
+		 WHERE login_id = #{loginId}
+	</select>
+
+	<select id="getUserIdByItemId" parameterType="Integer" resultMap="SellerResult">
+	SELECT
+		T_A.*
+		, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
+		, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		FROM (
+			SELECT U.USER_ID
+				, S.COMPANY_NAME
+				<!-- , CRYPTO_DEC('normal', U.MBER_CI, '', 0) AS MBER_CI -->
+				, U.MBER_CI AS MBER_CI_ENC
+				, U.RECEIVE_SMS
+				<!-- , CRYPTO_DEC('normal', S.PHONE_NUMBER, '', 0) AS PHONE_NUMBER -->
+				, S.PHONE_NUMBER AS PHONE_NUMBER_ENC
+			FROM OP_SELLER S
+			INNER JOIN OP_SELLER_USER U ON S.LOGIN_ID = U.LOGIN_ID
+			INNER JOIN OP_ITEM I ON S.SELLER_ID = I.SELLER_ID
+			WHERE I.ITEM_ID = #{itemId}
+		) T_A
+	</select>
+
+	<!-- OP_SELLER 테이블 EMAIL UPDATE -->
+	<update id="updateSellerInfo" parameterType="saleson.seller.main.domain.Seller">
+		UPDATE OP_SELLER
+		<set>
+			<if test="email != null and email != ''">
+				EMAIL = #{email}
+			</if>
+		</set>
+		WHERE LOGIN_ID = #{loginId}
+	</update>
+
+</mapper>

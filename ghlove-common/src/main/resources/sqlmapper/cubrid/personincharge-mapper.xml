@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.user.PersonInChargeMapper">
+	<sql id="sqlChargerListByParamWhere">
+		WHERE
+				M.STATUS_CODE IN (9, 2)
+
+		<!-- 조회조건 : 지자체 담당자가 로그인시 본인 지자체만 조회 -->
+		<if test="adminRole != null and adminRole != '' and (adminRole == 'ROLE_ADMIN_5' or adminRole == 'ROLE_ADMIN_6')">
+			AND M.LOCGOV_CODE = (SELECT LOCGOV_CODE FROM OP_MANAGER WHERE USER_ID = #{loginUserId})
+		</if>
+
+		<!-- 조회조건 : 오프라인 담당자가 로그인 시 본인 은행만 조회 -->
+		<if test="adminRole != null and adminRole != '' and (adminRole == 'ROLE_ADMIN_7' or adminRole == 'ROLE_ADMIN_8')">
+			AND M.BANK_CODE = (SELECT BANK_CODE FROM OP_MANAGER WHERE USER_ID = #{loginUserId})
+		</if>
+
+		<!-- 검색조건 : 검색구분 + 값 -->
+		<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
+			<choose>
+				<when test="srchKey == 'LOCGOV_NM'">
+					AND CONCAT(L.UPPER_LOCGOV_NM, ' ', L.LOCGOV_NM) LIKE CONCAT('%', #{srchValue},'%')
+				</when>
+				<when test="srchKey == 'LOGIN_ID'">
+					AND M.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+				</when>
+				<when test="srchKey == 'USER_NAME'">
+					AND M.USER_NAME = (SELECT crypto_enc('normal', #{srchValue}, ''))
+				</when>
+				<when test="srchKey == 'PHONE_NUMBER'">
+					AND M.PHONE_NUMBER = (SELECT crypto_enc('normal', #{srchValue}, ''))
+				</when>
+				<when test="srchKey == 'PSITN_NM'">
+					AND M.PSITN_NM LIKE CONCAT('%', #{srchValue},'%')
+				</when>
+				<when test="srchKey == 'EMP_ID'">
+					AND M.EMP_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+				</when>
+			</choose>
+		</if>
+
+		<!-- 검색조건 : 등록일 (시작) -->
+		<if test="srchStartCreated != null and srchStartCreated != ''">
+			AND DATE_FORMAT(M.CREATED_DATE,'%Y%m%d') <![CDATA[ >= ]]> #{srchStartCreated}
+		</if>
+
+		<!-- 검색조건 : 등록일 (종료) -->
+		<if test="srchEndCreated != null and srchEndCreated != ''">
+			AND DATE_FORMAT(M.CREATED_DATE,'%Y%m%d') <![CDATA[ <= ]]> #{srchEndCreated}
+		</if>
+
+		<!-- 검색조건 : 사용여부 -->
+		<if test="srchStatusCode != null and srchStatusCode != ''">
+			AND M.STATUS_CODE = #{srchStatusCode}
+		</if>
+
+		<!-- 검색조건 : 회원구분 -->
+		<if test="srchArrAuthority != null and srchArrAuthority.length gt 0">
+			AND R.AUTHORITY IN (
+				<foreach item="item" index="index" collection="srchArrAuthority" separator=",">
+					#{item}
+				</foreach>
+			)
+		</if>
+	</sql>
+
+	<select id="getChargerCountByParam" parameterType="saleson.shop.user.support.PersonInChargeSearchParam" resultType="Integer">
+		/** psersonincharge-mapper.getChargerCountByParam (담당자 관리 목록 갯수 조회 ) */
+		SELECT
+				COUNT(*)
+		FROM
+				OP_MANAGER M
+		INNER JOIN
+				OP_USER_ROLE R
+			ON	R.USER_ID = M.USER_ID
+			AND	R.AUTHORITY IN (
+				<choose>
+					<when test="arrAuthority != null and arrAuthority.length gt 0">
+						<foreach item="item" index="index" collection="arrAuthority" separator=",">
+							#{item}
+						</foreach>
+					</when>
+					<otherwise>
+						''
+					</otherwise>
+				</choose>
+			)
+		<include refid="sqlChargerListByParamWhere"/>
+	</select>
+
+	<select id="getChargerListByParam" parameterType="saleson.shop.user.support.PersonInChargeSearchParam" resultType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.getChargerListByParam (담당자 관리 목록 조회) */
+		SELECT
+				A.LOCGOV_CODE
+				, B.LOCGOV_NM
+				, B.UPPER_LOCGOV_CODE
+				, B.UPPER_LOCGOV_NM
+				, A.AUTHORITY
+				, crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID
+				, crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME
+				, crypto_dec('normal', A.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+				, DATE_FORMAT(A.CREATED_DATE,'%Y-%m-%d') AS CREATED_DATE
+				, A.STATUS_CODE
+				, DATE_FORMAT(A.DENY_DATE,'%Y-%m-%d') AS DENY_DATE
+				, A.USER_ID
+				, A.PSITN_DEPT_NM
+				, A.BANK_CODE
+				, A.PSITN_NM
+				, crypto_dec('normal', A.EMP_ID, '', 0) AS EMP_ID
+				, A.BANK_NM
+		FROM (
+				<include refid="CommonMapper.paginationHeader" />
+				SELECT
+						M.LOCGOV_CODE
+						, R.AUTHORITY
+						, M.LOGIN_ID
+						, M.USER_NAME
+						, M.PHONE_NUMBER
+						, M.CREATED_DATE
+						, M.STATUS_CODE
+						, M.DENY_DATE
+						, M.USER_ID
+						, M.PSITN_DEPT_NM
+						, M.BANK_CODE
+						, M.PSITN_NM
+						, M.EMP_ID
+						, (
+							SELECT C.LABEL
+							FROM OP_COMMON_CODE C
+							WHERE C.CODE_TYPE = 'OFF_BANK_LIST'
+							AND C.USE_YN = 'Y'
+							AND C.LANGUAGE = 'ko'
+							AND C.ID = M.BANK_CODE) AS BANK_NM
+				FROM
+						OP_MANAGER M
+				INNER JOIN
+						OP_USER_ROLE R
+					ON	R.USER_ID = M.USER_ID
+					AND	R.AUTHORITY IN (
+						<choose>
+							<when test="arrAuthority != null and arrAuthority.length gt 0">
+								<foreach item="item" index="index" collection="arrAuthority" separator=",">
+									#{item}
+								</foreach>
+							</when>
+							<otherwise>
+								''
+							</otherwise>
+						</choose>
+					)
+				<include refid="sqlChargerListByParamWhere"/>
+				<choose>
+					<when test="orderBy != null and orderBy != '' and orderBy == 'BANK_NM'">
+						ORDER BY BANK_NM, M.PSITN_NM
+					</when>
+					<otherwise>
+						ORDER BY M.CREATED_DATE DESC
+					</otherwise>
+				</choose>
+				<include refid="CommonMapper.paginationFooter" />
+		) A
+		LEFT OUTER JOIN G_LOCGOV B
+		  ON A.LOCGOV_CODE = B.LOCGOV_CODE
+	</select>
+
+	<delete id="deleteCharger" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.deleteCharger (담당자 삭제) */
+		DELETE FROM OP_MANAGER
+		WHERE USER_ID IN (
+			<choose>
+				<when test="userIdList != null and userIdList.size() gt 0">
+					<foreach item="item" index="index" collection="userIdList" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise>
+					''
+				</otherwise>
+			</choose>
+		)
+	</delete>
+
+	<delete id="deleteChargerRole" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.deleteChargerRole (담당자 권한 삭제) */
+		DELETE FROM OP_USER_ROLE
+		WHERE USER_ID IN (
+			<choose>
+				<when test="userIdList != null and userIdList.size() gt 0">
+					<foreach item="item" index="index" collection="userIdList" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise>
+					''
+				</otherwise>
+			</choose>
+		)
+		AND (AUTHORITY LIKE 'ROLE_ADMIN_%' OR AUTHORITY = 'ROLE_OPMANAGER')
+	</delete>
+
+	<select id="getChargerDetails" parameterType="saleson.shop.user.support.PersonInChargeSearchParam" resultType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.getChargerDetails (담당자 상세 조회) */
+		SELECT
+				L.LOCGOV_CODE
+				, L.LOCGOV_NM
+				, L.UPPER_LOCGOV_CODE
+				, L.UPPER_LOCGOV_NM
+				, R.AUTHORITY
+				, crypto_dec('normal', M.LOGIN_ID, '', 0) AS LOGIN_ID
+				, crypto_dec('normal', M.USER_NAME, '', 0) AS USER_NAME
+				, crypto_dec('normal', M.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+				, DATE_FORMAT(M.CREATED_DATE,'%Y-%m-%d') AS CREATED_DATE
+				, M.STATUS_CODE
+				, DATE_FORMAT(M.DENY_DATE,'%Y-%m-%d') AS DENY_DATE
+				, M.USER_ID
+				, M.BANK_CODE
+				, crypto_dec('normal', M.EMP_ID, '', 0) AS EMP_ID
+				, M.PSITN_NM
+				, M.PSITN_DEPT_NM
+				, crypto_dec('normal', M.OFCPS_NM, '', 0) AS OFCPS_NM
+				, crypto_dec('normal', M.EMAIL, '', 0 ) AS EMAIL
+				, (
+					SELECT C.LABEL
+					FROM OP_COMMON_CODE C
+					WHERE C.CODE_TYPE = 'OFF_BANK_LIST'
+					AND C.USE_YN = 'Y'
+					AND C.LANGUAGE = 'ko'
+					AND C.ID = M.BANK_CODE) AS BANK_NM
+		FROM
+				OP_MANAGER M
+		INNER JOIN
+				OP_USER_ROLE R
+			ON	R.USER_ID = M.USER_ID
+			AND	R.AUTHORITY IN (
+				<choose>
+					<when test="arrAuthority != null and arrAuthority.length gt 0">
+						<foreach item="item" index="index" collection="arrAuthority" separator=",">
+							#{item}
+						</foreach>
+					</when>
+					<otherwise>
+						''
+					</otherwise>
+				</choose>
+			)
+		LEFT OUTER JOIN
+				G_LOCGOV L
+			ON	L.LOCGOV_CODE = M.LOCGOV_CODE
+		WHERE
+				M.STATUS_CODE IN (9, 2)
+			AND	M.USER_ID = #{userId}
+	</select>
+
+	<select id="getLocgovList" parameterType="String" resultType="saleson.shop.user.domain.Locgov">
+		/** psersonincharge-mapper.getLocgovList (하위 지자체 조회) */
+		SELECT
+				L.LOCGOV_CODE,
+				L.UPPER_LOCGOV_NM,
+				L.LOCGOV_NM,
+				L.UPPER_LOCGOV_CODE,
+				L.LOCGOV_INTRCN_CN,
+				crypto_dec('normal', L.CHARGER_CTTPC, '', 0) AS CHARGER_CTTPC,
+				crypto_dec('normal', L.CHARGER_NM, '', 0) AS CHARGER_NM,
+				L.CHARGER_PSITN_DEPT,
+				L.LOCGOV_HMPG,
+				L.LOCGOV_POPLTN_CO,
+				L.LOCGOV_AR,
+				L.LOCGOV_SPCPRD,
+				L.GCCT_USE_AT,
+				L.ETRCSH_USE_AT,
+				L.USE_AT,
+				L.LOCGOV_BUDGET_AMT,
+				L.BIZRNO,
+				L.LOCGOV_ZIP,
+				L.BASS_ADRES,
+				L.DTL_ADRES,
+				L.ACHLQR_SLE_AT,
+				L.FRST_REGISTER_ID,
+				DATE_FORMAT(L.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM,
+				L.LAST_UPDUSR_ID,
+				DATE_FORMAT(L.LAST_UPDT_PNTTM,'%Y-%m-%d') AS LAST_UPDT_PNTTM
+		FROM
+				G_LOCGOV L
+		WHERE
+				L.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+			AND	L.USE_AT = 'Y'
+		ORDER BY
+				L.ORDERING
+	</select>
+
+	<select id="getLocgovMainPersonInChargeCount" parameterType="saleson.shop.user.domain.PersonInCharge" resultType="Integer">
+		/** psersonincharge-mapper.getLocgovMainPersonInChargeCount (지자체 주담당자 인원수 확인) */
+		SELECT
+				COUNT(*)
+		FROM
+				OP_MANAGER M
+		INNER JOIN
+				OP_USER_ROLE R
+			ON	M.USER_ID = R.USER_ID
+			AND	R.AUTHORITY = 'ROLE_ADMIN_5'
+		WHERE
+				M.LOCGOV_CODE = #{locgovCode}
+			AND	M.STATUS_CODE IN (9, 2)
+			AND	M.USER_ID != #{userId}
+	</select>
+
+	<update id="updatePersonInCharge" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.updatePersonInCharge (담당자 수정) */
+		UPDATE
+				OP_MANAGER
+		SET
+				PSITN_DEPT_NM = #{psitnDeptNm},
+				OFCPS_NM = crypto_enc('normal', #{ofcpsNm}, ''),
+				<if test="locgovCode != null and locgovCode != ''">
+				LOCGOV_CODE = #{locgovCode},
+				</if>
+				<if test="statusCode != null and statusCode != ''">
+				STATUS_CODE = #{statusCode},
+				</if>
+				<choose>
+					<when test="statusCode != null and statusCode != '' and statusCode == 2">
+						DENY_DATE = <include refid="CommonMapper.datetime" />,
+					</when>
+					<when test="statusCode != null and statusCode != '' and statusCode == 9">
+						DENY_DATE = NULL,
+					</when>
+				</choose>
+				UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE
+				USER_ID = #{userId}
+	</update>
+
+	<delete id="deletePersonInChargeUserRole" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.deletePersonInChargeUserRole (담당자 권한 삭제) */
+		DELETE FROM OP_USER_ROLE
+		WHERE USER_ID = #{userId}
+		AND AUTHORITY LIKE 'ROLE_ADMIN_%'
+	</delete>
+
+	<insert id="insertPersonInChargeUserRole" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.insertPersonInChargeUserRole (담당자 권한 등록) */
+		INSERT INTO OP_USER_ROLE (
+			USER_ID,
+			AUTHORITY
+		) VALUES (
+			#{userId},
+			#{authority}
+		)
+	</insert>
+
+	<select id="getGovMainPersonInChargeCount" parameterType="saleson.shop.user.domain.PersonInCharge" resultType="Integer">
+		/** psersonincharge-mapper.getGovMainPersonInChargeCount (행안부 주담당자 인원수 확인) */
+		SELECT
+				COUNT(*)
+		FROM
+				OP_MANAGER M
+		INNER JOIN
+				OP_USER_ROLE R
+			ON	M.USER_ID = R.USER_ID
+			AND	R.AUTHORITY = 'ROLE_ADMIN_3'
+		WHERE
+				M.STATUS_CODE IN (9, 2)
+			AND	M.USER_ID != #{userId}
+	</select>
+
+	<update id="updateStatusCode" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.updateStatusCode (상태 코드 변경) */
+		UPDATE
+				OP_MANAGER
+		SET
+				STATUS_CODE = #{statusCode},
+				<choose>
+					<when test="statusCode != null and statusCode != '' and statusCode == 2">
+						DENY_DATE = <include refid="CommonMapper.datetime" />,
+					</when>
+					<when test="statusCode != null and statusCode != '' and statusCode == 9">
+						DENY_DATE = NULL,
+					</when>
+				</choose>
+				UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE
+				USER_ID IN (
+					<choose>
+						<when test="userIdList != null and userIdList.size() gt 0">
+							<foreach item="item" index="index" collection="userIdList" separator=",">
+								#{item}
+							</foreach>
+						</when>
+						<otherwise>
+							''
+						</otherwise>
+					</choose>
+				)
+	</update>
+
+	<select id="getOffPersonInChargeMainCount" parameterType="saleson.shop.user.domain.PersonInCharge" resultType="Integer">
+		/** psersonincharge-mapper.getOffPersonInChargetMainCount (오프라인 주담당자 인원수 확인) */
+		SELECT
+				COUNT(*)
+		FROM
+				OP_MANAGER M
+		INNER JOIN
+				OP_USER_ROLE R
+			ON	M.USER_ID = R.USER_ID
+			AND	R.AUTHORITY = 'ROLE_ADMIN_7'
+		WHERE
+			M.BANK_CODE = #{bankCode}
+			AND	M.STATUS_CODE = 9
+			AND	M.USER_ID != #{userId}
+	</select>
+
+	<update id="updateUserDetailOffPersonTel" parameterType="saleson.shop.designateddonation.domain.DsgnCntrManagerRequest">
+		/** personincharge-mapper.updateUserDetailOffPersonTel (오프라인 담당자 지점 연락처는 DsgnCntrManagerRequest.java의 phoneNumber에 지점 연락처 들어있음) */
+		UPDATE	OP_USER_DETAIL
+		SET		TEL_NUMBER = crypto_enc('normal',#{phoneNumber},'')
+		WHERE	USER_ID = #{userId}
+	</update>
+	<update id="updateOffPersonInCharge" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** personincharge-mapper.updateOffPersonInCharge (오프라인 담당자 수정) */
+		UPDATE
+				OP_MANAGER
+		SET
+				USER_NAME = crypto_enc('normal', #{userName}, ''),
+				PHONE_NUMBER = crypto_enc('normal', #{phoneNumber}, ''),
+				BANK_CODE = #{bankCode},
+				PSITN_NM = #{psitnNm},
+				EMP_ID = crypto_enc('normal', #{empId}, ''),
+				EMAIL = crypto_enc('normal', #{email}, ''),
+				OFCPS_NM = crypto_enc('normal', #{email}, ''),
+				INFO_UPDT_DE = ( SELECT
+										CASE WHEN IFNULL(INFO_UPDT_DE, '') != ''
+										THEN INFO_UPDT_DE
+										ELSE <include refid="CommonMapper.datetime" />
+										END
+								FROM
+										OP_MANAGER
+								WHERE
+										USER_ID = #{userId}),
+				<if test="statusCode != null and statusCode != ''">
+				STATUS_CODE = #{statusCode},
+				</if>
+				<choose>
+					<when test="statusCode != null and statusCode != '' and statusCode == 2">
+						DENY_DATE = <include refid="CommonMapper.datetime" />,
+					</when>
+					<when test="statusCode != null and statusCode != '' and statusCode == 9">
+						DENY_DATE = NULL,
+					</when>
+				</choose>
+				UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE
+				USER_ID = #{userId}
+	</update>
+
+	<select id="getUserOffTelNumber" parameterType="Long" resultType="String">
+		/** personincharge-mapper.getUserOffTelNumber (오프라인 담당자 :  지점연락처 op_user_detail/tel_number 가져오기) */
+		SELECT crypto_dec('normal', TEL_NUMBER, '', 0) AS TEL_NUMBER
+		FROM OP_USER_DETAIL
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<update id="deleteChargerTelNumber" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** personincharge-mapper.deleteChargerTelNumber (오프라인 담당자 :  지점연락처 op_user_detail/tel_number 삭제하기 빈값처리) */
+		UPDATE  OP_USER_DETAIL
+		SET		TEL_NUMBER = ''
+		WHERE USER_ID IN (
+			<choose>
+				<when test="userIdList != null and userIdList.size() gt 0">
+					<foreach item="item" index="index" collection="userIdList" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise>
+					''
+				</otherwise>
+			</choose>
+		)
+	</update>
+
+	<update id="updateUserSync" parameterType="Long">
+		/** personincharge-mapper.updateUserSync (회원 정보 수정) */
+		UPDATE	OP_USER
+		SET		USER_NAME = (SELECT USER_NAME FROM OP_MANAGER WHERE USER_ID = #{userId})
+				, EMAIL = (SELECT EMAIL FROM OP_MANAGER WHERE USER_ID = #{userId})
+		WHERE	USER_ID = #{userId}
+	</update>
+
+	<update id="updateUserDetailSync" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** personincharge-mapper.updateUserDetailSync (회원 상세 정보 수정) */
+		UPDATE	OP_USER_DETAIL
+		SET		PHONE_NUMBER = (SELECT PHONE_NUMBER FROM OP_MANAGER WHERE USER_ID = #{userId})
+				<if test="telNumber != null and telNumber != ''">
+					,TEL_NUMBER = crypto_enc('normal', #{telNumber}, '')
+				</if>
+		WHERE	USER_ID = #{userId}
+	</update>
+
+	<update id="updateUserPassword" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** personincharge-mapper.updateUserPassword (회원 비밀번호 변경) */
+		UPDATE	OP_USER
+		SET		PASSWORD = #{password},
+				PASSWORD_TYPE = 'T',
+				PASSWORD_EXPIRED_DATE = #{passwordExpiredDate},
+				UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE	USER_ID = #{userId}
+	</update>
+
+	<update id="updateManagerPassword" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** personincharge-mapper.updateManagerPassword (관리자 비밀번호 변경) */
+		UPDATE	OP_MANAGER
+		SET		PASSWORD = #{password},
+				PASSWORD_TYPE = 'T',
+				PASSWORD_EXPIRED_DATE = #{passwordExpiredDate},
+				UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE	USER_ID = #{userId}
+	</update>
+
+	<select id="getManagerInfoUpdateDate" parameterType="Long" resultType="String">
+		/** personincharge-mapper.getManagerInfoUpdateDate (관리자 정보갱신일자 조회) */
+		SELECT IFNULL(M.INFO_UPDT_DE, '') AS INFO_UPDT_DE
+		FROM OP_MANAGER M
+		WHERE M.USER_ID = #{userId}
+		AND M.STATUS_CODE = 9
+	</select>
+
+	<select id="getUserAdminRole" parameterType="Long" resultType="String">
+		/** personincharge-mapper.getUserAdminRole (사용자 관리자 권한 조회) */
+		SELECT R.AUTHORITY
+		FROM OP_USER_ROLE R
+		WHERE R.USER_ID = #{userId}
+		AND R.AUTHORITY LIKE 'ROLE_ADMIN_%'
+		LIMIT 1
+	</select>
+
+	<delete id="deleteManagerPasswordLog" parameterType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.deleteManagerPasswordLog (관리자 비밀번호 변경 이력 삭제) */
+		DELETE FROM OP_MANAGER_PASSWORD_LOG
+		WHERE USER_ID IN (
+			<choose>
+				<when test="userIdList != null and userIdList.size() gt 0">
+					<foreach item="item" index="index" collection="userIdList" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise>
+					''
+				</otherwise>
+			</choose>
+		)
+	</delete>
+
+	<select id="getLoginIdByUserId" parameterType="Long" resultType="String">
+		/** psersonincharge-mapper.getLoginIdByUserId (로그인 아이디 조회) */
+		SELECT crypto_dec('normal', LOGIN_ID, '', 0) AS LOGIN_ID
+		FROM OP_MANAGER
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<select id="getLocgovChargerCountByParam" parameterType="saleson.shop.user.support.PersonInChargeSearchParam" resultType="Integer">
+		/** psersonincharge-mapper.getLocgovChargerCountByParam (담당자 관리 목록 갯수 조회 ) */
+		SELECT
+				COUNT(*)
+		FROM
+				OP_MANAGER M
+		INNER JOIN
+				OP_USER_ROLE R
+			ON	R.USER_ID = M.USER_ID
+			AND	R.AUTHORITY IN (
+				<choose>
+					<when test="arrAuthority != null and arrAuthority.length gt 0">
+						<foreach item="item" index="index" collection="arrAuthority" separator=",">
+							#{item}
+						</foreach>
+					</when>
+					<otherwise>
+						''
+					</otherwise>
+				</choose>
+			)
+			INNER JOIN G_LOCGOV L
+		  	ON L.LOCGOV_CODE = M.LOCGOV_CODE
+		<include refid="sqlChargerListByParamWhere"/>
+	</select>
+
+	<select id="getLocgovChargerListByParam" parameterType="saleson.shop.user.support.PersonInChargeSearchParam" resultType="saleson.shop.user.domain.PersonInCharge">
+		/** psersonincharge-mapper.getLocgovChargerListByParam (담당자 관리 목록 조회) */
+		SELECT
+				A.LOCGOV_CODE
+				, A.LOCGOV_NM
+				, A.UPPER_LOCGOV_CODE
+				, A.UPPER_LOCGOV_NM
+				, A.AUTHORITY
+				, crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID
+				, crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME
+				, crypto_dec('normal', A.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+				, DATE_FORMAT(A.CREATED_DATE,'%Y-%m-%d') AS CREATED_DATE
+				, A.STATUS_CODE
+				, DATE_FORMAT(A.DENY_DATE,'%Y-%m-%d') AS DENY_DATE
+				, A.USER_ID
+				, A.PSITN_DEPT_NM
+				, A.BANK_CODE
+				, A.PSITN_NM
+				, crypto_dec('normal', A.EMP_ID, '', 0) AS EMP_ID
+				, A.BANK_NM
+		FROM (
+				<include refid="CommonMapper.paginationHeader" />
+				SELECT
+						M.LOCGOV_CODE
+						, L.LOCGOV_NM
+						, L.UPPER_LOCGOV_CODE
+						, L.UPPER_LOCGOV_NM
+						, R.AUTHORITY
+						, M.LOGIN_ID
+						, M.USER_NAME
+						, M.PHONE_NUMBER
+						, M.CREATED_DATE
+						, M.STATUS_CODE
+						, M.DENY_DATE
+						, M.USER_ID
+						, M.PSITN_DEPT_NM
+						, M.BANK_CODE
+						, M.PSITN_NM
+						, M.EMP_ID
+						, (
+							SELECT C.LABEL
+							FROM OP_COMMON_CODE C
+							WHERE C.CODE_TYPE = 'OFF_BANK_LIST'
+							AND C.USE_YN = 'Y'
+							AND C.LANGUAGE = 'ko'
+							AND C.ID = M.BANK_CODE) AS BANK_NM
+				FROM
+						OP_MANAGER M
+				INNER JOIN
+						OP_USER_ROLE R
+					ON	R.USER_ID = M.USER_ID
+					AND	R.AUTHORITY IN (
+						<choose>
+							<when test="arrAuthority != null and arrAuthority.length gt 0">
+								<foreach item="item" index="index" collection="arrAuthority" separator=",">
+									#{item}
+								</foreach>
+							</when>
+							<otherwise>
+								''
+							</otherwise>
+						</choose>
+					)
+				INNER JOIN G_LOCGOV L
+		  		ON L.LOCGOV_CODE = M.LOCGOV_CODE
+				<include refid="sqlChargerListByParamWhere"/>
+				<choose>
+					<when test="orderBy != null and orderBy != '' and orderBy == 'BANK_NM'">
+						ORDER BY BANK_NM, M.PSITN_NM
+					</when>
+					<otherwise>
+						ORDER BY M.CREATED_DATE DESC
+					</otherwise>
+				</choose>
+				<include refid="CommonMapper.paginationFooter" />
+		) A
+	</select>
+</mapper>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 1:1 문의 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+    <link rel="stylesheet" href="/static/css/event.css" />
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css?d=20230731" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/ct_nov.css?d=2030629" />
+    <link rel="stylesheet" href="/static/css/data_v.css" />
+    <link rel="stylesheet" href="/static/css/research-box.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              마이페이지 
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              1:1 문의
+            </span>
+            <h2 class="page-title-txt">1:1 문의</h2>
+          </div>
+        </section>
+
+        <section>
+          <div class="contents-wrap" id="contents">
+            <div class="center">
+              <!-- 등록 -->
+              <div class="s-contents list-page-wrapper">
+                <div class="list-page-area">
+                  <div class="list-page-body qna">
+                    <div class="page-title">
+                      <form class="title-select">
+                        <div class="form-item">
+                        <label for="subjectSelect" class="sr-only">말머리 선택</label>
+                          <select id="subjectSelect" aria-label="말머리 선택" v-model="submitParam.qnaGroup">
+                            <option value="">말머리선택</option>
+                            <option :value="data.id" v-for="(data, index) in result.qnaGroups" :key="index">{{ data.label }}</option>
+                          </select>
+                        </div>
+                        <div class="form-item">
+                        <label for="submitSubject" class="sr-only">제목을 입력해주세요</label>
+                          <input id="submitSubject" aria-label="제목" type="text" v-model="submitParam.subject" placeholder="제목을 입력해주세요" maxlength="100" />
+                        </div>
+                      </form>
+                    </div>
+                    <div class="page-contents">
+                      <label for="submitQuestion" class="sr-only">내용을 입력해주세요</label>
+                      <textarea id="submitQuestion" v-model="submitParam.question" maxlength="500"></textarea>
+                    </div>
+
+                    <div class="page-file-list qna">
+                      <div class="page-file-list-wrap">
+                        <div class="file-list-label">
+                          <input type="file" id="findFile" multiple ref="findFile" @change="fileSelect($event)" />
+                          <!-- <input type="file" multiple id="findFile" @change="fileSelect($event)"> 개발필요 -->
+                          <button type="button" @keydown="findFiles($event)">
+                            <label for="findFile">
+                              <img class="icon-img" src="/static/images/icon/addfile-search.png" alt="첨부자료" />
+                              파일찾기
+                            </label>
+                          </button>
+                          <span class="grayTxt"> jpg, gif, png, hwp, doc, ppt, pdf 등 이미지/문서파일만 등록 가능합니다. </span>
+                        </div>
+                        <div class="file-add" v-show="submitParam.fileList && submitParam.fileList.length > 0">
+                          <!-- 파일 첨부시에 true로 보여짐 -->
+                          <p v-for="(file, index) in submitParam.fileList" :key="index">
+                            {{ file.name }}
+                            <button type="button" class="fileDelete" @click="fileDelete(index)">
+                              <img class="icon-img" src="/static/images/icon/remove-file.png" alt="첨부파일 삭제" />
+                            </button>
+                          </p>
+                        </div>
+
+                        <captcha ref="captcha"></captcha>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--// 등록 -->
+
+              <!-- 버튼그룹 -->
+              <div class="btn-box inquiry many">
+                <button type="button" class="blueBtn cancellation" @click="clear()">
+                  취소<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+                </button>
+                <button type="button" class="blueBtn u-confirm" @click="submit()">
+                  등록<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!--// 버튼그룹 -->
+          <div class="contents-wrap" id="listContents">
+            <div class="center">
+              <!-- 목록 조회 -->
+              <div class="s-contents list-wrapper">
+                <div class="list-select-area">
+                  <header class="list-page-body inquiry">
+                    <form class="title-select" :onsubmit="page.onsubmitType">
+                      <div class="form-item">
+                        <input
+                          type="hidden"
+                          placeholder="시작날짜"
+                          title="검색날짜 입력"
+                          class="form-control box"
+                          name="startDate"
+                          v-model="searchParam.searchStartDate"
+                        />
+                        <input
+                          type="hidden"
+                          placeholder="종료날짜"
+                          title="검색날짜 입력"
+                          class="form-control box"
+                          name="endDate"
+                          v-model="searchParam.searchEndDate"
+                        />
+                        <label for="searchDate" class="sr-only">조회기간</label>
+                        <select id="searchDate" aria-label="조회기간" class="searchDate">
+                          <option value="">찾고자 하는 날짜를 설정해 주세요.</option>
+                          <option value="week-1">1주일</option>
+                          <option value="month-1">1개월</option>
+                          <option value="month-3">3개월</option>
+                          <option value="month-6">6개월</option>
+                        </select>
+                      </div>
+                      <button type="button" class="formBtn" @click="search()">조회</button>
+                    </form>
+                  </header>
+                  <div class="list-search-body inquiry faq">
+                    <ul class="list-search-group">
+                      <li
+                        class="list-items dropdown cursor"
+                        @click="slideNoticeBody(data.qnaId)"
+                        @keydown="keySlideNoticeBody($event,data.qnaId)"
+                        tabindex="0"
+                        v-for="(data, index) in result.qnaList"
+                        :key="data.qnaId"
+                        v-if="!isNoData"
+                      >
+                        <div class="notice-header inquiry dropdown-toggle" data-toggle="dropdown">
+                          <div class="notice-header-txt">
+                            <img class="faq-icon" src="/static/images/icon/cli-icon_faq-q.png" alt="" />
+                            <div class="notice-txt">
+                              <button class="subject" type="button">{{ unescapeHtml(data.subject) }}</button>
+                              <div class="q_contents" style="white-space: pre-wrap">{{ unescapeHtml(data.question) }}</div>
+                              <div class="q-add_file" v-if="isFileUse">
+                                <button
+                                  class="moreView"
+                                  type="button"
+                                  @click="fileDownload($event, data.qnaFileId, data.qnaDetailType, data.orgFileName)"
+                                  v-for="(data, index) in data.qnaOpenFileList"
+                                >
+                                  <img src="/static/images/icon/cli-icon_file-list.png" alt="첨부자료" /> {{ data.orgFileName }}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="notice-header-status">
+                            <div class="date-col">
+                              <span class="pointblue" v-if="data.answerCount > 0">답변완료</span>
+                              <span class="pointRed" v-else>답변대기</span>
+                            </div>
+                            <div class="date-col">{{ dateFormat(data.createdDate, 'date') }}</div>
+                          </div>
+                        </div>
+                        <div class="notice-body dropdown-menu" :id="data.qnaId" v-if="data.answerCount > 0">
+                          <div class="notice-wrap">
+                            <img class="faq-icon" src="/static/images/icon/cli-icon_faq-a.png" alt="" />
+                            <div class="notice-txt">
+                              <button class="subject" type="button">{{ unescapeHtml(data.qnaAnswer.title) }}</button>
+                              <div class="q_contents" style="white-space: pre-wrap">{{ unescapeHtml(data.qnaAnswer.answer) }}</div>
+                              <div class="q-add_file" v-if="isFileUse">
+                                <button
+                                  class="moreView"
+                                  type="button"
+                                  @click="fileDownload($event, data.qnaFileId, data.qnaDetailType, data.orgFileName)"
+                                  v-for="(data, index) in data.qnaOpenAnswerFileList"
+                                >
+                                  <img src="/static/images/icon/cli-icon_file-list.png" alt="첨부자료" /> {{ data.orgFileName }}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <div class="list-none" v-if="isNoData">
+                        <img src="/static/images/icon/non-list.png" alt="게시물이 없음" />
+                        1:1문의 정보가 존재하지 않습니다.
+                      </div>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!--// 목록 조회 -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          captcha: httpVueLoader("/components/ui/captcha.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+        },
+        data: {
+          result: {
+            qnaList: [],
+            qnaGroups: [],
+          },
+          searchParam: {
+            searchStartDate: "",
+            searchEndDate: "",
+            query: "",
+          },
+          submitParam: {
+            qnaGroup: "",
+            subject: "",
+            question: "",
+            fileList: [],
+          },
+          page: {
+            onsubmitType: "return false;",
+            menuUrl: "/mypage/inquiry.html",
+          },
+          isNoData: true,
+          isFileUse: true,
+        },
+        methods: {
+          qna: function () {
+            $s.api.getInquiries(vm.searchParam, function (response) {
+              vm.result.qnaList = response.list;
+              vm.result.qnaGroups = response.qnaGroups;
+              vm.isNoData = !(response.list != null && response.list.length > 0);
+            });
+          },
+          search: function () {
+            vm.searchParam.searchStartDate = $("input[name='startDate']").val();
+            vm.searchParam.searchEndDate = $("input[name='endDate']").val();
+            vm.qna();
+          },
+          fileSelect: function (e) {
+            var size = 5;
+            var extensions = ["jpg", "jpeg", "gif", "png", "hwp", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf"];
+            var fileList = e.target.files;
+            var tempFileList = [];
+
+            // 유효성 체크
+            for (var i = 0; i < fileList.length; i++) {
+              var file = fileList[i];
+              var fileExt = fileList[i].name;
+
+              // 사이즈 체크
+              if (fileExt != "") {
+                if (file.size > size * 1024 * 1024) {
+                  $s.alert("파일크기는 " + size + "MB 이내로 등록 가능합니다.");
+                  return;
+                }
+              }
+
+              // 확장자 체크
+              fileExt = fileExt.slice(fileExt.lastIndexOf(".") + 1).toLowerCase();
+              if (!extensions.includes(fileExt)) {
+                $s.alert("이미지파일/문서파일만 등록 가능합니다.");
+                return;
+              }
+            }
+
+            for (var j = 0; j < fileList.length; j++) {
+              vm.submitParam.fileList.push(fileList[j]);
+            }
+
+            // 파일 object 초기화
+            e.target.value = "";
+          },
+          fileDelete: function (index) {
+            vm.submitParam.fileList.splice(index, 1);
+          },
+          clear: function () {
+            $s.confirm("1:1문의를 취소하시겠습니까?", function () {
+              vm.submitParam = {
+                qnaGroup: "",
+                subject: "",
+                question: "",
+                fileList: [],
+              };
+              $s.closeAlert();
+            });
+          },
+          submit: function () {
+            if (!vm.validator()) {
+              return false;
+            }
+
+            $s.confirm("등록하시겠습니까?", function () {
+              var formData = new FormData();
+              formData.append("qnaGroup", vm.submitParam.qnaGroup);
+              formData.append("subject", vm.submitParam.subject);
+              formData.append("question", vm.submitParam.question);
+
+              var fileList = vm.submitParam.fileList;
+
+              if (fileList != null && fileList.length > 0) {
+                for (var i = 0; i < fileList.length; i++) {
+                  formData.append("qnaOpenFileList[" + i + "]", fileList[i]);
+                }
+              }
+
+              $s.api.createInquiry(
+                formData,
+                function (response) {
+                  $s.alert("등록되었습니다.", function (response) {
+                    vm.pageReload();
+                  });
+                },
+                function (error) {
+                  $s.alert(error.response.data.message);
+                }
+              );
+            });
+          },
+          validator: function () {
+            if (vm.submitParam.qnaGroup.trim() == "") {
+              $s.alert("말머리를 선택해주세요.");
+              return false;
+            }
+
+            if (vm.submitParam.subject.trim() == "") {
+              $s.alert("제목을 입력해주세요.");
+              return false;
+            }
+
+            if (vm.submitParam.question.trim() == "") {
+              $s.alert("내용을 입력해주세요.");
+              return false;
+            }
+
+            if (!this.$refs.captcha.isCaptcha()) {
+              $s.alert("자동 등록 방지 숫자를 입력해주세요.", "captchaTxt");
+              return false;
+            }
+
+            return true;
+          },
+          pageReload: function () {
+            location.reload();
+          },
+          // *************** ali-add methods
+          goToMain: function () {
+            location.href = "UI_P02010.html";
+          },
+          closePopupLayer: function () {
+            $(".black-bg").removeClass("show");
+          },
+          modalLayer: function (e) {
+            $(".black-bg").addClass("show");
+          },
+          slideNoticeBody: function (qnaId) {
+            var obj = $("[class='notice-body'][id='" + qnaId + "']");
+            $(obj).slideToggle();
+          },
+          keySlideNoticeBody(e, qnaId) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+              this.slideNoticeBody(qnaId);
+            }
+          },
+          fileDownload: function (e, qnaFileId, qnaDetailType, orgFileName) {
+            e.stopPropagation();
+            $s.api.getQnaOpenFileDownload(
+              { qnaFileId: qnaFileId, qnaDetailType: qnaDetailType },
+              function (response) {
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(new Blob([response]));
+                link.setAttribute("download", orgFileName);
+                link.style.cssText = "display:none";
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+              },
+              function (response) {
+                $s.alert("첨부자료를 다운로드 할 수 없습니다.");
+              }
+            );
+          },
+          findFiles: function (event) {
+            if (event.keyCode === 13) {
+              this.$refs.findFile.click();
+            }
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init({ loginPage: true });
+            Saleson.DateEvent.set(".searchDate");
+            vm.qna();
+            initializeListEvent();
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

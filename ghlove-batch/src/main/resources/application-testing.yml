@@ -1,0 +1,32 @@
+server:
+  port: 8000
+
+spring:
+  application.name: ghlove-batch
+
+saleson:
+  root: "/home/ghlove/"
+  batch: true
+
+# Logging Level
+logging:
+  level:
+    org.springframework.web: INFO
+    com.onlinepowers: INFO
+    saleson: INFO
+    jdbc:
+      sqltiming: DEBUG
+      resultsettable: INFO
+      
+#######################
+# TotalSearch Engine
+#######################
+totalsearch-server:
+  engine-url: 192.168.100.248:7577
+  ksf-url: 192.168.100.248:7614
+  
+ems:
+  host: http://192.168.100.250:8380/api/sendMail.do
+  send:
+    username: 고향사랑e음
+    email: webmatser@ilovegohyang.go.kr

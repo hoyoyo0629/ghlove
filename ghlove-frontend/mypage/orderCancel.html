@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 취소반품교환 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/mypage-order.css" />
+    <!-- <link rel="stylesheet" href="/static/css/favo_info.css"> -->
+    <!--페이지네이션-->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <!-- <layout-subsearch-ali></layout-subsearch-ali> -->
+        <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              마이페이지
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              취소반품교환
+            </span>
+            <h2 class="page-title-txt">취소반품교환</h2>
+          </div>
+
+          <div class="" id="contents">
+            <div class="my_order">
+              <div class="mypage-top">
+                <label class="card_title" for="date">기간</label>
+                <div class="selected-field-line">
+                  <div class="selected-item">
+                  <label for="startDate" class="sr-only">시작일</label>
+                    <input type="date" name="startDate" id="startDate" v-model="param.searchStartDate" />
+                    <span class="s_txt"> ~ </span>
+                    <label for="endDate" class="sr-only">종료일</label>
+                    <input type="date" name="endDate" id="endDate" v-model="param.searchEndDate" />
+                  </div>
+                  <div class="formbtn-box">
+                    <button class="formBtn week-1" type="button" @click="getDiffDate('week', '1')">1주일</button>
+                    <button class="formBtn month-1" type="button" @click="getDiffDate('month', '1')">1개월</button>
+                    <button class="formBtn month-3" type="button" @click="getDiffDate('month', '3')">3개월</button>
+                    <button class="formBtn month-6" type="button" @click="getDiffDate('month', '6')">6개월</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="line"></div>
+
+              <div class="mypage-top second">
+                <div class="selected-field-line">
+                  <label class="card_title" for="statusVal">상태</label>
+                  <div class="selected-item">
+                    <select title="주문·배송 상태" name="statusVal" id="statusVal" v-model="param.orderStatus">
+                      <option value="">전체</option>
+                      <option v-for="(data, i) in orderClaimLevelList" :value="data.orderStatus">{{data.orderLabel}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="selected-field-line">
+                  <label class="card_title" for="locSearch">지자체</label>
+                  <div class="selected-item">
+                    <select title="시·도 선택" name="" id="locSearch" v-model="param.upperLocgovCode" @change="getLocGov();">
+                      <option value="">시·도 선택</option>
+                      <option v-for="(data, i) in wdrList" :value="data.key.id">{{data.label}}</option>
+                    </select>
+                    <label class="sr-only" for="locgov">시·군·구 선택</label>
+                    <select title="시·군·구 선택" name="" id="locgov" v-model="param.locgovCode" @change="getCentral();">
+                      <option value="">시·군·구 선택</option>
+                      <option v-for="(data, i) in locGovList" :value="data.locgovCode">{{data.locgovNm}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="mypage-top second2">
+                <label class="card_title" for="itemName">답례품명</label>
+                <div class="selected-item">
+                  <input type="text" name="" id="itemName" v-model="param.itemName" />
+                </div>
+              </div>
+            </div>
+
+            <!-- 버튼그룹 -->
+            <div class="btn-box many mid">
+              <button type="button" class="blueBtn cancellation" @click="resetData()">
+                초기화<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+              </button>
+              <button type="button" class="blueBtn u-confirm" @click="getSearchList()">
+                조회<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div class="s-contents">
+          <!-- 접근성 적용 클래스명 : w3c_v_2410 -->
+          <div class="list_body table-container w3c_v_2410">
+            <div class="list_wrap">
+              <table>
+                <caption>
+                  취소반품교환 - 주문번호/일자, 답례품정보, 주문/배송상태로 구성
+                </caption>
+                <thead class="list-title">
+                  <tr class="items_wrap">
+                    <th class="date-col index info_loc" scope="col">주문번호/일자</th>
+                    <th class="date-col g_info" scope="col">답례품정보</th>
+                    <th class="date-col sal_status" scope="col">주문/배송상태</th>
+                  </tr>
+                </thead>
+                <!--<tbody class="item_list-group" v-for="(data, index) in order.result.content" :key="index">-->
+                <tbody class="item_list-group">
+                  <!-- <tr class="list-item list-items" v-for="item in order.items"> -->
+                  <tr class="list-item list-items" v-for="(data, index) in order.items">
+                    <td class="date-col index info_loc" data-title="주문번호/일자">
+                      <div class="orderNum">
+                        <p>
+                          <a
+                            href="javascript:void(0)"
+                            @click="viewDetails('/mypage/orderDetail.html?orderCode=' + data.orderCode + '&orderSequence=' + data.orderSequence + '&flag=cancel', 'paging', 'order')"
+                            class="link_detail"
+                            >{{data.orderCode}}</a
+                          >
+                        </p>
+                        <i class="grayTxt"></i>
+                        <p class="grayTxt">{{dateFormat(data.createdDate, 'date')}}</p>
+                      </div>
+                    </td>
+                    <td class="date-col g_info_wrap">
+                      <div class="g_info_wrap">
+                        <p class="g_info__img">
+                          <a
+                            href="javascript:void(0)"
+                            @click="viewDetails('/items/details.html?code=' + item.itemUserCode, 'paging', 'order')"
+                            class="link_detail"
+                            ><img :src="itemImage(data.imageSrc)" :alt="unescapeHtml(data.itemName)" @error="errorImage"
+                          /></a>
+                        </p>
+                        <div class="g_info__txt" data-title="주문/배송상태">
+                          <p class="info_loc">{{data.locgovNm}}</p>
+                          <p class="info_title">{{unescapeHtml(data.itemName)}}</p>
+                          <p class="info_opt" v-if="data.options != ''" v-html="'옵션 : '+unescapeHtml(data.options)"></p>
+                          <div class="info_opt" v-if="data.textOption != ''"><span v-html="formatTextOption(data.textOption)"></span></div>
+                          <p class="info_total">
+                            <span class="deepBlue">{{formatNumber(data.quantity)}}</span>개
+                            <span class="dvide"></span>
+                            <span class="deepBlue">{{formatNumber(data.itemAmount)}}P</span>
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="date-col sal_status" data-title="주문/배송상태">
+                      <p class="spteps_status" v-if="data.cancelClaimStatus == '03'">환불처리중</p>
+                      <p class="spteps_status" v-else>{{data.orderStatusLabel}}</p>
+                      <a
+                        @click="openDeliveryPage(item.deliveryCompanyUrl, data.deliveryNumber, data.orderCode + 'deliBtn')"
+                        title="배송조회 페이지 이동"
+                        class="moreView pointRed deliveryCom"
+                        :id="data.orderCode + 'deliBtn'"
+                        v-show="data.orderStatus == '30' || data.orderStatus == '35' || data.orderStatus == '55' || data.orderStatus == '58'"
+                      >
+                        <span class="spteps_deliveryCompanyName">{{data.deliveryCompanyName}}</span>
+                        <span class="spteps_deliveryCompanyNum">{{data.deliveryNumber}}</span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <pagination :current-page="order.result.currentPage" :total-pages="order.result.totalPages" @change="paging"></pagination>
+            <div class="list-none" v-if="!isNoData">주문내역이 없습니다.</div>
+            <div class="table-overlap">
+              <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br />
+              <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top&Chatbot fixed -->
+      <layout-fixed-btn></layout-fixed-btn>
+
+      <!-- footer component -->
+      <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+    </div>
+    <!--//#wrap-->
+
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //'layout-subsearch-ali': httpVueLoader('/components/layouts/subsearch_ali.vue'),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+        },
+        data: {
+          // 개발 후 지워주세요
+          deliveryCompanyName: "CJ대한통운",
+          deliveryCompanyNum: "1235689001",
+          userName: "",
+          dataVal: "123,456,789",
+          wdrList: "",
+          locGovList: "",
+          orderClaimLevelList: [],
+          dataCount: [20, 30, 40, 10],
+          status: [
+            { propsBtn: "주문취소", steps: "결제완료", numOf: "3" },
+            { propsBtn: "주문취소", steps: "답례품준비중", numOf: "0" },
+            { propsBtn: "배송완료", steps: "배송중", numOf: "1" },
+            { propsBtn: "구매확정", steps: "배송완료", numOf: "1" },
+            { propsBtn: "반품신청", steps: "구매확정", numOf: "0" },
+            { propsBtn: "교환신청", steps: "교환", numOf: "0" },
+            { propsBtn: "반품신청", steps: "반품", numOf: "0" },
+            { propsBtn: "주문취소", steps: "취소", numOf: "0" },
+          ],
+          content: [
+            {
+              deliveryCompanyName: "",
+              deliveryCompanyNum: "",
+              steps: "교환처리중",
+              year: 2023,
+              month: "1월",
+              date: "2022-01-05",
+              orderNum: 123456789,
+              goods: "고구마",
+              upperLocgovNm: "서울시",
+              locgov: "본청",
+              case1: 30,
+              case2: 50,
+              case3: 40,
+              case4: 10,
+              amt: "1,150,000",
+            },
+            {
+              deliveryCompanyName: "",
+              deliveryCompanyNum: "",
+              steps: "교환배송중",
+              year: 2023,
+              month: "2월",
+              date: "2022-01-12",
+              orderNum: 234567891,
+              goods: "고등어",
+              upperLocgovNm: "경기도",
+              locgov: "의정부시",
+              case1: 30,
+              case2: 50,
+              case3: 40,
+              case4: 10,
+              amt: "1,110,000",
+            },
+            {
+              deliveryCompanyName: "롯데택배",
+              deliveryCompanyNum: "1235689001",
+              steps: "교환완료",
+              year: 2023,
+              month: "3월",
+              date: "2022-01-15",
+              orderNum: 345678912,
+              goods: "사과",
+              upperLocgovNm: "강원도",
+              locgov: "본청",
+              case1: 30,
+              case2: 50,
+              case3: 40,
+              case4: 10,
+              amt: "3,110,000",
+            },
+            {
+              deliveryCompanyName: "CJ대한통운",
+              deliveryCompanyNum: "1235689001",
+              steps: "반품처리중",
+              year: 2023,
+              month: "4월",
+              date: "2022-06-14",
+              orderNum: 456789123,
+              goods: "배",
+              upperLocgovNm: "세종특별자치시",
+              locgov: "본청",
+              case1: 30,
+              case2: 50,
+              case3: 40,
+              case4: 10,
+              amt: "1,110,000",
+            },
+            {
+              deliveryCompanyName: "CJ대한통운",
+              deliveryCompanyNum: "1235689001",
+              steps: "환불처리중",
+              year: 2023,
+              month: "5월",
+              date: "2022-05-25",
+              orderNum: 567891234,
+              goods: "황태",
+              upperLocgovNm: "대구광역시",
+              locgov: "본청",
+              case1: 30,
+              case2: 50,
+              case3: 40,
+              case4: 10,
+              amt: "3,000,000",
+            },
+            {
+              deliveryCompanyName: "CJ대한통운",
+              deliveryCompanyNum: "1235689001",
+              steps: "환불완료",
+              year: 2023,
+              month: "5월",
+              date: "2022-05-25",
+              orderNum: 567891234,
+              goods: "황태",
+              upperLocgovNm: "대구광역시",
+              locgov: "본청",
+              case1: 30,
+              case2: 50,
+              case3: 40,
+              case4: 10,
+              amt: "3,000,000",
+            },
+          ],
+          // 개발 후 지워주세요
+
+          userGrade: "일반", //회원등급 이 변수에 넣어주세요 => 회원등급에 따라 보여지는 아이콘이 달라요!
+
+          param: {
+            page: 1,
+            itemsPerPage: 10,
+            searchStartDate: "",
+            searchEndDate: "",
+            orderStatus: "",
+            upperLocgovCode: "",
+            locgovCode: "",
+            itemName: "",
+            statusType: "claim-process",
+          },
+          order: {
+            result: {},
+            param: {},
+            items: {},
+          },
+          page: {
+            menuUrl: "/mypage/orderCancel.html",
+          },
+          isNoData: false,
+
+          itemPerPageList: [10, 20, 30, 50],
+        },
+        methods: {
+          closeTableOverlap: function () {
+            $(".table-overlap").css("display", "none");
+          },
+          loadingMounted: function () {
+            // 로딩바 컴포넌트가 화면에 그려진 이후 호출되는 함수. 부모컴포넌트에서 바로 로딩바 호출시 그려지기 전에 호출하여 오류 발생하는 경우 있음
+            vm.paging(1);
+            vm.getInitData();
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          paging: function (page) {
+            vm.param.page = page;
+            vm.param.searchStartDate = $("#startDate").val();
+            vm.param.searchEndDate = $("#endDate").val();
+            vm.submit();
+          },
+          submit: function () {
+            if ($("input[name='startDate']").val() != "") {
+              vm.param.searchStartDate = $("input[name='startDate']").val();
+            }
+            if ($("input[name='endDate']").val() != "") {
+              vm.param.searchEndDate = $("input[name='endDate']").val();
+            }
+
+            if (vm.param.orderStatus != "") {
+              vm.param.statusType = ""; // 주문 클레임 단계 상태코드 초기화
+            } else {
+              vm.param.statusType = "claim-process"; // 주문 클레임 단계 상태코드 재설정
+            }
+            vm.showLoading(true);
+            $s.api.getOrderList(
+              vm.param,
+              function (response) {
+                vm.showLoading(false);
+                vm.order.result = response;
+
+
+
+                vm.order.content = response.content;
+                // 데이터가 1건 이상일 경우에만 isNoData 비활성화
+                if (vm.order.result.content.length > 0) {
+                  const items = new Array();
+                  for (let data of response.content){
+                    for (let item of data.items) {
+                      item.createdDate = data.createdDate;
+                      item.orderCode = data.orderCode;
+                      item.orderSequence = data.orderSequence;
+                      items.push(item);
+                    }
+                    vm.order.items = items;
+                  }
+                  vm.isNoData = true;
+
+                } else {
+                  // 데이터가 없을 경우 isNoData 활성화
+                  vm.isNoData = false;
+                }
+              },
+              function (error) {
+                vm.showLoading(false);
+                $s.alert(error.response.data.message);
+              }
+            );
+          },
+          getInitData: function () {
+            $s.api.getSubmit("/api/mypage/getCntrInitInfo", vm.param, function (response) {
+              vm.wdrList = response.wdrList;
+            });
+            $s.api.getSubmit("/api/mypage/getOrderClaimLevelList", vm.param, function (response) {
+              vm.orderClaimLevelList = response.orderClaimLevelList;
+              $(".lnb-bar_2dep li").eq(2).addClass("currentT");
+              $(".lnb-bar_3dep").eq(2).show();
+            });
+          },
+          getDiffDate: function (mode, value) {
+            var date = new Date();
+            date.setDate(date.getDate() - 1); // 전일 기준으로 설정
+            var yesterday = date.getFullYear() + "-" + Saleson.addZero(date.getMonth() + 1, 2) + "-" + Saleson.addZero(date.getDate(), 2);
+
+            if (mode == "week") {
+              date.setDate(date.getDate() - value * 7);
+            } else if (mode == "day") {
+              date.setDate(date.getDate() - value);
+            } else if (mode == "month") {
+              date.setMonth(date.getMonth() - value);
+            } else if (mode == "year") {
+              date.setFullYear(date.getFullYear() - value);
+            }
+
+            $("#startDate").val(date.getFullYear() + "-" + Common.addZero(date.getMonth() + 1, 2) + "-" + Common.addZero(date.getDate(), 2));
+            $("#endDate").val(yesterday);
+            vm.param.searchStartDate = date.getFullYear() + "-" + Common.addZero(date.getMonth() + 1, 2) + "-" + Common.addZero(date.getDate(), 2);
+            vm.param.searchEndDate = yesterday;
+          },
+          getLocGov: function () {
+            $s.api.postSubmit("/api/mypage/getLocGov", vm.param, function (response) {
+              vm.locGovList = response.locGovList;
+            });
+            vm.param.locgovCode = "";
+            //$("#locgov").prop('disabled', false);
+          },
+          getCentral: function () {
+            var locgovNm = $("#locgov option:checked").text();
+
+            if (locgovNm == "본청") {
+              //$("#locgov").prop('disabled', true);
+            }
+          },
+          resetData: function () {
+            vm.param.searchStartDate = "";
+            vm.param.searchEndDate = "";
+            vm.param.orderStatus = "";
+            vm.param.upperLocgovCode = "";
+            vm.param.locgovCode = "";
+            vm.locGovList = "";
+            vm.param.itemName = "";
+            vm.param.statusType = "claim-process";
+          },
+          getSearchList: function () {
+            vm.showLoading(true);
+            vm.param.page = 1;
+            vm.submit();
+          },
+          // 필수 추가정보 
+          formatTextOption: function (textOption) {
+            if(!textOption) return;
+            /*return textOption.split("||").join("<br>");*/
+            return textOption.split('||')
+                              .map(item => {
+                                const parts = item.split(' : ');
+                                const title = parts[0]? parts[0].trim() : '';
+                                let value = parts[1]? parts[1].trim() : '';
+
+                                if(value.length > 20){
+                                  value = value.substring(0,20) + '...';
+                                }
+                                return `${title} : ${value}`;
+                              })
+                              .join('<br>');
+
+          },
+          openDeliveryPage: function (url, no, focusId) {
+            if (url && url.includes("http")) {
+              url = url.replace("%INVOICE%", no);
+              window.open(url, "noopener");
+            } else {
+              $s.alert("등록된 배송조회 페이지 정보가 없습니다.", focusId);
+            }
+          },
+        },
+        watch: {
+          "param.itemsPerPage": function () {
+            vm.paging(1);
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init();
+            // 페이지 로딩 후 실행
+            Saleson.init({ loginPage: true });
+            //vm.paging(1);
+            //vm.getInitData();
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

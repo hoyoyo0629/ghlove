@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">고객센터</a> &gt; <a href="">Q&A</a> &gt; <a href="" class="on">상세보기</a>
+                    </div>
+                    <h3><span>Q&A</span></h3>
+                    <div class="btn_all btn_right mb15">
+                        <div class="flex_box gap-08">
+                            <!-- 20221114 수정 -->
+                            <button type="button" class="btn btn-dark-gray btn-mini">문의글 삭제</button>
+                            <!-- // 20221114 수정 -->
+                            <button type="button" class="btn btn-defualt btn-mini">목록</button>
+                        </div>
+                    </div>
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                                <col>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">문의유형</td>
+                                    <td colspan="3">
+                                        <div>
+                                            
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">작성자</td>
+                                    <td>
+                                        <div>
+                                            홍길동(dasdfwefadsf)
+                                        </div>
+                                    </td>
+                                    <td class="label">작성일</td>
+                                    <td>
+                                        <div>
+                                            2022-09-01
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">제목</td>
+                                    <td colspan="3">
+                                        <div>
+                                            문의 드립니다.
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">내용</td>
+                                    <td colspan="3">
+                                        <div>
+                                            문의 드립니다.
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- 20221219 수정 -->
+                                <tr>
+                                    <td class="label">첨부파일</td>
+                                    <td colspan="3">
+                                        <div class="file_camera">
+                                            <a href="" class="txt_line">홍보자료.pdf</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- // 20221219 수정 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="board_write mt30">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <!-- 20221114 수정 -->
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>답변제목</td>
+                                    <td>
+                                        <div class="flex_box gap-08">
+                                            <input id="" name="" title="답변제목" class="input_txt required _filter full" type="text" value="">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>답변내용</td>
+                                    <td>
+                                        <div class="flex_box gap-08">
+                                            <span class="placeholder_wrap">
+                                                <span class="placeholder"></span>
+                                                <textarea id="comments" name="comments" cols="30" rows="10" maxlength="140" class="required _filter full" title="답변내용"></textarea>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">첨부파일</td>
+                                    <td>
+                                        <div class="flex_box item-center">
+                                            <input type="file" name="" class="full input_file" title="첨부파일" multiple="multiple" accept="image/png, image/jpeg, image/gif" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="btn_all btn_right">
+                            <div class="flex_box gap-08">
+                                <button type="button" class="btn btn-dark-gray btn-small">답변 등록</button>
+                            </div>
+                        </div>
+                        <!-- // 20221114 수정 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

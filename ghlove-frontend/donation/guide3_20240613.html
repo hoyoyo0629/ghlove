@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>연말정산 간편서비스 안내-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/donation_doak.css" />
+    <link rel="stylesheet" href="/static/css/donation_guge.css" />
+    <link rel="stylesheet" href="/static/css/research-box.css" />
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-donation-lnb-ali
+          :menu-url="page.menuUrl"
+        ></layout-donation-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"
+                ><img
+                  class="icon-img"
+                  src="/static/images/icon/cli-icon_home.png"
+                  alt="홈으로"
+              /></a>
+              <span class="txt-not-arrow"></span>
+              기부안내
+              <span class="txt-not-arrow"></span>
+              연말정산 간편서비스 안내
+            </span>
+            <h2 class="page-title-txt">연말정산 간편서비스 안내</h2>
+          </div>
+        </section>
+        <section id="contents">
+          <div class="">
+            <div class="center">
+              <div class="s-contents d-guide first">
+                <img src="/static/images/icon/cli-icon-bullet.png" alt="" />
+                <h3 class="guide-title">고향사랑 기부금 연말정산 안내</h3>
+                <div class="guide-title-list-txt">
+                  <ul>
+                    <li>
+                      <img
+                        src="/static/images/icon/cli-icon_bullet-c.png"
+                        alt=""
+                      />
+                      고향사랑 기부한 사람은 기부금에 대해 세액공제 혜택을
+                      제공합니다.
+                    </li>
+                    <li>
+                      <img
+                        src="/static/images/icon/cli-icon_bullet-c.png"
+                        alt=""
+                      />
+                      고향사랑e음 종합정보시스템에서 기부정보를 국세청 홈택스에
+                      자동 신고하기 때문에
+                      <span class="pointRed"
+                        >기부영수증을 연말정산 시 등록하실 필요 없습니다.</span
+                      >
+                    </li>
+                    <li>
+                      <img src="/static/images/icon/cli-icon_bullet-c.png" alt=""/>
+                      고향사랑 기부영수증(확인용)은 국세청 홈택스에서 발급
+                      받으실 수 있습니다.
+                    </li>
+                  </ul>
+                </div>
+                <div class="e-contents">
+                  <p class="wait" style="align-items: flex-start;">
+                    <img src="/static/images/icon/flag_wait.png" alt="잠깐!" />
+                    <span class="left_txt" style="font-size: 16px;">
+                      <!--세액공제는 <strong>본인지출분(부양가족 제외)</strong>에 대해서만 공제가 이뤄지며<span class="pointRed" style="text-decoration: underline;">고향사랑기부금은 세액공제가 이월되지 않으므로 당해 처리</span><span class="pointRed">하시기 바랍니다.</span> <br>
+                      또한, 기부시 세액공제는 산출세액 기준에 따라 진행되므로 <strong>공제받을 세액이 없을 경우 기부를 하셔도 세액공제 받을 금액이 없습니다.</strong>-->
+                      <strong class="pointblue"> 01.</strong>&nbsp;고향사랑기부금에 대한 세액공제는 기부자 본인의 기부금에 한하며(부양가족의 기부금에 대한 공제 불가), </br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;기부금은 이월공제가 적용되지 아니하고 개인의 결정세액에  따라 공제금액이 달라질 수 있습니다.</br></br>
+                      <strong class="pointblue"> 02.</strong>&nbsp;고향사랑기부금법 제14조에서 규정한 불법 기부금 이외의 경우 반환이 되지 아니하므로 단순 변심에 의한 기부금 반환은 되지 않습니다.
+                    </span>
+                  </p>
+                </div>
+                <div class="donation-guse-box">
+                  <img
+                    src="/static/images/cli-donation_guse01.png"
+                    class="title-img dt-info"
+                    alt="기부자가 기부하면 고향사랑e음 종합정보시스템에서 기부정보를 국세청 홈텍스에 자동으로 신고하여 연말정산 세액공제 처리를 할 수 있습니다."
+                  />
+                  <img
+                    src="/static/images/cli-donation_guse02.png"
+                    class="title-img dt-info"
+                    alt="기부는 기부자가 희망하는 지자체에 고향사랑 기부를 했을 시 적용됩니다. 기부정보 전달은 기부자의 정보와 기부정보가 국세청 홈택스에 자동신고되어 세액공제 처리가 됩니다. 세액공제 처리는 국세청 홈택스에서 연말정산 시 세액공제 처리된 내용을 확인할 수 있습니다. 종합소득세와 중복되어 공제되지 않습니다. 기부액이 10만원 이하면 세액공제 비율이 100%이고 10만원 초과면 세액공제 비율이 16.5%입니다."
+                  />
+
+                  <img
+                    src="/static/images/cli-donation_guse01_m.png"
+                    class="title-img m-info"
+                    alt="기부자가 기부하면 고향사랑e음 종합정보시스템에서 기부정보를 국세청 홈텍스에 자동으로 신고하여 연말정산 세액공제 처리를 할 수 있습니다."
+                  />
+                  <img
+                    src="/static/images/cli-donation_guse02_m.png"
+                    class="title-img m-info"
+                    alt="기부는 기부자가 희망하는 지자체에 고향사랑 기부를 했을 시 적용됩니다. 기부정보 전달은 기부자의 정보와 기부정보가 국세청 홈택스에 자동신고되어 세액공제 처리가 됩니다. 세액공제 처리는 국세청 홈택스에서 연말정산 시 세액공제 처리된 내용을 확인할 수 있습니다. 종합소득세와 중복되어 공제되지 않습니다. 기부액이 10만원 이하면 세액공제 비율이 100%이고 10만원 초과면 세액공제 비율이 16.5%입니다."
+                  />
+                </div>
+              </div>
+              <!-- 콘텐츠 만족도 -->
+              <layout-content-stsfdg></layout-content-stsfdg>
+            </div>
+          </div>
+        </section>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader(
+            "/components/layouts/header_ali.vue"
+          ),
+          //"layout-donation-lnb-ali": httpVueLoader("/components/layouts/donation_info-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader(
+            "/components/layouts/footer_ali.vue"
+          ),
+          "layout-content-stsfdg": httpVueLoader(
+            "/components/layouts/content-stsfdg/stsfdg.vue"
+          ),
+        },
+        data: {
+          // ali data
+          userName: "",
+          userGrade: "",
+          selectedSurvey: "01",
+          result: {},
+          page: {
+            menuUrl: "/donation/guide3.html",
+          },
+        },
+        methods: {
+          // *************** ali-add methods
+          // init: function () { // page init
+          //     $(".lnb-bar_2dep li").eq(1).addClass("currentT").siblings("li").removeClass("currentT");
+          //     $(".lnb-bar_3dep").eq(0).show();
+          //     $(".lnb-bar_3dep:eq(0) li:eq(2) a").addClass("currentP");
+          // },
+          radioChange: function (e) {
+            // radio button checked value
+            vm.selectedSurvey = e.target.value;
+          },
+          goToSurvey: function () {
+            // 현재 페이지 만족도
+            console.log(
+              "############### current radio checked value : " +
+                vm.selectedSurvey
+            );
+            var message = "";
+            if (vm.selectedSurvey != null && vm.selectedSurvey != "") {
+              message = "만족도 평가를 등록하였습니다. 감사합니다.";
+            } else {
+              message = "만족도 평가 항목을 선택해 주세요";
+            }
+
+            $s.alert(message, function () {
+              location.reload();
+            });
+          },
+        },
+        computed: {},
+        mounted: function () {
+          this.$nextTick(function () {
+            // 페이지 로딩 후 실행
+            Saleson.init();
+            //setTimeout(() => this.init(), 100);
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

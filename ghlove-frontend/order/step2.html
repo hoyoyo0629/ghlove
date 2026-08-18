@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head id="saleson-head">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>답례품 > 장바구니 > 주문완료 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+    <link rel="stylesheet" href="/static/css/order_ali.css" />
+    <link rel="stylesheet" href="/static/css/lclgv_chc/map.css" />
+    <link rel="stylesheet" href="/static/css/joind-agf.css" />
+    <!-- 모달 -->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <layout-header-ali></layout-header-ali>
+      <layout-header :menu-url="menuUrl" @show-map-select="showMapSelect" ref="layoutHeaderSearchPc"></layout-header>
+
+      <div id="wrap">
+        <!-- 지자체 선택 팝업  -->
+        <div class="black-bg" ref="getParentModal">
+          <div class="overlayer join-complete">
+            <div class="overlayer-header" style="font-size: 26px; height: 60px; line-height: 60px; padding: 0">지자체 선택</div>
+            <div class="overlayer-body" style="padding-top: 30px; border-radius: 0 0 15px 15px">
+              <layout-map-select @show-loading="showLoading" @select-lclgv="selectLclgvPc"></layout-map-select>
+            </div>
+            <div class="btn-box">
+              <button
+                type="button"
+                class="temp-button hidden_txt"
+                title="지자체 선택팝업 닫기"
+                style="top: 18px; right: 18px"
+                @click="closeMapSelect()"
+              >
+                지자체 선택 팝업 닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="cart_contents">
+        <div class="page-title-box">
+          <span class="ali_breadcrumb">
+            <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            답례품
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            장바구니
+          </span>
+          <div>
+            <h2 class="page-title-txt" v-if="stepStatus == '1'">장바구니</h2>
+            <h2 class="page-title-txt" v-else-if="stepStatus == '2'">주문/결제</h2>
+            <h2 class="page-title-txt" v-else="stepStatus == '3'">주문완료</h2>
+          </div>
+          <div class="steps-box">
+            <div class="step_status cart" :class="[stepStatus == '1'? 'on':'']">
+              <div class="icon-bg" title="장바구니"></div>
+            </div>
+
+            <div class="step_status payment" :class="[stepStatus == '2'? 'on':'']">
+              <div class="icon-bg" title="주문결제"></div>
+            </div>
+
+            <div class="step_status complete" :class="[stepStatus == '3'? 'on':'']">
+              <div class="icon-bg" title="주문완료"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="contents">
+        <form class="center order_wrap needs-validation" @submit.prevent="submit" :class="{'s-contents': stepStatus == '3'}">
+          <div class="row_con flex order_case">
+            <div class="o__num"><span>주문번호 : </span><span>{{result.orderCode}}</span></div>
+            <div class="o__date"><span>주문일자 : </span><span>{{dateFormat(result.createdDate).substring(0,10)}}</span></div>
+          </div>
+          <!-- 지자체 종류 별로 장바구니 리스트 떠야해요! -->
+          <div class="contents_wrap" v-for="(locgov, index) in displayBuyItems" :key="index">
+            <div :class="{'s-contents': stepStatus != '3', 'margin_b80' : stepStatus == '3'}">
+              <div class="cart_top">
+                <div class="chk_box check-level1">
+                  <input type="checkbox" id="locCode" />
+                  <label for="locCode">{{locgov.locgovNm}}</label>
+                </div>
+              </div>
+              <div class="list_body">
+                <div class="list_wrap">
+                  <div class="list-title">
+                    <div class="date-col chk_date">답례품정보</div>
+                    <div class="date-col g_amtprc">
+                      <div class="g_info_wrap">
+                        <div class="date-col g_info__amount">수량</div>
+                        <div class="date-col g_info__price">답례품 포인트</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ul class="item_list-group">
+                    <li class="list-items" v-for="(item, i) in locgov.locgovItems" :key="i">
+                      <div class="date-col g_info">
+                        <div class="g_info_wrap">
+                          <div class="link_wrap" @click="jumpToDetails(item)" tabindex="0" :role="item.itemName + ' 상세페이지 이동'">
+                            <div class="g_info__img"><img v-bind:src="itemImage(item.imageSrc)" alt="" /></div>
+                            <div class="g_info__txt">
+                              <div class="info_loc">[{{item.companyName}}]</div>
+                              <div class="info_title"><span v-html="item.itemName" /></div>
+                              <div class="info_opt"><span v-html="item.options" /></div>
+                              <div class="info_opt"><span v-html="formatTextOption(item.textOption)"></span></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="date-col g_amtprc">
+                        <div class="g_info_wrap">
+                          <div class="g_info__amount">{{item.quantity}}개</div>
+                          <div class="g_info__price">
+                            <!-- {{formatNumber(orderPrice.totalItemPrice)}}*{{formatNumber(orderPrice.totalShippingAmount)}} -->
+                            {{formatNumber(item.itemAmount)}} P
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row_con flex">
+            <div class="mobile_section_bar"></div>
+            <div class="contents_wrap">
+              <div class="row_con_wrapper orderC">
+                <div class="list_title_area">배송지 정보</div>
+                <ul class="list_wrapper">
+                  <!--<li class="list_items" v-show="!isAllMobileItem">-->
+                  <li class="list_items">
+                    <span class="label">받으시는분</span>
+                    <span class="data_val">{{result.shippingInfo.receiveName}}</span>
+                  </li>
+                  <li class="list_items" v-show="!isAllMobileItem">
+                    <span class="label">배송지 주소</span>
+                    <span class="data_val">{{result.shippingInfo.receiveAddress}} {{result.shippingInfo.receiveAddressDetail}}</span>
+                  </li>
+                  <li class="list_items">
+                    <span class="label">휴대폰번호(수취인)</span>
+                    <span class="data_val">{{result.shippingInfo.receiveMobile}}</span>
+                  </li>
+                  <li class="list_items">
+                    <span class="label">전화번호(수취인)</span>
+                    <span class="data_val" v-show="result.shippingInfo.receivePhone">{{result.shippingInfo.receivePhone}}</span>
+                    <span class="data_val" v-show="!result.shippingInfo.receivePhone">-</span>
+                  </li>
+                  <li class="list_items">
+                    <span class="label">기타 요구사항</span>
+                    <span class="data_val">{{result.shippingInfo.memo}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="mobile_section_bar"></div>
+            <div class="contents_wrap">
+              <div class="row_con_wrapper orderC">
+                <div class="list_title_area">결제정보</div>
+                <div class="list_wrapper" v-for="(locgov, index) in displayBuyItems" :key="index">
+                  <div class="list_loc">{{locgov.locgovNm}}</div>
+                  <ul class="paymentC">
+                    <li class="payment_list">
+                      <span class="payment__label">답례품 포인트</span>
+                      <span class="payment__val"> {{formatNumber(locgov.sumPrice)}}P</span>
+                    </li>
+                    <li class="payment_list">
+                      <span class="payment__label">배송비</span>
+                      <span class="payment__val">무료배송</span>
+                    </li>
+                  </ul>
+                  <div class="payment_list total_pay">
+                    <strong class="label">결제 포인트</strong>
+                    <div class="payment_wrap">
+                      <div class="payment_val pointblue">{{formatNumber(locgov.sumPrice)}}P</div>
+                      <div class="afterPayment pointGray">포인트 잔액은 <span class="deepGray">{{formatNumber(locgov.givePoint)}}P</span>입니다.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <!-- 버튼그룹 -->
+        <div class="btn-box order">
+          <button type="button" class="blueBtn cancellation" @click="goToMallPage">
+            답례품 더 보기<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+          </button>
+
+          <button type="button" class="blueBtn u-confirm" @click="goToMypage">
+            주문 조회<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+          </button>
+        </div>
+      </section>
+
+      <layout-fixed-btn></layout-fixed-btn>
+      <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          "layout-header": httpVueLoader("/components/layouts/header_g.vue"),
+          // 'modal-order-add': httpVueLoader('/components/ui/address/order_add.vue'),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          // 'layout-tabbar-ali': httpVueLoader('/components/layouts/m_tabbar_g.vue'),
+          // 'naver-pay-button': httpVueLoader('/components/ui/naver/naver-pay-button.vue')
+
+          "layout-map-select": httpVueLoader("/components/ui/lclgv_chc/map.vue"),
+        },
+        data: {
+          stepStatus: "3", //stepStatus: '1', <- 기본값
+          list: [],
+          orderPrice: [],
+          selected: [],
+          buyItems: [],
+          menuUrl: location.pathname,
+          orderSequence: "",
+          orderCode: "",
+          result: {
+            paymentList: [],
+            shippingInfo: {
+              receiveName: "",
+              receiveAddress: "",
+              receiveAddressDetail: "",
+              receiveMobile: "",
+              memo: "",
+            },
+          },
+          displayBuyItems: [],
+          itemCnt: 0,
+          mobileItemCnt: 0,
+        },
+        methods: {
+          jumpToDetails: function (v) {
+            // if (v.adultItemYn === 'Y' && this.adultYn === 'N') {
+            //     if ($s.isLogin()) {
+            //         $s.alert('19세 미만의 청소년은 이용할 수 없습니다.');
+            //     } else {
+            //         $s.redirect($s.pages.LOGIN + "?target=" + encodeURIComponent($s.requestContext.requestFullUri));
+            //     }
+            //     return ;
+            // }
+
+            $s.redirect("/items/details.html?code=" + v.itemUserCode);
+          },
+          goToMypage: function () {
+            location.href = "/mypage/orderList.html";
+          },
+
+          loadingMounted: function () {
+            this.initCallFunction();
+          },
+          // 필수 추가정보 
+          formatTextOption: function (textOption) {
+            if(!textOption) return;
+            /*return textOption.split("||").join("<br>");*/
+            return textOption.split('||')
+                              .map(item => {
+                                const parts = item.split(' : ');
+                                const title = parts[0]? parts[0].trim() : '';
+                                let value = parts[1]? parts[1].trim() : '';
+
+                                if(value.length > 20){
+                                  value = value.substring(0,20) + '...';
+                                }
+                                return `${title} : ${value}`;
+                              })
+                              .join('<br>');
+
+          },
+
+          initCallFunction: function () {
+            this.showLoading(true);
+            vm.orderSequence = $s.core.getParameter("orderSequence");
+            vm.orderCode = $s.core.getParameter("orderCode");
+
+            $s.api.getOrder(
+              vm.orderCode,
+              function (response) {
+                vm.showLoading(false);
+                vm.result = response.order;
+
+                if (!vm.result) {
+                  $s.alert("주문 내역이 없습니다.", function () {
+                    $s.closeAlert();
+                    $s.redirect("/goods/index.html");
+                  });
+                  return;
+                }
+
+                let givePointList = response.givePointList;
+                $s.ga.purchase(vm.orderCode, vm.orderSequence);
+
+                let items = response.order.item;
+
+                vm.itemCnt = 0;
+                vm.mobileItemCnt = 0;
+
+                if (typeof items != "undefined" && items != null) {
+                  let itemUserCodes = [];
+                  for (let j = 0; j < items.length; j++) {
+                    let item = items[j];
+
+                    itemUserCodes.push(item.itemUserCode);
+                  }
+                  $s.ev.log.order(vm.orderCode, itemUserCodes);
+                }
+
+                let itemsLength = items.length;
+                for (let i = 0; i < itemsLength; i++) {
+                  let item = items[i];
+                  let locgovCode = item.locgovCode;
+                  if (!vm.existLocgovCode(vm.displayBuyItems, locgovCode)) {
+                    let locgovObj = {
+                      locgovCode: locgovCode,
+                      locgovNm: item.locgovNm,
+                      locgovItems: [],
+                      givePoint: 0,
+                      sumPrice: 0,
+                      selectedSumPrice: 0,
+                    };
+
+                    let givePointLength = givePointList.length;
+                    giveLoop: for (let j = 0; j < givePointLength; j++) {
+                      if (givePointList[j].cntrLocgovCode == locgovCode) {
+                        locgovObj.givePoint = givePointList[j].cntrBlcePoint;
+                        break giveLoop;
+                      }
+                    }
+                    vm.displayBuyItems.push(locgovObj);
+                  }
+                  vm.itemCnt++;
+                  if ("Y" === item.mobileItemYn) {
+                    vm.mobileItemCnt++;
+                  }
+                }
+
+                for (let i = 0; i < itemsLength; i++) {
+                  vm.pushLocgovItem(vm.displayBuyItems, items[i]);
+                }
+                let locgovItemLength = vm.displayBuyItems.length;
+                for (let i = 0; i < locgovItemLength; i++) {
+                  let locgovItem = vm.displayBuyItems[i];
+                  if (locgovItem && locgovItem.locgovItems) {
+                    vm.displayBuyItems[i].sumPrice = vm.getLocgovSumPrice(locgovItem.locgovItems);
+                    /*if (locgovItem.givePoint < vm.getLocgovSumPrice(locgovItem.locgovItems)) {
+                                        $s.alert(locgovItem.locgovNm + " 포인트가 부족합니다.", function() {
+                                            history.back();
+                                        });
+                                        return false;
+                                    }*/
+                  }
+                }
+              },
+              vm.commError
+            );
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          commError: function (error) {
+            vm.showLoading(false);
+            $s.api.handleApiExeption(error);
+          },
+
+          pushLocgovItem: function (array, item) {
+            let length = array.length;
+            for (let i = 0; i < length; i++) {
+              if (array[i].locgovCode == item.locgovCode) {
+                array[i].locgovItems.push(item);
+                return;
+              }
+            }
+          },
+          existLocgovCode: function (array, locgovCode) {
+            if (!array) {
+              return false;
+            } else {
+              try {
+                let length = array.length;
+                for (let i = 0; i < length; i++) {
+                  if (array[i].locgovCode == locgovCode) {
+                    return true;
+                  }
+                }
+                return false;
+              } catch (e) {
+                return false;
+              }
+            }
+          },
+          getLocgovSumPrice: function (items) {
+            // 전체 결제 금액
+            let length = items.length;
+            let sumPrice = 0;
+            for (let i = 0; i < length; i++) {
+              sumPrice += items[i].itemAmount;
+            }
+            return sumPrice;
+          },
+          goToMallPage: function () {
+            // 답례품 메인으로 이동
+            $s.redirect("/goods/index.html");
+          },
+          selectLclgvPc: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+            this.$refs.layoutHeaderSearchPc.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+            this.closeMapSelect();
+          },
+          selectLclgvMo: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+            this.$refs.layoutHeaderSearchMobile.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+            this.closeMapSelect();
+          },
+          showMapSelect: function () {
+            this.$refs.getParentModal.setAttribute("style", "display: block;top: 0;");
+          },
+          closeMapSelect: function () {
+            this.$refs.getParentModal.removeAttribute("style");
+          },
+        },
+        computed: {
+          isAllMobileItem: {
+            get: function () {
+              return this.itemCnt === this.mobileItemCnt && this.itemCnt > 0;
+            },
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init({ loginPage: true });
+            //vm.getCartItems();
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

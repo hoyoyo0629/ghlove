@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+    <link rel="stylesheet" type="text/css"
+        href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="#">답례품 관리</a> &gt; <a href="#">대표상품관리</a>
+                    </div>
+
+                    <div class="item_list">
+                        <h3><span>대표상품관리</span></h3>
+
+                        <div class="btn_all btn_right">
+                            <div class="flex_box gap-08">
+                                <button type="button" class="btn btn-default btn-mini">등록</button>
+                                <button type="submit" class="btn btn-dark-gray btn-mini">삭제</button>
+                            </div>
+                        </div>
+
+                        <!-- 조회 결과 테이블 -->
+                        <div class="board_list">
+                            <table class="board_list_table" summary="대표상품관리">
+                                <caption>대표상품관리</caption>
+                                <colgroup>
+                                    <col style="width:500px;">
+                                    <col style="width:200px;">
+                                    <col style="width:150px;">
+                                    <col style="width:100px;">
+                                    <col style="width:100px;">
+                                    <col style="width:100px;">
+                                    <col style="width:200px;">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>상품명</th>
+                                        <th>판매가</th>
+                                        <th>상호명</th>
+                                        <th>판매자</th>
+                                        <th>상태</th>
+                                        <th>공개유무</th>
+                                        <th>등록일</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sortable">
+                                    <tr>
+                                        <!-- 상품명 -->
+                                        <td class="left break-word">
+                                            <a href="javascript:Link.view('/opmanager/item/seller/edit/${item.itemUserCode}')" class="break-word">
+                                                <div class="flex_box item-center gap-08">
+                                                    <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품명이미지" />
+                                                    <div>${item.itemName}</div>
+                                                </div>
+                                            </a>
+                                        </td>
+                                        <!-- // 상품명 -->
+                                        <!-- 판매가 -->
+                                        <td>
+                                            <div>30,000</div>
+                                        </td>
+                                        <!-- // 판매가 -->
+                                        <!-- 상호명 -->
+                                        <td>
+                                            <div>홍성 한우</div>
+                                        </td>
+                                        <!-- // 상호명 -->
+                                        <!-- 판매자 -->
+                                        <td>
+                                            <div>홍길동</div>
+                                        </td>
+                                        <!-- // 판매자 -->
+                                        <!-- 상태 -->
+                                        <td>
+                                            <div>판매중</div>
+                                        </td>
+                                        <!-- // 상태 -->
+                                        <!-- 공개유무 -->
+                                        <td>
+                                            <div>공개</div>
+                                        </td>
+                                        <!-- // 공개유무 -->
+                                        <!-- 등록일 -->
+                                        <td>
+                                            <div>2022-11-16</div>
+                                        </td>
+                                        <!-- // 등록일 -->
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <c:if test="${empty list}">
+                                <div class="no_content">
+                                    등록된 상품이 없습니다.
+                                    <!-- 등록된 상품이 없습니다. -->
+                                </div>
+                            </c:if>
+                        </div> <!-- // board_list -->
+                        <!-- // 조회 결과 테이블 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

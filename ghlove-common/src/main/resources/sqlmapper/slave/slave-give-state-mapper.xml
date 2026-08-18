@@ -1,0 +1,1410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.slave.SlaveGiveStateMapper">
+
+    <!-- 기부금 모금현황 합계 -->
+    <select id="getGiveStateSum" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveState" >
+    	/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateSum */
+        SELECT
+		    IFNULL(SUM(GC.CNTR_AMT), 0) AS CNTR_AMT
+		    , IFNULL(COUNT(DISTINCT(USER_ID)), 0) AS GIVE_PERSONS
+		    , IFNULL(SUM(GC.CNTR_POINT), 0) AS CNTR_POINT
+		    , (
+		    	SELECT IFNULL(SUM(CNTR_USE_POINT), 0)
+		    	FROM G_CNTR_USE_POINT
+		    	WHERE use_se_code ='1'
+		    	<if test="shLocgovCode != null and shLocgovCode != ''">
+					AND cntr_locgov_code = #{shLocgovCode}
+				</if>
+				<if test="shCntrYear != null and shCntrYear != ''">
+					AND year(point_use_de) = #{shCntrYear}
+				</if>
+		      ) AS CNTR_USE_POINT
+		FROM G_CNTR GC
+		WHERE 1=1
+		AND GC.DELETE_AT = 'N'
+		and GC.cntr_sttus_code = '200'
+        and GC.sttemnt_pay_de is not NULL
+		<if test="shCntrYear != null and shCntrYear != ''">
+		AND year(GC.CNTR_DE) = #{shCntrYear}
+		</if>
+		<if test="shLocgovCode != null and shLocgovCode != ''">
+		AND GC.CNTR_LOCGOV_CODE = #{shLocgovCode}
+		</if>
+    </select>
+
+    <!-- 기부금 모금현황 목록 count -->
+	<select id="getGiveStateListCount" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="Integer" >
+		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateListCount */
+        SELECT COUNT(*)
+		FROM
+		(
+			SELECT
+					YEAR(gc.cntr_de) as cntr_year
+				, 	gc.cntr_locgov_code
+	            , 	SUM(gc.cntr_amt) as cntr_amt
+	            , 	COUNT(DISTINCT(user_id)) as give_persons
+	            , 	SUM(gc.cntr_point) as cntr_point
+	            , 	COUNT(cntr_sn) as give_cnt
+	        from g_cntr gc
+	        WHERE 1=1
+	        	AND gc.cntr_sttus_code = '200'
+				<if test="shLocgovCode != null and shLocgovCode != ''">
+					AND gc.cntr_locgov_code = #{shLocgovCode}
+	            </if>
+	            <if test="shCntrYear != null and shCntrYear != ''">
+	            	AND YEAR(gc.cntr_de) = #{shCntrYear}
+	            </if>
+	        GROUP BY YEAR(gc.cntr_de), gc.cntr_locgov_code
+		) gc
+	</select>
+
+    <!-- 기부금 모금현황 목록 -->
+	<select id="getGiveStateList" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveState" >
+		<include refid="CommonMapper.paginationHeader" />
+			/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateList */
+			SELECT
+ 					gc.cntr_year
+				,	gc.cntr_amt
+				,	gc.give_persons
+				,	gc.cntr_point
+				,	gc.give_cnt
+				, 	gl.upper_locgov_code
+         		, 	gl.upper_locgov_nm
+         		, 	gl.locgov_code
+         		, 	gl.locgov_nm
+ 				, 	(
+				    	SELECT IFNULL(SUM(cntr_use_point), 0)
+				    	FROM g_cntr_use_point a
+				    	WHERE use_se_code ='1'
+							AND a.cntr_locgov_code = gc.cntr_locgov_code
+				    		<if test="shLocgovCode != null and shLocgovCode != ''">
+								AND a.cntr_locgov_code = #{shLocgovCode}
+							</if>
+							<if test="shCntrYear != null and shCntrYear != ''">
+								AND year(point_use_de) = #{shCntrYear}
+							</if>
+     				) AS cntr_use_point
+			FROM
+			(
+				SELECT
+						YEAR(gc.cntr_de) as cntr_year
+					, 	gc.cntr_locgov_code
+		            , 	SUM(gc.cntr_amt) as cntr_amt
+		            , 	COUNT(DISTINCT(user_id)) as give_persons
+		            , 	SUM(gc.cntr_point) as cntr_point
+		            , 	COUNT(cntr_sn) as give_cnt
+		        from g_cntr gc
+		        WHERE 1=1
+		        	AND gc.cntr_sttus_code = '200'
+					<if test="shLocgovCode != null and shLocgovCode != ''">
+						AND gc.cntr_locgov_code = #{shLocgovCode}
+		            </if>
+		            <if test="shCntrYear != null and shCntrYear != ''">
+		            	AND YEAR(gc.cntr_de) = #{shCntrYear}
+		            </if>
+		        GROUP BY YEAR(gc.cntr_de), gc.cntr_locgov_code
+				<include refid="CommonMapper.paginationFooter" />
+			) gc
+			INNER JOIN g_locgov gl on gc.cntr_locgov_code = gl.locgov_code
+			ORDER BY gc.cntr_year DESC, gl.upper_locgov_code, gl.locgov_code
+	</select>
+
+    <!-- 기부금 모금현황 상세 누적합계 -->
+	<select id="getGiveStateDetail" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveState" >
+		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetail */
+		SELECT
+		    IFNULL(SUM(CNTR_AMT), 0) AS CNTR_AMT
+		    , COUNT(DISTINCT(USER_ID)) AS GIVE_PERSONS
+		    , IFNULL(SUM(CNTR_POINT), 0) AS CNTR_POINT
+		FROM G_CNTR GC
+		WHERE 1=1
+		AND year(GC.CNTR_DE) = DATE_FORMAT(NOW(), '%Y') -- 올해
+		AND GC.DELETE_AT = 'N'
+		and GC.cntr_sttus_code = '200'
+        and GC.sttemnt_pay_de is not NULL
+		<if test="shLocgovCode != null and shLocgovCode != ''">
+		AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		</if>
+	</select>
+
+    <!-- 기부금 모금현황 상세 검색합계 -->
+	<select id="getGiveStateDetailSum" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveState" >
+		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetailSum */
+	    SELECT
+	        IFNULL(SUM(CNTR_AMT), 0) AS CNTR_AMT
+            , COUNT(DISTINCT(GC.USER_ID)) AS GIVE_PERSONS
+            , IFNULL(SUM(CNTR_POINT), 0) AS CNTR_POINT
+	    FROM G_CNTR GC
+		LEFT JOIN OP_COMMON_CODE CC on CC.ID = GC.LINK_INSTT_CD AND CC.CODE_TYPE = 'LINK_INSTT_CD'
+		, OP_USER OU
+		, OP_USER_DETAIL OUD
+	    WHERE 1=1
+	    AND GC.USER_ID = OU.USER_ID
+	    AND GC.USER_ID = OUD.USER_ID
+	    AND GC.DELETE_AT = 'N'
+	    and GC.cntr_sttus_code = '200'
+        and GC.sttemnt_pay_de is not NULL
+	    <if test="shLocgovCode != null and shLocgovCode != ''">
+	    AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+	    </if>
+	    <if test="shCntrYear != null and shCntrYear != ''">
+	    AND year(GC.CNTR_DE) = #{shCntrYear}
+	    </if>
+	    <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+	    AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
+	    </if>
+	    <!-- <if test="shCntrPathCode != null and shCntrPathCode != ''">
+	    AND CNTR_PATH_CODE = #{shCntrPathCode}  100: 온라인, 200:오프라인
+	    </if> -->
+	    <if test="shCntrPathCode == '100'">
+	    AND CNTR_PATH_CODE = '100' <!-- 100: 온라인 -->
+	    </if>
+	    <if test="shCntrPathCode == '200'">
+	    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
+	    </if>
+	    <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
+ 			<choose>
+ 				<when test='shKeyword == "LOGIN_ID"'>
+						AND OU.LOGIN_ID = CRYPTO_ENC('normal', #{shText},'')
+					</when>
+				<when test='shKeyword == "USER_NAME"'>
+					AND OU.USER_NAME = (SELECT crypto_enc('normal', #{shText},''))
+				</when>
+				<when test='shKeyword == "ELCTRN_PAY_NO"'>
+					AND GC.ELCTRN_PAY_NO = #{shText}
+				</when>
+				<when test='shKeyword == "PRJ_SUBJECT"'>
+					<!-- AND (SELECT PRJ_SUBJECT FROM G_DSGNCNTR_PRJ_MNG a WHERE a.PRJ_ID = GC.PRJ_ID) like CONCAT('%',#{shText},'%') -->
+					AND (SELECT DSGN_DNTN_BIZ_TTL FROM G_DSGN_DNTN_BIZ_MNG A WHERE A.DSGN_DNTN_BIZ_ID = GC.DSGN_DNTN_BIZ_ID) LIKE CONCAT('%',#{shText},'%')
+				</when>
+			</choose>
+		</if>
+		<if test="shDsgnDonateAt != null and shDsgnDonateAt != ''">
+	    	<choose>
+				<when test='shDsgnDonateAt == "N"'>
+					<!-- AND GC.PRJ_ID = 0 -->
+					AND GC.DSGN_DNTN_BIZ_ID = 0
+				</when>
+				<when test='shDsgnDonateAt == "Y"'>
+					<!-- AND GC.PRJ_ID IS NOT NULL AND GC.PRJ_ID != '' -->
+					AND GC.DSGN_DNTN_BIZ_ID IS NOT NULL AND GC.DSGN_DNTN_BIZ_ID != ''
+				</when>
+			</choose>
+	    </if>
+	    <if test="shLinkInsttCdAt != null and shLinkInsttCdAt != ''">				<!--  20260422 추가 민간연계기관 기부 여부 -->
+	    	<choose>
+				<when test='shLinkInsttCdAt == "N"'>								<!-- 고향사랑e음 기부 -->
+					AND GC.LINK_INSTT_CD IS NULL
+				</when>
+				<when test='shLinkInsttCdAt == "Y"'>								<!-- 민간연계기관 기부 -->
+					<if test="shLinkInsttCd == null or shLinkInsttCd == ''">			<!-- 민간연계기관 전체 검색 -->
+						AND GC.LINK_INSTT_CD IS NOT NULL
+					</if>
+					<if test="shLinkInsttCd != null and shLinkInsttCd != ''">			<!-- 특정 민간연계기관 검색 -->
+						AND GC.LINK_INSTT_CD = #{shLinkInsttCd}
+					</if>
+				</when>
+			</choose>
+	    </if>
+	    <if test ='shCntrBlcePointAt != null and shCntrBlcePointAt != ""'>
+			<choose>
+				<when test = 'shCntrBlcePointAt == "Y"'>
+					AND ( GC.RTNPSNT_REQST_CODE = '100'
+							AND GC.CNTR_POINT  <![CDATA[<>]]>  (SELECT
+																	IFNULL(SUM(GCP.CNTR_USE_POINT),0)
+																FROM G_CNTR_USE_POINT GCP
+																WHERE GCP.CNTR_SN = GC.CNTR_SN
+																AND GCP.USE_SE_CODE ='1' ))
+				</when>
+				<when test = 'shCntrBlcePointAt == "N"'>
+					AND (GC.RTNPSNT_REQST_CODE ='300' OR GC.CNTR_POINT = (SELECT
+																	IFNULL(SUM(GCP.CNTR_USE_POINT),0)
+																FROM G_CNTR_USE_POINT GCP
+																WHERE GCP.CNTR_SN = GC.CNTR_SN
+																AND GCP.USE_SE_CODE ='1' ))
+				</when>
+			</choose>
+		</if>
+		<if test="shCntrAmtStart != null and shCntrAmtStart != ''">			<!-- 20260414 금액검색 추가 -->
+           	AND GC.CNTR_AMT <![CDATA[>=]]> #{shCntrAmtStart}
+        </if>
+	    <if test="shCntrAmtEnd != null and shCntrAmtEnd != ''">				<!-- 20260414 금액검색 추가 -->
+           	AND GC.CNTR_AMT <![CDATA[<=]]> #{shCntrAmtEnd}
+        </if>
+        <if test="shPbancAt != null and shPbancAt != ''">					<!-- 20260507 SMS수신여부 추가 -->
+	    	<choose>
+				<when test='shPbancAt == "N"'>
+					AND (OUD.RECEIVE_PBANC is null OR OUD.RECEIVE_PBANC = '1')
+				</when>
+				<when test='shPbancAt == "Y"'>
+					AND OUD.RECEIVE_PBANC = '0'
+				</when>
+			</choose>
+	    </if>
+	</select>
+
+    <!-- 기부금 모금현황 상세 목록 count -->
+	<select id="getGiveStateDetailListCount" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="Integer" >
+		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetailListCount */
+	    SELECT COUNT(*)
+        FROM
+        (
+		    SELECT
+		        CNTR_DE
+	        	, ELCTRN_PAY_NO
+                , OU.USER_NAME
+                , CNTR_AMT
+                , CNTR_POINT
+                , CNTR_PATH_CODE
+                , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GC.CNTR_PATH_CODE AND CODE_TYPE = 'CNTR_PATH' AND USE_YN = 'Y') AS CNTR_PATH_NAME
+                , LINK_INSTT_CD
+		    FROM G_CNTR GC
+		    LEFT JOIN OP_COMMON_CODE CC on CC.ID = GC.LINK_INSTT_CD AND CC.CODE_TYPE = 'LINK_INSTT_CD'
+		    , OP_USER OU
+		    , OP_USER_DETAIL OUD
+		    WHERE 1=1
+		    AND GC.USER_ID = OU.USER_ID
+		    AND GC.USER_ID = OUD.USER_ID
+		    AND GC.DELETE_AT = 'N'
+		    and GC.cntr_sttus_code = '200'
+	        and GC.sttemnt_pay_de is not NULL
+		    <if test="shLocgovCode != null and shLocgovCode != ''">
+		    AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		    </if>
+		    <if test="shCntrYear != null and shCntrYear != ''">
+		    AND year(GC.CNTR_DE) = #{shCntrYear}
+		    </if>
+		    <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+		    AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
+		    </if>
+		    <!-- <if test="shCntrPathCode != null and shCntrPathCode != ''">
+		    AND CNTR_PATH_CODE = #{shCntrPathCode}  100: 온라인, 200:오프라인
+		    </if> -->
+		    <if test="shCntrPathCode == '100'">
+		    AND CNTR_PATH_CODE = '100' <!-- 100: 온라인 -->
+		    </if>
+		    <if test="shCntrPathCode == '200'">
+		    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
+		    </if>
+		    <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
+	 			<choose>
+	 				<when test='shKeyword == "LOGIN_ID"'>
+						AND OU.LOGIN_ID = CRYPTO_ENC('normal', #{shText},'')
+					</when>
+					<when test='shKeyword == "USER_NAME"'>
+						AND OU.USER_NAME = (SELECT crypto_enc('normal', #{shText},''))
+					</when>
+					<when test='shKeyword == "ELCTRN_PAY_NO"'>
+						AND GC.ELCTRN_PAY_NO = #{shText}
+					</when>
+					<when test='shKeyword == "PRJ_SUBJECT"'>
+						<!-- AND (SELECT PRJ_SUBJECT FROM G_DSGNCNTR_PRJ_MNG a WHERE a.PRJ_ID = GC.PRJ_ID) like CONCAT('%',#{shText},'%') -->
+					AND (SELECT DSGN_DNTN_BIZ_TTL FROM G_DSGN_DNTN_BIZ_MNG A WHERE A.DSGN_DNTN_BIZ_ID = GC.DSGN_DNTN_BIZ_ID) LIKE CONCAT('%',#{shText},'%')
+					</when>
+				</choose>
+            </if>
+            <if test="shDsgnDonateAt != null and shDsgnDonateAt != ''">
+		    	<choose>
+					<when test='shDsgnDonateAt == "N"'>
+						<!-- AND GC.PRJ_ID = 0 -->
+						AND GC.DSGN_DNTN_BIZ_ID = 0
+					</when>
+					<when test='shDsgnDonateAt == "Y"'>
+						<!-- AND GC.PRJ_ID IS NOT NULL AND GC.PRJ_ID != '' -->
+						AND GC.DSGN_DNTN_BIZ_ID IS NOT NULL AND GC.DSGN_DNTN_BIZ_ID != ''
+					</when>
+				</choose>
+		    </if>
+		    <if test="shLinkInsttCdAt != null and shLinkInsttCdAt != ''">				<!--  20260422 추가 민간연계기관 기부 여부 -->
+		    	<choose>
+					<when test='shLinkInsttCdAt == "N"'>								<!-- 고향사랑e음 기부 -->
+						AND GC.LINK_INSTT_CD IS NULL
+					</when>
+					<when test='shLinkInsttCdAt == "Y"'>								<!-- 민간연계기관 기부 -->
+						<if test="shLinkInsttCd == null or shLinkInsttCd == ''">			<!-- 민간연계기관 전체 검색 -->
+							AND GC.LINK_INSTT_CD IS NOT NULL
+						</if>
+						<if test="shLinkInsttCd != null and shLinkInsttCd != ''">			<!-- 특정 민간연계기관 검색 -->
+							AND GC.LINK_INSTT_CD = #{shLinkInsttCd}
+						</if>
+					</when>
+				</choose>
+		    </if>
+		    <if test ='shCntrBlcePointAt != null and shCntrBlcePointAt != ""'>
+				<choose>
+					<when test = 'shCntrBlcePointAt == "Y"'>
+						AND ( GC.RTNPSNT_REQST_CODE = '100'
+								AND GC.CNTR_POINT  <![CDATA[<>]]>  (SELECT
+																		IFNULL(SUM(GCP.CNTR_USE_POINT),0)
+																	FROM G_CNTR_USE_POINT GCP
+																	WHERE GCP.CNTR_SN = GC.CNTR_SN
+																	AND GCP.USE_SE_CODE ='1' ))
+					</when>
+					<when test = 'shCntrBlcePointAt == "N"'>
+						AND (GC.RTNPSNT_REQST_CODE ='300' OR GC.CNTR_POINT = (	SELECT
+																					IFNULL(SUM(GCP.CNTR_USE_POINT),0)
+																				FROM G_CNTR_USE_POINT GCP
+																				WHERE GCP.CNTR_SN = GC.CNTR_SN
+																				AND GCP.USE_SE_CODE ='1' ))
+					</when>
+				</choose>
+			</if>
+			<if test="shCntrAmtStart != null and shCntrAmtStart != ''">			<!-- 20260414 금액검색 추가 -->
+            	AND GC.CNTR_AMT <![CDATA[>=]]> #{shCntrAmtStart}
+            </if>
+		    <if test="shCntrAmtEnd != null and shCntrAmtEnd != ''">				<!-- 20260414 금액검색 추가 -->
+            	AND GC.CNTR_AMT <![CDATA[<=]]> #{shCntrAmtEnd}
+            </if>
+            <if test="shPbancAt != null and shPbancAt != ''">					<!-- 20260507 SMS수신여부 추가 -->
+		    	<choose>
+					<when test='shPbancAt == "N"'>
+						AND (OUD.RECEIVE_PBANC is null OR OUD.RECEIVE_PBANC = '1')
+					</when>
+					<when test='shPbancAt == "Y"'>
+						AND OUD.RECEIVE_PBANC = '0'
+					</when>
+				</choose>
+		    </if>
+        )	A
+	</select>
+
+    <!-- 기부금 모금현황 상세 목록 -->
+	<select id="getGiveStateDetailList" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveState" >
+	    <include refid="CommonMapper.paginationHeader" />
+			/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetailList */
+			SELECT
+					A.CNTR_SN
+		    	, 	A.CNTR_DE
+		        , 	A.STTEMNT_PAY_DE
+		        , 	CRYPTO_DEC('normal', A.USER_NAME, '', 0) USER_NAME
+		        , 	CRYPTO_DEC('normal', A.LOGIN_ID, '', 0) LOGIN_ID
+		        , 	A.CNTR_AMT
+		        , 	A.CNTR_POINT
+		        ,	A.CNTR_POINT - A.CNTR_USE_POINT as CNTR_BLCE_POINT
+		        , 	A.CNTR_PATH_CODE
+		        , 	(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = A.CNTR_PATH_CODE AND CODE_TYPE = 'CNTR_PATH' AND USE_YN = 'Y') AS CNTR_PATH_NAME
+		        , 	A.RTNPSNT_REQST_CODE
+		        , 	A.ELCTRN_PAY_NO
+		        , 	A.CNTR_REQMNG_CODE
+		        , 	(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = A.CNTR_REQMNG_CODE AND CODE_TYPE = 'CNTR_REQMNG' AND USE_YN = 'Y') AS CNTR_REQMNG_CODE_NAME
+		       	, 	A.REQ_STATUS_CODE
+				, 	(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = A.REQ_STATUS_CODE AND CODE_TYPE = 'REQ_STATUS' AND USE_YN = 'Y') AS REQ_STATUS_CODE_NAME
+				, 	A.FRST_REGIST_PNTTM
+				, 	A.APPR_DT
+				, 	(CASE WHEN A.NTS_CNT = 0 THEN '-' ELSE '내역'	END) AS NTS_STTUS_MSSAGE
+				,	(SELECT UPPER_LOCGOV_NM||' '||LOCGOV_NM FROM G_LOCGOV GL WHERE A.PSITN_LOCGOV_CODE = GL.LOCGOV_CODE) AS PSITN_LOCGOV_NAME
+				,	CASE WHEN A.BIRTHDAY = '' THEN '-'
+						 WHEN (CRYPTO_DEC('normal',A.BIRTHDAY,'',0) REGEXP '^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$') = 0 THEN '-'
+						 ELSE DATE_FORMAT(CRYPTO_DEC('normal', A.BIRTHDAY, '', 0), '%Y-%m-%d') END AS BIRTHDAY
+				,	CRYPTO_DEC('normal', A.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+				,	A.RECEIVE_PBANC
+				,	CASE WHEN A.RECEIVE_PBANC = '0' THEN '동의'
+					ELSE '미동의' END AS pbancName
+				,	A.PRJ_ID
+				,	A.PRJ_SUBJECT
+				, 	IFNULL((SELECT COUNT(B.ELCTRN_PAY_NO) FROM G_CNTR_TAX_LOG B WHERE B.ELCTRN_PAY_NO = A.ELCTRN_PAY_NO), 0) AS NTS_CNT
+				,	A.DETAIL
+			FROM
+			(
+				SELECT
+		    			GC.CNTR_SN
+			    	, 	DATE_FORMAT(GC.FRST_REGIST_PNTTM,'%Y-%m-%d %H:%i:%s') AS CNTR_DE
+			        , 	DATE_FORMAT(GC.STTEMNT_PAY_DE,'%Y-%m-%d') AS STTEMNT_PAY_DE
+			        , 	OU.USER_NAME
+			        , 	OU.LOGIN_ID
+			        , 	GC.CNTR_AMT
+			        , 	GC.CNTR_POINT
+			        ,	(
+							SELECT
+								IFNULL(SUM(GCP.CNTR_USE_POINT),0)
+							FROM G_CNTR_USE_POINT GCP
+							WHERE GCP.CNTR_SN = GC.CNTR_SN
+							AND GCP.USE_SE_CODE ='1'
+						) as CNTR_USE_POINT
+			        , 	GC.CNTR_PATH_CODE
+			        , 	GC.RTNPSNT_REQST_CODE
+			        , 	GC.ELCTRN_PAY_NO
+			        , 	GCR.CNTR_REQMNG_CODE
+			       	, 	GCR.REQ_STATUS_CODE
+					, 	DATE_FORMAT(GCR.FRST_REGIST_PNTTM,'%Y-%m-%d %H:%i:%s') AS FRST_REGIST_PNTTM
+					, 	DATE_FORMAT(GCR.APPR_DT,'%Y-%m-%d %H:%i:%s') AS APPR_DT
+					,   IFNULL((SELECT COUNT(ELCTRN_PAY_NO) FROM G_CNTR_TAX_LOG WHERE NTS_RES_CODE = '200' AND ELCTRN_PAY_NO = GC.ELCTRN_PAY_NO), 0) AS NTS_CNT
+					,	GC.PSITN_LOCGOV_CODE
+					,	OUD.BIRTHDAY
+					, 	OUD.PHONE_NUMBER
+					,	OUD.RECEIVE_PBANC
+					,	IFNULL(GC.DSGN_DNTN_BIZ_ID, 0) AS PRJ_ID
+					,	IFNULL(DPM.DSGN_DNTN_BIZ_TTL, '자치단체기부') AS PRJ_SUBJECT
+					,	CC.DETAIL
+			    FROM G_CNTR GC
+			    LEFT JOIN
+			    (
+			    	SELECT A.CNTR_SN, A.CNTR_REQMNG_CODE, A.REQ_STATUS_CODE, A.FRST_REGIST_PNTTM, A.APPR_DT
+			    	FROM G_CNTR_REQMNG A
+					WHERE A.REQ_STATUS_CODE != '200'
+	   		    		AND A.FRST_REGIST_PNTTM = (SELECT MAX(B.FRST_REGIST_PNTTM) FROM G_CNTR_REQMNG B WHERE B.CNTR_SN = A.CNTR_SN)
+	 		    ) GCR ON GC.CNTR_SN = GCR.CNTR_SN
+				LEFT JOIN G_DSGN_DNTN_BIZ_MNG DPM ON DPM.DSGN_DNTN_BIZ_ID = GC.DSGN_DNTN_BIZ_ID
+				LEFT JOIN OP_COMMON_CODE CC on CC.ID = GC.LINK_INSTT_CD AND CC.CODE_TYPE = 'LINK_INSTT_CD'
+				, OP_USER OU
+				, OP_USER_DETAIL OUD
+	 			WHERE 1=1
+	 				AND GC.USER_ID = OU.USER_ID
+	 				AND GC.USER_ID = OUD.USER_ID
+	            	AND GC.DELETE_AT = 'N'
+	            	AND GC.CNTR_STTUS_CODE = '200'
+		        	AND GC.STTEMNT_PAY_DE IS NOT NULL
+				    <if test="shLocgovCode != null and shLocgovCode != ''">
+		            	AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		            </if>
+		            <if test="shCntrYear != null and shCntrYear != ''">
+		            	AND YEAR(GC.CNTR_DE) = #{shCntrYear}
+		            </if>
+		            <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+		            	AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
+		            </if>
+		            <!-- <if test="shCntrPathCode != null and shCntrPathCode != ''">
+		            	AND CNTR_PATH_CODE = #{shCntrPathCode}  100: 온라인, 200:오프라인
+		            </if> -->
+		            <if test="shCntrPathCode == '100'">
+				    AND CNTR_PATH_CODE = '100' <!-- 100: 온라인 -->
+				    </if>
+				    <if test="shCntrPathCode == '200'">
+				    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
+				    </if>
+		            <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
+			 			<choose>
+							<when test='shKeyword == "LOGIN_ID"'>
+								AND OU.LOGIN_ID = CRYPTO_ENC('normal', #{shText},'')
+							</when>
+							<when test='shKeyword == "USER_NAME"'>
+								AND OU.USER_NAME = CRYPTO_ENC('normal', #{shText},'')
+							</when>
+							<when test='shKeyword == "ELCTRN_PAY_NO"'>
+								AND GC.ELCTRN_PAY_NO = #{shText}
+							</when>
+							<when test='shKeyword == "PRJ_SUBJECT"'>
+								<!-- AND DPM.PRJ_SUBJECT LIKE CONCAT('%',#{shText},'%') -->
+								AND DPM.DSGN_DNTN_BIZ_TTL LIKE CONCAT('%',#{shText},'%')
+							</when>
+						</choose>
+		            </if>
+		            <if test="shDsgnDonateAt != null and shDsgnDonateAt != ''">
+				    	<choose>
+							<when test='shDsgnDonateAt == "N"'>
+								<!-- AND GC.PRJ_ID = 0 -->
+								AND GC.DSGN_DNTN_BIZ_ID = 0
+							</when>
+							<when test='shDsgnDonateAt == "Y"'>
+								<!-- AND GC.PRJ_ID IS NOT NULL AND GC.PRJ_ID != '' -->
+								AND GC.DSGN_DNTN_BIZ_ID IS NOT NULL AND GC.DSGN_DNTN_BIZ_ID != ''
+							</when>
+						</choose>
+				    </if>
+				    <if test="shLinkInsttCdAt != null and shLinkInsttCdAt != ''">				<!--  20260422 추가 민간연계기관 기부 여부 -->
+				    	<choose>
+							<when test='shLinkInsttCdAt == "N"'>								<!-- 고향사랑e음 기부 -->
+								AND GC.LINK_INSTT_CD IS NULL
+							</when>
+							<when test='shLinkInsttCdAt == "Y"'>								<!-- 민간연계기관 기부 -->
+								<if test="shLinkInsttCd == null or shLinkInsttCd == ''">			<!-- 민간연계기관 전체 검색 -->
+									AND GC.LINK_INSTT_CD IS NOT NULL
+								</if>
+								<if test="shLinkInsttCd != null and shLinkInsttCd != ''">			<!-- 특정 민간연계기관 검색 -->
+									AND GC.LINK_INSTT_CD = #{shLinkInsttCd}
+								</if>
+							</when>
+						</choose>
+				    </if>
+				    <if test ='shCntrBlcePointAt != null and shCntrBlcePointAt != ""'>
+						<choose>
+							<when test = 'shCntrBlcePointAt == "Y"'>
+								AND ( GC.RTNPSNT_REQST_CODE = '100'
+										AND GC.CNTR_POINT  <![CDATA[<>]]>  (SELECT
+																				IFNULL(SUM(GCP.CNTR_USE_POINT),0)
+																			FROM G_CNTR_USE_POINT GCP
+																			WHERE GCP.CNTR_SN = GC.CNTR_SN
+																			AND GCP.USE_SE_CODE ='1' ))
+							</when>
+							<when test = 'shCntrBlcePointAt == "N"'>
+								AND (GC.RTNPSNT_REQST_CODE ='300' OR GC.CNTR_POINT = (	SELECT
+																							IFNULL(SUM(GCP.CNTR_USE_POINT),0)
+																						FROM G_CNTR_USE_POINT GCP
+																						WHERE GCP.CNTR_SN = GC.CNTR_SN
+																						AND GCP.USE_SE_CODE ='1' ))
+							</when>
+						</choose>
+					</if>
+				<if test="shCntrAmtStart != null and shCntrAmtStart != ''">			<!-- 20260414 금액검색 추가 -->
+	            	AND GC.CNTR_AMT <![CDATA[>=]]> #{shCntrAmtStart}
+	            </if>
+			    <if test="shCntrAmtEnd != null and shCntrAmtEnd != ''">				<!-- 20260414 금액검색 추가 -->
+	            	AND GC.CNTR_AMT <![CDATA[<=]]> #{shCntrAmtEnd}
+	            </if>
+	            <if test="shPbancAt != null and shPbancAt != ''">					<!-- 20260507 SMS수신여부 추가 -->
+			    	<choose>
+						<when test='shPbancAt == "N"'>
+							AND (OUD.RECEIVE_PBANC is null OR OUD.RECEIVE_PBANC = '1')
+						</when>
+						<when test='shPbancAt == "Y"'>
+							AND OUD.RECEIVE_PBANC = '0'
+						</when>
+					</choose>
+			    </if>
+			) A
+            ORDER BY A.CNTR_DE DESC, A.FRST_REGIST_PNTTM DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<!-- 기부금 모금현황 상세 목록 count -->
+	<select id="getGiveStateDetailListCountTest" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="Integer" >
+		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetailListCountTest */
+	    SELECT COUNT(*)
+        FROM
+        (
+		    SELECT
+		        CNTR_DE
+	                , OU.USER_NAME
+	                , CNTR_AMT
+	                , CNTR_POINT
+	                , CNTR_PATH_CODE
+	                , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GC.CNTR_PATH_CODE AND CODE_TYPE = 'CNTR_PATH' AND USE_YN = 'Y') AS CNTR_PATH_NAME
+	                , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GC.CNTR_PATH_CODE AND CODE_TYPE = 'LINK_INSTT_CD' AND USE_YN = 'Y') AS LINK_INSTT_CD_DETAIL
+		    FROM G_CNTR GC
+		    LEFT JOIN OP_COMMON_CODE CC on CC.ID = GC.LINK_INSTT_CD AND CC.CODE_TYPE = 'LINK_INSTT_CD'
+		    , OP_USER OU
+		    WHERE 1=1
+		    AND GC.USER_ID = OU.USER_ID
+		    <if test="shLocgovCode != null and shLocgovCode != ''">
+		    AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		    </if>
+		    <if test="shCntrYear != null and shCntrYear != ''">
+		    AND year(GC.CNTR_DE) = #{shCntrYear}
+		    </if>
+		    <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+		    AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
+		    </if>
+		    <!-- 납부일자 조건 추가 2023-02-13 -->
+            <if test="shSttemntPayDeStart != null and shSttemntPayDeStart != '' and shSttemntPayDeEnd != null and shSttemntPayDeEnd != ''">
+            AND STTEMNT_PAY_DE BETWEEN #{shSttemntPayDeStart} AND #{shSttemntPayDeEnd}
+            </if>
+            <!-- 추가 끝 -->
+		    <!-- <if test="shCntrPathCode != null and shCntrPathCode != ''">
+		    AND CNTR_PATH_CODE = #{shCntrPathCode}  100: 온라인, 200:오프라인
+		    </if> -->
+		    <if test="shCntrPathCode == '100'">
+		    AND CNTR_PATH_CODE = '100' <!-- 100: 온라인 -->
+		    </if>
+		    <if test="shCntrPathCode == '200'">
+		    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
+		    </if>
+            <if test="shDeleteAt != null and shDeleteAt != ''">
+            AND delete_at = #{shDeleteAt}
+            </if>
+            <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
+ 			<choose>
+				<when test='shKeyword == "USER_NAME"'>
+					AND OU.USER_NAME = (SELECT crypto_enc('normal', #{shText},''))
+				</when>
+				<when test='shKeyword == "LOGIN_ID"'>
+					AND OU.LOGIN_ID = (SELECT crypto_enc('normal', #{shText},''))
+				</when>
+				<when test='shKeyword == "ELCTRN_PAY_NO"'>
+					AND GC.ELCTRN_PAY_NO = #{shText}
+				</when>
+				<when test='shKeyword == "PRJ_SUBJECT"'>
+					<!-- AND (SELECT PRJ_SUBJECT FROM G_DSGNCNTR_PRJ_MNG a WHERE a.PRJ_ID = GC.PRJ_ID) like CONCAT('%',#{shText},'%') -->
+					AND (SELECT DSGN_DNTN_BIZ_TTL FROM G_DSGN_DNTN_BIZ_MNG A WHERE A.DSGN_DNTN_BIZ_ID = GC.DSGN_DNTN_BIZ_ID) LIKE CONCAT('%',#{shText},'%')
+				</when>
+			</choose>
+            </if>
+            <if test="shDsgnDonateAt != null and shDsgnDonateAt != ''">
+		    	<choose>
+					<when test='shDsgnDonateAt == "N"'>
+						<!-- AND GC.PRJ_ID = 0 -->
+						AND GC.DSGN_DNTN_BIZ_ID = 0
+					</when>
+					<when test='shDsgnDonateAt == "Y"'>
+						<!-- AND GC.PRJ_ID IS NOT NULL AND GC.PRJ_ID != '' -->
+						AND GC.DSGN_DNTN_BIZ_ID IS NOT NULL AND GC.DSGN_DNTN_BIZ_ID != ''
+					</when>
+				</choose>
+		    </if>
+		    <if test="shLinkInsttCdAt != null and shLinkInsttCdAt != ''">				<!--  20260422 추가 민간연계기관 기부 여부 -->
+		    	<choose>
+					<when test='shLinkInsttCdAt == "N"'>								<!-- 고향사랑e음 기부 -->
+						AND GC.LINK_INSTT_CD IS NULL
+					</when>
+					<when test='shLinkInsttCdAt == "Y"'>								<!-- 민간연계기관 기부 -->
+						<if test="shLinkInsttCd == null or shLinkInsttCd == ''">			<!-- 민간연계기관 전체 검색 -->
+							AND GC.LINK_INSTT_CD IS NOT NULL
+						</if>
+						<if test="shLinkInsttCd != null and shLinkInsttCd != ''">			<!-- 특정 민간연계기관 검색 -->
+							AND GC.LINK_INSTT_CD = #{shLinkInsttCd}
+						</if>
+					</when>
+				</choose>
+		    </if>
+		    <if test="shCntrStatusCode != null and shCntrStatusCode != ''">
+		    	<choose>
+					<when test='shCntrStatusCode == "100"'>
+						AND GC.cntr_sttus_code = '100'
+					</when>
+					<when test='shCntrStatusCode == "200"'>
+						AND GC.cntr_sttus_code = '200'
+					</when>
+					<when test='shCntrStatusCode == "300"'>
+						AND GC.cntr_sttus_code = '300'
+					</when>
+				</choose>
+		    </if>
+		    <if test="shCntrAmtStart != null and shCntrAmtStart != ''">			<!-- 20260414 금액검색 추가 -->
+            AND GC.CNTR_AMT <![CDATA[>=]]> #{shCntrAmtStart}
+            </if>
+		    <if test="shCntrAmtEnd != null and shCntrAmtEnd != ''">				<!-- 20260414 금액검색 추가 -->
+            AND GC.CNTR_AMT <![CDATA[<=]]> #{shCntrAmtEnd}
+            </if>
+        )
+
+	</select>
+
+   <!-- 기부금 모금현황 상세 목록 -->
+   <!-- 기부 경로 코드, 기부 상태 코드, 답례품 신청 코드 case 처리 공통 코드로 변경 -->
+	<select id="getGiveStateDetailListTest" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveStateTest" >
+	/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetailListTest */
+	select
+		cntr_sn, cntr_de, A.user_id,  cntr_amt, cntr_point, (cntr_point - cntr_use_point) as cntr_blce_point,
+		point_end_de, sttemnt_pay_de, pay_valid_de, cntrbtr_opinion_cn, setle_mth_code,
+		cntr_use_purps_code, elctrn_pay_no, seoul_trget_at, rcept_bank_code, rcept_bank_nm,
+		rtnpsnt_reqst_at, info_agre_at, frst_register_id, last_updusr_id
+
+		, (CASE WHEN A.NTS_CNT = 0 THEN '-' ELSE '내역'	END) AS NTS_STTUS_MSSAGE
+		,(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=A.psitn_locgov_code) as psitn_locgov_code
+		,(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=A.cntr_locgov_code) as cntr_locgov_code
+		, (crypto_dec('normal', A.user_name, '', 0)) user_name
+		, (crypto_dec('normal', A.login_id, '', 0)) login_id
+		, (crypto_dec('normal', rcepter_nm, '', 0)) rcepter_nm
+		,(select label from op_common_code where id = cntr_path_code and code_type = 'CNTR_PATH' and use_yn = 'Y') as cntr_path_code
+		,(select label from op_common_code where id = cntr_sttus_code and code_type = 'CNTR_STTUS' and use_yn = 'Y') as cntr_sttus_code
+		,(select detail from op_common_code where id = rtnpsnt_reqst_code and code_type = 'RTNPSNT_REQST' and use_yn = 'Y') as rtnpsnt_reqst_code
+		,to_char(frst_regist_pnttm,'YYYY-MM-DD hh24:mi:ss') as frst_regist_pnttm
+		,to_char(last_updt_pnttm,'YYYY-MM-DD hh24:mi:ss') as last_updt_pnttm
+		, ifnull(prj_id, 0) as prj_id
+		, ifnull(prj_subject, '자치단체기부') as prj_subject
+		, detail
+	from
+	(
+			SELECT
+				cntr_sn, cntr_de, GC.user_id,  cntr_amt, cntr_point, (SELECT IFNULL(SUM(cntr_use_point),0) FROM g_cntr_use_point a WHERE a.cntr_sn = GC.cntr_sn) AS cntr_use_point,
+				point_end_de, sttemnt_pay_de, pay_valid_de, cntrbtr_opinion_cn, setle_mth_code,
+				cntr_use_purps_code, elctrn_pay_no, seoul_trget_at, rcept_bank_code, rcept_bank_nm,
+				rtnpsnt_reqst_at, info_agre_at, frst_register_id, last_updusr_id
+
+				, IFNULL((SELECT COUNT(ELCTRN_PAY_NO) FROM G_CNTR_TAX_LOG WHERE ELCTRN_PAY_NO = GC.ELCTRN_PAY_NO), 0) AS NTS_CNT
+				,psitn_locgov_code,cntr_locgov_code
+				,OU.user_name
+				,OU.login_id
+				,rcepter_nm
+				,cntr_path_code
+				,cntr_sttus_code
+				,rtnpsnt_reqst_code
+				,frst_regist_pnttm
+				,last_updt_pnttm
+				,DSGN_DNTN_BIZ_ID AS prj_id
+				,(SELECT DSGN_DNTN_BIZ_TTL FROM G_DSGN_DNTN_BIZ_MNG a WHERE a.DSGN_DNTN_BIZ_ID = GC.DSGN_DNTN_BIZ_ID) AS prj_subject
+				,CC.detail
+		    FROM G_CNTR GC
+		    LEFT JOIN OP_COMMON_CODE CC on CC.ID = GC.LINK_INSTT_CD AND CC.CODE_TYPE = 'LINK_INSTT_CD'
+		    , OP_USER OU
+            WHERE 1=1
+            AND GC.USER_ID = OU.USER_ID
+		    <if test="shLocgovCode != null and shLocgovCode != ''">
+            AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+            </if>
+            <if test="shCntrYear != null and shCntrYear != ''">
+            AND year(GC.CNTR_DE) = #{shCntrYear}
+            </if>
+            <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+            AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
+            </if>
+            <!-- 납부일자 조건 추가 2023-02-13 -->
+            <if test="shSttemntPayDeStart != null and shSttemntPayDeStart != '' and shSttemntPayDeEnd != null and shSttemntPayDeEnd != ''">
+            AND STTEMNT_PAY_DE BETWEEN #{shSttemntPayDeStart} AND #{shSttemntPayDeEnd}
+            </if>
+            <!-- 추가 끝 -->
+            <!-- <if test="shCntrPathCode != null and shCntrPathCode != ''">
+            AND CNTR_PATH_CODE = #{shCntrPathCode}  100: 온라인, 200:오프라인
+            </if> -->
+            <if test="shCntrPathCode == '100'">
+		    AND CNTR_PATH_CODE = '100' <!-- 100: 온라인 -->
+		    </if>
+		    <if test="shCntrPathCode == '200'">
+		    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
+		    </if>
+            <if test="shUserName != null and shUserName != ''">
+            AND USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+            </if>
+
+            <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
+ 			<choose>
+				<when test='shKeyword == "USER_NAME"'>
+					AND USER_NAME = (SELECT crypto_enc('normal', #{shText},''))
+				</when>
+				<when test='shKeyword == "LOGIN_ID"'>
+					AND OU.LOGIN_ID = (SELECT crypto_enc('normal', #{shText},''))
+				</when>
+				<when test='shKeyword == "ELCTRN_PAY_NO"'>
+					AND GC.ELCTRN_PAY_NO = #{shText}
+				</when>
+				<when test='shKeyword == "PRJ_SUBJECT"'>
+					<!-- AND (SELECT PRJ_SUBJECT FROM G_DSGNCNTR_PRJ_MNG a WHERE a.PRJ_ID = GC.PRJ_ID) like CONCAT('%',#{shText},'%') -->
+					AND (SELECT DSGN_DNTN_BIZ_TTL FROM G_DSGN_DNTN_BIZ_MNG A WHERE A.DSGN_DNTN_BIZ_ID = GC.DSGN_DNTN_BIZ_ID) LIKE CONCAT('%',#{shText},'%')
+				</when>
+			</choose>
+            </if>
+            <if test="shDsgnDonateAt != null and shDsgnDonateAt != ''">
+		    	<choose>
+					<when test='shDsgnDonateAt == "N"'>
+						<!-- AND GC.PRJ_ID = 0 -->
+						AND GC.DSGN_DNTN_BIZ_ID = 0
+					</when>
+					<when test='shDsgnDonateAt == "Y"'>
+						<!-- AND GC.PRJ_ID IS NOT NULL AND GC.PRJ_ID != '' -->
+						AND GC.DSGN_DNTN_BIZ_ID IS NOT NULL AND GC.DSGN_DNTN_BIZ_ID != ''
+					</when>
+				</choose>
+		    </if>
+		     <if test="shLinkInsttCdAt != null and shLinkInsttCdAt != ''">				<!--  20260422 추가 민간연계기관 기부 여부 -->
+		    	<choose>
+					<when test='shLinkInsttCdAt == "N"'>								<!-- 고향사랑e음 기부 -->
+						AND GC.LINK_INSTT_CD IS NULL
+					</when>
+					<when test='shLinkInsttCdAt == "Y"'>								<!-- 민간연계기관 기부 -->
+						<if test="shLinkInsttCd == null or shLinkInsttCd == ''">			<!-- 민간연계기관 전체 검색 -->
+							AND GC.LINK_INSTT_CD IS NOT NULL
+						</if>
+						<if test="shLinkInsttCd != null and shLinkInsttCd != ''">			<!-- 특정 민간연계기관 검색 -->
+							AND GC.LINK_INSTT_CD = #{shLinkInsttCd}
+						</if>
+					</when>
+				</choose>
+		    </if>
+		    <if test="shCntrStatusCode != null and shCntrStatusCode != ''">
+		    	<choose>
+					<when test='shCntrStatusCode == "100"'>
+						AND GC.cntr_sttus_code = '100'
+					</when>
+					<when test='shCntrStatusCode == "200"'>
+						AND GC.cntr_sttus_code = '200'
+					</when>
+					<when test='shCntrStatusCode == "300"'>
+						AND GC.cntr_sttus_code = '300'
+					</when>
+				</choose>
+		    </if>
+		    <if test="shCntrAmtStart != null and shCntrAmtStart != ''">			<!-- 20260414 금액검색 추가 -->
+            AND GC.CNTR_AMT <![CDATA[>=]]> #{shCntrAmtStart}
+            </if>
+		    <if test="shCntrAmtEnd != null and shCntrAmtEnd != ''">				<!-- 20260414 금액검색 추가 -->
+            AND GC.CNTR_AMT <![CDATA[<=]]> #{shCntrAmtEnd}
+            </if>
+         	 ORDER BY cntr_de desc, frst_regist_pnttm desc
+		<include refid="CommonMapper.paginationFooter" />
+        ) A
+
+	</select>
+
+	<!-- 지자체 코드 2depth 목록 조회 -->
+    <select id="getLocgovCodeList" parameterType="String" resultType="java.util.HashMap">
+    	/* saleson.shop.slave.SlaveGiveStateMapper.getLocgovCodeList */
+	    SELECT
+	        LOCGOV_CODE
+	        , LOCGOV_NM
+	    FROM G_LOCGOV
+	    WHERE 1=1
+	    AND UPPER_LOCGOV_CODE = #{code}
+	    AND USE_AT = 'Y'
+	    ORDER BY ORDERING
+    </select>
+
+	<!-- 회원 지자체 조회 -->
+    <select id="getLocgovCode" resultType="java.util.HashMap">
+    	/* saleson.shop.slave.SlaveGiveStateMapper.getLocgovCode */
+        SELECT
+            M.LOCGOV_CODE
+            , L.LOCGOV_NM
+            , L.UPPER_LOCGOV_CODE
+            , (SELECT LABEL  FROM OP_COMMON_CODE OCC WHERE ID = L.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR' AND USE_YN = 'Y') AS UPPER_LOCGOV_NM
+        FROM OP_MANAGER M, G_LOCGOV L
+        WHERE 1=1
+        AND M.LOCGOV_CODE = L.LOCGOV_CODE
+        AND USER_ID = #{userId}
+    </select>
+
+	<select id="getGiveStateDetailListCountCntr" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="Integer" >
+	    <include refid="CommonMapper.paginationHeader" />
+	    	/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetailListCountCntr */
+		    SELECT
+				count(*) as cnt
+		    FROM G_CNTR GC, OP_USER OU
+            WHERE 1=1
+            AND GC.USER_ID = OU.USER_ID
+		    <if test="shCntrSn != null and shCntrSn != ''">
+            AND cntr_sn = #{shCntrSn}
+            </if>
+            <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+            AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
+            </if>
+            <if test="shUserName != null and shUserName != ''">
+            AND USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+            </if>
+            <if test="shLoginId != null and shLoginId != ''">
+            AND OU.login_id = (SELECT crypto_enc('normal', #{shLoginId},''))
+            </if>
+            <if test="shLocgovCode != null and shLocgovCode != ''">
+            AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+            </if>
+            <if test="shSttemntPayDe != null and shSttemntPayDe != ''">
+            AND sttemnt_pay_de = #{shSttemntPayDe}
+            </if>
+			<!-- <if test="shCntrPathCode != null and shCntrPathCode != ''">
+            AND CNTR_PATH_CODE = #{shCntrPathCode}  100: 온라인, 200:오프라인
+            </if> -->
+            <if test="shCntrPathCode == '100'">
+		    AND CNTR_PATH_CODE = '100' <!-- 100: 온라인 -->
+		    </if>
+		    <if test="shCntrPathCode == '200'">
+		    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
+		    </if>
+			<if test="shCntrSttusCode != null and shCntrSttusCode != ''">
+            AND cntr_sttus_code = #{shCntrSttusCode}
+            </if>
+			<if test="shElctrnPayNo != null and shElctrnPayNo != ''">
+            AND elctrn_pay_no = #{shElctrnPayNo}
+            </if>
+            ORDER BY GC.cntr_sn DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+    <select id="getGiveStateDetailListCntr" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveStateTest" >
+	    <include refid="CommonMapper.paginationHeader" />
+	    	/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetailListCntr */
+	    	SELECT
+	    			A.cntr_sn
+				, 	A.cntr_de
+				, 	A.user_id
+				, 	crypto_dec('normal', A.USER_NAME, '', 0) USER_NAME
+		        , 	crypto_dec('normal', A.LOGIN_ID, '', 0) LOGIN_ID
+				, 	A.psitn_locgov_code
+				, 	A.cntr_locgov_code
+				,	(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=A.psitn_locgov_code) as psitn_locgov_code_name
+				,	(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=A.cntr_locgov_code) as cntr_locgov_code_name
+				, 	A.cntr_amt
+				, 	A.cntr_point
+				, 	A.cntr_point - A.cntr_use_point AS cntr_blce_point
+				, 	A.point_end_de
+				, 	A.sttemnt_pay_de
+				, 	A.pay_valid_de
+				, 	A.cntr_path_code
+				, 	A.cntr_sttus_code
+				, 	A.cntrbtr_opinion_cn
+				, 	A.setle_mth_code
+				, 	A.cntr_use_purps_code
+				, 	A.elctrn_pay_no
+				, 	A.seoul_trget_at
+				, 	A.rcept_bank_code
+				, 	(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = A.RCEPT_BANK_CODE AND CODE_TYPE = 'OFF_BANK_LIST' AND USE_YN = 'Y') AS RCEPT_BANK_CODE_NM
+				, 	A.rcept_bank_nm
+				, 	crypto_dec('normal', A.rcepter_nm, '', 0) rcepter_nm
+				, 	A.rtnpsnt_reqst_code
+				, 	A.rtnpsnt_reqst_at
+				, 	A.info_agre_at
+				, 	A.frst_register_id
+				, 	A.frst_regist_pnttm
+				, 	A.last_updusr_id
+				, 	A.last_updt_pnttm
+				, 	A.delete_at
+				, 	A.nts_sttus_mssage
+			FROM
+			(
+			    SELECT
+						GC.cntr_sn
+					, 	GC.cntr_de
+					, 	GC.user_id
+					, 	OU.USER_NAME
+			        , 	OU.LOGIN_ID
+					, 	GC.psitn_locgov_code
+					, 	GC.cntr_locgov_code
+					, 	GC.cntr_amt
+					, 	GC.cntr_point
+					,	(SELECT IFNULL(SUM(cntr_use_point),0) FROM g_cntr_use_point a WHERE a.cntr_sn = GC.cntr_sn) AS cntr_use_point
+					, 	GC.point_end_de
+					, 	GC.sttemnt_pay_de
+					, 	GC.pay_valid_de
+					, 	GC.cntr_path_code
+					, 	GC.cntr_sttus_code
+					, 	GC.cntrbtr_opinion_cn
+					, 	GC.setle_mth_code
+					, 	GC.cntr_use_purps_code
+					, 	GC.elctrn_pay_no
+					, 	GC.seoul_trget_at
+					, 	GC.rcept_bank_code
+					, 	GC.rcept_bank_nm
+					, 	GC.rcepter_nm
+					, 	GC.rtnpsnt_reqst_code
+					, 	GC.rtnpsnt_reqst_at
+					, 	GC.info_agre_at
+					, 	GC.frst_register_id
+					, 	GC.frst_regist_pnttm
+					, 	GC.last_updusr_id
+					, 	GC.last_updt_pnttm
+					, 	GC.delete_at
+					, 	GC.nts_sttus_mssage
+			    FROM G_CNTR GC, OP_USER OU
+	            WHERE 1=1
+	            	AND GC.USER_ID = OU.USER_ID
+		            <if test="shCntrSn != null and shCntrSn != ''">
+		            	AND cntr_sn = #{shCntrSn}
+		            </if>
+		            <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+		            	AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
+		            </if>
+		            <if test="shUserName != null and shUserName != ''">
+		            	AND USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+		            </if>
+		            <if test="shLoginId != null and shLoginId != ''">
+		            	AND OU.login_id = (SELECT crypto_enc('normal', #{shLoginId},''))
+		            </if>
+		            <if test="shLocgovCode != null and shLocgovCode != ''">
+		            	AND CNTR_LOCGOV_CODE = #{shLocgovCode}
+		            </if>
+		            <if test="shSttemntPayDe != null and shSttemntPayDe != ''">
+		            	AND sttemnt_pay_de = #{shSttemntPayDe}
+		            </if>
+					<if test="shCntrPathCode != null and shCntrPathCode != ''">
+		            	AND CNTR_PATH_CODE = #{shCntrPathCode} -- 100: 온라인, 200:오프라인
+		            </if>
+					<if test="shCntrSttusCode != null and shCntrSttusCode != ''">
+		            	AND cntr_sttus_code = #{shCntrSttusCode}
+		            </if>
+					<if test="shElctrnPayNo != null and shElctrnPayNo != ''">
+		            	AND elctrn_pay_no = #{shElctrnPayNo}
+		            </if>
+		            <if test="shDeleteAt != null and shDeleteAt != ''">
+		            	AND delete_at = #{shDeleteAt}
+		            </if>
+			) A
+            ORDER BY GC.cntr_sn desc
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+    <select id="getGiveStateDetailListCntrUsePoint" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveStateCntrUsePoint" >
+    		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateDetailListCntrUsePoint */
+    		SELECT
+   					a.cntr_sn
+				, 	a.use_sn
+				, 	a.point_use_de
+				, 	a.cntr_use_point
+				, 	a.user_id
+				, 	crypto_dec('normal', a.USER_NAME, '', 0) USER_NAME
+		        , 	crypto_dec('normal', a.LOGIN_ID, '', 0) LOGIN_ID
+				, 	a.psitn_locgov_code
+				, 	a.cntr_locgov_code
+				,	(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=a.psitn_locgov_code) as psitn_locgov_code_name
+				,	(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=a.cntr_locgov_code) as cntr_locgov_code_name
+				, 	a.use_se_code
+				, 	a.use_cn
+				, 	a.order_code
+				, 	a.url_adres
+				, 	a.frst_register_id
+				, 	a.frst_regist_pnttm
+				, 	a.last_updusr_id
+				, 	a.last_updt_pnttm
+    		FROM
+    		(
+			    SELECT
+						GC.cntr_sn
+					, 	GC.use_sn
+					, 	GC.point_use_de
+					, 	GC.cntr_use_point
+					, 	GC.user_id
+					, 	OU.USER_NAME
+			        , 	OU.LOGIN_ID
+					, 	GC.psitn_locgov_code
+					, 	GC.cntr_locgov_code
+					, 	GC.use_se_code
+					, 	GC.use_cn
+					, 	GC.order_code
+					, 	GC.url_adres
+					, 	GC.frst_register_id
+					, 	GC.frst_regist_pnttm
+					, 	GC.last_updusr_id
+					, 	GC.last_updt_pnttm
+			    FROM G_CNTR_USE_POINT GC, OP_USER OU
+	            WHERE 1=1
+	            	AND GC.USER_ID = OU.USER_ID
+	            	AND cntr_sn = #{shCntrSn}
+            ) a
+            ORDER BY a.cntr_sn desc
+	</select>
+
+	<!-- 기부 경로 코드, 기부 상태 코드, 답례품 신청 코드 case 처리 공통 코드로 변경 -->
+	<select id="getGiveStateModifyInfo" parameterType="String" resultType="saleson.shop.give.givestate.domain.GiveStateTest">
+		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveStateModifyInfo */
+		SELECT
+				a.cntr_sn
+			, 	a.user_id
+			, 	crypto_dec('normal', a.USER_NAME, '', 0) USER_NAME
+			, 	crypto_dec('normal', a.LOGIN_ID, '', 0) LOGIN_ID
+			, 	a.elctrn_pay_no
+			, 	a.sttemnt_pay_de
+			, 	a.cntr_de
+			, 	a.cntr_amt
+			,	(select detail from op_common_code where id = a.rtnpsnt_reqst_code and code_type = 'RTNPSNT_REQST' and use_yn = 'Y') as rtnpsnt_reqst_code
+			, 	a.cntr_point
+			, 	a.cntr_point - a.CNTR_USE_POINT as cntr_blce_point
+			,	(select label from op_common_code where id = a.cntr_sttus_code and code_type = 'CNTR_STTUS' and use_yn = 'Y') as cntr_sttus_code
+			, 	a.delete_at
+			, 	a.psitn_locgov_code
+			, 	a.cntr_locgov_code
+			, 	a.seoul_trget_at
+			, 	a.nts_sttus_mssage
+			,	(select CONCAT(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=a.psitn_locgov_code) as psitn_locgov_code_name
+			,	(select CONCAT(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=a.cntr_locgov_code) as cntr_locgov_code_name
+			,	a.mng_no
+		   	, 	a.CNTR_USE_POINT
+		   	,	a.link_instt_cd
+		   	,	(SELECT detail FROM OP_COMMON_CODE WHERE code_type = 'LINK_INSTT_CD' AND id = a.link_instt_cd) detail
+		FROM
+		(
+			SELECT
+					GC.cntr_sn
+				, 	GC.user_id
+				, 	OU.USER_NAME
+				, 	OU.LOGIN_ID
+				, 	GC.elctrn_pay_no
+				, 	GC.sttemnt_pay_de
+				, 	GC.cntr_de
+				, 	GC.cntr_amt
+				,	GC.rtnpsnt_reqst_code
+				, 	GC.cntr_point
+				, 	GC.cntr_blce_point
+				,	GC.cntr_sttus_code
+				, 	GC.delete_at
+				, 	GC.psitn_locgov_code
+				, 	GC.cntr_locgov_code
+				, 	GC.seoul_trget_at
+				, 	GC.nts_sttus_mssage
+				,	CASE WHEN SUBSTR(GC.cntr_locgov_code,1,2) = '11' then (select to_char(sysdatetime, 'hh24missFF') || lpad(random() % 1000, 3, 0))
+				   	ELSE (select mng_htm5 from gif_stnd_buga_now where elct_pay_no = GC.elctrn_pay_no)
+			   	 	END AS mng_no
+			   	, 	(SELECT IFNULL(SUM(CNTR_USE_POINT),0) FROM G_CNTR_USE_POINT A WHERE A.CNTR_SN = GC.CNTR_SN) AS CNTR_USE_POINT
+			   	,	GC.link_instt_cd
+			FROM G_CNTR GC, OP_USER OU
+			WHERE 1=1
+				AND GC.USER_ID = OU.USER_ID
+				AND elctrn_pay_no = #{elctrnPayNo}
+		) a
+	</select>
+
+ 	<select id="getGiveReqmngCount" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="Integer">
+		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveReqmngCount */
+	 	SELECT
+	 	COUNT(*) as cnt
+	 	FROM G_CNTR_REQMNG GCR, OP_MANAGER OM
+		WHERE 1=1
+	 		AND GCR.FRST_REGISTER_ID = OM.USER_ID
+	 		<if test="shLocgovCode != null and shLocgovCode != ''">
+	   		AND GCR.LOCGOV_CODE = #{shLocgovCode}
+	    	</if>
+	    	<if test="shFrstRegistPnttmStart != null and shFrstRegistPnttmStart != '' and shFrstRegistPnttmEnd != null and shFrstRegistPnttmEnd != ''">
+	    		AND TO_CHAR(GCR.FRST_REGIST_PNTTM,'YYYYMMDD') BETWEEN #{shFrstRegistPnttmStart} AND #{shFrstRegistPnttmEnd}
+	  		</if>
+	 		<if test="shCntrReqmngCode != null and shCntrReqmngCode != ''">
+				AND GCR.CNTR_REQMNG_CODE = #{shCntrReqmngCode} --  100: 과오납, 200: 포인트생성
+	   		</if>
+	    	<if test="shReqStatusCode != null and shReqStatusCode != ''">
+	       		AND GCR.REQ_STATUS_CODE = #{shReqStatusCode} -- 100:요청 200:취소 999:승인
+	     	</if>
+	     	<if test="shElctrnPayNo != null and shElctrnPayNo != ''">
+				AND GCR.cntr_sn = (select cntr_sn from g_cntr where elctrn_pay_no = #{shElctrnPayNo})
+			</if>
+	     	AND GCR.USE_YN = 'Y'
+ 	</select>
+
+ 	<select id="getGiveReqmngList" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveStateTest">
+ 		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveReqmngList */
+ 		SELECT
+				t.REQ_ID
+			,	crypto_dec('normal',t.LOGIN_ID, '', 0) AS LOGIN_ID
+			,	crypto_dec('normal',t.USER_NAME, '', 0) AS USER_NAME
+			,	u.USER_ID AS user_id
+			,	t.LOCGOV_CODE
+			,	(l.upper_locgov_nm || '' || l.locgov_nm) as LOCGOV_CODE_NAME
+			,	t.STTEMNT_PAY_DE
+			,	t.CNTR_AMT
+			,	t.CNTR_REQMNG_CODE
+			,	cc_reqmng.label as CNTR_REQMNG_CODE_NAME
+			,	t.DISCRIPTION
+			,	crypto_dec('normal',m1.login_id, '', 0)  AS FRST_REGISTER_ID
+			,	t.FRST_REGIST_PNTTM
+			,	crypto_dec('normal',m2.login_id, '', 0) AS LAST_UPDUSR_ID
+			,	t.LAST_UPDT_PNTTM
+			,	DATE_FORMAT(t.APPR_DT,'%Y-%m-%d %H:%i:%s') AS APPR_DT
+			,	DATE_FORMAT(t.CANCLE_DT,'%Y-%m-%d %H:%i:%s') AS CANCLE_DT
+			,	t.REQ_STATUS_CODE
+			,	cc_status.label as REQ_STATUS_CODE_NAME
+			,	t.CNTR_SN
+			,	GC.ELCTRN_PAY_NO
+			,	cc_link.DETAIL
+			,	GC.LINK_INSTT_CD
+		FROM
+		(
+			SELECT
+					GCR.REQ_ID
+				,	GCR.LOGIN_ID
+				,	GCR.USER_NAME
+				,	GCR.LOCGOV_CODE
+				,	GCR.STTEMNT_PAY_DE
+				,	GCR.CNTR_AMT
+				,	GCR.CNTR_REQMNG_CODE
+				,	GCR.DISCRIPTION
+				,	GCR.FRST_REGISTER_ID
+				,	GCR.FRST_REGIST_PNTTM
+				,	GCR.LAST_UPDUSR_ID
+				,	GCR.LAST_UPDT_PNTTM
+				,	GCR.APPR_DT
+				,	GCR.CANCLE_DT
+				,	GCR.REQ_STATUS_CODE
+				,	GCR.CNTR_SN
+			FROM G_CNTR_REQMNG GCR
+			WHERE 1=1
+
+		 	 	<if test="shLocgovCode != null and shLocgovCode != ''">
+					AND GCR.LOCGOV_CODE = #{shLocgovCode}
+		     	</if>
+		     	<if test="shFrstRegistPnttmStart != null and shFrstRegistPnttmStart != '' and shFrstRegistPnttmEnd != null and shFrstRegistPnttmEnd != ''">
+			    	AND TO_CHAR(GCR.FRST_REGIST_PNTTM,'YYYYMMDD') BETWEEN #{shFrstRegistPnttmStart} AND #{shFrstRegistPnttmEnd}
+			  	</if>
+			 	<if test="shCntrReqmngCode != null and shCntrReqmngCode != ''">
+		     		AND GCR.CNTR_REQMNG_CODE = #{shCntrReqmngCode}
+		     	</if>
+		     	<if test="shReqStatusCode != null and shReqStatusCode != ''">
+		        	AND GCR.REQ_STATUS_CODE = #{shReqStatusCode}
+		      	</if>
+				<if test="shElctrnPayNo != null and shElctrnPayNo != ''">
+					AND GCR.cntr_sn = (select cntr_sn from g_cntr where elctrn_pay_no = #{shElctrnPayNo})
+				</if>
+		     	AND GCR.USE_YN = 'Y'
+	     	ORDER BY (CASE WHEN GCR.LAST_UPDT_PNTTM IS NULL THEN 1 ELSE 2 END ), GCR.REQ_ID DESC
+	     	<include refid="CommonMapper.paginationFooter" />
+     	) t
+     	INNER JOIN G_CNTR GC
+				ON t.CNTR_SN = GC.CNTR_SN
+
+		LEFT JOIN OP_USER u
+				ON u.LOGIN_ID = t.LOGIN_ID
+
+		LEFT JOIN G_LOCGOV l
+				ON l.LOCGOV_CODE = t.LOCGOV_CODE
+
+		LEFT JOIN OP_COMMON_CODE cc_reqmng
+				ON cc_reqmng.id = t.CNTR_REQMNG_CODE
+				AND cc_reqmng.CODE_TYPE = 'CNTR_REQMNG'
+				AND cc_reqmng.USE_YN = 'Y'
+
+		LEFT JOIN OP_COMMON_CODE cc_status
+				ON cc_reqmng.id = t.CNTR_REQMNG_CODE
+				AND cc_reqmng.CODE_TYPE = 'REQ_STATUS'
+				AND cc_reqmng.USE_YN = 'Y'
+
+		LEFT JOIN OP_MANAGER m1
+				ON m1.USER_ID = t.FRST_REGISTER_ID
+
+		LEFT JOIN OP_MANAGER m2
+				ON m2.USER_ID = t.LAST_UPDUSR_ID
+
+		LEFT JOIN OP_COMMON_CODE cc_link
+				ON cc_link.ID = GC.LINK_INSTT_CD
+				AND cc_link.CODE_TYPE = 'LINK_INSTT_CD';
+
+ 	</select>
+ 	<!--
+ 	<select id="getGiveReqmngList" parameterType="saleson.shop.give.givestate.domain.GiveState" resultType="saleson.shop.give.givestate.domain.GiveStateTest">
+ 		/* saleson.shop.slave.SlaveGiveStateMapper.getGiveReqmngList */
+ 		SELECT
+				a.REQ_ID
+			,	crypto_dec('normal',a.LOGIN_ID, '', 0) LOGIN_ID
+			,	crypto_dec('normal',a.USER_NAME, '', 0) USER_NAME
+			,	(SELECT USER_ID from op_user  where LOGIN_ID = a.LOGIN_ID) AS USER_ID
+			,	a.LOCGOV_CODE
+			,	(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code = a.LOCGOV_CODE) as LOCGOV_CODE_NAME
+			,	a.STTEMNT_PAY_DE
+			,	a.CNTR_AMT
+			,	a.CNTR_REQMNG_CODE
+			,	(select label from op_common_code where id = a.CNTR_REQMNG_CODE and code_type = 'CNTR_REQMNG' and use_yn = 'Y') as CNTR_REQMNG_CODE_NAME
+			,	a.DISCRIPTION
+			,	(SELECT crypto_dec('normal',LOGIN_ID, '', 0) FROM op_manager WHERE USER_ID = a.FRST_REGISTER_ID) AS FRST_REGISTER_ID
+			,	a.FRST_REGIST_PNTTM
+			,	(SELECT crypto_dec('normal',LOGIN_ID, '', 0) FROM op_manager WHERE USER_ID = a.LAST_UPDUSR_ID) AS LAST_UPDUSR_ID
+			,	a.LAST_UPDT_PNTTM
+			,	a.APPR_DT
+			,	a.CANCLE_DT
+			,	a.REQ_STATUS_CODE
+			,	(select label from op_common_code where id = a.REQ_STATUS_CODE and code_type = 'REQ_STATUS' and use_yn = 'Y') as REQ_STATUS_CODE_NAME
+			,	a.CNTR_SN
+			,	a.ELCTRN_PAY_NO
+			,	CNTR_POINT - CNTR_USE_POINT  AS CNTR_BLCE_POINT
+			,	a.DETAIL
+			,	(select link_instt_cd from g_cntr where cntr_sn = a.CNTR_SN) as LINK_INSTT_CD
+		FROM
+		(
+			SELECT
+					GCR.REQ_ID
+				,	GCR.LOGIN_ID
+				,	GCR.USER_NAME
+				,	GCR.LOCGOV_CODE
+				,	GCR.STTEMNT_PAY_DE
+				,	GCR.CNTR_AMT
+				,	GCR.CNTR_REQMNG_CODE
+				,	GCR.DISCRIPTION
+				,	GCR.FRST_REGISTER_ID
+				,	DATE_FORMAT(GCR.FRST_REGIST_PNTTM,'%Y-%m-%d %H:%i:%s') AS FRST_REGIST_PNTTM
+				,	GCR.LAST_UPDUSR_ID
+				,	GCR.LAST_UPDT_PNTTM
+				,	DATE_FORMAT(GCR.APPR_DT,'%Y-%m-%d %H:%i:%s') AS APPR_DT
+				,	DATE_FORMAT(GCR.CANCLE_DT,'%Y-%m-%d %H:%i:%s') AS CANCLE_DT
+				,	GCR.REQ_STATUS_CODE
+				,	GCR.CNTR_SN
+				,	GC.ELCTRN_PAY_NO
+				,	(SELECT IFNULL(SUM(CNTR_POINT),0) FROM G_CNTR A WHERE A.CNTR_SN = GCR.CNTR_SN) AS CNTR_POINT
+				,	(SELECT IFNULL(SUM(CNTR_USE_POINT),0) FROM G_CNTR_USE_POINT A WHERE A.CNTR_SN = GCR.CNTR_SN) AS CNTR_USE_POINT
+				, 	(SELECT DETAIL FROM OP_COMMON_CODE CC WHERE CC.ID = GC.LINK_INSTT_CD AND CC.CODE_TYPE='LINK_INSTT_CD') AS DETAIL
+			FROM G_CNTR_REQMNG GCR
+				INNER JOIN G_CNTR GC ON GCR.CNTR_SN = GC.CNTR_SN
+			WHERE 1=1
+
+		 	 	<if test="shLocgovCode != null and shLocgovCode != ''">
+					AND GCR.LOCGOV_CODE = #{shLocgovCode}
+		     	</if>
+		     	<if test="shFrstRegistPnttmStart != null and shFrstRegistPnttmStart != '' and shFrstRegistPnttmEnd != null and shFrstRegistPnttmEnd != ''">
+			    	AND TO_CHAR(GCR.FRST_REGIST_PNTTM,'YYYYMMDD') BETWEEN #{shFrstRegistPnttmStart} AND #{shFrstRegistPnttmEnd}
+			  	</if>
+			 	<if test="shCntrReqmngCode != null and shCntrReqmngCode != ''">
+		     		AND GCR.CNTR_REQMNG_CODE = #{shCntrReqmngCode}
+		     	</if>
+		     	<if test="shReqStatusCode != null and shReqStatusCode != ''">
+		        	AND GCR.REQ_STATUS_CODE = #{shReqStatusCode}
+		      	</if>
+				<if test="shElctrnPayNo != null and shElctrnPayNo != ''">
+					AND GCR.cntr_sn = (select cntr_sn from g_cntr where elctrn_pay_no = #{shElctrnPayNo})
+				</if>
+		     	AND GCR.USE_YN = 'Y'
+	     	ORDER BY (CASE WHEN GCR.LAST_UPDT_PNTTM IS NULL THEN 1 ELSE 2 END ), GCR.REQ_ID DESC
+	     	<include refid="CommonMapper.paginationFooter" />
+     	) a
+ 	</select> -->
+
+ 	<select id="giveReqmngSmsUserInfo" parameterType="saleson.shop.give.givestate.domain.GiveStateTest" resultType="saleson.shop.donation.domain.GiveUserSmsInfo">
+		/* saleson.shop.slave.SlaveGiveStateMapper.giveReqmngSmsUserInfo */
+ 		SELECT
+ 				a.USER_ID
+			,	CRYPTO_DEC('normal', a.USER_NAME, '', 0) AS USER_NAME
+			,	a.LOCGOV_NM
+			,	a.MBER_CI
+			,	a.CNTR_AMT
+			,	a.RECEIVE_SMS
+			,	REPLACE (CRYPTO_DEC('normal',a.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+ 		FROM
+ 		(
+ 			SELECT
+	 				A.USER_ID
+				,	A.USER_NAME
+				,	CONCAT(UPPER_LOCGOV_NM, ' ', LOCGOV_NM) AS LOCGOV_NM
+				,	MBER_CI
+				,	B.CNTR_AMT
+				,	D.RECEIVE_SMS
+				,	D.PHONE_NUMBER
+			FROM OP_USER A
+			INNER JOIN G_CNTR B ON A.USER_ID  = B.USER_ID AND ELCTRN_PAY_NO = #{elctrnPayNo}
+         	INNER JOIN G_LOCGOV C ON B.CNTR_LOCGOV_CODE = C.LOCGOV_CODE
+         	INNER JOIN OP_USER_DETAIL D ON A.USER_ID = D.USER_ID
+      		WHERE A.USER_ID = #{userId}
+      	) a
+ 	</select>
+
+ 	<select id="giveReqmngSmsUserInfoByReqId" parameterType="saleson.shop.give.givestate.domain.GiveStateTest" resultType="saleson.shop.donation.domain.GiveUserSmsInfo">
+ 		/* saleson.shop.slave.SlaveGiveStateMapper.giveReqmngSmsUserInfoByReqId */
+ 		SELECT
+ 				a.USER_ID
+			,	CRYPTO_DEC('normal', a.USER_NAME, '', 0) AS USER_NAME
+			,	a.LOCGOV_NM
+			,	a.MBER_CI
+			,	a.CNTR_AMT
+			,	a.RECEIVE_SMS
+			,	REPLACE (CRYPTO_DEC('normal',a.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+		FROM
+		(
+			SELECT
+		 			C.USER_ID
+				,	C.USER_NAME
+				,	CONCAT(D.UPPER_LOCGOV_NM, ' ', D.LOCGOV_NM) AS LOCGOV_NM
+				,	MBER_CI
+				,	B.CNTR_AMT
+				,	E.RECEIVE_SMS
+				,	E.PHONE_NUMBER
+			FROM G_CNTR_REQMNG A
+			INNER JOIN G_CNTR B ON A.CNTR_SN = B.CNTR_SN
+			INNER JOIN OP_USER C ON B.USER_ID = C.USER_ID
+			INNER JOIN G_LOCGOV D ON B.CNTR_LOCGOV_CODE = D.LOCGOV_CODE
+			INNER JOIN OP_USER_DETAIL E ON C.USER_ID = E.USER_ID
+			WHERE A.REQ_ID = #{reqId}
+		) a
+ 	</select>
+
+ 	<select id="getCntrUsePointCheck" resultType="Integer">
+ 			/* saleson.shop.slave.SlaveGiveStateMapper.getCntrUsePointCheck */
+			SELECT
+				COUNT(*) AS CNT
+			FROM
+				G_CNTR_USE_POINT
+			WHERE
+ 				CNTR_SN = #{cntrSn}
+ 	</select>
+
+	<select id="getNtsList" parameterType="String" resultType="saleson.shop.give.givestate.domain.GiveStateNts">
+		SELECT
+			 A.ELCTRN_PAY_NO
+			 , A.STTEMNT_PAY_DE
+			 , A.CNTR_AMT
+			 , (SELECT LABEL FROM OP_COMMON_CODE WHERE CODE_TYPE = 'NTS_CODE' AND ID = A.ELCR_APL_CD) AS ELCR_APL_CD
+			 , A.NTS_RES_CODE
+			 , A.NTS_RES_MSSAGE
+			 , A.CONB_CD
+			 , A.CNTR_TYPE
+			 , A.FRST_REGIST_PNTTM
+			 , A.LAST_UPDT_PNTTM
+		FROM
+		(
+			SELECT
+				ELCTRN_PAY_NO
+				, STTEMNT_PAY_DE
+				, CNTR_AMT
+				, ELCR_APL_CD
+				, NTS_RES_CODE
+				, NTS_RES_MSSAGE
+				, CONB_CD
+				, CNTR_TYPE
+				, TO_CHAR(FRST_REGIST_PNTTM,'YYYY-MM-DD hh24:mi:ss') AS FRST_REGIST_PNTTM
+				, TO_CHAR(LAST_UPDT_PNTTM,'YYYY-MM-DD hh24:mi:ss') AS LAST_UPDT_PNTTM
+			FROM G_CNTR_TAX_LOG
+			WHERE ELCTRN_PAY_NO = #{elctrnPayNo}
+		) A
+		ORDER BY A.FRST_REGIST_PNTTM DESC
+	</select>
+
+</mapper>

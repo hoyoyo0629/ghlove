@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>:: Fasoo Secure Web ::</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=7" />
+
+
+<script src="../js/cookieLib.js"></script>
+<script language=javascript>
+
+function GetFSWErrorNumber()
+{
+	var param = window.location.href;
+	
+	var pos1 = param.indexOf("?");
+	
+	if ( pos1 == -1 )
+		return "-1";
+
+	param = param.substr(pos1+1);
+	
+	pos1 = param.indexOf("errNo=");
+	if ( pos1 == -1 )
+		return "-1";
+	
+	pos1 += 6;	// errNo=
+	var pos2 = param.indexOf("&", pos1);
+
+	if ( pos2 == 0 )
+		return "-1";
+		
+	if ( pos2 == -1 )
+		pos2 = param.length;
+	
+	if ( pos1 == pos2 )
+		return "-1";
+		
+	return param.substring(pos1, pos2);
+}
+
+function install_restore_helpdesk()
+{    
+	if (GetCookie('f_install_guide') == 'false')
+	{
+		//설치 가이드 페이지 호출
+        return "install_guide.html";				
+	}
+	else
+	{
+        return "restore_helpdesk.html";									
+	}
+}
+
+function install_helpdesk()
+{    
+	if (GetCookie('f_install_guide') == 'false')
+	{
+		//설치 가이드 페이지 호출
+        return "install_guide.html";				
+	}
+	else
+	{
+        return "install_helpdesk.html";									
+	}
+}
+
+function SelectGuide(Language, ErrNum)
+{   
+	var guideUrl = "restore_helpdesk.html";
+	
+	switch (ErrNum)
+	{
+		case '-1':
+		case '-110':
+		case '-112':
+		guideUrl = install_helpdesk();
+		break;			
+		
+		case '-2':
+		case '-3':
+		case '-4':		
+		case '-5':				
+		guideUrl="restore_visualc_helpdesk.html";
+		break;
+		
+		case '-6':
+		case '-111':
+		case '53':								
+		guideUrl="others_browser_helpdesk.html";
+		break;
+		
+		case '-7':
+		guideUrl="os_check.html";
+		break;
+
+		case '-8':
+		guideUrl="lang_check.html";
+		break;
+
+		case '-10':		
+		guideUrl="activex_filtering_helpdesk.html";
+		break;			
+				
+		case '-20':
+		guideUrl="not_allowed_devtool.html";
+		break;
+					
+		case '34':		
+		guideUrl="browser_opt_ie_toolbar_helpdesk.html";
+		break;		
+		
+		case '30':		
+		case '52':				
+		guideUrl="not_support_ie_ver_helpdesk.html";
+		break;					
+		
+		case '33':	
+		case '51':
+		case '-113':		
+		guideUrl="domain_cert_err_helpdesk.html";
+		break;							
+		
+		case '55':
+		case '-115':
+		guideUrl="virtual_env_helpdesk.html";
+		break;	
+		
+		case '900':
+		case '-120':
+		guideUrl="win10_RS3_defender_helpdesk.html";
+		break;
+		
+		case '901':
+		case '-121':
+		guideUrl="system_reboot.html";
+		break;
+		
+	}
+	
+	if(Language == "ko"){
+		window.location.href = guideUrl + "?errNo=" + ErrNum;
+	}else{
+		window.location.href = "en_" + guideUrl + "?errNo=" + ErrNum;
+	}
+}
+
+function InitalizeCookie()
+{
+    if (GetCookie('f_install_guide') == 'undefined' || GetCookie('f_install_guide') == null)
+        SetCookieVal('f_install_guide', 'false');
+        
+    if (GetCookie('f_install_guide_again') == 'undefined' || GetCookie('f_install_guide_again') == null)
+        SetCookieVal('f_install_guide_again', 'false');        
+
+    if (GetCookie('f_restore') == 'undefined' || GetCookie('f_restore') == null)
+        SetCookieVal('f_restore', 'false');
+        
+    if (GetCookie('f_visualc') == 'undefined' || GetCookie('f_visualc') == null)
+        SetCookieVal('f_visualc', 'false');        
+        
+    if (GetCookie('f_others_browser_opt') == 'undefined' || GetCookie('f_others_browser_opt') == null)
+        SetCookieVal('f_others_browser_opt', 'false');                
+
+    if (GetCookie('f_ie_toolbar') == 'undefined' || GetCookie('f_ie_toolbar') == null)
+        SetCookieVal('f_ie_toolbar', 'false');                        
+
+    if (GetCookie('f_others_browser') == 'undefined' || GetCookie('f_others_browser') == null)
+        SetCookieVal('f_others_browser', 'false');                        
+
+    if (GetCookie('f_activex_filtering') == 'undefined' || GetCookie('f_activex_filtering') == null)
+        SetCookieVal('f_activex_filtering', 'false');                                        
+
+    if (GetCookie('f_not_support_ie_ver') == 'undefined' || GetCookie('f_not_support_ie_ver') == null)
+        SetCookieVal('f_not_support_ie_ver', 'false');                                                
+
+    if (GetCookie('f_domain_cert_err') == 'undefined' || GetCookie('f_domain_cert_err') == null)
+        SetCookieVal('f_domain_cert_err', 'false');                                                     
+
+    if (GetCookie('f_virtual_env') == 'undefined' || GetCookie('f_virtual_env') == null)
+        SetCookieVal('f_virtual_env', 'false');                                                   
+ 
+    //msg = "InitalizeCooke() => " + "f_install_guide : " + GetCookie('f_install_guide') + " ," + "f_restore : " + GetCookie('f_restore') + " ," + "f_visualc : " + GetCookie('f_visualc') + " ," + "f_others_browser_opt : " + GetCookie('f_others_browser_opt')
+    // + " ," + "f_ie_toolbar : " + GetCookie('f_ie_toolbar') + " ," + "f_others_browser : " + GetCookie('f_others_browser') + " ," + "f_activex_filtering : " + GetCookie('f_activex_filtering')
+    // + " ," + "f_not_support_ie_ver : " + GetCookie('f_not_support_ie_ver') + " ," + "f_domain_cert_err : " + GetCookie('f_domain_cert_err') + " ," + "f_virtual_env : " + GetCookie('f_virtual_env');
+    //alert(msg);
+}
+
+function DisplayGuide()
+{
+    InitalizeCookie();
+   
+    var errNo = GetFSWErrorNumber();  
+    
+	if (navigator.userLanguage == "ko" || navigator.userLanguage == "ko-KR" || navigator.language == "ko" || navigator.language == "ko-KR")
+	{
+	    SelectGuide("ko", errNo); 	
+	}
+	else
+	{
+	    SelectGuide("en", errNo); 		
+	}
+}
+
+
+//-->
+</script>
+</head>
+<body onload="DisplayGuide();">
+</body>
+</html> 
+

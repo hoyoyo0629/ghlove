@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 마이페이지 메인 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+    <link rel="stylesheet" href="/static/css/m_main.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali></layout-mypage-lnb-ali>
+
+        <section class="find-idpw center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              마이페이지
+            </span>
+            <h2 class="page-title-txt">마이페이지</h2>
+
+            <div class="user-grade point" style="height: 39px">
+              <!--<span class="grade-bg">
+                            <span><span class="blue-txt">{{userName}}</span> 회원님은 {{userGrade}}이십니다.</span>
+                        </span>-->
+            </div>
+          </div>
+        </section>
+        <section id="contents">
+          <div class="center">
+            <!-- 기부&관심정보 -->
+            <div class="row_con flex">
+              <!-- 기부 -->
+              <div class="half_con dona">
+                <h3 class="deepSubBlue">기부</h3>
+                <div class="con_wrap">
+                  <div class="wrap_items left_list" @click="goToCntrList()" tabindex="0" @keydown="tabToCntrList($event)">
+                    <div class="top_area">
+                      <span class="link_tit">
+                        <span>기부내역</span>
+                        <span>조회</span>
+                      </span>
+                      <button class="round-illustBtn_s" tabindex="-1">
+                        <span class="hidden_txt">기부내역 조회 바로가기</span>
+                      </button>
+                    </div>
+                    <div class="data_area">
+                      <span class="data_val">{{formatNumber(totalCntrAmt)}}</span>
+                      <span class="unit">원</span>
+                    </div>
+                  </div>
+                  <div class="wrap_items right_list" @click="goToGntrPoint()" tabindex="0" @keydown="tabToGntrPoint($event)">
+                    <div class="top_area">
+                      <span class="link_tit">
+                        <span>기부포인트</span>
+                        <span>조회</span>
+                      </span>
+                      <button class="round-illustBtn_s" tabindex="-1">
+                        <span class="hidden_txt">기부포인트 조회 바로가기</span>
+                      </button>
+                    </div>
+                    <div class="data_area">
+                      <span class="data_val">{{formatNumber(blcePointTotal)}}</span>
+                      <span class="unit">P</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- //기부 -->
+
+              <!-- 기부확인증 및 기부혜택증 -->
+              <div class="half_con intrst">
+              <h3 class="deepSubBlue">확인(혜택)증</h3>
+                <div class="con_wrap">
+
+                  <div class="wrap_items left_list" @click="goToReceiptList()" tabindex="0" @keydown="tabToReceiptList($event)">
+                    <div class="top_area">
+                      <span class="link_tit">
+                        <span>기부확인증</span>
+                      </span>
+                      <button class="round-illustBtn_s" tabindex="-1">
+                        <span class="hidden_txt">기부확인증 바로가기</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="wrap_items right_list" @click="goToHonorList()" tabindex="0" @keydown="tabToHonorList($event)">
+                    <div class="top_area">
+                      <span class="link_tit">
+                        <span>기부혜택증</span>
+                        <span>(지자체별)</span>
+                      </span>
+                      <button class="round-illustBtn_s" tabindex="-1">
+                        <span class="hidden_txt">기부혜택증 (지자체별) 바로가기</span>
+                      </button>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+             </div>
+			<!-- //기부확인증 및 기부혜택증 -->
+			<div class="row_con flex">
+              <!-- 관심정보 -->
+              <div class="half_con intrst">
+                <h3 class="deepSubBlue">관심정보</h3>
+                <div class="con_wrap">
+                  <div class="wrap_items left_list" @click="goToIntrstLocGov()" tabindex="0" @keydown="tabToIntrstLocGov($event)">
+                    <div class="top_area">
+                      <span class="link_tit">
+                        <span>관심지자체</span>
+                      </span>
+                      <button class="round-illustBtn_s" tabindex="-1">
+                        <span class="hidden_txt">관심지자체 바로가기</span>
+                      </button>
+                    </div>
+                    <div class="data_area">
+                      <span class="data_val count">{{favLocgovCnt}}</span>
+                      <span class="unit">건</span>
+                    </div>
+                  </div>
+                  <div class="wrap_items right_list" @click="goToFavorGoods()" tabindex="0" @keydown="tabToFavorGoods($event)">
+                    <div class="top_area">
+                      <span class="link_tit">
+                        <span>관심답례품</span>
+                      </span>
+                      <button class="round-illustBtn_s" tabindex="-1">
+                        <span class="hidden_txt">관심답례품 바로가기</span>
+                      </button>
+                    </div>
+                    <div class="data_area">
+                      <span class="data_val count">{{favItemCnt}}</span>
+                      <span class="unit">건</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+             </div>
+              <!-- //관심정보 -->
+
+            <!-- //기부&관심정보 -->
+
+            <!-- 답례품 -->
+            <div class="row_con">
+              <h3 class="deepSubBlue">답례품</h3>
+              <div class="con_wrap goods">
+                <div
+                  class="wrap_items"
+                  v-for="(pageL, i) in pageList"
+                  :key="i"
+                  @click="redirect(pageList[i].url)"
+                  tabindex="0"
+                  @keydown="tabRedirect(pageList[i].url,$event)"
+                >
+                  <div class="top_area">
+                    <span class="items_label">{{pageL.itemTitle}}</span>
+                  </div>
+                  <div class="data_area">
+                    <span class="data_val count">{{pageL.itemCnt}}</span>
+                    <span class="unit">건</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- //답례품 -->
+
+            <!-- 회원정보수정 & 명예기부자-->
+            <div class="row_con flex cols3">
+              <div class="wrap_items cursor" tabindex="0" @click="goToModify()" @keydown="tabToModify($event)">
+                <span class="link_tit">
+                  <span class="deepSubBlue">회원정보수정</span>
+                </span>
+                <button type="button" class="round-illustBtn_s" tabindex="-1">
+                  <span class="hidden_txt">회원정보수정 바로가기</span>
+                </button>
+              </div>
+              <div class="wrap_items cursor" tabindex="0" @click="goToInquiry()" @keydown="tabToInquiry($event)">
+                <span class="link_tit">
+                  <span class="deepSubBlue">1:1 문의</span>
+                </span>
+                <button type="button" class="round-illustBtn_s" tabindex="-1">
+                  <span class="hidden_txt">일대일 문의 바로가기</span>
+                </button>
+              </div>
+<!--               <div class="wrap_items cursor" tabindex="0" @click="goToHonorList()" @keydown="tabToHonorList($event)"> -->
+<!--                 <span class="link_tit"> -->
+<!--                   <span class="deepSubBlue"> -->
+<!--                     <span>기부혜택증</span> -->
+<!--                   </span> -->
+<!--                 </span> -->
+<!--                 <button type="button" class="round-illustBtn_s" tabindex="-1"> -->
+<!--                   <span class="hidden_txt">기부혜택증 바로가기</span> -->
+<!--                 </button> -->
+<!--               </div> -->
+            </div>
+            <!-- //회원정보수정 -->
+          </div>
+        </section>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+
+        <!-- footer component -->
+        <layout-footer-ali></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+        },
+        data: {
+          userName: "",
+          totalCntrAmt: "0",
+          blcePointTotal: "0",
+          userGrade: "일반회원",
+          pageList: [
+            {
+              itemTitle: "주문조회",
+              itemCnt: 0,
+              url: "/mypage/orderList.html",
+            },
+            {
+              itemTitle: "취소반품교환",
+              itemCnt: 0,
+              url: "/mypage/orderCancel.html",
+            },
+            {
+              itemTitle: "답례품 후기",
+              itemCnt: 0,
+              url: "/mypage/review.html",
+            },
+            {
+              itemTitle: "답례품Q&A",
+              itemCnt: 0,
+              url: "/mypage/inquiryItem.html",
+            },
+            {
+              itemTitle: "배송지 관리",
+              itemCnt: 0,
+              url: "/mypage/deliveryInfo.html",
+            },
+          ],
+          favLocgovCnt: 0,
+          favItemCnt: 0,
+        },
+        methods: {
+          selectedBlue: function (e) {
+            $(e.target).addClass("on").siblings(".mylist").removeClass("on");
+          },
+          getMyPageInfo: function (response) {
+            $(".lnb-bar_2dep li").removeClass("currentT");
+            $s.api.getSubmit("/api/mypage", "", function (response) {
+              vm.userName = response.userName;
+              vm.totalCntrAmt = response.totalCntrAmt;
+              vm.blcePointTotal = response.blcePointTotal;
+              $(".lnb-bar_2dep li").eq(0).addClass("currentT");
+              vm.favLocgovCnt = response.favLocgovCnt;
+              vm.favItemCnt = response.favItemCnt;
+              vm.pageList[0].itemCnt = response.orderItemCnt;
+              vm.pageList[1].itemCnt = response.orderItemClaimCnt;
+              vm.pageList[2].itemCnt = response.reviewCnt;
+              vm.pageList[3].itemCnt = response.qnaCnt;
+              vm.pageList[4].itemCnt = response.deliveryCnt;
+            });
+          },
+          goToIntrstLocGov: function () {
+            location.href = "/mypage/intrstLocGov.html";
+          },
+          tabToIntrstLocGov: function () {
+            if (e.keyCode === 13 || e.keyCode === 32) location.href = "/mypage/intrstLocGov.html";
+          },
+          goToGntrPoint: function () {
+            location.href = "/mypage/cntrPoint.html";
+          },
+          goToItemSite: function () {
+            /*$s.api.getSubmit('/api/present/login', '', function (response) {
+                    var param = '';
+                    if (response.isSuccess) {
+                        param = (response.data == null) ? '' : response.data;
+
+                        var domain = "";
+                        if (window.location.hostname.indexOf("ilovegohyang.go.kr") > -1) {
+                            domain = 'https://shop.ilovegohyang.go.kr';
+                        } else {
+                            domain = 'https://gohyang01.bbiz.kr';
+                        }
+
+//                        var child = window.open("https://gohyang01.bbiz.kr/kwa-sell_list?_tss_=" + param, 'presentPopup', '_blank');
+                        var child = window.open(domain+"/kwa-sell_list?_tss_=" + param, 'presentPopup', 'noopener');
+                        // var child = window.open('https://gohyang01.bbiz.kr?_tss_=' + param, 'presentPopup', '_blank');
+                        // child.location.href="https://gohyang01.bbiz.kr/kwa-sell_list";
+                        }
+                    });*/
+
+            location.href = "/goods/index.html";
+          },
+          goToCntrList: function () {
+            location.href = "/mypage/cntrList.html";
+          },
+          tabToCntrList(e) {
+            if (e.keyCode === 13 || e.keyCode === 32) location.href = "/mypage/cntrList.html";
+          },
+
+          goToFavorGoods: function () {
+            location.href = "/mypage/favorItem.html";
+          },
+          tabToFavorGoods(e) {
+            if (e.keyCode === 13 || e.keyCode === 32) location.href = "/mypage/favorItem.html";
+          },
+          goToModify: function () {
+            location.href = "/users/modify.html";
+          },
+          tabToModify(e) {
+            if (e.keyCode === 13 || e.keyCode === 32) location.href = "/users/modify.html";
+          },
+          goToInquiry: function () {
+            location.href = "/mypage/inquiry.html";
+          },
+          tabToInquiry(e) {
+            if (e.keyCode === 13 || e.keyCode === 32) location.href = "/mypage/inquiry.html";
+          },
+          goToHonorList: function () {
+            location.href = "/mypage/honorList.html";
+          },
+          tabToHonorList(e) {
+            if (e.keyCode === 13 || e.keyCode === 32) location.href = "/mypage/honorList.html";
+          },
+          goToReceiptList: function () {
+			sessionStorage.setItem("receiptFromType","mypage");
+            location.href = "/mypage/receiptList.html";
+          },
+          tabToReceiptList(e) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+				sessionStorage.setItem("receiptFromType","mypage");
+				location.href = "/mypage/receiptList.html"
+			};
+          },
+          redirect: function (url) {
+            $s.redirect(url);
+          },
+          tabRedirect: function (url, e) {
+            if (e.keyCode === 13 || e.keyCode === 32) $s.redirect(url);
+          },
+          tempMsg: function () {
+            $s.alert("준비 중입니다.");
+          },
+        },
+        computed: {},
+        mounted: function () {
+          this.$nextTick(function () {
+            // 페이지 로딩 후 실행
+            Saleson.init({ loginPage: true });
+            vm.getMyPageInfo();
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

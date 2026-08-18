@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko">
+ <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="../../../../favicon.ico"> 
+	<title>SalesOn :: 다운로드 가능쿠폰-고향사랑e음</title> 
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">  
+	<!-- Custom styles for this template -->
+	<link rel="stylesheet" href="/static/css/swiper.min.css"> 
+	<link rel="stylesheet" href="/static/css/common.css">
+	<link rel="stylesheet" href="/static/css/layout.css">
+	<link rel="stylesheet" href="/static/css/item.css"> 
+	<link rel="stylesheet" href="/static/css/order.css">
+	<link rel="stylesheet" href="/static/css/mypage.css">
+	<link rel="stylesheet" href="/static/css/member.css">
+	<link rel="stylesheet" href="/static/css/customer.css">
+	<link rel="stylesheet" href="/static/css/etc.css">
+
+	 <script src="/static/js/jquery-3.4.1.min.js"></script>
+	 <script src="/modules/axios.js"></script>
+	 <script src="/modules/vue.js"></script>
+	 <script src="/modules/httpVueLoader.js"></script>
+	 <script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+	 <script src="/modules/op.vue.js"></script>
+ </head> 
+ <body>
+	<div class="pop_downCoupon" id="saleson">
+		<div class="modal-head">
+			<h1 class="tit">다운로드 가능쿠폰</h1>
+		</div>
+		<div class="modal-body" v-if="result.itemCoupons.length > 0">
+			<div class="btn-group">
+				<button type="button" class="btn btn_lg btn_deliMore"><img src="/content/images/icon/icon_down01.png" alt="">다운로드 가능쿠폰 모두받기</button>
+			</div>
+			<ul class="coupon_list">
+				<li class="row no-gutters" v-for="data in result.itemCoupons" :id="data.couponId">
+					<div class="col-3 value_area">
+						<div class="value_in">
+							<span class="coupon" @click="couponDownload(data.couponId);">쿠폰받기</span>
+						</div>
+					</div>
+					<div class="col-9 txt_area">
+						<p class="title" v-if="data.couponPayType === '1'">{{data.couponPay}}원 할인쿠폰</p>
+						<p class="title" v-if="data.couponPayType === '2'">{{data.couponPay}}% 할인쿠폰</p>
+						<p class="conts">{{data.couponName}}</p>
+						<div class="info">
+							<p class="date" v-if="data.couponApplyType === '1'">{{data.couponApplyStartDate}} ~ {{data.couponApplyEndDate}}</p>
+							<p class="date" v-if="data.couponApplyType === '2'">{{data.couponApplyDay}}까지</p>
+							<p class="date" v-else>기간 : 제한없음</p>
+							<p v-if="data.couponPayRestriction > 0">{{data.couponPayRestriction}}원 이상</p>
+							<p v-if="data.couponDiscountLimitPrice > 0">최대 {{data.couponDiscountLimitPrice}}원 까지 할인</p>
+						</div>
+						<a href="#" class="item_link">적용상품보기</a>
+					</div>
+				</li>
+			</ul> <!--// coupon_list E -->
+		</div>
+		<div class="modal-body" v-else>
+			<div class="coupon_none">
+				<p>다운로드 가능 쿠폰이 없습니다.</p>
+			</div> <!--// coupon_none E -->
+		</div>
+		<a href="/mypage/coupon_01.html" class="pop_close"><img src="/content/images/icon/btn_itemDel.png" alt="팝업창 닫기"></a>
+
+		<alert></alert>
+
+	</div> <!--// pop_downCoupon E -->
+	<script>
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'alert': httpVueLoader('/components/layouts/alert.vue')
+            },
+            data: {
+                param: {
+                    couponType: "",
+                    itemId: 0,
+					couponId : 0
+                },
+                result: {
+
+                }
+            },
+            methods: {
+                submit : function(){
+                    vm.param.couponType = "WEB";
+                    $s.api.downloadCouponList(vm.param,
+                        function (response) {
+                            vm.result = response;
+                        }
+                    );
+                },
+
+				couponAllDownload : function(){
+                    var errorCount = 0;
+					$.each($(".coupon_list li"), function(){
+                        vm.param.couponId = this.id;
+                        $s.api.couponDownload(vm.param,
+                            function (response) {
+                                if(response.status === "OK"){
+                                    // vm.submit();
+                                } else {
+                                    errorCount++;
+                                }
+                            }
+                        );
+					});
+
+					if(errorCount == 0){
+                        alert("쿠폰이 다운로드 되었습니다.");
+                        vm.submit();
+					} else {
+					    location.reload();
+					}
+				},
+
+				couponDownload : function(couponId){
+                    vm.param.couponId = couponId;
+                    $s.confirm("쿠폰을 다운로드 하시겠습니까?", function(){
+                        $s.api.couponDownload(vm.param,
+                            function (response) {
+                                if(response.status === "OK"){
+                                    alert("쿠폰이 다운로드 되었습니다.");
+                                    vm.submit();
+                                } else {
+                                    alert(response);
+                                }
+                            }
+                        );
+                    });
+				}
+            },
+            beforeCreate() {
+
+            },
+            mounted: function() {
+                this.$nextTick(function () {
+
+	                Saleson.init();
+
+                    vm.submit();
+                });
+            }
+        });
+
+	</script>
+
+	<script src="/static/js/swiper.min.js"></script>
+	<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+	<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+	<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+	<script src="/static/js/jquery.popupoverlay.js"></script>
+	<script src="/static/js/jquery.waypoints.min.js"></script>
+	<script src="/static/js/jquery.counterup.min.js"></script>
+	<script src="/static/js/common.js"></script>
+	<script src="/static/js/header.js"></script>
+	<script src="/static/js/footer.js"></script>
+
+ </body>
+</html>

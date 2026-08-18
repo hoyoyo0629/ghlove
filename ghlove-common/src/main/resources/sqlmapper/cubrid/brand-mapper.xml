@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.brand.BrandMapper">
+	<resultMap id="BrandResult" type="saleson.shop.brand.domain.Brand">
+		<result property="brandId" column="BRAND_ID" />
+		<result property="brandName" column="BRAND_NAME" />
+		<result property="brandImage" column="BRAND_IMAGE" />
+		<result property="brandContent" column="BRAND_CONTENT" />
+		<result property="displayFlag" column="DISPLAY_FLAG" />
+		<result property="updatedUserId" column="UPDATED_USER_ID" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="createdUserId" column="CREATED_USER_ID" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="locgovCode" column="LOCGOV_CODE" />
+		<result property="locgovName" column="LOCGOV_NAME" />
+	</resultMap>
+	
+	
+	<resultMap id="BrandCategoryResult" type="saleson.shop.brand.domain.BrandCategory">
+		<result property="brandCategoryId" column="BRAND_CATEGORY_ID" />
+		<result property="brandId" column="BRAND_ID" />
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="createdDate" column="CREATED_DATE" />
+	</resultMap>
+	
+	<!-- 조회 조건 -->
+	<sql id="sqlBrandWhere">
+		<where>
+			1 = 1
+			<if test='query != null and query != ""'>
+				<choose>
+					<when test='where == "BRAND_NAME"'>
+						AND BRAND_NAME LIKE CONCAT('%', #{query} , '%')
+					</when>
+				</choose>
+			</if>
+			<if test='brandId != null and brandId != ""'>
+				AND BRAND_ID = #{brandId}
+			</if>
+			<if test='brandName != null and brandName != ""'>
+				AND BRAND_NAME LIKE CONCAT('%', #{brandName} , '%')
+			</if>
+			<if test="upperLocgovCode != null and upperLocgovCode != ''">
+				<choose>
+					<when test="locgovCode != null and locgovCode != ''">
+						AND LOCGOV_CODE = #{locgovCode}
+					</when>
+					<otherwise>
+						AND LOCGOV_CODE IN (
+							SELECT LOCGOV.LOCGOV_CODE
+								FROM G_LOCGOV LOCGOV
+								WHERE LOCGOV.UPPER_LOCGOV_CODE = #{upperLocgovCode}
+						)
+					</otherwise>
+				</choose>
+			</if>
+			<if test="displayFlag != null and displayFlag != ''">
+				AND DISPLAY_FLAG = #{displayFlag}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 조건에 해당하는 데이터 수 -->
+	<select id="getBrandCount" parameterType="saleson.shop.brand.support.BrandParam" resultType="int">
+		/* saleson.shop.brand.BrandMapper.getBrandCount */
+		SELECT COUNT(*) FROM OP_BRAND
+		<include refid="sqlBrandWhere" />
+	</select>
+	
+	<!-- 조건에 해당하는 데이터 목록 -->
+	<select id="getBrandList" parameterType="saleson.shop.brand.support.BrandParam" resultMap="BrandResult">
+		<include refid="CommonMapper.paginationHeader" />
+			/* saleson.shop.brand.BrandMapper.getBrandList */
+			SELECT 
+				BRND.BRAND_ID
+				, BRND.BRAND_NAME
+				, BRND.BRAND_IMAGE
+				, BRND.BRAND_CONTENT
+				, BRND.DISPLAY_FLAG
+				, BRND.LOCGOV_CODE
+				, (
+					SELECT
+						CASE 
+							WHEN LOCGOV.LOCGOV_CODE = LOCGOV.UPPER_LOCGOV_CODE 
+								THEN LOCGOV.UPPER_LOCGOV_NM
+							ELSE
+								CONCAT(LOCGOV.UPPER_LOCGOV_NM, ' ', LOCGOV.LOCGOV_NM)
+							END
+					FROM G_LOCGOV LOCGOV
+					WHERE LOCGOV.LOCGOV_CODE = BRND.LOCGOV_CODE
+				) AS LOCGOV_NAME
+			FROM OP_BRAND BRND
+			<include refid="sqlBrandWhere" />
+			<!-- ORDER BY BRAND_ID DESC -->
+			ORDER BY BRAND_NAME
+			
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+	
+	<!-- 조건에 해당하는 데이터 조회 -->
+	<select id="getBrand" parameterType="saleson.shop.brand.support.BrandParam" resultMap="BrandResult">
+		/* saleson.shop.brand.BrandMapper.getBrand */
+		SELECT * FROM OP_BRAND
+		<include refid="sqlBrandWhere" />
+	</select>
+	
+	<!-- ID로 데이터 조회 -->
+	<select id="getBrandById" parameterType="int" resultMap="BrandResult">
+		/* saleson.shop.brand.BrandMapper.getBrandById */
+		SELECT * FROM OP_BRAND
+		WHERE BRAND_ID = #{value}
+	</select>
+	
+	<!-- 데이터 등록 -->
+	<insert id="insertBrand" parameterType="saleson.shop.brand.domain.Brand">
+		/* saleson.shop.brand.BrandMapper.insertBrand */
+		INSERT INTO OP_BRAND (BRAND_ID, BRAND_NAME, BRAND_IMAGE, BRAND_CONTENT, DISPLAY_FLAG, UPDATED_USER_ID, UPDATED_DATE, CREATED_USER_ID, CREATED_DATE, LOCGOV_CODE)
+		VALUES (#{brandId}, #{brandName}, #{brandImage}, #{brandContent}, #{displayFlag}, #{updatedUserId}, <include refid="CommonMapper.datetime"/>, #{createdUserId}, <include refid="CommonMapper.datetime"/>, #{locgovCode})
+	</insert>
+	
+	<!-- 데이터 수정 -->
+	<update id="updateBrand" parameterType="saleson.shop.brand.domain.Brand">
+		/* saleson.shop.brand.BrandMapper.updateBrand */
+		UPDATE OP_BRAND
+		<set>
+			BRAND_NAME = #{brandName},
+			BRAND_IMAGE = #{brandImage},
+			BRAND_CONTENT = #{brandContent},
+			DISPLAY_FLAG = #{displayFlag},
+			UPDATED_USER_ID = #{updatedUserId},
+			UPDATED_DATE = <include refid="CommonMapper.datetime"/>,
+			CREATED_USER_ID = #{createdUserId},		
+		</set>
+		WHERE BRAND_ID = #{brandId}
+	</update>
+	
+	<!-- ID로 데이터 삭제 -->
+	<delete id="deleteBrandById" parameterType="int">
+		/* saleson.shop.brand.BrandMapper.deleteBrandById */
+		DELETE FROM OP_BRAND
+		WHERE BRAND_ID = #{value}
+	</delete>
+	
+	
+	
+	
+	<!-- 데이터 등록 -->
+	<insert id="insertBrandCategory" parameterType="saleson.shop.brand.domain.BrandCategory">
+		/* saleson.shop.brand.BrandMapper.insertBrandCategory */
+		INSERT INTO OP_BRAND_CATEGORY (BRAND_CATEGORY_ID, BRAND_ID, CATEGORY_ID, CREATED_DATE)
+		VALUES (#{brandCategoryId}, #{brandId}, #{categoryId}, <include refid="CommonMapper.datetime"/>)
+	</insert>
+	
+	<!-- 데이터 수정 -->
+	<update id="updateBrandCategory" parameterType="saleson.shop.brand.domain.BrandCategory">
+		/* saleson.shop.brand.BrandMapper.updateBrandCategory */
+		UPDATE OP_BRAND_CATEGORY
+		<set>
+			BRAND_ID = #{brandId},
+			CATEGORY_ID = #{categoryId},		
+		</set>
+		WHERE BRAND_CATEGORY_ID = #{brandCategoryId}
+	</update>
+	
+	<!-- ID로 데이터 삭제 -->
+	<delete id="deleteBrandCategoryById" parameterType="int">
+		/* saleson.shop.brand.BrandMapper.deleteBrandCategoryById */
+		DELETE FROM OP_BRAND_CATEGORY
+		WHERE BRAND_CATEGORY_ID = #{value}
+	</delete>
+	
+	<select id="getOpUserLocgovCode" parameterType="saleson.shop.brand.support.BrandParam" resultType="String">
+		/* saleson.shop.brand.BrandMapper.getOpUserLocgovCode */
+		SELECT LOCGOV_CODE
+			FROM OP_SELLER_USER
+			WHERE USER_ID = #{userId}
+		<!-- SELECT LOCGOV_CODE FROM OP_SELLER_USER WHERE LOGIN_ID = #{brandId} -->
+	</select>
+	
+	<select id="getOpManagerLocgovCode" parameterType="saleson.shop.brand.support.BrandParam" resultType="String">
+		/* saleson.shop.brand.BrandMapper.getOpManagerLocgovCode */
+		SELECT LOCGOV_CODE
+			FROM OP_MANAGER
+			WHERE USER_ID = #{userId}
+		<!-- SELECT LOCGOV_CODE FROM OP_MANAGER WHERE LOGIN_ID = #{brandId} -->
+	</select>
+	
+</mapper>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="../../../../favicon.ico">
+    <title>고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/order.css">
+</head>
+<body>
+<div id="saleson" v-cloak>
+    <layout-header></layout-header>
+
+    <section class="contents nomem_terms_contents">
+        <div class="tit_wrap">
+            <h2 class="tit">비회원 약관동의</h2>
+        </div>
+        <div class="nomem_terms_wrap">
+            <div class="container">
+                <div class="row no-gutters justify-content-center">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="link_area">
+                            <p>비회원으로 구매하시면 세일즈온에서 드리는 쿠폰할인 및 포인트 적립 혜택을 받으실수 없습니다.</p>
+                            <p>또한 비회원 주문시에는 포인트가 지급되지 않습니다.</p>
+                            <div class="btn_wrap">
+                                <a href="javascript:void(0);" type="button" class="btn btn_sm btn_primary" @click="login">로그인</a>
+                                <a href="/users/join.html" class="btn btn_sm btn_outline_secondary">회원가입</a>
+                            </div>
+                        </div>
+                        <div class="agree_wrap">
+                            <div class="all_check">
+                                <div class="check_area">
+                                    <input type="checkbox" id="all_check" title="선택" @click="allArrgeCheck">
+                                    <label for="all_check">모든 약관 동의</label>
+                                </div>
+                            </div>
+                            <div class="agree_check">
+                                <div class="check_area">
+                                    <input type="checkbox" id="agree_check1" title="선택" value="check1" v-model="arrgeChecks">
+                                    <label for="agree_check1">이용약관에 동의(필수)</label>
+                                </div>
+                                <button class="terms_link" data-toggle="modal" data-target=".pop_policy_use">약관보기</button>
+                            </div>
+                            <div class="agree_check">
+                                <div class="check_area">
+                                    <input type="checkbox" id="agree_check2" title="선택" value="check2" v-model="arrgeChecks">
+                                    <label for="agree_check2">개인정보의 수집·이용목적 및 항목에 동의(필수)</label>
+                                </div>
+                                <button class="terms_link" data-toggle="modal" data-target=".pop_privacy_use">약관보기</button>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn_lg btn_primary" @click="buyOrder">결제하러가기</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <layout-footer></layout-footer>
+
+    <!-- 이용약관 팝업 -->
+    <div class="modal fade modal_full pop_policy_use" v-if="policy != null">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal_tit">{{ policy.title }}</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="terms_wrap" v-html="policy.content"></div>
+                </div>
+                <button type="button" class="modal_close" data-dismiss="modal">
+                    <span class="screen_out">닫기</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal_full pop_privacy_use" v-if="privacy != null">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal_tit">{{ privacy.title }}</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="terms_wrap" v-html="privacy.content"></div>
+                </div>
+                <button type="button" class="modal_close" data-dismiss="modal">
+                    <span class="screen_out">닫기</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- JavaScript -->
+<script src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/swiper.min.js"></script>
+<script src="/modules/swiper/vue-awesome-swiper.js"></script>
+<script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+<script src="/static/js/bootstrap/bootstrap.min.js"></script>
+<script src="/static/js/jquery.popupoverlay.js"></script>
+<script src="/static/js/jquery.waypoints.min.js"></script>
+<script src="/static/js/jquery.counterup.min.js"></script>
+<script src="/static/js/common.js"></script>
+<script src="/static/js/header.js"></script>
+<script src="/static/js/footer.js"></script>
+
+
+<script src="/modules/babel.min.js"></script>
+<script src="/modules/es6-promise.min.js"></script>
+<script src="/modules/es6-promise.auto.min.js"></script>
+<script src="/modules/axios.js"></script>
+<script src="/modules/vue.js"></script>
+<script src="/modules/httpVueLoader.js"></script>
+<script src="/modules/op.config.js"></script>
+<script src="/modules/op.saleson.js"></script>
+<script type="text/babel" src="/modules/op.vue.js"></script>
+
+
+<script type="text/babel">
+
+    Vue.use(VueAwesomeSwiper);
+    var vm = new Vue({
+        el: '#saleson',
+        components: {
+            'layout-footer': httpVueLoader('/components/layouts/footer.vue'),
+            'layout-header': httpVueLoader('/components/layouts/header.vue'),
+        },
+        data: {
+            arrgeAllChecks: ['check1','check2'],
+            arrgeChecks: [],
+            policy: {},
+            privacy: {}
+        },
+        methods: {
+            allArrgeCheck: function() {
+                var list = this.arrgeChecks;
+                var allArray = this.arrgeAllChecks;
+
+                if (list.length != allArray.length) {
+                    this.arrgeChecks = allArray;
+                } else {
+                    this.arrgeChecks = [];
+                }
+            },
+            buyOrder: function() {
+                if (!this.isCheckValid) {
+                    $s.alert('약관 동의후 진행부탁 드립니다.');
+                    return;
+                }
+
+                $s.redirect('/order/step1.html');
+            },
+            login: function() {
+                $s.redirect('/users/login.html?target=' + encodeURIComponent('/order/step1.html'));
+            }
+        },
+        computed: {
+            isCheckValid: function() {
+                return this.arrgeAllChecks.length == this.arrgeChecks.length;
+            }
+        },
+        mounted: function() {
+            this.$nextTick(function () {
+                Saleson.init();
+
+                $s.api.getPolicy({},
+                    function (response) {
+                        vm.policy = response.clause;
+                    }
+                );
+
+                $s.api.getPrivacy({},
+                    function (response) {
+                        vm.privacy = response.protect;
+                    }
+                );
+            });
+        }
+    });
+</script>
+
+
+
+</body>
+</html>

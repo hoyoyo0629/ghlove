@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>:: Fasoo Secure Web ::</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<META content=no-cache http-equiv=pragma>
+<META content=no-cache http-equiv=cache-control>
+<META content=0 http-equiv=expires>
+<meta http-equiv="X-UA-Compatible" content="IE=7" />
+<link type="text/css" href="../css/web_guide.css" rel="stylesheet" />
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/jquery-ui.js"></script>
+<script src="../js/web_guide.js"></script>	
+<script src="../js/cookieLib.js"></script>	
+<script src="../js/windowsEnvLib.js"></script>	
+</head>
+
+<body onLoad="DisplayErrorGuide('none', 'guideList_2', 'KOR');">
+<div class="wrap">
+    <div class="header">
+        <div>
+            <h1><img src="../images/img_h1.png" alt="Fasoo"/></h1>
+            <h2>
+                <span>문제 해결 가이드</span>
+            </h2>
+        </div>
+    </div>
+	<div class="content">
+		<div class="text_01">
+			웹 보안 프로그램이 정상적으로 동작하지 않고 있습니다.<br/>
+			다음 조치를 취해 보십시오.
+		</div>
+		<span class="ac_text_02" id="ErrorNum"></span>
+		<div class="accordion">
+			<h3 id="guideList_1">1. 설치가 정상적으로 되지 않았을 경우 다시 한번 수동 설치해 주시기 바랍니다. </h3>
+			<p>
+			<span class="btn_base"><a id="A2" href="install_guide.html"><button onclick="A2.click()">웹 보안 프로그램 수동 설치 페이지 연결</button></a></span>
+			</p>
+		    <h3 id="helpdesk_guide_menu"></h3>
+		    
+		    <!-- helpdesk Info -->
+		    <p id="helpdesk_guide"> </p>
+		</div>
+	</div>
+	<div class="footer">
+		<p class="float_left" id="osie"></p>
+
+		<!-- helpdesk Info -->
+		<p id="helpdesk_Info" class="float_right text_01"></p>	
+
+	</div>
+</div>
+</body>
+</html>

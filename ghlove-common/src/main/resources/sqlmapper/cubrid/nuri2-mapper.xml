@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.common.nuri2.Nuri2Mapper">
+
+    <insert id="insertTifAlimtalkInfo">
+		INSERT INTO NURI2_NRMSG_DATA (
+			MSG_KEY
+		    , MSG_STATE
+		    , INPUT_DATE
+		    , RES_DATE
+	        , ALT_COUNTRY_CODE
+	        , PHONE
+	        , CALLBACK
+	        , MSG_TYPE_1
+	        , CONTENTS_TYPE_1
+	        , ALT_SENDER_KEY
+	        , ALT_TEMPLATE_CODE
+	        , ALT_JSON
+	        , MSG_TYPE_2
+	        , CONTENTS_TYPE_2
+	        , XMS_SUBJECT
+	        , XMS_TEXT
+		) VALUES(
+	          MSG_KEY_SERIAL.NEXT_VALUE
+	        , 1
+	        , now()
+	        , now()
+	        , '82'
+	        , #{phone}
+	        , '15222431'
+	        , 'ALT'
+	        , 'ALT'
+	        , #{altSenderKey}
+	        , #{altTemplateCode}
+	        , #{altJson}
+	        , 'MMS'
+	        , 'LMS'
+	        , ''
+	        , #{xmsText}
+		);
+    </insert>
+
+	<select id="selectUserInfoList" resultType="map">
+	SELECT 1;
+	</select>
+
+	<select id="selectPresentOrderList" resultType="map">
+		SELECT
+			crypto_dec('normal',OS.PHONE_NUMBER,'',0) AS PHONE_NUM,
+			COUNT(*) AS TOTAL_CNT
+		FROM
+			OP_ORDER_ITEM OOI
+			JOIN op_seller OS ON OOI.SELLER_ID = OS.SELLER_ID
+		WHERE
+			OOI.ORDER_STATUS = 10
+			AND OOI.CANCEL_FLAG = 'N'
+			AND OOI.DELIVERY_TYPE = '2'
+			AND OS.STATUS_CODE = '2'
+			AND OOI.CREATED_DATE > CONCAT(DATE_FORMAT(ADDDATE(NOW(), INTERVAL -1 DAY), '%Y%m%d'),'000000')
+		GROUP BY OOI.SELLER_ID
+		ORDER BY count(*) DESC;
+	</select>
+
+
+</mapper>

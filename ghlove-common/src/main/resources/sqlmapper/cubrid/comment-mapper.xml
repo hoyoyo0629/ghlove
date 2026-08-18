@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.comment.CommentMapper">
+	<resultMap id="CommentResult" type="saleson.shop.comment.dto.CommentDto">
+		<result property="boardCommentId" column="BOARD_COMMENT_ID" />
+		<result property="parentCommentId" column="PARENT_COMMENT_ID" />
+		<result property="boardId" column="BOARD_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />		
+		<result property="createdDate" column="CREATED_DATE" />		
+		<result property="comments" column="COMMENTS" />
+		<result property="idDelete" column="IS_DELETE" />
+		<result property="locgovNm" column="LOCGOV_NM" />		
+		<result property="commentDepth" column="COMMENT_DEPTH" />	
+			
+	</resultMap>
+	
+	
+<select id="getCommentCount" parameterType="saleson.shop.comment.dto.CommentDto" resultType="Integer">
+	SELECT count(*)
+	FROM OP_COMMUNITY_COMMENT
+	WHERE BOARD_ID = #{id}
+</select>
+
+<select id="getCommentList" parameterType="Integer" resultMap="CommentResult" >
+	select 
+		 A.board_comment_id 
+		,A.parent_comment_id 
+		,A.board_id 
+		,A.board_code 
+		,A.user_id 
+		,A.comments 
+		,A.is_delete 
+		,A.created_date 
+		,crypto_dec('normal',A.user_name,'',0) as user_name
+		,A.locgov_nm
+		,A.comment_depth
+	 from (
+		SELECT 
+			 c.board_comment_id 
+			,c.parent_comment_id 
+			,c.board_id 
+			,c.board_code 
+			,c.user_id 
+			,c.comments 
+			,c.is_delete 
+			,c.created_date 
+			,M.user_name as user_name
+			,g.locgov_nm as locgov_nm
+			,case when c.parent_comment_id = 0 then 'depth1'
+			when  c.parent_comment_id != 0 then 'depth2'
+			end as comment_depth
+		FROM OP_COMMUNITY_COMMENT as C
+		LEFT JOIN op_manager as M ON C.user_id = M.user_id 
+		LEFT JOIN g_locgov as G ON M.locgov_code = G.locgov_code
+		WHERE BOARD_ID = #{id}
+		) A
+	
+</select>
+
+<select id="getComment" parameterType="Integer" resultMap="CommentResult" >
+	SELECT * 
+	FROM OP_COMMUNITY_COMMENT
+	WHERE BOARD_COMMENT_ID = #{id}
+</select>
+
+<insert id="insertComment" parameterType="saleson.shop.comment.dto.CommentDto">
+	INSERT INTO OP_COMMUNITY_COMMENT (BOARD_COMMENT_ID, PARENT_COMMENT_ID ,COMMENTS, BOARD_ID, USER_ID,CREATED_DATE)
+	VALUES ( #{boardCommentId}, #{parentCommentId},#{comments}, #{boardId}, #{userId},<include refid="CommonMapper.datetime" />)
+		 	  
+</insert>
+
+
+<update id="updateComment" parameterType="saleson.shop.comment.dto.CommentDto">
+	UPDATE OP_COMMUNITY_COMMENT SET
+		COMMENTS = #{comments},
+		UPDATED_DATE = 	<include refid="CommonMapper.datetime" />	
+		WHERE BOARD_COMMENT_ID = #{boardCommentId}
+</update>
+
+<update id="deleteComment" parameterType="long">
+	UPDATE OP_COMMUNITY_COMMENT SET
+		IS_DELETE = 'Y',
+		COMMENTS = '삭제된 댓글입니다.'
+		WHERE BOARD_COMMENT_ID = #{id}
+		
+</update>
+
+
+
+
+</mapper>

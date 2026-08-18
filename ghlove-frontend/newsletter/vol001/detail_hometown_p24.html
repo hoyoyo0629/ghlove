@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>밀양만의 특색있는 기금사업 : 고향사랑e음 고향소식</title>
+
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+
+	<script type="text/babel">
+
+     var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+    </script>
+
+  </head>
+
+  <body>
+  <div id="saleson" v-cloak>
+  <newsletter-header :ver="'vol001'"></newsletter-header>
+
+
+    <div class="newsletter_detail_page">
+      <div id="wrap">
+
+
+        <h2>고향 소식</h2>
+
+        <div class="detail_cont_wrap">
+          <section class="main_banner_area">
+            <div class="newsletter_detail_page_banner" style="padding:0">
+              <img src="/newsletter/static/images/vol001/detail_11.png" alt="밀양시 전국밀양향우연합회 초청 고향알기 행사 현수막을 들고있는 사람들의 사진과 밀양시 고향알기프로그램행사 고향사랑 기부자 초청 현수막을 들고 있는 사람들의 사진">
+              <!-- <div class="banner_link_btn">
+                <a href="#;">자세히 보기&nbsp;&nbsp;+</a>
+              </div> -->
+            </div>
+            <div class="tit_area">
+              <h4>경상남도 밀양시              </h4>
+              <h3>
+                밀양만의 특색있는 <span class="blue">기금사업                </span>
+              </h3>
+            </div>
+          </section>
+          <div class="blue-bar bar">
+          </div>
+          <section id="" class="detail_contents_area">
+            <ul class="deco-circle blue-deco ">
+              <li>
+                경남 밀양시는 모금한 고향사랑기부금으로 고향알기프로그램사업, 영유아 육아용품 대여사업, 학교 밖 청소년 동기강화 프로젝트 사업, 치매어르신 돌봄 기계대여 사업, 풋볼스포츠 클럽 중등부 지원사업, 밀양햇살상점 굿즈 제작 및 홍보비 지원 사업으로 총 6개 사업을 시행하고 있다.
+              </li>
+              <li>
+                이중 고향알기 프로그램 사업은 기부자 및 향우인을 대상으로 애향심을 고취시키기 위해 공연‧관광 등 알찬 1박 2일 프로그램을 기획하여 재기부에 기여하고 있다. 실제 프로그램에 참여한 기부자 중 한분이 2백만 원을 재기부한 사례도 눈길을 끈다.
+              </li>
+              <li>
+                안병구 밀양시장은 “추후 기부자가 공감할 수 있고 밀양만의 특색있는 사업을 적극 발굴하겠다.”며 “앞으로도 경남 밀양시에 많은 관심과 응원을 부탁드린다.”고 말했다.
+              </li>
+            </ul>
+            <div class="blue-bar bar"></div>
+            <ul class="deco-circle blue-deco ">
+              <li>
+                일    시: ‘24. 4. 13(토). &#126; 4. 14(일). / ‘24. 6. 8.(토) &#126; 6. 9.(일) 총2회 실시
+              </li>
+              <li>
+                장    소: 밀양시 일원(선샤인테마파크 등)
+              </li>
+              <li>
+                주요내용: 기부자 및 향우인 초청 고향알기 프로그램 행사 실시
+              </li>
+              <li>
+                문 의 : 세무과 담당자 강서영 (☏ <a href="tel:0553595123" class="tel">055-359-5123</a>)
+              </li>
+            </ul>
+          </section>
+        </div>
+        <a href="#top" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+
+
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

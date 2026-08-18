@@ -1,0 +1,10 @@
+
+
+rootProject.name = 'ghlove'
+include 'ghlove-common'
+include 'ghlove-batch'
+include 'ghlove-api'
+include 'ghlove-web'
+
+//includeBuild '../opframework'
+

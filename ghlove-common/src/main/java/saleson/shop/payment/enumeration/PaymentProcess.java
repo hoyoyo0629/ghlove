@@ -1,0 +1,8 @@
+package saleson.shop.payment.enumeration;
+
+public enum PaymentProcess {
+	  DONATION_PROGRESS	, DONATION_SUCCESS, DONATION_FAIL, DONATION_CLOSE
+	, MYPAGE_PROGRESS, MYPAGE_SUCCESS, MYPAGE_FAIL, MYPAGE_CLOSE
+	;
+
+}

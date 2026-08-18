@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+    <link rel="stylesheet" type="text/css"
+        href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="#">답례품 관리</a> &gt; <a href="#">대표상품관리</a>
+                    </div>
+
+                    <div class="item_list">
+                        <h3><span>대표상품관리</span></h3>
+
+                        <!-- 조회 조건 테이블 -->
+                        <div class="board_write">
+                            <table class="board_write_table" summary="상품승인관리">
+                                <caption>상품승인관리</caption>
+                                <colgroup>
+                                    <col style="width: 220px" />
+                                    <col>
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <td class="label">지자체</td>
+                                        <td>
+                                            <div class="flex_box gap-08 item-center">
+                                                <select id="" name="" title="시도선택" class="wd-150">
+                                                    <option value="">시,도 선택</option>
+                                                </select>
+                                                <select id="" name="" title="시,구,군" class="wd-150">
+                                                    <option value="">시,구,군</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">카테고리</td>
+                                        <td>
+                                            <div class="flex_box gap-08">
+                                                <select id="" name="" title="카테고리" class="wd-150">
+                                                    <option value="">전체</option>
+                                                </select>
+                                                <select id="" name="" title="카테고리" class="wd-150">
+                                                    <option value="">2차 카테고리</option>
+                                                </select>
+                                                <select id="" name="" title="카테고리" class="wd-150">
+                                                    <option value="">3차 카테고리</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">검색구분</td>
+                                        <td>
+                                            <div class="flex_box gap-08">
+                                                <select id="" name="" title="검색구분" class="wd-150">
+                                                    <option value="">전체</option>
+                                                    <option value="">상품명</option>
+                                                </select>
+                                                <input id="" name="" title="검색구분"
+                                                    class="input_txt required _filter full" type="text" value="">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> <!-- // board_write -->
+                        <!-- // 조회 조건 테이블 -->
+
+                        <div class="btn_all btn_right">
+                            <div class="flex_box gap-08">
+                                <button type="button" class="btn btn-dark-gray btn-mini"
+                                    onclick="location.href='/opmanager/item/seller/list';">초기화</button>
+                                <button type="submit" class="btn btn-dark-gray btn-mini">검색</button>
+                            </div>
+                        </div>
+
+                        <div class="count_title mt-40">
+                            <h5>총 545,423건</h5>
+                            <span>
+                                <select id="" name="" title="화면출력수">
+                                    <option value="10" selected="selected">10개 출력</option>
+                                    <option value="20">20개 출력</option>
+                                    <option value="50">50개 출력</option>
+                                    <option value="100">100개 출력</option>
+                                </select>
+                            </span>
+                        </div>
+
+                        <!-- 조회 결과 테이블 -->
+                        <div class="board_list">
+                            <form id="listForm">
+                                <input type="hidden" id="processType" name="processType" />
+                                <input type="hidden" id="approvalMessage" name="approvalMessage" />
+                                <table class="board_list_table" summary="상품승인관리리스트">
+                                    <caption>상품승인관리리스트</caption>
+                                    <colgroup>
+                                        <col style="width:50px;">
+                                        <col style="width:50px;">
+                                        <col style="width:200px;">
+                                        <col style="width:500px;">
+                                        <col style="width:200px;">
+                                        <col style="width:150px;">
+                                        <col style="width:100px;">
+                                        <col style="width:100px;">
+                                        <col style="width:200px;">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="check_all" title="체크박스" /></th>
+                                            <th>No.</th>
+                                            <th>지자체</th>
+                                            <th>상품명</th>
+                                            <th>판매가</th>
+                                            <th>상호명</th>
+                                            <th>상태</th>
+                                            <th>공개유무</th>
+                                            <th>등록일</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="sortable">
+                                        <tr>
+                                            <!-- 체크박스 -->
+                                            <td>
+                                                <div>
+                                                    <input type="checkbox" name="" value="" id="">
+                                                </div>
+                                            </td>
+                                            <!-- // 체크박스 -->
+                                            <!-- No. -->
+                                            <td>
+                                                <div>1</div>
+                                            </td>
+                                            <!-- // No. -->
+                                            <!-- 지자체 -->
+                                            <td>
+                                                <div>서울시 종로구</div>
+                                            </td>
+                                            <!-- // 지자체 -->
+                                            <!-- 상품명 -->
+                                            <td class="left break-word">
+                                                <a href="javascript:Link.view('/opmanager/item/seller/edit/${item.itemUserCode}')" class="break-word">
+                                                    <div class="flex_box item-center gap-08">
+                                                        <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="상품명이미지" />
+                                                        <div>${item.itemName}</div>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <!-- // 상품명 -->
+                                            <!-- 판매가 -->
+                                            <td>
+                                                <div>30,000</div>
+                                            </td>
+                                            <!-- // 판매가 -->
+                                            <!-- 상호명 -->
+                                            <td>
+                                                <div>asdfasdf</div>
+                                            </td>
+                                            <!-- // 상호명 -->
+                                            <!-- 상태 -->
+                                            <td>
+                                                <div>판매중</div>
+                                            </td>
+                                            <!-- // 상태 -->
+                                            <!-- 공개유무 -->
+                                            <td>
+                                                <div>공개</div>
+                                            </td>
+                                            <!-- // 공개유무 -->
+                                            <!-- 등록일 -->
+                                            <td>
+                                                <div>2022-11-16</div>
+                                            </td>
+                                            <!-- // 등록일 -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+
+                            <c:if test="${empty list}">
+                                <div class="no_content">
+                                    ${op:message('M00473')}
+                                    <!-- 데이터가 없습니다. -->
+                                </div>
+                            </c:if>
+
+                            <div class="btn_all btn_right">
+                                <div class="flex_box gap-08">
+                                    <button type="button" id="update_list_data" class="btn btn-dark-gray btn-mini">삭제</button>
+                                </div>
+                            </div>
+
+                            <div class="pagination-wrap">
+                                <page:pagination-manager />
+                            </div>
+                        </div> <!-- // board_list -->
+                        <!-- // 조회 결과 테이블 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

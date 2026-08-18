@@ -1,0 +1,3292 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:v-on="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="robots" content="index,follow" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>답례품 상세 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/item.css" />
+    <link rel="stylesheet" href="/static/css/order-modal.css" />
+    <link rel="stylesheet" href="/static/css/lclgv_chc/map.css" />
+    <link rel="stylesheet" href="/static/css/joind-agf.css" />
+    <!-- 모달 -->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+
+  </head>
+
+  <body>
+    <div id="saleson" class="items_detail_wrap noscroll" v-cloak>
+      <layout-header-ali ref="layoutHeader" :export-mode="exportMode"></layout-header-ali>
+      <layout-header :menu-url="menuUrl" @show-map-select="showMapSelect" ref="layoutHeaderSearchPc" :export-mode="exportMode"></layout-header>
+
+      <div id="wrap">
+        <!-- 지자체 선택 팝업  -->
+        <div class="black-bg" ref="getParentModal">
+          <div class="overlayer join-complete">
+            <div class="overlayer-header" style="font-size: 26px; height: 60px; line-height: 60px; padding: 0">지자체 선택</div>
+            <div class="overlayer-body" style="padding-top: 30px; border-radius: 0 0 15px 15px">
+              <layout-map-select @show-loading="showLoading" @select-lclgv="selectLclgvPc"></layout-map-select>
+            </div>
+            <div class="btn-box">
+              <button
+                type="button"
+                class="temp-button hidden_txt"
+                title="지자체 선택팝업 닫기"
+                style="top: 18px; right: 18px"
+                @click="closeMapSelect()"
+              >
+                지자체 선택 팝업 닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모바일 헤더 -->
+      <header id="fixed_top">
+        <div class="center">
+          <button type="button" @click.prevent="historyBack">
+            <img class="icon-img" src="/static/images/icon/btn_pback.png" alt="뒤로 이동" />
+          </button>
+          <button type="button" class="btn_cart" @click="openPresent('sbag')" v-if="!exportMode">
+            <span class="cartIconWrap" @click.prevent="goCartPage">
+              <img class="icon-img" src="/static/images/icon/m-cart.png" alt="장바구니로 이동" />
+              <span class="badge badge_cart" style="display: none">{{ displayCartQuantites }}</span>
+            </span>
+          </button>
+        </div>
+      </header>
+      <!-- 아이템 브레드크럼 -->
+      <section class="page-title-box mall center">
+        <span class="ali_breadcrumb">
+          <a href="/" v-if="!exportMode" aria-label="홈으로"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+          <span class="txt-arrow" v-if="!exportMode"><span class="sr-only">></span></span>
+          <a href="/goods/index.html" v-if="!exportMode">답례품</a>
+          <a href="/goods/index.html?exportMode=true" v-if="exportMode">답례품</a>
+          <span
+            v-for="(currentCate, index) in currentCategories"
+            v-show="currentCate.codes !== null && currentCate.codes != 'undefined' && currentCate.codes.length > 0"
+            :key="index"
+          >
+            <span class="txt-arrow" v-show="currentCate.title != ''"><span class="sr-only">></span></span>
+            <a
+              :href="index == 0 ? '/goods/searchGoods.html?group=' + currentCate.url + '&type=C' : '/goods/searchGoods.html?category=' + currentCate.url + '&type=C'"
+              v-if="!exportMode">
+              {{currentCate.title == '' ? '*' : currentCate.title}}
+            </a>
+            <a
+              :href="index == 0 ? '/goods/searchGoods.html?group=' + currentCate.url + '&type=C&exportMode=true' : '/goods/searchGoods.html?category=' + currentCate.url + '&type=C&exportMode=true'"
+              v-if="exportMode">
+			  {{currentCate.title == '' ? '*' : currentCate.title}}
+            </a>
+          </span>
+        </span>
+      </section>
+
+      <section class="center" id="contents">
+        <div class="goods_view_top">
+          <div class="goods_img">
+            <div class="target_img">
+              <div class="swiper-wrapper">
+                <swiper ref="mainSwiper" class="img_area" :options="swiperOption.mainSlider">
+                  <swiper-slide v-for="(slide, index) in slides" :key="slide.imageId" class="cursor">
+                    <img :src="itemImage(slide.image)" :alt="item.itemName + ' 사진' + (index + 1)" @error="errorImage" class="swiper_img" />
+                  </swiper-slide>
+                  <div class="swiper-button-prev pc" slot="button-prev"><span class="screen_out">이전 답례품 이미지 보기</span></div>
+                  <div class="swiper-button-next pc" slot="button-next"><span class="screen_out">다음 답례품 이미지 보기</span></div>
+                  <div class="swiper-pagination" slot="pagination"></div>
+                </swiper>
+              </div>
+              <img class="sold_out" src="/static/images/goods/goods_sold-out.png" alt="품절" v-show="item.itemSoldOutFlag === 'Y'" />
+            </div>
+            <div class="thumb_box">
+              <button type="button" class="swiper-button-prev" @click="moveSlideViewImage(true, $event)">
+                <img src="/static/images/goods/thumb_arrow-prev.png" alt="이전 답례품 이미지 보기" />
+              </button>
+              <div class="swiper-wrapper">
+                <swiper ref="mainThumbSwiper" class="thumb_area d-lg-block" :options="swiperOption.thumbSlider" @click-slide="toSlideViewImage">
+                  <swiper-slide v-for="(slide, index) in slides" :key="slide.imageId">
+                    <button
+                      type="button"
+                      class="cursor swiper_img"
+                      :title="item.itemName + ' 사진' + (index + 1) + ' 보기'"
+                      @click="toSlideViewImage(index)"
+                    >
+                      <img
+                        :src="itemImage(slide.image)"
+                        :alt="item.itemName + ' 사진' + (index + 1) + ' 썸네일'"
+                        @error="errorImage"
+                        class="swiper_img"
+                      />
+                    </button>
+                  </swiper-slide>
+                </swiper>
+              </div>
+              <button type="button" class="swiper-button-next" @click="moveSlideViewImage(false, $event)">
+                <img src="/static/images/goods/thumb_arrow-next.png" alt="다음 답례품 이미지 보기" />
+              </button>
+            </div>
+          </div>
+          <!-- //아이템 이미지 -->
+
+          <!-- 아이템 정보 -->
+          <div class="goods_info">
+            <div class="info_row">
+              <div class="brand_mall d_area" v-if="item.locgovNm != null"><img src="/static/images/icon/d-area.png" alt="" />{{item.locgovNm}}</div>
+              <div class="badge-wrap" style="padding-bottom: 15px">
+                <span class="flag-icon bgBlue" v-if="item.itemLabel === '2'">신규</span>
+              </div>
+            </div>
+
+            <div class="">
+              <!-- 답례품명, 설명, 판매금액 -->
+              <div class="info_box">
+                <div class="info_title">
+                  <h2><span v-html="unescapeHtml(item.itemName)"></span></h2>
+                  <p class="s-txt"><span v-html="item.itemSummary"></span></p>
+                </div>
+                <div class="info_title" v-show="item.originContry" style="font-size: x-large; color: #5a5a5a">원산지 : {{item.originContry}}</div>
+                <div class="present_price"><strong>{{formatNumber(item.salePrice)}}</strong> P</div>
+              </div>
+
+              <!-- 답례품명, 설명, 판매금액 -->
+              <div class="info_row rev_donation_wrap">
+                <div class="item_grade">
+                  <div class="grade">
+                    <div class="rating_star" v-html="ratingStarHtml"></div>
+                   	<p class="num"><b>{{item.reviewScore}}</b></p>
+                  </div>
+                  <div class="item_grade txt">
+                    <a href="" @click.prevent="goDetailTab('nav-review')" alt="">
+                      <span>후기 {{item.reviewCount}}개 보기</span>
+                      <img src="/static/images/icon/btn_do-arrow.png" alt="" />
+                    </a>
+                  </div>
+                </div>
+
+                <button class="formBtn donation" type="button" @click="donationInit" id="donationBtn"  v-if="!exportMode">
+                  <img src="/static/images/icon/cli-icon_btn-donation2.png" alt="" />
+                  <span class=""> 기부하기 </span>
+                </button>
+              </div>
+
+              <div class="line"></div>
+
+              <div class="info_row etc">
+                <div class="shop_info">
+                  <div class="title_col">
+                    <p>판매자</p>
+                  </div>
+                  <div class="para_col">
+                    <p class="txt">{{seller.companyName}}</p>
+                  </div>
+                </div>
+                <!-- <div class="shop_info" v-show="item.originContry">
+								<div class="title_col">
+									<p>원산지</p>
+								</div>
+								<div class="para_col">
+									<p class="txt">{{item.originContry}}</p>
+								</div>
+							</div> -->
+                <div class="shop_info">
+                  <div class="title_col">
+                    <p>배송</p>
+                  </div>
+                  <div class="para_col">
+                    <p class="txt">
+                      배송방법 :
+                      <span v-if="item.mobileItemYn == 'Y'"> 모바일</span>
+                      <span v-else> 택배 ({{item.deliveryCompanyName}})</span>
+                    </p>
+                    <p class="txt" v-if="item.mobileItemYn != 'Y'">배송비 : 무료</p>
+                  </div>
+                </div>
+              </div>
+              <!-- 옵션 선택 & 선택옵션 확인 -->
+
+              <!-- 옵션이 없을때 -->
+              <div class="info_row opt_box pt_t0" v-if="item.itemOptionFlag === 'N' && !exportMode">
+                <!-- 필수 추가정보
+                <div class="info_row etc">
+                  <div class="shop_info">
+                    <div class="title_col"><p>필수 추가정보 입력</p></div>
+                      <input type="text" name="itemTextOptionTitle1" id="itemTextOptionTitle1"/>
+                    </div>
+                </div> -->
+                <div class="info_row etc" v-show="item.itemTextOptionFlag === 'Y'">
+                  <div class="shop_info">
+
+                      <ul>
+                        <li><p>필수 추가정보 입력</p></li>
+                        <li>
+                          <input type="text" v-show="item.itemTextOptionTitle1 !== null && item.itemTextOptionTitle1 !== ''" name="itemTextOptionTitle1" id="itemTextOptionTitle1" :placeholder="item.itemTextOptionTitle1" v-model="itemOptionInfo.itemTextOptionValue1"/>
+
+                        </li>
+                        <li>
+                          <input type="text" v-show="item.itemTextOptionTitle2 !== null && item.itemTextOptionTitle2 !== ''" name="itemTextOptionTitle2" id="itemTextOptionTitle2" :placeholder="item.itemTextOptionTitle2" v-model="itemOptionInfo.itemTextOptionValue2"/>
+                        <li>
+                          <input type="text" v-show="item.itemTextOptionTitle3 !== null && item.itemTextOptionTitle3 !== ''" name="itemTextOptionTitle3" id="itemTextOptionTitle3" :placeholder="item.itemTextOptionTitle3" v-model="itemOptionInfo.itemTextOptionValue3"/>
+                        </li>
+                      </ul>
+                  </div>
+                </div>
+                <div class="option_list" v-for="(optionInfo, index) in itemOptionInfo.addOptionList">
+                  <ul class="list_in">
+                    <li class="optSelect">
+                      <div class="op_tit">
+                        <span v-html="unescapeHtml(item.itemName)"></span>
+                      </div>
+                      <div class="option_wrap">
+                        <div class="amt_box">
+                          <button type="button" class="btn_minus" @click="minus(index, 'minusInput1')" id="minusInput1">
+                            <img src="/static/images/icon/amt_btn_minus.png" alt="수량 감소 버튼" />
+                          </button>
+                          <!-- <input type="text" title="수량" v-model="info.quantity" class="number" v-on:input="inputQuantity($event, pIndex)"> -->
+                          <input
+                            type="text"
+                            title="수량 직접 입력"
+                            class="number"
+                            v-model="optionInfo.quantity"
+                            v-on:input="inputQuantity($event, index, 'quantityInput1')"
+                            id="quantityInput1"
+                          />
+                          <button type="button" class="btn_plus" @click="plus(index, 'plusInput1')" id="plusInput1">
+                            <img src="/static/images/icon/amt_btn_add.png" alt="수량 증가 버튼" />
+                          </button>
+                        </div>
+                        <div class="op_price">
+                          <!-- {{formatNumber(optionItemTotal)}} -->
+                          <strong>{{formatNumber(optionInfo.optionPrice)}}</strong> P
+                        </div>
+                      </div>
+                      <div class="max_order">
+                        <span class="s-txt">최대 주문 수량 : {{item.orderMaxQuantity}} </span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- 판매가, 구매 여부 확인 -->
+                <div class="info_row sell_con">
+                  <div class="purchase_ck">
+                    <span class="purchase_ck-y" v-show="buyCheck">
+                      <img src="/static/images/icon/btn_buy-y.png" alt="" />
+                      <span class="btn_title pointblue">주문가능</span>
+                    </span>
+                    <span class="purchase_ck-n" v-show="!buyCheck">
+                      <img src="/static/images/icon/btn_buy-n.png" alt="" />
+                      <span class="btn_title pointRed">포인트 부족</span>
+                    </span>
+                  </div>
+                  <!-- <p  v-if="item.salePrice > item.presentPrice"> -->
+                  <div class="total_price">
+                    <p class="txt">총 답례품 포인트</p>
+                    <span class="price">
+                      <strong>{{formatNumber(optionItemTotal)}} P</strong>
+                    </span>
+                  </div>
+                </div>
+                <!-- //판매가, 구매 여부 확인 -->
+              </div>
+
+              <!-- 옵션이 있을 때 -->
+              <!-- 선택형 / 조합형 -->
+              <div class="info_row opt_box" v-if="item.itemOptionFlag === 'Y' && !exportMode">
+                <!-- 옵션선택 : 토글사용 -->
+                <!-- 선택형 -->
+                <div class="opt_select_area" v-if="item.itemOptionType === 'S'">
+                  <div class="dropdown dropdown_box">
+                    <button type="button" class="c-select box dropdown-toggle" data-toggle="dropdown">
+                      <span v-html="unescapeHtml(item.itemOptions[0].optionName1)"></span>
+                    </button>
+                    <div class="dropdown-menu option_wrap">
+                      <button
+                        type="button"
+                        class="c-select"
+                        v-for="(option, index) in item.itemOptions"
+                        @click="writeOptionName(1 ,option.optionName2, index)"
+                        name="selectOption1"
+                      >
+                        <span class="txt" v-html="unescapeHtml(option.optionName2)"></span>
+                        <span class="txt" v-if="option.optionPrice > 0">(+{{formatNumber(option.optionPrice)}}P)</span>
+                        <span class="txt" v-if="option.soldOut">[품절]</span>
+                        <span class="txt" v-else-if="option.optionStockFlag == 'Y' && option.optionStockQuantity > 0"
+                          >| 재고 {{option.optionStockQuantity}}개</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 조합형 -->
+                <div class="opt_select_area" v-if="item.itemOptionType === 'S2' || item.itemOptionType === 'S3'">
+                  <div class="dropdown dropdown_box">
+                    <button
+                      type="button"
+                      class="c-select box dropdown-toggle"
+                      data-toggle="dropdown"
+                      @click="selectOptionTitle(1)"
+                      name="selectOption1"
+                    >
+                      <span
+                        v-html="unescapeHtml(itemOptionInfo.itemOptionTitle1) +
+										(unescapeHtml(itemOptionInfo.selectOptionName1) == '' ? '' : '- ') +
+										unescapeHtml(itemOptionInfo.selectOptionName1)"
+                      ></span>
+                    </button>
+                    <div class="dropdown-menu option_wrap">
+                      <button
+                        type="button"
+                        class="c-select"
+                        v-if="item.itemOptionTitle1"
+                        v-for="(option1, index) in itemOptionInfo.optionName1"
+                        @click="writeOptionName(1, option1, index)"
+                      >
+                        <span class="txt" v-html="unescapeHtml(option1)"></span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_box">
+                    <button type="button" class="c-select box dropdown-toggle" data-toggle="dropdown" id="selectOption2">
+                      <span
+                        v-html="unescapeHtml(itemOptionInfo.itemOptionTitle2) +
+										(unescapeHtml(itemOptionInfo.selectOptionName2) == '' ? '' : '- ') +
+										unescapeHtml(itemOptionInfo.selectOptionName2)"
+                      ></span>
+                    </button>
+                    <div class="dropdown-menu option_wrap">
+                      <button
+                        type="button"
+                        class="c-select"
+                        v-for="(option2, index) in itemOptionInfo.optionName2"
+                        @click="writeOptionName(2, option2, index)"
+                        :disabled="item.itemOptionType === 'S2' && itemOptionInfo.optionSoldOuts[index]"
+                        v-if="item.itemOptionTitle1"
+                      >
+                        <span class="txt" v-html="unescapeHtml(option2)"></span>
+                        <span class="txt" v-if="item.itemOptionType === 'S2' && itemOptionInfo.optionPrices[index] > 0"
+                          >(+{{formatNumber(itemOptionInfo.optionPrices[index])}}원)</span
+                        >
+                        <span class="txt" v-if="item.itemOptionType === 'S2' && itemOptionInfo.optionSoldOuts[index]">[품절]</span>
+                        <span
+                          class="txt"
+                          v-if="item.itemOptionType === 'S2' && itemOptionInfo.optionStockFlags[index] == 'Y' && itemOptionInfo.optionStockQuantity[index] > 0"
+                          >| 재고 {{itemOptionInfo.optionStockQuantity[index]}}개</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_box">
+                    <button type="button" class="c-select box dropdown-toggle" data-toggle="dropdown" id="selectOption3">
+                      <span v-html="unescapeHtml(itemOptionInfo.itemOptionTitle3)"></span>
+                    </button>
+                    <div class="dropdown-menu option_wrap">
+                      <button
+                        type="button"
+                        class="c-select"
+                        v-for="(option3, index) in itemOptionInfo.optionName3"
+                        @click="writeOptionName(3, option3, index)"
+                        :disabled="item.itemOptionType === 'S3' && itemOptionInfo.optionSoldOuts[index]"
+                        v-if="item.itemOptionTitle3"
+                      >
+                        <span class="txt" v-html="unescapeHtml(option3)"></span>
+                        <span class="txt" v-if="item.itemOptionType === 'S3' && itemOptionInfo.optionPrices[index] > 0"
+                          >(+{{formatNumber(itemOptionInfo.optionPrices[index])}}원)</span
+                        >
+                        <span class="txt" v-if="item.itemOptionType === 'S3' && itemOptionInfo.optionSoldOuts[index]">[품절]</span>
+                        <span
+                          class="txt"
+                          v-if="item.itemOptionType === 'S3' && itemOptionInfo.optionStockFlags[index] == 'Y' && itemOptionInfo.optionStockQuantity[index] > 0"
+                          >| 재고 {{itemOptionInfo.optionStockQuantity[index]}}개</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 필수 추가정보 -->
+                <div class="info_row etc" v-show="item.itemTextOptionFlag === 'Y'">
+                    <div class="shop_info">
+                        <ul>
+                          <li><p>필수 추가정보 입력</p></li>
+                          <li>
+                            <input type="text" v-show="item.itemTextOptionTitle1 !== null && item.itemTextOptionTitle1 !== ''" name="itemTextOptionTitle1" id="itemTextOptionTitle1" :placeholder="item.itemTextOptionTitle1" v-model="itemOptionInfo.itemTextOptionValue1"/>
+                          </li>
+                          <li>
+                            <input type="text" v-show="item.itemTextOptionTitle2 !== null && item.itemTextOptionTitle2 !== ''" name="itemTextOptionTitle2" id="itemTextOptionTitle2" :placeholder="item.itemTextOptionTitle2" v-model="itemOptionInfo.itemTextOptionValue2"/>
+                          </li>
+                          <li>
+                            <input type="text" v-show="item.itemTextOptionTitle3 !== null && item.itemTextOptionTitle3 !== ''" name="itemTextOptionTitle3" id="itemTextOptionTitle3" :placeholder="item.itemTextOptionTitle3" v-model="itemOptionInfo.itemTextOptionValue3"/>
+                          </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 옵션 선택 결과 리스트 -->
+                <div class="option_list" v-show="itemOptionInfo.addOptionList.length > 0">
+                  <ul class="list_in">
+                    <li class="optSelect" v-for="(optionInfo, index) in itemOptionInfo.addOptionList">
+                      <div class="op_tit">
+                        <span v-html="unescapeHtml(optionInfo.optionName)"></span>
+                        <!-- <span>{{brand.option[0].opt1}}</span> -->
+                      </div>
+                      <button type="button" class="opt_del" @click="deleteOption(index)">
+                        <img src="/static/images/icon/option_delete.png" alt="옵션삭제" />
+                      </button>
+                      <div class="option_wrap">
+                        <div class="amt_box">
+                          <button type="button" class="btn_minus" @click="minus(index, 'minusInput2' + index)" v-bind:id="'minusInput2' + index">
+                            <img src="/static/images/icon/amt_btn_minus.png" alt="수량 감소 버튼" />
+                          </button>
+                          <!-- <input type="text" title="수량" v-model="info.quantity" class="number" v-on:input="inputQuantity($event, pIndex)"> -->
+                          <input
+                            type="text"
+                            title="수량 직접 입력"
+                            class="number"
+                            v-model="optionInfo.quantity"
+                            v-on:input="inputQuantity($event, index, 'quantityInput2' + index)"
+                            v-bind:id="'quantityInput2' + index"
+                          />
+                          <button type="button" class="btn_plus" @click="plus(index, 'plusInput2' + index)" v-bind:id="'plusInput2' + index">
+                            <img src="/static/images/icon/amt_btn_add.png" alt="수량 증가 버튼" />
+                          </button>
+                        </div>
+                        <div class="op_price">
+                          <!-- {{formatNumber(optionItemTotal)}} -->
+                          <strong>{{formatNumber(optionInfo.optionPrice)}}</strong> P
+                        </div>
+                      </div>
+                      <div class="max_order">
+                        <span class="s-txt">최대 주문 수량 : {{item.orderMaxQuantity}} </span>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <!-- //옵션 선택 결과 리스트 -->
+
+                <!-- 판매가, 구매 여부 확인 -->
+                <div class="info_row sell_con">
+                  <div class="purchase_ck">
+                    <span class="purchase_ck-y" v-show="buyCheck">
+                      <img src="/static/images/icon/btn_buy-y.png" alt="" />
+                      <span class="btn_title pointblue">주문가능</span>
+                    </span>
+                    <span class="purchase_ck-n selectOpt" v-if="itemOptionInfo.addOptionList.length == 0" v-show="!buyCheck">
+                      <img src="/static/images/icon/donation-warning.png" alt="" />
+                      <span class="btn_title deepGray">옵션을 선택하세요</span>
+                    </span>
+                    <span class="purchase_ck-n" v-else v-show="!buyCheck">
+                      <img src="/static/images/icon/btn_buy-n.png" alt="" />
+                      <span class="btn_title pointRed">포인트부족</span>
+                    </span>
+                  </div>
+                  <!-- <p  v-if="item.salePrice > item.presentPrice"> -->
+                  <div class="total_price">
+                    <p class="txt">총 답례품 포인트</p>
+                    <span class="price">
+                      <strong>{{formatNumber(optionItemTotal)}} P</strong>
+                    </span>
+                  </div>
+                </div>
+                <!-- //판매가, 구매 여부 확인 -->
+              </div>
+
+              <div class="info_row warning" v-show="item.itemReturnFlag != 'Y'">
+                <img class="icon-img" src="/static/images/icon/donation-warning.png" alt="주의" />
+                <span class="s-txt">해당 답례품은 반품/교환이 불가능합니다.</span>
+              </div>
+            </div>
+
+            <!-- 장바구니,구매버튼,찜 -->
+            <div class="buyBtn_box detop" v-show="item.itemSoldOutFlag !== 'Y'" v-if="!exportMode">
+              <div class="btn_wrap">
+                <button class="buyBtn addToCart" type="button" @click.prevent="addToCart(1)" id="addToCartBtn1">장바구니</button>
+                <button class="buyBtn buyOrder" type="button" @click.prevent="buyOrder(1)" id="buyOrderBtn1">바로선택</button>
+                <button
+                  class="wishBtn addToWishList hidden_txt"
+                  ref="wishlistBtn1"
+                  type="button"
+                  @click.prevent="addToWishList($event, 1)"
+                  id="addToWishBtn1"
+                  aria-label="관심 답례품 등록하기"
+                >
+                  관심답례품
+                </button>
+              </div>
+            </div>
+            <!-- //장바구니,구매버튼,찜 -->
+            <!--// 아이템 정보 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 답례품정보, 답례품후기, 답례품Q&A, 배송/반품/교환, 답례품고시 탭 -->
+      <section>
+        <!-- <div class="item_tab" v-scroll="handleScrollByTab"> -->
+        <layout-item_tab-ali
+        	:review='result.review'
+        	:qna='result.qna'
+       	>
+       	</layout-item_tab-ali>
+        <div class="center tab_container">
+          <div class="tab-content item_view">
+            <!-- 답례품정보(관리자->답례품상세설명) -->
+            <div id="nav-detail" class="tab-pane show active">
+              <h3 class="sr-only">답례품정보</h3>
+              <div class="item_detail" ref="item_detail">
+                <div v-if="item.detailContent != ''" v-html="appendCdnDomain(item.detailContent)"></div>
+              </div>
+              <!--// 답례품정보 item_detail E-->
+            </div>
+            <div id="nav-review" class="tab-pane">
+              <div class="item_review">
+                <div class="total_top">
+                  <h3 class="total">답례품후기<span class="pointblue">{{formatNumber(result.review.totalElements)}}</span></h3>
+                </div>
+                <div class="list_wrap review_list">
+                  <ul>
+                    <!-- <li class="list_area list_tit">
+										<div class="review_idx">No.</div>
+										<div class="review_para">제목</div>
+										<div class="m-field">
+											<div class="review_grade">평가</div>
+											<div class="review_id">작성자</div>
+											<div class="review_date">작성일</div>
+										</div>
+									</li> -->
+                    <li class="list_area cursor dropdown" v-for="(review,reviewIndex) in result.review.content" :key="reviewIndex" :id=`review_${reviewIndex}`>
+                      <div class="review_open">
+                        <div
+                          class="list_top dropdown-toggle"
+                          @click="slidelistHeader(reviewIndex)"
+                          tabindex="0"
+                          @keydown="slidelistHeaderEnter($event,reviewIndex)"
+                        >
+                          <div class="review_idx">{{result.review.totalElements - review.rownum + 1}}</div>
+                          <!-- <div class="review_para">
+													<p v-html="nl2br(review.subject)"></p>
+												</div> -->
+                          <button class="review_para" type="button">
+                            <p v-html="nl2br(review.subject)"></p>
+                          </button>
+                          <div class="m-field">
+                            <div class="review_grade">
+                              <div class="rating_star">
+                                <span v-for="i in 5" :class="{'on' : reviewAssessment(i, review.score)}"></span>
+                              </div>
+                            </div>
+                            <div class="review_id">
+                              <p>{{review.maskUsername}}</p>
+                            </div>
+                            <div class="review_date">
+                              <p>{{dateFormat(review.createdDate).substring(0,10)}}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <!--// rv_my_info -->
+                        <div class="list_header">
+                          <div class="list_h_wrap">
+                            <div class="review_idx">&nbsp;</div>
+                            <div class="con_wrap">
+                              <div class="txt_area">
+                                <p class="title" v-html="nl2br(review.content)"></p>
+                              </div>
+                              <div class="img_area">
+                                <div class="review_thumb_box">
+                                  <div
+                                    class="swiper-wrapper"
+                                    v-show="review.itemReviewImages
+																							&& review.itemReviewImages[0]
+																							&& review.itemReviewImages[0].itemReviewImageId > 0"
+                                  >
+                                    <swiper ref="reviewSwiper" :options="swiperOption.thumbSlider">
+                                      <swiper-slide class="swiper-slide" v-for="(slide, imgIndex) in review.itemReviewImages" :key="imgIndex">
+                                        <button
+                                          type="button"
+                                          @click.prevent="initModalSwiper(reviewIndex, imgIndex)"
+                                          v-bind:title="(review.rownum + 1) + '번 후기 이미지' + (imgIndex + 1) + ' 크게 보기'"
+                                        >
+                                          <img
+                                            :src="itemImage(slide.imageSrc)"
+                                            :alt="(review.rownum + 1) + '번 후기 이미지' + (imgIndex + 1)"
+                                            @error="errorImage"
+                                          />
+                                        </button>
+                                      </swiper-slide>
+                                    </swiper>
+                                  </div>
+                                  <div class="admin_reply" v-show="review.answerDate !== null && review.answerDate !== '' && review.adminComment">
+                                    <div class="reply_area">
+                                      <div class="acontents">{{review.adminComment}}</div>
+                                      <div class="adate">
+                                        <span> <img src="/static/images/icon/reply_admin.png" alt="답변자" />{{review.answerAdminName}} </span>
+                                        <span class="v-line"></span> <span class="s-txt">{{dateFormat(review.answerDate).substring(0, 10)}}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- 답례품후기 이미지 모달뷰 -->
+                                <div class="modal modal_rev popup_detail" ref="popupDetail">
+                                  <div class="modal_rev_dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-head">사진후기</div>
+                                      <div class="modal-body">
+                                        <swiper ref="reviewModalImageSwiper" :options="swiperOption.mainSlider">
+                                          <swiper-slide class="swiper-slide" v-for="(slide, modalIndex) in review.itemReviewImages" :key="modalIndex">
+                                            <img
+                                              :src="itemImage(slide.imageSrc)"
+                                              :alt="(review.rownum + 1) + '번 후기 이미지' + (modalIndex + 1)"
+                                              @error="errorImage"
+                                            />
+                                          </swiper-slide>
+                                          <button type="button" class="swiper-button-prev pc" slot="button-prev">
+                                            <span class="screen_out">이전이미지 보기</span>
+                                          </button>
+                                          <button type="button" class="swiper-button-next pc" slot="button-next">
+                                            <span class="screen_out">다음이미지 보기</span>
+                                          </button>
+                                          <div class="swiper-pagination" slot="pagination"></div>
+                                        </swiper>
+                                      </div>
+                                      <!-- <button type="button" class="modal_close"
+																			data-dismiss="modal">
+																			<span class="screen_out">닫기</span>
+																		</button> -->
+                                      <button type="button" class="modal_close" @click="closeImgPop(reviewIndex)">
+                                        <span class="screen_out">닫기</span>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- //답례품후기 이미지 모달뷰 -->
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <pagination
+                  :current-page="result.review.currentPage"
+                  :total-pages="result.review.totalPages"
+                  :page-target="'review'"
+                  @change="paging"
+                  v-if="result.review.content.length > 0"
+                >
+                </pagination>
+              </div>
+            </div>
+            <div id="nav-qna" class="tab-pane">
+              <div class="item_qna">
+                <div class="total_top">
+                  <h3 class="total">답례품 Q&A<span class="pointblue">{{formatNumber(result.qna.totalElements)}}</span></h3>
+                  <button type="button" class="formBtn only" @click="qnaWrite" id="qnaWriteBtn" v-if="!exportMode">Q&A 작성</button>
+                </div>
+                <!-- <div class="list_wrap qna_list"> -->
+                <div class="list_wrap">
+                  <ul>
+                    <!-- <li class="list_area list_tit">
+										<div class="item_idx">No.</div>
+										<div class="item_qtype">문의유형</div>
+										<div class="item_para">문의제목</div>
+										<div class="m-field">
+											<div class="item_id">작성자</div>
+											<div class="item_date">작성일</div>
+											<div class="item_answers">답변상태</div>
+										</div>
+									</li> -->
+                    <li class="list_area cursor dropdown" v-for="(qna,index) in result.qna.content" :key="index" :id=`qna_${index}`>
+                      <div class="qna_open">
+                        <div
+                          class="list_top dropdown-toggle"
+                          @click="slideQnatHeader(index)"
+                          tabindex="0"
+                          @keydown="slideQnatHeaderEnter($event,index)"
+                        >
+                          <div class="item_idx">{{result.qna.totalElements - qna.rownum + 1}}</div>
+                          <div class="item_qtype">
+                            <p class="" v-html="nl2br(qna.qnaGroupLabel)"></p>
+                          </div>
+                          <!-- <div class="item_para">
+													<img src="/static/images/icon/para_lock.png" alt="비밀글 입니다"
+														v-if="qna.secretFlag === 'Y'">
+													<p class="" v-html="nl2br(qna.subject)"></p>
+												</div> -->
+                          <button class="item_para" type="button">
+                            <img src="/static/images/icon/para_lock.png" alt="비밀글 입니다" v-if="qna.secretFlag === 'Y'" />
+                            <p class="" v-html="nl2br(qna.subject)"></p>
+                          </button>
+                          <div class="m-field">
+                            <div class="item_id">
+                              <p class="">{{qna.maskUserName}}</p>
+                            </div>
+                            <div class="item_date">
+                              <p class="">{{dateFormat(qna.createdDate).substring(0,10)}}</p>
+                            </div>
+                            <div class="item_answers">
+                              <p class="pointblue" v-if="qna.qnaAnswer.qnaAnswerId > 0">답변완료</p>
+                              <p class="pointGray" v-else>답변대기</p>
+                            </div>
+                          </div>
+                        </div>
+                        <!--// rv_my_info -->
+                        <div class="list_header qna">
+                          <div class="list_h_wrap">
+                            <div class="item_idx">&nbsp;</div>
+
+                            <div class="con_wrap">
+                              <div class="txt_area">
+                                <img src="/static/images/icon/qna_q.png" alt="문의" />
+                                <div class="txt_question">
+                                  <p><strong>{{qna.subject}}</strong></p>
+                                  <p>{{qna.question}}</p>
+                                </div>
+                              </div>
+                              <div class="txt_area" v-if="qna.qnaAnswer.qnaAnswerId > 0">
+                                <img src="/static/images/icon/qna_a.png" alt="답변" />
+                                <div class="txt_answer">
+                                  <p><strong>{{qna.qnaAnswer.title}}</strong></p>
+                                  <p>{{qna.qnaAnswer.answer}}</p>
+                                  <p class="a_date">
+                                    <img class="icon-img" src="/static/images/icon/reply_admin.png" alt="답변자" /> {{qna.sellerCompanyName}} |
+                                    {{dateFormat(qna.qnaAnswer.answerDate).substring(0,10)}}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <pagination
+                  :current-page="result.qna.currentPage"
+                  :total-pages="result.qna.totalPages"
+                  :page-target="'qna'"
+                  @change="paging"
+                  v-if="result.qna.content.length > 0"
+                ></pagination>
+              </div>
+            </div>
+            <div id="nav-buyer" class="tab-pane">
+              <div class="buyer_wrap">
+                <div class="total_top">
+                  <h3 class="total">배송/반품/교환</h3>
+                </div>
+                <div class="buyer_area">
+                  <div class="info_row m_col">
+                    <span class="ta_title">답례품 제공자 정보</span>
+                    <span class="ta_data">
+                      <ul>
+                        <li><span class="data_title">상호 : </span> <span class="data_con"> {{seller.companyName}} </span></li>
+                        <li v-show="seller.telephoneNumber">
+                          <span class="data_title">대표번호 : </span>
+                          <span class="data_con"> {{seller.telephoneNumber}}</span>
+                        </li>
+                        <li v-show="!seller.telephoneNumber">
+                          <span class="data_title">대표번호 : </span>
+                          <span class="data_con"> - </span>
+                        </li>
+                        <!-- <li v-show="!seller.telephoneNumber">
+                          <span class="data_title">대표번호 : </span>
+                          <span class="data_con"> {{seller.phoneNumber}}</span>
+                        </li> -->
+                        <li><span class="data_title">사업자 등록번호 : </span> <span class="data_con">{{seller.businessNumber}}</span></li>
+                        <li>
+                          <span class="data_title">사업장 소재지 : </span>
+                          <span class="data_con">{{seller.businessLocation}} {{seller.addressDetail}}</span>
+                        </li>
+                      </ul>
+                    </span>
+                  </div>
+
+                  <div class="info_row m_col">
+                    <span class="ta_title">배송안내</span>
+                    <span class="ta_data">
+                      <ul>
+                        <!-- <li><span class="data_title">배송지역 : </span> <span
+													class="data_con">전국(해외배송불가)</span></li> -->
+                        <li><span class="data_title">배송비용 : </span> <span class="data_con">무료배송</span></li>
+                        <li>
+                          <span class="data_title">배송기간 : </span> <span class="data_con">2~7일 예상(식품의 경우 지연 발생 시 1주~2주 소요)</span>
+                        </li>
+                        <li>모든 상품은 답례품 제공업체에서 배송됩니다.</li>
+                      </ul>
+                    </span>
+                  </div>
+
+                  <div class="info_row m_col">
+                    <span class="ta_title">교환/반품/취소 시 유의 사항</span>
+                    <span class="ta_data">
+                      <ul class="warn">
+                        <li>
+                          <span
+                            >주문 결제후 마이페이지 주문내역에서 교환/반품/취소가 가능합니다.<br />
+                            결제 완료/배송준비중 상태의경우 취소 신청이 가능합니다. <br />
+                            배송중/배송완료 상태에서만 교환/반품 신청이 가능합니다.
+                          </span>
+                        </li>
+                        <li>
+                          <span class="point">■ </span>
+                          <span>
+                            교환 및 반품이 불가능한 경우<br />
+                            - 고객님의 책임있는 사유로 제품이 훼손된 경우<br />
+                            - 포장 개방으로 포장이 훼손되어 제품의 가치가 상실된 경우 (단 제품의 내용확인을 위해 제품을 개봉한 경우는 제외)<br />
+                            - 고객님의 사용 또는 일부 소비로 인하여 제품의 가치가 현저히 감소한 경우<br />
+                            - 시간의 경과로 인하여 재판매가 곤란한 정도로 제품의 가치가 현저히 감소한 경우<br />
+                          </span>
+                        </li>
+                        <li>
+                          수령 7일 이후 전화문의 또는 사이트 신청 없이 반품한 경우 고객님께 다시 반송됨을 양해바라며, 환불/교환은 불가합니다.<br />사용
+                          중 발생한 하자의 교환/환불/수리 등은 ‘공정거래위원회 소비자분쟁해결기준’에 준하여 처리됩니다.
+                        </li>
+                      </ul>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="nav-notice" class="tab-pane">
+              <div class="notice_wrap">
+                <div class="total_top">
+                  <h3 class="total">상품고시</h3>
+                </div>
+                <div class="buyer_area">
+                  <div class="info_row m_col" v-for="(itemInfo,index) in item.itemInfos">
+                    <span class="ta_title">{{itemInfo.title}}</span>
+                    <span class="ta_data">{{itemInfo.description}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 수정 : 모바일 장바구니,구매버튼,찜 -->
+      <div class="buyBtn_box mobile" v-if="!exportMode">
+        <div class="btn_wrap">
+          <button class="buyBtn addToCart" type="button" @click.prevent="addToCart(2)" id="addToCartBtn2">장바구니</button>
+          <!-- 모바일에서 바로선택 누르면 옵션창 뜸 -->
+          <button class="buyBtn buyOrder" type="button" @click="quickOptSel()">바로선택</button>
+          <button
+            class="wishBtn addToWishList"
+            ref="wishlistBtn2"
+            type="button"
+            @click.prevent="addToWishList($event, 2)"
+            id="addToWishBtn2"
+          ></button>
+        </div>
+      </div>
+      <!-- //모바일 장바구니,구매버튼,찜-->
+
+      <!-- 바로선택  -->
+      <section class="directSelect" v-if="!exportMode">
+        <div class="center drs">
+          <div class="directSelect_area">
+            <button type="button" class="dirSelBtn" @click="quickOptSel">바로선택</button>
+            <div class="directSelect_wrap">
+              <!-- <div class="center drs">
+				<div class="dropdown directSelect_area">
+					<button type="button" class="dropdown-toggle dirSelBtn" data-toggle="dropdown">바로선택</button>
+					<div class="dropdown-menu directSelect_wrap" role="menu" aria-labelledby="dLabel"> -->
+              <!-- 모바일 옵션닫기 :수정 -->
+              <div class="mobile_close">
+                <span class="close_area" @click="quickOptSel()">
+                  <button type="button"><img class="icon-img" src="/static/images/icon/tabbar_close_arrow.png" alt="바로 선택 닫기" /></button>
+                </span>
+              </div>
+
+              <div class="info_title">
+                <h2>{{unescapeHtml(item.itemName)}}</h2>
+              </div>
+
+              <div class="info_row">
+                <div class="select-col">
+                  <div class="info_row etc" v-show="item.itemTextOptionFlag === 'Y'">
+                    <div class="shop_info">
+                      <!--<div class="title_col" v-show="item.itemTextOptionFlag === 'Y'"><p style="margin-bottom: 5px;">필수 추가정보 입력</p>
+                        <input type="text" v-show="item.itemTextOptionTitle1 !== null" name="itemTextOptionTitle1" id="itemTextOptionTitle1" :placeholder="item.itemTextOptionTitle1" v-model="itemOptionInfo.itemTextOptionValue1"/>
+                        <input type="text" v-show="item.itemTextOptionTitle2 !== null" name="itemTextOptionTitle2" id="itemTextOptionTitle2" :placeholder="item.itemTextOptionTitle2" v-model="itemOptionInfo.itemTextOptionValue2"/>
+                        <input type="text" v-show="item.itemTextOptionTitle3 !== null" name="itemTextOptionTitle3" id="itemTextOptionTitle3" :placeholder="item.itemTextOptionTitle3" v-model="itemOptionInfo.itemTextOptionValue3"/>
+                      </div>-->
+                    </div>
+                  </div>
+                  <!-- 옵션 없을 때 -->
+                  <div class="option_list" v-if="item.itemOptionFlag === 'N'">
+                    <ul class="list_in">
+                      <li class="optSelect" v-for="(optionInfo, index) in itemOptionInfo.addOptionList">
+                        <div class="op_tit">
+                          <span v-html="unescapeHtml(item.itemName)"></span>
+                        </div>
+
+                        <div class="option_wrap">
+                          <div class="amt_box">
+                            <button type="button" class="btn_minus" @click="minus(index, 'mMinusInput2')" id="mMinusInput">
+                              <img src="/static/images/icon/amt_btn_minus.png" alt="-" />
+                            </button>
+                            <input
+                              type="text"
+                              title="수량"
+                              class="number"
+                              v-model="optionInfo.quantity"
+                              v-on:input="inputQuantity($event, index, 'mQuantityInput1')"
+                              id="mQuantityInput1"
+                            />
+                            <button type="button" class="btn_plus" @click="plus(index, 'mPlusInput1')" id="mPlusInput1">
+                              <img src="/static/images/icon/amt_btn_add.png" alt="+" />
+                            </button>
+                          </div>
+                          <div class="op_price"><strong>{{formatNumber(optionInfo.optionPrice)}}</strong> P</div>
+                        </div>
+                        <div class="max_order">
+                          <span class="s-txt">최대 주문 수량 : {{item.orderMaxQuantity}} </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- 옵션 있을 때 -->
+                  <!-- 옵션선택 : 토글사용 -->
+
+                  <!-- 선택형 -->
+                  <div class="opt_select_area" v-if="item.itemOptionFlag === 'Y' && item.itemOptionType === 'S'">
+                    <div class="dropdown_box" :class="isVisible[1] ? 'open' : ''">
+                      <button type="button" class="c-select box ico-dropdown" @click="toggleSelect(1)">
+                        <span v-html="unescapeHtml(item.itemOptions[0].optionName1)"></span>
+                      </button>
+                      <div class="option_wrap" v-if="isVisible[1]">
+                        <button
+                          type="button"
+                          class="c-select"
+                          v-for="(option, index) in item.itemOptions"
+                          @click="writeOptionName(1 ,option.optionName2, index); toggleSelect(1);"
+                          :disabled="option.soldOut"
+                          :key="index"
+                        >
+                          <span class="txt" v-html="unescapeHtml(option.optionName2)"></span>
+                          <span class="txt" v-if="option.optionPrice > 0">(+{{formatNumber(option.optionPrice)}}P)</span>
+                          <span class="txt" v-if="option.soldOut">[품절]</span>
+                          <span class="txt" v-else-if="option.optionStockFlag == 'Y' && option.optionStockQuantity > 0"
+                            >| 재고 {{option.optionStockQuantity}}개</span
+                          >
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--<div class="option_list" v-show="item.itemOptionFlag === 'Y' && item.itemOptionType === 'S'
+																	&& itemOptionInfo.addOptionList.length === 0" style="padding-top: 40px;">
+								  </div>
+
+								  <div class="option_list" v-show="item.itemOptionFlag === 'Y' && item.itemOptionType === 'S'
+																	&& itemOptionInfo.addOptionList.length === 1" style="padding-top: 40px;">
+								  </div>-->
+
+                  <div class="opt_select_area" v-if="item.itemOptionType === 'S2' || item.itemOptionType === 'S3'">
+                    <div class="dropdown_box" :class="isVisible[1] ? 'open' : ''">
+                      <button type="button" class="c-select box ico-dropdown" @click="selectOptionTitle(1); toggleSelect(1);">
+                        <span
+                          v-html="unescapeHtml(itemOptionInfo.itemOptionTitle1) +
+											(unescapeHtml(itemOptionInfo.selectOptionName1) == '' ? '' : '- ') +
+											unescapeHtml(itemOptionInfo.selectOptionName1)"
+                        ></span>
+                      </button>
+                      <div class="option_wrap" v-if="isVisible[1]">
+                        <button
+                          type="button"
+                          class="c-select"
+                          v-if="item.itemOptionTitle1"
+                          v-for="(option1, index) in itemOptionInfo.optionName1"
+                          @click="writeOptionName(1, option1, index); toggleSelect(1);"
+                          :key="index"
+                        >
+                          <span class="txt" v-html="unescapeHtml(option1)"></span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="dropdown_box" :class="itemOptionInfo.selectOptionName1 && isVisible[2] ? 'open' : ''">
+                      <button type="button" class="c-select box ico-dropdown" @click="toggleSelect(2)">
+                        <span
+                          v-html="unescapeHtml(itemOptionInfo.itemOptionTitle2) +
+											(unescapeHtml(itemOptionInfo.selectOptionName2) == '' ? '' : '- ') +
+											unescapeHtml(itemOptionInfo.selectOptionName2)"
+                        ></span>
+                      </button>
+                      <div class="option_wrap" v-if="isVisible[2]">
+                        <button
+                          type="button"
+                          class="c-select"
+                          v-for="(option2, index) in itemOptionInfo.optionName2"
+                          @click="writeOptionName(2, option2, index); toggleSelect(2);"
+                          :disabled="item.itemOptionType === 'S2' && itemOptionInfo.optionSoldOuts[index]"
+                          v-if="item.itemOptionTitle1"
+                          :key="index"
+                        >
+                          <span class="txt">{{unescapeHtml(option2)}}</span>
+                          <span class="txt" v-if="item.itemOptionType === 'S2' && itemOptionInfo.optionPrices[index] > 0"
+                            >(+{{formatNumber(itemOptionInfo.optionPrices[index])}}원)</span
+                          >
+                          <span class="txt" v-if="item.itemOptionType === 'S2' && itemOptionInfo.optionSoldOuts[index]">[품절]</span>
+                          <span
+                            class="txt"
+                            v-if="item.itemOptionType === 'S2' && itemOptionInfo.optionStockFlags[index] == 'Y' && itemOptionInfo.optionStockQuantity[index] > 0"
+                            >| 재고 {{itemOptionInfo.optionStockQuantity[index]}}개</span
+                          >
+                        </button>
+                      </div>
+                    </div>
+                    <div class="dropdown_box" :class="itemOptionInfo.selectOptionName2 && isVisible[3] ? 'open' : ''">
+                      <button type="button" class="c-select box ico-dropdown" @click="toggleSelect(3)">
+                        <span v-html="unescapeHtml(itemOptionInfo.itemOptionTitle3)"></span>
+                      </button>
+                      <div class="option_wrap" v-show="isVisible[3]">
+                        <button
+                          type="button"
+                          class="c-select"
+                          v-for="(option3, index) in itemOptionInfo.optionName3"
+                          @click="toggleSelect(3); writeOptionName(3, option3, index);"
+                          :disabled="item.itemOptionType === 'S3' && itemOptionInfo.optionSoldOuts[index]"
+                          v-if="item.itemOptionTitle3"
+                          :key="index"
+                        >
+                          <span class="txt" v-html="unescapeHtml(option3)"></span>
+                          <span class="txt" v-if="item.itemOptionType === 'S3' && itemOptionInfo.optionPrices[index] > 0"
+                            >(+{{formatNumber(itemOptionInfo.optionPrices[index])}}원)</span
+                          >
+                          <span class="txt" v-if="item.itemOptionType === 'S3' && itemOptionInfo.optionSoldOuts[index]">[품절]</span>
+                          <span
+                            class="txt"
+                            v-if="item.itemOptionType === 'S3' && itemOptionInfo.optionStockFlags[index] == 'Y' && itemOptionInfo.optionStockQuantity[index] > 0"
+                            >| 재고 {{itemOptionInfo.optionStockQuantity[index]}}개</span
+                          >
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="shop_info" v-show="item.itemTextOptionFlag === 'Y'">
+                    <ul>
+                      <li><p>필수 추가정보 입력</p></li>
+                      <li><input type="text" v-show="item.itemTextOptionTitle1 !== null && item.itemTextOptionTitle1 !== ''" name="itemTextOptionTitle1" id="itemTextOptionTitle1" :placeholder="item.itemTextOptionTitle1" v-model="itemOptionInfo.itemTextOptionValue1"/></li>
+                      <li><input type="text" v-show="item.itemTextOptionTitle2 !== null && item.itemTextOptionTitle2 !== ''" name="itemTextOptionTitle2" id="itemTextOptionTitle2" :placeholder="item.itemTextOptionTitle2" v-model="itemOptionInfo.itemTextOptionValue2"/></li>
+                      <li><input type="text" v-show="item.itemTextOptionTitle3 !== null && item.itemTextOptionTitle3 !== ''" name="itemTextOptionTitle3" id="itemTextOptionTitle3" :placeholder="item.itemTextOptionTitle3" v-model="itemOptionInfo.itemTextOptionValue3"/></li>
+                    </ul>
+                  </div>
+                  <!-- 옵션 선택 결과 리스트 -->
+                  <div
+                    class="option_list"
+                    v-show="item.itemOptionFlag === 'Y'
+																	&& (item.itemOptionType === 'S' || item.itemOptionType === 'S2' || item.itemOptionType === 'S3')
+																	&& itemOptionInfo.addOptionList.length > 0"
+                  >
+                    <ul class="list_in">
+                      <li class="optSelect" v-for="(optionInfo, index) in itemOptionInfo.addOptionList" :key="index">
+                        <div class="op_tit">
+                          <span v-html="unescapeHtml(item.itemName)"></span>
+                          <span v-html="unescapeHtml(optionInfo.optionName)"></span>
+                        </div>
+                        <button type="button" class="opt_del" @click="deleteOption(index)">
+                          <img src="/static/images/icon/option_delete.png" alt="옵션삭제" />
+                        </button>
+                        <div class="option_wrap">
+                          <div class="amt_box">
+                            <button type="button" class="btn_minus" @click="minus(index, 'mMinusInput2' + index)" v-bind:id="'mMinusInput2' + index">
+                              <img src="/static/images/icon/amt_btn_minus.png" alt="수량 감소 버튼" />
+                            </button>
+                            <input
+                              type="text"
+                              title="수량 직접 입력"
+                              class="number"
+                              v-model="optionInfo.quantity"
+                              v-on:input="inputQuantity($event, index, 'mQuantityInput2' + index)"
+                              v-bind:id="'mQuantityInput2' + index"
+                            />
+                            <button type="button" class="btn_plus" @click="plus(index, 'mPlusInput2' + index)" v-bind:id="'mPlusInput2' + index">
+                              <img src="/static/images/icon/amt_btn_add.png" alt="수량 증가 버튼" />
+                            </button>
+                          </div>
+                          <div class="op_price"><strong>{{formatNumber(optionInfo.optionPrice)}}</strong> P</div>
+                        </div>
+                        <div class="max_order">
+                          <span class="s-txt">최대 주문 수량 : {{item.orderMaxQuantity}} </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <!-- //옵션 선택 결과 리스트 -->
+                <div class="select-col">
+                  <!-- 판매가, 구매 여부 확인 -->
+                  <div class="info_row">
+                    <div class="purchase_ck">
+                      <span class="purchase_ck-y" v-show="buyCheck">
+                        <img src="/static/images/icon/btn_buy-y.png" alt="" />
+                        <span class="btn_title pointblue">주문가능</span>
+                      </span>
+                      <span class="purchase_ck-n selectOpt" v-if="itemOptionInfo.addOptionList.length == 0" v-show="!buyCheck">
+                        <img src="/static/images/icon/donation-warning.png" alt="" />
+                        <span class="btn_title deepGray">옵션을 선택하세요</span>
+                      </span>
+                      <span class="purchase_ck-n" v-else v-show="!buyCheck">
+                        <img src="/static/images/icon/btn_buy-n.png" alt="" />
+                        <span class="btn_title pointRed">포인트부족</span>
+                      </span>
+                      <!-- <span class="purchase_ck-n" v-show="!buyCheck">
+											<img src="/static/images/icon/btn_buy-n.png" alt="">
+											<span class="btn_title pointRed">주문불가</span>
+										</span> -->
+                    </div>
+                    <div class="total_price">
+                      <p class="txt">총 답례품 포인트</p>
+                      <span class="price">
+                        <strong>{{formatNumber(optionItemTotal)}} P</strong>
+                      </span>
+                    </div>
+                  </div>
+                  <!-- //판매가, 구매 여부 확인 -->
+                  <!-- 장바구니,구매버튼,찜 -->
+                  <div class="buyBtn_box" v-show="item.itemSoldOutFlag !== 'Y'">
+                    <button class="buyBtn addToCart" type="button" @click.prevent="addToCart(3)" id="addToCartBtn3">장바구니</button>
+                    <button class="buyBtn buyOrder" type="button" @click.prevent="buyOrder(2)" id="buyOrderBtn2">바로선택</button>
+                    <button
+                      class="wishBtn addToWishList"
+                      type="button"
+                      ref="wishlistBtn3"
+                      @click.prevent="addToWishList($event, 3)"
+                      id="wishlistBtn3"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <layout-qna-write :item-qna="itemQna" :qna-groups="qnaGroups" :target-item="item" @register-qna="registerQna" ref="qnaWrite" v-if="!exportMode"></layout-qna-write>
+      <layout-fixed-btn v-if="!exportMode"></layout-fixed-btn>
+      <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted" :export-mode="exportMode"></layout-footer-ali>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/static/js/bootstrap/vendor/clipboard.min.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.directives.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script type="application/javascript">
+      /*(function (d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) { return; }
+			js = d.createElement(s); js.id = id;
+			js.src = "https://connect.facebook.net/ko_KR/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));*/
+    </script>
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          "layout-header": httpVueLoader("/components/layouts/header_g.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-qna-write": httpVueLoader("/components/ui/modal-goodsQnA.vue"),
+          "layout-item_tab-ali": httpVueLoader("/components/layouts/item_tab-ali.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"),
+          /*'alert': httpVueLoader('/components/layouts/alert.vue'),
+				'naver-pay-button': httpVueLoader('/components/ui/naver/naver-pay-button.vue')*/
+
+          "layout-map-select": httpVueLoader("/components/ui/lclgv_chc/map.vue"),
+        },
+        data: function () {
+          return {
+		    buyFlag: 'Y',
+            isMobile: $s.isMobile(),
+            pageUrl: "",
+            itemUserCode: "",
+            error: {},
+            itemRelations: [],
+            newCartQuantity: 0,
+            displayCartQuantites: 0,
+            newLatelyItemCount: 0,
+            newWishlistCount: 0,
+            latelyItems: [],
+            display: {
+              quantity: 1,
+              presentPrice: 0,
+            },
+            param: {
+              filter: {
+                filterCodeIds: [],
+                initFilterCodeIds: [],
+              },
+              order: {
+                arrayRequiredItems: [],
+                itemSets: [],
+                campaignCode: null,
+                // 필수 추가정보
+                textOption: ""
+              },
+              review: {
+                page: 1,
+                itemsPerPage: 5,
+                itemUserCode: "",
+                size: 5,
+                orderBy: "LIKE_COUNT",
+                fcIds: "",
+              },
+              qna: {
+                page: 1,
+                itemsPerPage: 5,
+                itemUserCode: "",
+                size: 5,
+              },
+              coupon: {
+                page: 1,
+                itemsPerPage: 5,
+                itemUserCode: "",
+                size: 5,
+              },
+              delivery: {
+                page: 1,
+                itemsPerPage: 5,
+                query: "",
+                where: "ADDRESS",
+                size: 5,
+              },
+              category: {
+                categoryCode: "",
+                page: 1,
+                itemsPerPage: 20,
+              },
+              unRegisterReview: {
+                showStarFlags: [],
+                content: "",
+                subject: "",
+                files: [],
+                fileImages: [],
+              },
+            },
+            item: {
+              freeGiftItemList: [],
+              itemImages: [],
+              itemInfos: [],
+              itemOptions: [],
+              itemRelations: [],
+              itemSets: [],
+            },
+            itemOptionInfo: {
+              optionPrices: [],
+              optionStockFlags: [],
+              optionStockQuantity: [],
+              selectOptionName1: "",
+              selectOptionName2: "",
+              selectOptionName3: "",
+              selectOptionIndex1: "",
+              selectOptionIndex2: "",
+              selectOptionIndex3: "",
+              optionName1: [],
+              optionName2: [],
+              optionName3: [],
+              optionName1Ids: [],
+              optionName2Ids: [],
+              optionName3Ids: [],
+              optionSoldOuts: [],
+              textOptionValues: [],
+              addOptionList: [],
+              // 필수 추가정보
+              itemTextOptionValue1: "",
+              itemTextOptionValue2: "",
+              itemTextOptionValue3: "",
+            },
+            itemSetInfo: {
+              amount: 0,
+              optionCount: 0,
+              selectList: [],
+              addOptionList: [],
+            },
+            list: [],
+            pointPolicy: {},
+            config: {},
+            cardBenefits: {},
+            seller: {
+              companyName: "",
+              representativeName: "",
+              businessNumber: "",
+              telephoneNumber: "",
+              email: "",
+              faxNumber: "",
+              address: "",
+              addressDetail: "",
+            },
+            userId: 0,
+            result: {
+              review: {
+                currentPage: 1,
+                totalPages: 0,
+                totalElements: 0,
+                content: {},
+              },
+              qna: {
+                currentPage: 1,
+                totalPages: 0,
+                totalElements: 0,
+                content: {},
+              },
+              coupon: {
+                currentPage: 1,
+                totalPages: 0,
+                totalElements: 0,
+                content: {},
+              },
+              delivery: {
+                number: 0,
+                content: {},
+              },
+            },
+            itemQna: {
+              userId: "",
+              userName: "",
+              qnaGroup: "",
+              question: "",
+              subject: "",
+              secretFlag: "N",
+            },
+            secretFlag: false,
+            slides: [
+              {
+                imageId: "",
+                image: "",
+              },
+            ],
+            category: {
+              groups: [],
+            },
+            currentCategories: [],
+            currentChildForMobile: [],
+            current: {
+              categoryLevel: "",
+              groupUrl: "",
+              groupName: "",
+              category1Url: "",
+              category1Name: "",
+              category2Url: "",
+              category2Name: "",
+              category3Url: "",
+              category3Name: "",
+            },
+            breadcrumbs: [],
+            //isRestockNotice: '',
+            earnPoint: {
+              levelPoint: 0,
+              point: 0,
+              totalPoint: 0,
+              levelPointRate: 0,
+              pointRate: 0,
+              levelName: "",
+            },
+            reviewFilters: [],
+            qnaGroups: [],
+            swiperOption: {
+              thumbSlider: {
+                slidesPerView: "auto",
+                spaceBetween: 8,
+                freeMode: true,
+                watchSlidesVisibility: true,
+                watchSlidesProgress: true,
+                observer: true,
+                observeParents: true,
+                // allowTouchMove: false
+                navigation: {
+                  /*nextEl: '.thumb_box .swiper-button-next',
+								prevEl: '.thumb_box .swiper-button-prev',*/
+                },
+              },
+
+              mainSlider: {
+                spaceBetween: 15,
+                observer: true,
+                observeParents: true,
+                navigation: {
+                  nextEl: ".swiper-button-next",
+                  prevEl: ".swiper-button-prev",
+                },
+                pagination: {
+                  el: ".swiper-pagination",
+                },
+                thumbs: {
+                  swiper: this.viewThumbsSwiper,
+                },
+              },
+              itemSlider: {
+                slidesPerView: "auto",
+                centerSlides: true,
+                spaceBetween: 8,
+                // freeMode: true,
+                watchSlidesVisibility: true,
+                watchSlidesProgress: true,
+                navigation: {
+                  // nextEl: '.item_slider .swiper-button-next',
+                  // prevEl: '.item_slider .swiper-button-prev',
+                },
+                // breakpoints: {
+                // 	767: {
+                // 		slidesPerView: 2,
+                // 		spaceBetween: 16
+                // 	},
+                // 	991: {
+                // 		slidesPerView: 3,
+                // 		spaceBetween: 20
+                // 	}
+                // }
+              },
+            },
+
+            /* event */
+            event: {
+              showSetItem: true,
+              showQnaForm: true,
+              showBuyWrap: false,
+              showBuyView: false,
+              isBuyViewFixed: false,
+              optionType: "",
+              itemReviewId: 0,
+              qnaId: 0,
+            },
+
+            menuUrl: location.pathname,
+            buyCheck: true, // 구매 가능 여부
+            locgovGivePoint: 0,
+            showModalNo: null,
+			exportMode: false,
+			isVisible : [false, false, false, false],
+			isVisible1 : false,
+          };
+        },
+        methods: {
+          slidelistHeader: function (index, noticeId) {
+            $(".list_top").eq(index).siblings(".list_header").slideToggle().css("display", "flex");
+            /*try {		// 화면 내 swiper를 리사이징 처리로 수정
+						let swiperList = vm.$refs.reviewSwiper;
+						let length = swiperList.length;
+						for (let swiperIndex = 0; swiperIndex < length; swiperIndex++) {
+							swiperList[swiperIndex].swiper.resize.resizeHandler();
+						}
+					} catch (e) {
+						console.log = () => {};
+					}*/ // 옵션으로 변경
+            //$("li.dropdown").toggleClass("show"); // 답례품후기 아코디언
+
+						//20241104 웹접근성 토글제어 추가
+						const elId = `review_${index}`;
+						document.getElementById(elId).classList.toggle("show");
+
+          },
+          slidelistHeaderEnter(e, index) {
+            if (e.keyCode === 13) {
+              this.slidelistHeader(index);
+            }
+          },
+          slideQnatHeader: function (index, noticeId) {
+            $(".list_header.qna").eq(index).slideToggle();
+           // $("li.dropdown").toggleClass("show"); // 답례품Q&A 아코디언
+
+					 //20241104 웹접근성 토글제어 추가
+					 const elId = `qna_${index}`;
+					 document.getElementById(elId).classList.toggle("show");
+          },
+          slideQnatHeaderEnter(e, i) {
+            if (e.keyCode === 13) {
+              this.slideQnatHeader(i);
+            }
+          },
+          // toggleClass(i, e) {
+          // 	if (e.keyCode === 13 || e.keyCode === 32) {
+          // 	$("li.dropdown").eq(i).toggleClass("show");
+          // 	}
+          // },
+
+          handleScrollByTab: function (evt, el) {
+            // jquery (el.offset().top) -> vanilla js (el.getBoundingClientRect().top + window.scrollY)
+            const top = el.getBoundingClientRect().top + window.scrollY;
+            const scrollTop = document.scrollingElement.scrollTop;
+            const width = window.innerWidth;
+            vm.event.isBuyViewFixed = width >= 768 && top - 100 < scrollTop;
+          },
+
+          rating: function (starIndex) {
+            var score = starIndex + 1;
+
+            this.param.unRegisterReview.score = score;
+
+            var showStarFlags = [false, false, false, false, false];
+
+            for (var i = 0; i <= starIndex; i++) {
+              showStarFlags[i] = true;
+            }
+
+            this.param.unRegisterReview.showStarFlags = showStarFlags;
+          },
+          getItemRelations: function () {
+            var param = {
+              itemUserCode: this.itemUserCode,
+            };
+
+            $s.api.viewItemRelations(param, function (response) {
+              vm.itemRelations = response.list;
+            });
+          },
+          inputQuantity: function (e, index, focusId) {
+            var isSet = vm.item.itemType === "3";
+            var keyValue = e.target.value.replace(/[^0-9]/g, "");
+
+            if (keyValue.substring(0, 1) == 0) {
+              keyValue = keyValue.substring(1, keyValue.length);
+            }
+
+            if (!this.checkForItem("manual", index, focusId)) {
+              return;
+            }
+
+            if (isSet) {
+              var itemSets = vm.param.order.itemSets;
+              // alert("isSet: "+isSet);
+              // alert("itemSets: "+itemSets);
+
+              itemSets[index].quantity = parseInt(keyValue);
+              itemSets[index].amount = itemSets[index].tempAmount * itemSets[index].quantity;
+            } else {
+              var addOptionList = vm.itemOptionInfo.addOptionList;
+              addOptionList[index].quantity = parseInt(keyValue);
+              addOptionList[index].optionPrice = addOptionList[index].tempOptionPrice * addOptionList[index].quantity;
+
+              this.setRequiredItem(index);
+            }
+          },
+          getItemReviews: function (page) {
+            this.param.review.itemUserCode = this.itemUserCode;
+            this.param.review.page = page;
+
+            $s.api.getItemReviewsForDetail(this.param.review, function (response) {
+              vm.result.review = response;
+            });
+          },
+          // 바로선택
+          quickOptSel() {
+            $(".directSelect_wrap").toggle();
+            try {
+              let style = $(".directSelect_wrap").attr("style");
+              if (style.indexOf("none") > -1) {
+                // 모바일 주문창 숨김상태
+                vm.event.showBuyWrap = false;
+              } else {
+                // 모바일 주문창 표시상태
+                vm.event.showBuyWrap = true;
+              }
+            } catch (e) {
+              console.log = () => {};
+            }
+          },
+
+          // 답례품 qna
+          qnaWrite() {
+            Saleson.init({ loginPage: true });
+            if ($s.isLogin()) {
+              $("#goodsQnA_modal").show();
+              try {
+                setTimeout(() => {
+                  $("#reason").focus();
+                }, 100);
+              } catch (e) {
+                console.log = () => {};
+              }
+            }
+          },
+          getItemQna: function (page) {
+            this.param.qna.page = page;
+            this.param.qna.itemUserCode = this.itemUserCode;
+            $s.api.getItemQna(this.param.qna, function (response) {
+              vm.result.qna = response;
+            });
+          },
+          paging: function (page, target) {
+            if (target == "review") {
+              this.getItemReviews(page);
+            } else if (target == "qna") {
+              this.getItemQna(page);
+            } else if (target == "all") {
+              this.getItemReviews(page);
+              this.getItemQna(page);
+            }
+          },
+
+          plus: function (index, focusId) {
+            var isSet = vm.item.itemType === "3";
+
+            if (isSet) {
+              // alert("isSet: "+isSet)
+              var itemSets = vm.param.order.itemSets;
+              // alert("itemSets: "+itemSets)
+
+              itemSets[index].quantity += 1;
+              if (!this.checkForItem("plus", index, focusId)) {
+                return;
+              }
+
+              itemSets[index].amount = itemSets[index].tempAmount * itemSets[index].quantity;
+            } else {
+              if (!this.checkForItem("plus", index, focusId)) {
+                return;
+              }
+
+              var addOptionList = vm.itemOptionInfo.addOptionList;
+
+              addOptionList[index].quantity += 1;
+              addOptionList[index].optionPrice = addOptionList[index].tempOptionPrice * addOptionList[index].quantity;
+
+              this.setRequiredItem(index);
+            }
+          },
+
+          minus: function (index, focusId) {
+            var isSet = vm.item.itemType === "3";
+
+            if (!this.checkForItem("minus", index, focusId)) {
+              return;
+            }
+
+            if (isSet) {
+              var itemSets = vm.param.order.itemSets;
+
+              itemSets[index].quantity -= 1;
+              itemSets[index].amount = itemSets[index].tempAmount * itemSets[index].quantity;
+            } else {
+              var addOptionList = this.itemOptionInfo.addOptionList;
+
+              addOptionList[index].quantity -= 1;
+              addOptionList[index].optionPrice = addOptionList[index].tempOptionPrice * addOptionList[index].quantity;
+
+              this.setRequiredItem(index);
+            }
+          },
+          setRequiredItem: function (index) {
+            let addOptionList = vm.itemOptionInfo.addOptionList;
+            let item = vm.item.itemId;
+            let option = "";
+            let arrayRequiredItems = vm.param.order.arrayRequiredItems;
+            let arrayRequiredItem = arrayRequiredItems[index];
+            let itemPrice = vm.item.presentPrice;
+
+            if (this.item.itemOptionFlag === "N" && addOptionList[index] == null) {
+              addOptionList.push({
+                quantity: vm.item.orderMinQuantity,
+                optionPrice: itemPrice,
+                tempOptionPrice: itemPrice,
+              });
+            } else {
+              option = arrayRequiredItem.substr(arrayRequiredItem.lastIndexOf("||") + 2);
+            }
+
+            let quantity = addOptionList[index].quantity;
+            if (arrayRequiredItems.length == 0) {
+              arrayRequiredItems.push(item + "||" + quantity + "||" + option);
+            } else {
+              arrayRequiredItems[index] = item + "||" + quantity + "||" + option;
+            }
+          },
+          setRequiredItemSets: function () {
+            let itemSets = vm.item.itemSets;
+            let itemSetInfo = vm.itemSetInfo;
+
+            itemSetInfo.selectList = new Array();
+            itemSetInfo.optionCount = 0;
+
+            for (let i = 0; i < itemSets.length; i++) {
+              // 최대 & 최소 구매수량 조정
+              if (itemSets[i].item.orderMinQuantity === -1) itemSets[i].item.orderMinQuantity = 1;
+              if (itemSets[i].item.orderMaxQuantity === -1) itemSets[i].item.orderMaxQuantity = 999;
+
+              // if (itemSets[i].item.itemOptionFlag === "Y") {
+              itemSetInfo.optionCount++;
+              // }
+
+              itemSetInfo.selectList.push({
+                itemId: itemSets[i].item.itemId,
+                itemName: itemSets[i].item.itemName,
+                stockFlag: itemSets[i].item.stockFlag,
+                stockQuantity: itemSets[i].item.stockQuantity,
+                quantity: itemSets[i].quantity,
+                itemOption: null,
+              });
+            }
+          },
+          deleteOption: function (index) {
+            this.itemOptionInfo.addOptionList.splice(index, 1);
+            this.param.order.arrayRequiredItems.splice(index, 1);
+          },
+          buyOrder: function (number) {
+            // if (!$s.isLogin()) {
+            // 	$s.alert('로그인 후 추가 가능합니다.');
+            // 	return;
+            // }
+            Saleson.init({ loginPage: true });
+
+			if(vm.buyFlag == 'Y') {
+	        	$s.alert('미성년자는 이상품을 구매 할 수 없습니다.');
+				return;
+			}
+
+            if ($s.isLogin()) {
+              if ((!$s.isMobileUI() || vm.event.showBuyWrap) && this.checkForItem("buy_now", 0)) {
+
+                if(!vm.setTextOption()){
+                  return;
+                }
+
+                if (!this.buyCheck) {
+                  $s.alert("포인트가 부족하여\n주문이 불가능합니다.", "buyOrderBtn" + number);
+                  return;
+                }
+                var campaignCode = $s.core.getSession("campaign_code");
+                vm.param.order.campaignCode = campaignCode;
+
+                $s.api.buyOrder(
+                  vm.param.order,
+                  function (response) {
+                    var url = "/order/step1.html";
+
+                    if (!$s.isLogin()) {
+                      $s.core.setSession($s.const.BUY_ORDER, JSON.stringify(vm.param.order));
+                      url = "/order/no-member.html";
+                    }
+
+                    $s.redirect(url);
+                  },
+                  function (error) {
+                    $s.alert(error.response.data.message, "buyOrderBtn" + number);
+                  }
+                );
+              }
+              //vm.event.showBuyWrap = true;
+            }
+          },
+          addToCart: function (number) {
+            // me-024(장바구니에 담았습니다) 확인
+            if (!$s.isLogin()) {
+              // $s.alert('로그인 후 가능합니다.');
+
+              Saleson.init({ loginPage: true });
+              return;
+            }
+
+		    if(vm.buyFlag == 'Y') {
+	        	$s.alert('미성년자는 이상품을 담을 수 없습니다.');
+				return;
+			}
+
+            if (this.checkForItem("cart", 0)) {
+              /*if (!this.buyCheck) {
+							$s.alert('주문이 불가능합니다.');
+							return;
+						}*/
+
+            if(!vm.setTextOption()){
+                  return;
+            }
+              $s.api.addToCart(
+                vm.param.order,
+                function (response) {
+                  if (response.status == "OK") {
+                    // $s.api.getCartInfo(function (response) {
+                    // 	vm.newCartQuantity = response.cartQuantity;
+                    // });
+                    $s.alert("장바구니에 담았습니다.", "addToCartBtn" + number);
+                    vm.getCartInfo();
+                  }
+                },
+                function (error) {
+                  $s.alert(error.response.data.message, "addToCartBtn" + number);
+                }
+              );
+            }
+            //vm.event.showBuyWrap = true;
+          },
+
+          // 필수 추가정보
+          setTextOption: function(){
+            let textOptionCheck = [
+            { title: vm.item.itemTextOptionTitle1, value: vm.itemOptionInfo.itemTextOptionValue1 },
+            { title: vm.item.itemTextOptionTitle2, value: vm.itemOptionInfo.itemTextOptionValue2 },
+            { title: vm.item.itemTextOptionTitle3, value: vm.itemOptionInfo.itemTextOptionValue3 }
+            ];
+
+            for (let opt of textOptionCheck){
+              if(opt.title && (!opt.value || !opt.value.trim())){
+                alert(opt.title + " 를(을) 입력해주세요.");
+                return false;
+              }
+
+              const validPattern = /<|>|\|\||:/;
+              if(validPattern.test(opt.value)){
+                alert("특수문자(<, >, ||, :)는 사용할 수 없습니다.");
+                return false;
+              }
+
+              if(opt.value && opt.value.length > 30){
+                alert(opt.title + "를(을) 30자 이하로 입력해주세요.")
+                return false;
+              }
+            }
+
+            let textOption = textOptionCheck
+                              .filter(opt => opt.title && opt.value)
+                              .map(opt => opt.title + " : " +opt.value)
+                              .join("||");
+
+            if(textOption){
+              vm.param.order.textOption = textOption;
+            }
+
+            return true;
+          },
+
+          addToWishList: function (e, number) {
+            // me-044(관심답례품에 추가 되었습니다.), me-045(관심답례품에 추가된 상품입니다.) 확인
+            // if (!$s.isLogin()) {
+            // 	$s.alert('로그인 후 가능합니다.');
+            // 	return;
+            // }
+            Saleson.init({ loginPage: true });
+
+            if ($s.isLogin()) {
+              let obj = e.target;
+
+              vm.showLoading(true);
+
+              if ($(obj).hasClass("on")) {
+                vm.showLoading(false);
+                //$s.alert('관심답례품에 추가된 답례품입니다.',  'addToWishBtn' + number);
+                $s.api.removeToWishList(
+                  vm.item.itemId,
+                  function (response) {
+                    vm.showLoading(false);
+                    if (response.status == "OK") {
+                      //$(obj).removeClass('on');
+                      vm.wishBtnSetting(false);
+                      // $s.toast('해당 답례품이 관심답례품에서 삭제되었습니다.');
+                      $s.alert("해당 답례품이 관심답례품에서 삭제되었습니다.", "addToWishBtn" + number);
+                    } else {
+                      //$(obj).addClass('on');
+                      vm.wishBtnSetting(true);
+                      //$s.toast('잠시 후 다시 시도해주세요.');
+                      $s.alert("잠시 후 다시 시도해주세요.", "addToWishBtn" + number);
+                    }
+                  },
+                  function (error) {
+                    vm.showLoading(false);
+                    //$(obj).addClass('on');
+                    vm.wishBtnSetting(true);
+                    $s.api.handleApiExeption(error);
+                  }
+                );
+              } else {
+                $s.api.addToWishList(
+                  vm.item.itemId,
+                  function (response) {
+                    vm.showLoading(false);
+                    if (response.status == "OK") {
+                      //$(obj).addClass('on')
+                      vm.wishBtnSetting(true);
+                      //$s.toast('해당 답례품이 관심답례품에 담겼습니다.');
+                      $s.alert("관심답례품에 추가 되었습니다.", "addToWishBtn" + number);
+                      /*$s.api.getQuickInfo(function (data) {
+										vm.newWishlistCount = data.wishlistCount;
+									});*/
+                    } else {
+                      //$(obj).removeClass('on');
+                      vm.wishBtnSetting(false);
+                      //$s.toast('문제가 발생했습니다.');
+                      $s.alert("문제가 발생했습니다.", "addToWishBtn" + number);
+                    }
+                  },
+                  function (error) {
+                    vm.showLoading(false);
+                    vm.wishBtnSetting(false);
+                    //$(obj).removeClass('on')
+                    $s.api.handleApiExeption(error, "addToWishBtn" + number);
+                  }
+                );
+              }
+              /*
+						$(".wishBtn").addClass("on");
+						$s.api.addToWishList(vm.item.itemId, function (response) {
+							if (response.status == 'OK') {
+								$s.toast('해당 답례품이 관심답례품에 담겼습니다.');
+								$s.api.getQuickInfo(function (data) {
+									vm.newWishlistCount = data.wishlistCount;
+								});
+							}
+						})*/
+            }
+          },
+          reviewAssessment: function (index, score) {
+            if (index <= score) {
+              return true;
+            }
+            return false;
+          },
+          clearOptionItems: function () {
+            vm.itemOptionInfo.optionName1 = new Array();
+            vm.itemOptionInfo.optionName1Ids = new Array();
+            vm.itemOptionInfo.optionName2 = new Array();
+            vm.itemOptionInfo.optionName2Ids = new Array();
+            vm.itemOptionInfo.optionName3 = new Array();
+            vm.itemOptionInfo.optionName3Ids = new Array();
+            vm.itemOptionInfo.selectOptionName1 = "";
+            vm.itemOptionInfo.selectOptionName2 = "";
+            vm.itemOptionInfo.selectOptionName3 = "";
+            vm.itemOptionInfo.selectOptionIndex1 = "";
+            vm.itemOptionInfo.selectOptionIndex2 = "";
+            vm.itemOptionInfo.selectOptionIndex3 = "";
+            vm.itemOptionInfo.textOptionValues = new Array(vm.item.itemOptions.length);
+
+            vm.itemOptionInfo.optionPrices = new Array();
+            vm.itemOptionInfo.optionSoldOuts = new Array();
+          },
+          addOptionItems: function (index, pIndex, level) {
+            let isSet = vm.item.itemType === "3";
+            let checkDuplication = false;
+            let itemOptionInfo = vm.itemOptionInfo;
+            let optionId = "";
+            // 선택한 옵션이 품절일 경우
+            if (itemOptionInfo.optionSoldOuts[index]) {
+              $s.alert("해당 옵션은 품절상태입니다.", "selectOption" + level);
+              return false;
+            }
+
+            if (level === 1) {
+              optionId = itemOptionInfo.optionName1Ids[index];
+            } else if (level === 2) {
+              optionId = itemOptionInfo.optionName2Ids[index];
+            } else if (level === 3) {
+              optionId = itemOptionInfo.optionName3Ids[index];
+            }
+
+            if (isSet) {
+              let itemSets = vm.item.itemSets;
+              let itemSetInfo = vm.itemSetInfo;
+
+              // 선택 옵션정보 loop
+              for (let i = 0; i < itemOptionInfo.addOptionList.length; i++) {
+                // 선택 정보 중복시, 기존 선택정보 삭제
+                if (itemOptionInfo.addOptionList[i].itemId === itemSets[pIndex].item.itemId) {
+                  itemOptionInfo.addOptionList.splice(i, 1);
+                  break;
+                }
+              }
+
+              // 옵션 정보 추가
+              this.addOptionList(index, pIndex, level, optionId, "selectOption" + index);
+
+              // 선택 옵션 숨김
+              vm.event.optionType = "";
+
+              // 옵션 초기화
+              this.clearOptionItems();
+
+              // 모든 옵션 선택시, 세트답례품 추가
+              if (itemOptionInfo.addOptionList.length === itemSetInfo.optionCount) {
+                this.addItemSets();
+
+                // 옵션 정보 초기화
+                itemOptionInfo.addOptionList = new Array();
+              }
+            } else {
+              for (let i = 0; i < vm.param.order.arrayRequiredItems.length; i++) {
+                let requiredItem = vm.param.order.arrayRequiredItems[i];
+
+                if (requiredItem.indexOf(optionId) >= 0) {
+                  checkDuplication = true;
+                  break;
+                }
+              }
+
+              if (!checkDuplication) {
+                vm.param.order.arrayRequiredItems.push(vm.item.itemId + "||" + vm.item.orderMinQuantity + "||" + optionId + "```");
+                this.addOptionList(index, pIndex, level, optionId, "selectOption" + index);
+              } else {
+                $s.alert("이미 선택하신 옵션입니다.", "selectOption" + index);
+              }
+
+              vm.event.optionType = "";
+
+              // 옵션 초기화
+              this.clearOptionItems();
+
+              // 옵션 세팅
+              this.writeOptionName();
+            }
+          },
+          addItemSets: function () {
+            if (vm.item.itemSoldOutFlag === "Y") {
+              return false;
+            }
+
+            let itemSetInfo = vm.itemSetInfo; // 세트답례품 temp (데이터 만드는 용도)
+            let orderItemSets = vm.param.order.itemSets; // 세트답례품 주문정보
+
+            itemSetInfo.selectList.forEach((selectInfo) => {
+              let optionInfo = "";
+              if (selectInfo.itemOption != null) {
+                optionInfo = selectInfo.itemOption.optionId + "```";
+              }
+              itemSetInfo.addOptionList.push(selectInfo.itemId + "||" + selectInfo.quantity + "||" + optionInfo);
+            });
+
+            // 세트 옵션 중복 체크
+            let isDuplicate = orderItemSets.some((orderItemSet) => {
+              if (JSON.stringify(orderItemSet.arrayItemSets) === JSON.stringify(itemSetInfo.addOptionList)) {
+                return true;
+              }
+            });
+
+            if (!isDuplicate) {
+              // 옵션금액 총합 + 현재 답례품가격
+              itemSetInfo.amount += vm.item.presentPrice;
+
+              // 세트답례품 주문 정보 세팅
+              orderItemSets.push({
+                itemId: vm.item.itemId,
+                quantity: 1,
+                amount: itemSetInfo.amount,
+                tempAmount: itemSetInfo.amount,
+                arrayItemSetInfos: itemSetInfo.selectList,
+                arrayItemSets: itemSetInfo.addOptionList,
+              });
+
+              // 재고 체크
+              if (!vm.isAvailableSetStock("create")) {
+                orderItemSets.pop();
+                return false;
+              }
+            } else {
+              $s.alert("이미 선택하신 옵션입니다.");
+            }
+
+            // 세트답례품 정보 초기화
+            itemSetInfo.amount = 0;
+            itemSetInfo.addOptionList = new Array();
+            this.setRequiredItemSets();
+          },
+          isAvailableSetStock: function (target, index) {
+            index = index || 0; // 현재 세트답례품 주문 데이터 index
+            var buyItems = []; // 재고 체크용 temp array
+
+            var order = vm.param.order; // 주문 정보
+
+            var isAvailable = true; // 재고 가능 여부
+            var alertText = ""; // alert 표시 text
+            var inputQuantity = order.itemSets[index].quantity; // 입력 수량
+
+            // 세트답례품 주문 정보 loop
+            for (var i = 0; i < order.itemSets.length; i++) {
+              // 세트답례품별 답례품정보 loop
+              for (var j = 0; j < order.itemSets[i].arrayItemSetInfos.length; j++) {
+                var info = order.itemSets[i].arrayItemSetInfos[j];
+
+                // 각 답례품별 최종 구매 수량 (세트 수량 * 세트 답례품별 수량)
+                var buyQuantity = order.itemSets[i].quantity * order.itemSets[i].arrayItemSetInfos[j].quantity;
+
+                // 재고 체크용 데이터 만들기
+                var isAdd = false;
+                for (var z = 0; z < buyItems.length; z++) {
+                  // 이미 추가된 답례품일 경우, buyQuantity 를 변경
+                  // 옵션이 없는 경우 itemId 매칭, 옵션이 있는 경우 optionId 매칭
+                  var item = buyItems[z].item;
+                  if (
+                    (item.itemOption == null && item.itemId === info.itemId) ||
+                    (item.itemOption != null && info.itemOption != null && item.itemOption.optionId === info.itemOption.optionId)
+                  ) {
+                    buyItems[z].buyQuantity += buyQuantity;
+                    isAdd = true;
+                    break;
+                  }
+                }
+
+                if (!isAdd) {
+                  // 새로 추가된 답례품 저장
+                  buyItems.push({
+                    item: info,
+                    buyQuantity: buyQuantity,
+                  });
+                }
+              }
+            }
+
+            // 재고 수량 내림차순 정렬
+            if (buyItems.length > 1) {
+              buyItems.sort(function (a, b) {
+                return Math.floor(b.item.stockQuantity / b.item.quantity) - Math.floor(a.item.stockQuantity / a.item.quantity);
+              });
+            }
+
+            // 만들어진 데이터로 재고 체크 및 수량 조절 (재고 수량이 많은 답례품부터 내림차순 조절)
+            for (var i = 0; i < buyItems.length; i++) {
+              var buyQuantity = buyItems[i].buyQuantity;
+              var stockFlag = buyItems[i].item.stockFlag;
+              var stockQuantity = buyItems[i].item.stockQuantity;
+
+              if (stockFlag === "Y" && buyQuantity > stockQuantity) {
+                // 재고 내 가능한 최대값을 세팅
+                // 수량 조절 : [재고수량 - {총 구매수량 - (입력수량 * 세트수량)}] / 세트수량
+                if (target === "manual" || target === "order" || target === "plus") {
+                  order.itemSets[index].quantity = Math.floor(
+                    (stockQuantity - (buyQuantity - inputQuantity * buyItems[i].item.quantity)) / buyItems[i].item.quantity
+                  );
+                }
+
+                // alert text 세팅
+                alertText = this.unescapeHtml(buyItems[i].item.itemName);
+                if (buyItems[i].item.itemOption != null) {
+                  // 옵션 존재시, 옵션명 노출
+                  alertText += " <" + this.unescapeHtml(buyItems[i].item.itemOption.optionName) + ">";
+                }
+                alertText += "의 최대 주문 수량은 " + buyItems[i].item.stockQuantity + "개 입니다.";
+
+                isAvailable = false;
+              }
+            }
+
+            // 재고 수량이 가장 적은 마지막 답례품 정보만 노출됨
+            if (!isAvailable) {
+              $s.alert(alertText);
+            }
+
+            return isAvailable;
+          },
+          writeOptionName: function (level, optionName, index, pIndex) {
+            if (!this.item.itemOptions) {
+              return;
+            }
+            // 선택한 옵션 추가시 품절 체크하여 주석처리
+            // if (index && this.item.itemOptions[index].soldOut) {
+            // 	$s.alert('해당 옵션은 품절상태입니다.', 'selectOption' + level);
+            // 	return;
+            // }
+
+            level = level || 0;
+            index = index || 0;
+            pIndex = pIndex || 0;
+            let isSet = vm.item.itemType === "3";
+            let item = isSet ? vm.item.itemSets[pIndex].item : vm.item;
+            let itemOptions = item.itemOptions;
+            let itemOptionInfo = vm.itemOptionInfo;
+            let checkDuplication = "";
+
+            if (item.itemOptionType === "T") {
+              itemOptionInfo.textOptionValues = new Array(itemOptions.length);
+            } else {
+              if (level === 1) {
+                if (!optionName) {
+                  return false;
+                }
+                itemOptionInfo.selectOptionName1 = optionName;
+                itemOptionInfo.selectOptionIndex1 = index;
+                itemOptionInfo.optionName2 = [];
+                itemOptionInfo.optionName3 = [];
+                itemOptionInfo.optionName2Ids = [];
+                itemOptionInfo.optionName3Ids = [];
+
+                if (item.itemOptionType === "S") {
+                  this.addOptionItems(index, pIndex, level);
+                  return false;
+                } else {
+                  // 다음 옵션 표시
+                  this.displayNextOptionGroup(pIndex, level);
+                  itemOptionInfo.optionPrices = [];
+                  itemOptionInfo.optionSoldOuts = [];
+                  itemOptionInfo.optionStockFlags = [];
+                  itemOptionInfo.optionStockQuantity = [];
+                }
+              } else if (level === 2) {
+                itemOptionInfo.selectOptionName2 = optionName;
+                itemOptionInfo.selectOptionIndex2 = index;
+                itemOptionInfo.optionName3 = [];
+                itemOptionInfo.optionName3Ids = [];
+
+                if (item.itemOptionType === "S2") {
+                  this.addOptionItems(index, pIndex, level);
+                  return false;
+                } else {
+                  this.displayNextOptionGroup(pIndex, level);
+                  itemOptionInfo.optionPrices = [];
+                  itemOptionInfo.optionSoldOuts = [];
+                  itemOptionInfo.optionStockFlags = [];
+                  itemOptionInfo.optionStockQuantity = [];
+                }
+              } else if (level === 3) {
+                itemOptionInfo.selectOptionName3 = optionName;
+                itemOptionInfo.selectOptionIndex3 = index;
+                this.addOptionItems(index, pIndex, level);
+              }
+
+              for (let i = 0; i < itemOptions.length; i++) {
+                if (level === 0) {
+                  itemOptionInfo.itemOptionTitle1 = item.itemOptionTitle1;
+                  itemOptionInfo.itemOptionTitle2 = item.itemOptionTitle2;
+                  itemOptionInfo.itemOptionTitle3 = item.itemOptionTitle3;
+
+                  if (item.itemOptionType === "S") {
+                    if (checkDuplication != itemOptions[i].optionName2) {
+                      itemOptionInfo.optionName1.push(itemOptions[i].optionName2);
+                      itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+                      itemOptionInfo.optionSoldOuts.push(itemOptions[i].soldOut);
+                      itemOptionInfo.optionStockFlags.push(itemOptions[i].optionStockFlag);
+                      itemOptionInfo.optionStockQuantity.push(itemOptions[i].optionStockQuantity);
+                    }
+
+                    checkDuplication = itemOptions[i].optionName2;
+                  } else {
+                    if (checkDuplication != itemOptions[i].optionName1) {
+                      itemOptionInfo.optionName1.push(itemOptions[i].optionName1);
+                      itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+                      itemOptionInfo.optionSoldOuts.push(itemOptions[i].soldOut);
+                      itemOptionInfo.optionStockFlags.push(itemOptions[i].optionStockFlag);
+                      itemOptionInfo.optionStockQuantity.push(itemOptions[i].optionStockQuantity);
+                    }
+
+                    checkDuplication = itemOptions[i].optionName1;
+                  }
+
+                  itemOptionInfo.optionName1Ids.push(itemOptions[i].itemOptionId);
+                } else if (level === 1) {
+                  if (checkDuplication != itemOptions[i].optionName2 && itemOptions[i].optionName1 == itemOptionInfo.selectOptionName1) {
+                    itemOptionInfo.optionName2.push(itemOptions[i].optionName2);
+                    itemOptionInfo.optionName2Ids.push(itemOptions[i].itemOptionId);
+                    itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+                    itemOptionInfo.optionSoldOuts.push(itemOptions[i].soldOut);
+                    itemOptionInfo.optionStockFlags.push(itemOptions[i].optionStockFlag);
+                    itemOptionInfo.optionStockQuantity.push(itemOptions[i].optionStockQuantity);
+                    checkDuplication = itemOptions[i].optionName2;
+                  }
+                } else if (level === 2) {
+                  if (
+                    itemOptions[i].optionName1 == itemOptionInfo.selectOptionName1 &&
+                    itemOptions[i].optionName2 == itemOptionInfo.selectOptionName2
+                  ) {
+                    itemOptionInfo.optionName3.push(itemOptions[i].optionName3);
+                    itemOptionInfo.optionName3Ids.push(itemOptions[i].itemOptionId);
+                    itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+                    itemOptionInfo.optionSoldOuts.push(itemOptions[i].soldOut);
+                    itemOptionInfo.optionStockFlags.push(itemOptions[i].optionStockFlag);
+                    itemOptionInfo.optionStockQuantity.push(itemOptions[i].optionStockQuantity);
+                  }
+                } else if (level === 3) {
+                  if (
+                    itemOptions[i].optionName1 == itemOptionInfo.selectOptionName1 &&
+                    itemOptions[i].optionName2 == itemOptionInfo.selectOptionName2 &&
+                    itemOptions[i].optionName3 == itemOptionInfo.selectOptionName3
+                  ) {
+                    itemOptionInfo.optionPrices.push(itemOptions[i].optionPrice);
+                    itemOptionInfo.optionSoldOuts.push(itemOptions[i].soldOut);
+                    itemOptionInfo.optionStockFlags.push(itemOptions[i].optionStockFlag);
+                    itemOptionInfo.optionStockQuantity.push(itemOptions[i].optionStockQuantity);
+                  }
+                }
+              } // for E
+            }
+          },
+          writeSetOptionName: function (optionType, pIndex) {
+            // 옵션 초기화
+            this.clearOptionItems();
+
+            // 옵션 세팅
+            this.writeOptionName(0, "", 0, pIndex);
+
+            vm.event.optionType = optionType;
+          },
+          displayNextOptionGroup: function (pIndex, level) {
+            var isSet = vm.item.itemType === "3";
+            var item = isSet ? vm.item.itemSets[pIndex].item : vm.item;
+            var itemOptionType = item.itemOptionType;
+            var itemOptionInfo = vm.itemOptionInfo;
+
+            if (itemOptionType === "S2") {
+              itemOptionInfo.optionName1 = new Array();
+              itemOptionInfo.optionName1Ids = new Array();
+            } else if (itemOptionType === "S3") {
+              if (level === 1) {
+                itemOptionInfo.optionName1 = new Array();
+                itemOptionInfo.optionName1Ids = new Array();
+              } else if (level === 2) {
+                itemOptionInfo.optionName2 = new Array();
+                itemOptionInfo.optionName2Ids = new Array();
+              }
+            }
+          },
+          checkForItem: function (target, index, focusId) {
+            var isSet = vm.item.itemType === "3";
+
+            // 비회원 구매 불가인 경우 로그인 페이지로 이동
+            if (!this.checkForNonmemberOrder()) {
+              return false;
+            }
+
+            // 품절 확인
+            if (vm.item.itemSoldOutFlag === "Y") {
+              $s.alert("해당 답례품은 판매 종료 되었습니다.", focusId);
+              return false;
+            }
+
+            if (target === "wishlist") {
+              return true;
+            }
+
+            if (isSet) {
+              // 세트 답례품
+              var itemSets = vm.param.order.itemSets;
+
+              if (target === "cart" || target === "buy_now") {
+                if (itemSets.length === 0) {
+                  $s.alert("답례품 필수옵션을 선택하세요.", focusId);
+                  return false;
+                }
+
+                if (!vm.isAvailableSetStock("order", index)) {
+                  return false;
+                }
+              } else if (target === "minus") {
+                if (itemSets[index].quantity <= 1) {
+                  $s.alert("답례품을 1개 이상 선택해주세요.", focusId);
+                  return false;
+                }
+              } else if (target === "plus") {
+                if (!vm.isAvailableSetStock("plus", index)) {
+                  return false;
+                }
+              } else if (target === "manual") {
+                if (!vm.isAvailableSetStock("manual", index)) {
+                  itemSets[index].amount = itemSets[index].tempAmount * itemSets[index].quantity;
+                  return false;
+                }
+
+                if (itemSets[index].quantity < 1) {
+                  $s.alert("답례품을 1개 이상 선택해주세요.", focusId);
+                  itemSets[index].quantity = 1;
+                  itemSets[index].amount = itemSets[index].tempAmount * itemSets[index].quantity;
+                  return false;
+                }
+              } else {
+                $s.alert("처리할 수 없습니다.", focusId);
+                return false;
+              }
+            } else {
+              // 일반 답례품
+              var addOptionList = vm.itemOptionInfo.addOptionList;
+              var optionName = "";
+              var stockFlag = vm.item.stockFlag;
+              var stockQuantity = vm.item.stockQuantity;
+
+              if (target === "cart" || target === "buy_now") {
+                if (vm.param.order.arrayRequiredItems.length === 0) {
+                  $s.alert("답례품 필수옵션을 선택하세요.", focusId);
+                  return false;
+                }
+              } else if (target === "minus") {
+                if (vm.item.orderMinQuantity === addOptionList[index].quantity) {
+                  $s.alert("최소 주문 수량은 " + vm.item.orderMinQuantity + "개 입니다.", focusId);
+                  return false;
+                }
+
+                if (addOptionList[index].quantity <= 1) {
+                  $s.alert("답례품을 1개 이상 선택해주세요.", focusId);
+                  return false;
+                }
+              } else if (target === "plus") {
+                if (vm.item.itemOptionFlag === "Y") {
+                  optionName = "<" + addOptionList[index].optionName + ">의 ";
+                  stockFlag = addOptionList[index].optionStockFlag;
+                  stockQuantity = addOptionList[index].optionStockQuantity;
+                }
+
+                if (stockFlag === "Y" && stockQuantity >= 0 && addOptionList[index].quantity >= stockQuantity) {
+                  $s.alert(optionName + "최대 주문 수량은 " + stockQuantity + "개 입니다.", focusId);
+                  addOptionList[index].quantity = stockQuantity;
+                  return false;
+                }
+
+                if (vm.item.orderMaxQuantity <= addOptionList[index].quantity) {
+                  $s.alert("최대 주문 수량은 " + vm.item.orderMaxQuantity + "개 입니다.", focusId);
+                  addOptionList[index].quantity = vm.item.orderMaxQuantity;
+                  return false;
+                }
+              } else if (target === "manual") {
+                if (vm.item.itemOptionFlag === "Y") {
+                  optionName = "<" + addOptionList[index].optionName + ">의 ";
+                  stockFlag = addOptionList[index].optionStockFlag;
+                  stockQuantity = addOptionList[index].optionStockQuantity;
+                }
+
+                if (stockFlag === "Y" && stockQuantity >= 0 && addOptionList[index].quantity > stockQuantity) {
+                  $s.alert(optionName + "최대 주문 수량은 " + stockQuantity + "개 입니다.", focusId);
+                  addOptionList[index].quantity = stockQuantity;
+                  this.setRequiredItem(index);
+                  return false;
+                }
+
+                if (vm.item.orderMaxQuantity < addOptionList[index].quantity) {
+                  $s.alert("최대 주문 수량은 " + vm.item.orderMaxQuantity + "개 입니다.", focusId);
+                  addOptionList[index].quantity = vm.item.orderMaxQuantity;
+                  this.setRequiredItem(index);
+                  return false;
+                }
+
+                if (vm.item.orderMinQuantity > addOptionList[index].quantity) {
+                  $s.alert("최소 주문 수량은 " + vm.item.orderMinQuantity + "개 입니다.", focusId);
+                  addOptionList[index].quantity = vm.item.orderMinQuantity;
+                  vm.setRequiredItem(index);
+                  return false;
+                }
+
+                if (addOptionList[index].quantity < 1) {
+                  $s.alert("답례품을 1개 이상 선택해주세요.", focusId);
+                  addOptionList[index].quantity = 1;
+                  this.setRequiredItem(index);
+                  return false;
+                }
+              } else {
+                $s.alert("처리할 수 없습니다.");
+                return false;
+              }
+            }
+
+            return true;
+          },
+          addOptionList: function (index, pIndex, level, optionId, focusId) {
+            if (vm.item.itemSoldOutFlag === "Y") {
+              $s.alert("답례품이 품절상태 입니다.", focusId);
+              return false;
+            }
+
+            let isSet = vm.item.itemType === "3";
+            let item = isSet ? vm.item.itemSets[pIndex].item : vm.item;
+            let itemOptions = item.itemOptions;
+            let itemOptionInfo = vm.itemOptionInfo;
+            let addOptionList = itemOptionInfo.addOptionList;
+            let optionName = "";
+            let optionPrice = itemOptionInfo.optionPrices[index];
+            let itemPrice = item.presentPrice;
+
+            if (item.itemOptionType === "S") {
+              // 선택형
+              optionName = item.itemOptions[0].optionName1 + ": " + itemOptionInfo.selectOptionName1;
+            } else if (item.itemOptionType === "S2" || item.itemOptionType === "S3") {
+              // S2
+              optionName =
+                item.itemOptionTitle1 +
+                ": " +
+                itemOptionInfo.selectOptionName1 +
+                " | " +
+                item.itemOptionTitle2 +
+                ": " +
+                itemOptionInfo.selectOptionName2;
+
+              if (item.itemOptionType === "S3") {
+                // S3
+                optionName += " | " + item.itemOptionTitle3 + ": " + itemOptionInfo.selectOptionName3;
+              }
+            }
+
+            optionName += optionPrice > 0 ? " (+" + this.formatNumber(optionPrice) + "원)" : "";
+
+            let addOption = {
+              itemId: item.itemId,
+              optionId: optionId,
+              optionName: optionName,
+              quantity: item.orderMinQuantity,
+              optionPrice: (itemPrice + optionPrice) * item.orderMinQuantity,
+              tempOptionPrice: itemPrice + optionPrice,
+              optionStockFlag: item.itemOptions[index].optionStockFlag,
+              optionStockQuantity: item.itemOptions[index].optionStockQuantity,
+              soldOut: item.itemOptions[index].soldOut,
+              baseOptionPrice: optionPrice,
+            };
+            addOptionList.push(addOption);
+
+            itemOptionInfo.optionName1 = [];
+            itemOptionInfo.optionName2 = [];
+            itemOptionInfo.optionName3 = [];
+
+            for (let i = 0; i < itemOptions.length; i++) {
+              itemOptionInfo.optionName1.push(itemOptions[i].optionName1);
+              itemOptionInfo.optionName1Ids.push(itemOptions[i].itemOptionId);
+            }
+
+            if (isSet) {
+              vm.itemSetInfo.amount += addOption.baseOptionPrice;
+
+              // 옵션 정보 세팅 (설정된 재고는 옵션 고유 재고로 덮어씌움)
+              vm.itemSetInfo.selectList[pIndex].itemOption = addOption;
+              vm.itemSetInfo.selectList[pIndex].stockFlag = addOption.optionStockFlag;
+              vm.itemSetInfo.selectList[pIndex].stockQuantity = addOption.optionStockQuantity;
+            }
+          },
+          checkForNonmemberOrder: function () {
+            var nonmemberOrderType = this.item.nonmemberOrderType;
+
+            if (nonmemberOrderType != "1") {
+              // if (this.userId <= 0 && nonmemberOrderType == '1') {
+              var message = "회원만 주문이 가능합니다. 로그인 페이지로 이동하시겠습니까?"; // 회원만 구매가 가능합니다. 로그인 페이지로 이동하시겠습니까?
+              if (confirm(message)) {
+                $s.redirect($s.pages.LOGIN + "?target=" + encodeURIComponent($s.requestContext.requestFullUri));
+              }
+              return false;
+            }
+            return true;
+          },
+          registerQna: function () {
+            // me-058(등록 하시겠습니까?)
+            Saleson.init({ loginPage: true });
+
+            if ($s.isLogin()) {
+              $s.confirm(
+                "등록 하시겠습니까?",
+                function () {
+                  if ($s.isLogin()) {
+                    vm.showLoading(true);
+                    vm.itemQna.itemId = vm.item.itemId;
+                    $s.api.createItemQna(
+                      vm.itemQna,
+                      function (response) {
+                        vm.showLoading(false);
+                        if (response.status === "OK") {
+                          vm.$refs.qnaWrite.modalClose(true);
+                          $s.alert("답례품Q&A가 등록되었습니다.", "qnaWriteBtn");
+                          vm.paging(vm.param.coupon.page, "qna");
+
+                          vm.itemQna.qnaGroup = "";
+                          vm.itemQna.question = "";
+                          vm.itemQna.subject = "";
+                          vm.itemQna.secretFlag = "N";
+                          vm.secretFlag = false;
+
+                          vm.event.showQnaForm = false;
+                        } else {
+                          $s.alert("문제가 발생했습니다.", "qnaWriteBtn");
+                        }
+                      },
+                      function (error) {
+                        vm.showLoading(false);
+                        $s.alert(error.response.data.description, "qnaWriteBtn");
+                      }
+                    );
+                  } else {
+                    vm.showLoading(false);
+                    $s.alert("로그인이 필요 합니다.", "qnaWriteBtn");
+                    return;
+                  }
+                },
+                "modalQnaSaveBtn"
+              );
+            }
+          },
+          getNewLatelyItems: function () {
+            var lately = $s.core.getSession("lately_item");
+
+            if (typeof lately == "undefined" || lately == null) {
+              this.latelyItems = [];
+            } else {
+              this.latelyItems = JSON.parse(lately);
+            }
+
+            this.newLatelyItemCount = this.latelyItems.length;
+          },
+          getCurrentCategories: function () {
+            var breadcrumbs = vm.breadcrumbs[0];
+
+            if (breadcrumbs !== undefined) {
+              vm.breadcrumbs = breadcrumbs;
+              vm.current.groupUrl = breadcrumbs.groupUrl;
+              vm.current.groupName = breadcrumbs.groupName;
+              vm.current.category1Url = breadcrumbs.breadcrumbCategories[0].categoryUrl;
+              vm.current.category1Name = breadcrumbs.breadcrumbCategories[0].categoryName;
+              vm.current.categoryLevel = "1";
+
+              if (breadcrumbs.breadcrumbCategories[1] !== undefined) {
+                vm.current.category2Url = breadcrumbs.breadcrumbCategories[1].categoryUrl;
+                vm.current.category2Name = breadcrumbs.breadcrumbCategories[1].categoryName;
+                vm.current.categoryLevel = "2";
+              } else {
+                //vm.current.category2Name = "전체";
+                vm.current.category2Name = "";
+              }
+
+              if (breadcrumbs.breadcrumbCategories[2] !== undefined) {
+                vm.current.category3Url = breadcrumbs.breadcrumbCategories[2].categoryUrl;
+                vm.current.category3Name = breadcrumbs.breadcrumbCategories[2].categoryName;
+                vm.current.categoryLevel = "3";
+              } else {
+                //vm.current.category3Name = "전체";
+                vm.current.category3Name = "";
+              }
+
+              var currentCategories = [];
+
+              currentCategories.push({
+                title: vm.current.groupName,
+                codes: vm.category.groups,
+                url: vm.current.groupUrl,
+              });
+
+              currentCategories.push({
+                title: vm.current.category1Name,
+                codes: vm.childCategories(vm.current.groupUrl),
+                url: vm.current.category1Url,
+              });
+
+              currentCategories.push({
+                title: vm.current.category2Name,
+                codes: vm.childCategories(vm.current.groupUrl, vm.current.category1Url),
+                url: vm.current.category2Url,
+              });
+
+              if (vm.current.categoryLevel === "2" || vm.current.categoryLevel === "3") {
+                currentCategories.push({
+                  title: vm.current.category3Name,
+                  codes: vm.childCategories(vm.current.groupUrl, vm.current.category1Url, vm.current.category2Url),
+                  url: vm.current.category3Url,
+                });
+              }
+
+              var childCategories = vm.childCategories(breadcrumbs.groupUrl, breadcrumbs.categoryUrl1, breadcrumbs.categoryUrl2);
+              vm.currentCategories = currentCategories;
+
+              var categoryName = vm.currentCategories[vm.current.categoryLevel].title;
+              var categories = vm.currentCategories[vm.current.categoryLevel].codes;
+              var categoryCode = "";
+
+              for (var i = 0; i < categories.length; i++) {
+                var category = categories[i];
+
+                if (category.categoryId == vm.breadcrumbs.categoryClass) {
+                  categoryCode = category.url;
+                }
+              }
+
+              var currentChildForMobile = {
+                categoryName: categoryName,
+                categoryCode: vm.currentCategories[vm.current.categoryLevel].codes,
+                categories: categories,
+                childCategories: childCategories,
+              };
+              vm.currentChildForMobile = currentChildForMobile;
+            }
+          },
+          link: function (url, index) {
+            if (index === 0) {
+              $s.redirect("/category/?code=" + this.childCategories(url)[0].url);
+            } else {
+              $s.redirect("/category/?code=" + url);
+            }
+          },
+          selectOptionTitle: function (level, pIndex) {
+            let itemOptionInfo = vm.itemOptionInfo;
+
+            if (level === 1) {
+              // 초기화
+              this.clearOptionItems();
+
+              this.writeOptionName(0, "", 0, pIndex);
+            } else if (level === 2) {
+              itemOptionInfo.optionName3 = new Array();
+              itemOptionInfo.optionName3Ids = new Array();
+              itemOptionInfo.selectOptionName3 = "";
+              itemOptionInfo.selectOptionIndex2 = "";
+              itemOptionInfo.selectOptionIndex3 = "";
+
+              this.writeOptionName(1, itemOptionInfo.selectOptionName1, itemOptionInfo.selectOptionIndex1, pIndex);
+            }
+          },
+          toSlideViewImage: function (index) {
+            this.$refs.mainSwiper.swiper.slideTo(index);
+          },
+
+          loadingMounted: function () {
+            // 하위컴포넌트 로딩 중 화면 로딩 후 실행 함수
+            this.initCallFunction();
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          // 헤더 검색용
+          historyBack: function () {
+            if (history.length == 1) {
+              //$s.redirect('/goods/index.html');
+              $s.redirect($s.pages.INDEX);
+            } else {
+              history.back();
+            }
+          },
+          goCartPage: function () {
+            Saleson.init({ loginPage: true });
+
+            if ($s.isLogin()) {
+              $s.redirect("/cart/index.html");
+            }
+          },
+          goGivePage: function () {
+            // 선택하신 지자체는 고향사랑 기부금에 관한 법률 위반으로 2023.02.01부터 2023.03.01까지 기부가 불가능합니다.
+            //Saleson.init({ loginPage: true });
+
+            //location.href = "/donation/donation.html?locgovCode=" + this.item.locgovCode;
+            $s.donation.goDonationPage("?locgovCode=" + this.item.locgovCode);
+          },
+          goDetailTab: function (target, isHistoryBack) {
+            // 답례품 후기 탭 활성화...
+            let navLinkList = document.getElementsByClassName("nav-link");
+            let navLinkLength = navLinkList.length;
+            for (let idx = 0; idx < navLinkLength; idx++) {
+              navLinkList[idx].classList.remove("active");
+              if (navLinkList[idx].getAttribute("href") == "#" + target) {
+                navLinkList[idx].className += " active";
+              }
+            }
+            // 답례품 후기 표시
+            let tabPaneList = document.getElementsByClassName("tab-pane");
+            let tabPaneLength = tabPaneList.length;
+            for (let idx = 0; idx < tabPaneLength; idx++) {
+              tabPaneList[idx].classList.remove("active");
+              if (tabPaneList[idx].getAttribute("id") == target) {
+                tabPaneList[idx].className += " active";
+              }
+            }
+            // 답례품 후기로 화면 이동..
+            if (!isHistoryBack) {
+              location.href = "#" + target;
+            }
+          },
+          getGivePoint: function () {
+            $s.api.getSubmit("/api/item/getUserCntrPoint", {}, function (response) {
+              try {
+                let givePointList = response.list;
+                let length = givePointList.length;
+                for (let i = 0; i < length; i++) {
+                  let locgovPoint = givePointList[i];
+                  if (locgovPoint.locgovCode == vm.item.locgovCode) {
+                    vm.locgovGivePoint = Number(locgovPoint.cntrBlcePoint);
+                    break;
+                  }
+                }
+              } catch (e) {
+                console.log = () => {};
+              }
+            });
+          },
+          initCallFunction: function () {
+            this.pageUrl = $s.requestContext.href;
+
+            // $s.core.removeSession($s.const.KAKAO_SHARE_INIT_FLAG);
+            let code = $s.core.getParameter("code");
+            if (code == "") {
+              $s.notFoundException();
+              return;
+            }
+            // 답례품 이미지 스와이퍼가 변경되면 썸네일 스와이퍼도 변경되도록 이벤트 추가
+            this.$refs.mainSwiper.swiper.eventsListeners.activeIndexChange.push(function () {
+              let activeIdx = vm.$refs.mainSwiper.swiper.activeIndex;
+              vm.$refs.mainThumbSwiper.swiper.slideTo(activeIdx);
+            });
+            // 답례품 이미지 스와이퍼가 변경되면 썸네일 스와이퍼도 변경되도록 이벤트 추가
+
+            // 브라우저 history back 할 경우 탭 변경..
+            window.onhashchange = function (e) {
+              try {
+                let target = e.newURL.split("#")[1];
+                if (!target) {
+                  target = "nav-detail";
+                }
+                vm.goDetailTab(target, true);
+              } catch (e) {
+                console.log = () => {};
+              }
+            };
+
+            this.itemUserCode = code;
+
+            this.categoryInfo(this);
+            this.deleteOption(0);
+            vm.showLoading(true);
+            $s.api.getItem(
+              code,
+              function (response) {
+                vm.showLoading(false);
+                //if (response.adultErr != "N") {
+                //	$s.alert("성인 인증된 회원만 조회 가능합니다.", function () {
+                // 		vm.historyBack();
+                // 	});
+                //	return;
+                //}
+				vm.buyFlag = response.adultErr;
+                vm.paging(1, "all");
+                let item = response.item;
+                vm.item = item;
+                vm.list = response.list;
+                vm.pointPolicy = response.pointPolicy;
+                vm.config = response.config;
+                vm.cardBenefits = response.cardBenefits;
+                vm.seller = response.seller;
+                vm.userId = response.userId;
+                vm.itemQna.userId = response.userId;
+                vm.itemQna.userName = response.userName;
+                vm.breadcrumbs = response.breadcrumbs;
+                //vm.isRestockNotice = response.isRestockNotice;
+                vm.earnPoint = response.earnPoint;
+                vm.reviewFilters = response.reviewFilters;
+                vm.qnaGroups = response.qnaGroups;
+                let slides = new Array();
+                for (let i = 0; i < item.itemImages.length; i++) {
+                  let slide = {
+                    imageId: item.itemImages[i].itemImageId,
+                    image: item.itemImages[i].imageSrc,
+                  };
+
+                  slides.push(slide);
+                }
+
+                vm.slides = slides;
+
+                // 최대 & 최소 구매수량 조정
+                if (item.orderMinQuantity === -1) item.orderMinQuantity = 1;
+                if (item.orderMaxQuantity === -1) item.orderMaxQuantity = 999;
+
+                vm.display.quantity = item.orderMinQuantity;
+
+                // 세트답례품 분기 처리
+                let isSet = item.itemType === "3";
+                if (isSet) {
+                  if (item.itemSoldOutFlag === "N") {
+                    vm.setRequiredItemSets();
+                    if (item.itemOptionFlag === "N") vm.addItemSets();
+                  }
+                } else {
+                  if (item.itemOptionFlag === "N" && item.itemSoldOutFlag === "N") {
+                    vm.setRequiredItem(0);
+                    let defaultOption = vm.itemOptionInfo.addOptionList[0];
+                    defaultOption.optionPrice = defaultOption.optionPrice * defaultOption.quantity; // 최소 수량에 의한 가격 세팅 추가
+                  }
+
+                  vm.writeOptionName();
+                }
+
+                vm.addlatelyItem(item.itemId);
+                vm.getNewLatelyItems();
+                vm.getCurrentCategories();
+                //vm.getRestockNotice(item.itemId);
+
+                vm.makeOpenGraphTag($s.requestContext.href, item.itemName, vm.itemImage(item.imageSrc), item.itemSummary);
+                // vm.setPageInfo(item.itemName, item.itemSummary, '');
+
+                $s.ga.detail(item.itemUserCode);
+                $s.ev.log.item(item.itemUserCode);
+
+                if ($s.isLogin()) {
+                  vm.getGivePoint();
+                }
+
+                if (item.wishlistFlag) {
+                  //$(vm.$refs.wishlistBtn).addClass('on');
+                  vm.wishBtnSetting(true);
+                } else {
+                  vm.wishBtnSetting(false);
+                }
+                vm.getCartInfo();
+
+                let imgDescList = response.imgDescList;
+                let imgDescListLinkView = response.imgDescListLinkView;
+
+                setTimeout(function () {
+                  let imgList = vm.$refs.item_detail.querySelectorAll("img");
+                  try {
+                    try {
+                      if (imgDescListLinkView && imgDescListLinkView.length > 0 && imgList.length == imgDescListLinkView.length) {
+                        imgDescList = imgDescListLinkView;
+                      }
+                    } catch (e) {
+                      imgDescListLinkView = [];
+                    }
+                    let descLength = imgDescList.length;
+                    let imgLength = imgList.length;
+                    if (descLength > imgLength) {
+                      descLength = imgLength;
+                    }
+                    for (let i = 0; i < descLength; i++) {
+                      if (imgDescList[i].imagesValues) {
+                        imgList[i].setAttribute("alt", imgDescList[i].imagesValues);
+                      }
+                    }
+                  } catch (e) {
+                    console.log = () => {};
+                    imgDescList = [];
+                  }
+                }, 100);
+              },
+              function (error) {
+                vm.showLoading(false);
+                $s.alert(error.response.data.message, function () {
+                  $s.closeAlert();
+                  //if ('BAD_REQUEST_NO_ITEM' == error.response.data.code) {
+                  //	$s.redirect($s.pages.INDEX);
+                  //} else {
+                  vm.historyBack();
+                  //}
+                });
+                // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                $(".items_detail_wrap").on("click", "#op-alert", function () {
+                  //if ('BAD_REQUEST_NO_ITEM' == error.response.data.code) {
+                  //	$s.redirect($s.pages.INDEX);
+                  //} else {
+                  vm.historyBack();
+                  //}
+                });
+              }
+            );
+
+            //this.getItemRelations();
+            //this.paging(1, 'all');
+          },
+          commError: function (error) {
+            vm.showLoading(false);
+            $s.api.handleApiExeption(error, "contents");
+          },
+          moveSlideViewImage: function (isBefore, event) {
+            if (isBefore) {
+              this.$refs.mainSwiper.swiper.navigation.onPrevClick(event);
+            } else {
+              this.$refs.mainSwiper.swiper.navigation.onNextClick(event);
+            }
+          },
+          wishBtnSetting: function (setOn) {
+            if (setOn) {
+              $(this.$refs.wishlistBtn1).addClass("on");
+              $(this.$refs.wishlistBtn1).attr("aria-label", "관심 답례품 등록상태, 해제하기");
+              $(this.$refs.wishlistBtn2).addClass("on");
+              $(this.$refs.wishlistBtn2).attr("aria-label", "관심 답례품 등록상태, 해제하기");
+              $(this.$refs.wishlistBtn3).addClass("on");
+              $(this.$refs.wishlistBtn3).attr("aria-label", "관심 답례품 등록상태, 해제하기");
+            } else {
+              $(this.$refs.wishlistBtn1).removeClass("on");
+              $(this.$refs.wishlistBtn1).attr("aria-label", "관심 답례품 해제상태, 등록하기");
+              $(this.$refs.wishlistBtn2).removeClass("on");
+              $(this.$refs.wishlistBtn2).attr("aria-label", "관심 답례품 해제상태, 등록하기");
+              $(this.$refs.wishlistBtn3).removeClass("on");
+              $(this.$refs.wishlistBtn3).attr("aria-label", "관심 답례품 해제상태, 등록하기");
+            }
+          },
+          initModalSwiper: function (swiperIndex, imgIndex) {
+            /*setTimeout(function() {
+						try {		// 화면 내 swiper를 리사이징 처리로 수정
+							let swiperList = vm.$refs.reviewModalImageSwiper;
+							let length = swiperList.length;
+							for (let swiperIndex = 0; swiperIndex < length; swiperIndex++) {
+								swiperList[swiperIndex].swiper.resize.resizeHandler();
+							}
+						} catch (e) {
+							console.log = () => {};
+						}
+					}, 10);*/ // 옵션으로 변경
+
+            try {
+              $(".modal .swiper-button-next").focus();
+
+              // 여러 개 있을 경우 첫번째 팝업만 보여서 추가
+              this.showModalNo = swiperIndex;
+
+              // 선택한 이미지가 바로 보이도록 수정
+              let reviewSwiperList = vm.$refs.reviewModalImageSwiper;
+              reviewSwiperList[swiperIndex].swiper.slideTo(imgIndex);
+            } catch (e) {
+              console.log = () => {};
+            }
+          },
+          donationInit: function () {
+            Saleson.init({ loginPage: true });
+
+            if ($s.isLogin()) {
+              let params = {
+                cityCode: this.item.locgovCode,
+              };
+			  localStorage.setItem("return-item-code", this.itemUserCode);
+			  localStorage.setItem("return-export-mode", this.exportMode);
+              vm.showLoading(true);
+              $s.api.postSubmit(
+                "/api/ngdonation/getLocGovLmtt",
+                params,
+                function (response) {
+                  vm.showLoading(false);
+                  if (response.data) {
+                    if (params.cityCode === '28155' || params.cityCode === '28125' || params.cityCode === '28290') {
+                      // 28155 : 영종구 , 28125 : 제물포구 , 28290 : 검단구
+                        $s.alert(
+                          "선택하신 지자체는\n" +
+                            response.data.violtResnCn +
+                            "으로\n" +
+                            response.data.lmttBgnDe +
+                            " 18시부터 " +
+                            response.data.lmttEndDe +
+                            " 10시까지 \n기부가 불가능합니다.",
+                            function () {
+                              $s.alertFocusId.confirmFocusId = "donationBtn";
+                              $s.closeAlert(false);
+                            }
+                        );
+                    } else {
+                      $s.alert(
+                        "선택하신 지자체는\n" +
+                          response.data.violtResnCn +
+                          "으로\n" +
+                          response.data.lmttBgnDe +
+                          "부터 " +
+                          response.data.lmttEndDe +
+                          "일까지 \n기부가 불가능합니다.",
+                        function () {
+                          $s.alertFocusId.confirmFocusId = "donationBtn";
+                          $s.closeAlert(false);
+                        }
+                      );
+                    }
+                  } else {
+                    vm.goGivePage();
+                  }
+                },
+                vm.commError
+              );
+            }
+          },
+          getCartInfo: function () {
+            // $s.api.getCartInfo(function (response) {
+            // 	vm.$refs.layoutHeader.getCartInfo();
+            // 	vm.displayCartQuantites = response.cartQuantity;		// 모바일용...
+            // 	vm.event.showBuyWrap = true;
+            // });
+          },
+          closeImgPop: function () {
+            this.showModalNo = null;
+			// 이미지 클릭 후 닫기버튼 누르면 show가 제거되지 않았음
+			$('.modal-backdrop').removeClass('show');
+          },
+          selectLclgvPc: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+            this.$refs.layoutHeaderSearchPc.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+            this.closeMapSelect();
+          },
+          selectLclgvMo: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+            this.$refs.layoutHeaderSearchMobile.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+            this.closeMapSelect();
+          },
+          showMapSelect: function () {
+            this.$refs.getParentModal.setAttribute("style", "display: block;top: 0;");
+          },
+          closeMapSelect: function () {
+            this.$refs.getParentModal.removeAttribute("style");
+          },
+          onPageShow: function () {
+            this.loadingMounted();
+          },
+          toggleSelect: function(level) {
+			// level이 2이고 1번째 옵션이 비어있으면 true
+			let levelTwoFlag = this.itemOptionInfo.selectOptionName1 === '' || this.itemOptionInfo.selectOptionName1 === undefined;
+
+			// level이 3이고 2번째 옵션이 비어있으면 true
+			let levelThreeFlag = this.itemOptionInfo.selectOptionName2 === '' || this.itemOptionInfo.selectOptionName2 === undefined;
+			if(level == 2 && levelTwoFlag) {
+				return;
+			}
+			// level3이 3이고, 1번째 옵션 또는 2번째 옵션이 비어있으면 true
+			else if(level == 3 && (levelTwoFlag || levelThreeFlag)) {
+				return;
+			}
+
+			Vue.set(this.isVisible, level, !this.isVisible[level]);
+          }
+        },
+        watch: {
+          secretFlag: function (value) {
+            var result = "N";
+            if (value) {
+              result = "Y";
+            }
+            this.itemQna.secretFlag = result;
+          },
+          showModalNo: function (value) {
+            // 답례품 후기 이미지 팝업 수동 조작...
+            let popupDetailList = this.$refs.popupDetail;
+            let length = popupDetailList.length;
+            for (let i = 0; i < length; i++) {
+              let e = popupDetailList[i];
+              e.setAttribute("class", "modal modal_rev popup_detail");
+              e.removeAttribute("aria-modal");
+              e.setAttribute("aria-hidden", true);
+              e.setAttribute("style", "display:none;");
+            }
+            if (value == null) {
+              $(".modal-backdrop").hide();
+            } else {
+              if ($(".modal-backdrop").length > 0) {
+                $(".modal-backdrop").show();
+				// 팝업 종료 시 show를 제거하면 불투명한 화면 (검정 + opacity 0.5)가 추가되지 않음
+				$(".modal-backdrop").addClass('show');
+              } else {
+                const div = document.createElement("div");
+                div.setAttribute("class", "modal-backdrop show");
+                document.body.appendChild(div);
+              }
+
+              let e = popupDetailList[value];
+              e.setAttribute("class", "modal modal_rev popup_detail show");
+              e.removeAttribute("aria-hidden");
+              e.setAttribute("aria-modal", true);
+              e.setAttribute("style", "padding-right: 10px; display: block;");
+            }
+          },
+        },
+        computed: {
+          ratingStarHtml: function () {
+            var maxScore = 5,
+              ratingScore = Math.floor(Number(this.item.reviewScore)),
+              subScore = maxScore - ratingScore;
+
+            if (ratingScore > maxScore) ratingScore = maxScore;
+
+            var ratingStarHtml = "";
+
+            for (var i = 0; i < ratingScore; i++) {
+              ratingStarHtml += "\<span class='on'\>\<\/span\>";
+            }
+
+            if (subScore > 0) {
+              for (var i = 0; i < subScore; i++) {
+                ratingStarHtml += "\<span\>\<\/span\>";
+              }
+            }
+            return ratingStarHtml;
+          },
+          total: function () {
+            var itemPrice = this.item.presentPrice;
+
+            return this.display.quantity * itemPrice;
+          },
+          optionItemTotal: function () {
+            var addOptionList = this.itemOptionInfo.addOptionList;
+            var sum = 0;
+            if (typeof addOptionList !== "undefined") {
+              for (var i = 0; i < addOptionList.length; i++) {
+                sum += addOptionList[i].optionPrice;
+              }
+            }
+
+            if ($s.isLogin()) {
+              if (this.locgovGivePoint < sum || this.item.itemSoldOutFlag === "Y" || sum === 0) {
+                this.buyCheck = false;
+              } else {
+                this.buyCheck = true;
+              }
+            } else {
+              this.buyCheck = false;
+            }
+
+            return sum;
+          },
+          makeShipping: function () {
+            var item = this.item;
+            var shippingType = item.shippingType;
+
+            if (shippingType == "1") {
+              return "무료배송";
+            }
+
+            if (shippingType == "2" || shippingType == "3" || shippingType == "4") {
+              var baseText = this.formatNumber(item.shipping) + "원";
+              var freeText = "무료배송";
+              if (item.shippingFreeAmount > 0) {
+                freeText = this.formatNumber(item.shippingFreeAmount) + "원이상 무료배송";
+              }
+
+              return baseText + " (" + freeText + ")";
+            }
+
+            if (shippingType == "5") {
+              return this.formatNumber(item.shippingItemCount) + "개당 " + this.formatNumber(item.shipping) + "원";
+            }
+
+            if (shippingType == "6") {
+              return this.formatNumber(item.shipping) + "원";
+            }
+
+            return "";
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            Saleson.init();
+			this.exportMode = $s.core.getParameter("exportMode") == 'true' ? true : false;
+          });
+        },
+      });
+    </script>
+  </body>
+
+  <style>
+		@media screen and (max-width: 768px) {
+		  #header-wrap {
+		    display:none;
+		  }
+		}
+	</style>
+</html>

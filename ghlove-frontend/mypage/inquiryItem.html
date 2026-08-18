@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 답례품Q&A | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+    <link rel="stylesheet" href="/static/css/mypage-goods_qna.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <!-- <layout-subsearch-ali></layout-subsearch-ali> -->
+        <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              마이페이지
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              답례품Q&amp;A
+            </span>
+            <h2 class="page-title-txt">답례품Q&amp;A</h2>
+            <!-- <p>반품/교환 접수는 배송준비중/배송중일 경우에는 신청이 불가합니다.</p> -->
+            <!-- <layout-help-btn></layout-help-btn> -->
+          </div>
+
+          <div id="contents">
+            <div class="my_order">
+              <div class="mypage-top">
+                <label class="card_title" for="date">기간</label>
+                <div class="selected-field-line">
+                  <div class="selected-item">
+                  	<label for="startDate" class="sr-only">시작일</label>
+                    <input type="date" name="startDate" id="startDate" v-model="param.searchStartDate" />
+                    <span class="s_txt"> ~ </span>
+                    <label for="endDate" class="sr-only">종료일</label>
+                    <input type="date" name="endDate" id="endDate" v-model="param.searchEndDate" />
+                  </div>
+                  <div class="formbtn-box">
+                    <button class="formBtn week-1" type="button" @click="getDiffDate('week', '1')">1주일</button>
+                    <button class="formBtn month-1" type="button" @click="getDiffDate('month', '1')">1개월</button>
+                    <button class="formBtn month-3" type="button" @click="getDiffDate('month', '3')">3개월</button>
+                    <button class="formBtn month-6" type="button" @click="getDiffDate('month', '6')">6개월</button>
+                    <button class="formBtn all" type="button" @click="getDiffDate('all', '')">전체</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="line"></div>
+
+              <div class="mypage-top">
+                <label class="card_title" for="itemName">답례품명</label>
+                <div class="selected-item">
+                  <input type="text" name="" id="itemName" v-model="param.query" />
+                </div>
+              </div>
+            </div>
+
+            <!-- 버튼그룹 -->
+            <div class="btn-box many mid">
+              <button type="button" class="blueBtn cancellation" @click="resetData()">
+                초기화<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+              </button>
+              <button type="button" class="blueBtn u-confirm" @click="getSearchList()">
+                조회<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="" /></span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <div class="s-contents">
+          <div class="list-search-body" v-if="isNoData">
+            <div class="honor-list-wrap">
+              <!-- <div class="list-title">
+                            <div class="date-col q_type">문의유형</div>
+                            <div class="date-col g_info">답례품정보</div>
+                            <div class="m-layout">
+                                <div class="date-col w_date">작성일</div>
+                                <div class="date-col a_status">답변상태</div>
+                            </div>
+                        </div> -->
+              <ul class="list-search-group">
+                <li
+                  class="list-items dropdown"
+                  v-for="(data, index) in result.content"
+                  :key="index"
+                  :id="`myInquiry_${index}`"
+                  @click="openList(index, data.secretFlag)"
+                >
+                  <div class="qna_header dropdown-toggle">
+                    <div class="date-col q_type">{{ data.qnaGroupLabel }}</div>
+                    <div class="date-col g_info">
+                      <div class="g_info_wrap">
+                        <div class="g_info__img">
+                          <a
+                            href="javascript:void(0)"
+                            @click="viewDetails('/items/details.html?code=' + data.itemUserCode, 'paging', 'inquiry-item')"
+                          >
+                            <img class="img_full" :src="itemImage(data.itemImage)" :alt="data.itemName" @error="errorImage" />
+                          </a>
+                        </div>
+                        <div class="g_info__txt">
+                          <div class="info_total">
+                            <span>{{data.locgovName}}</span>
+                          </div>
+                          <button class="info_title" type="button">{{ data.itemName }}</button>
+                        </div>
+                      </div>
+                      <div class="qna_title" v-if="data.subject != ''">
+                        {{data.subject}}
+                        <span class="lock_img" v-if="data.secretFlag == 'Y'"><img src="/static/images/icon/qna_s.png" alt="비밀글" /></span>
+                      </div>
+                    </div>
+                    <div class="m-layout">
+                      <div class="date-col w_date">
+                        <div class="s-txt">{{ dateFormat(data.createdDate, 'date') }}</div>
+                      </div>
+                      <div class="date-col a_status">
+                        <div class="a_status_wrap">
+                          <div class="a_status-spteps cs">
+                            <div class="spteps_status pointblue" v-if="data.answerCount > 0">답변완료</div>
+                            <div class="spteps_status pointRed" v-else>답변대기</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="qna_body" @click.stop="">
+                    <img
+                      src="/static/images/icon/mylist-del.png"
+                      alt=""
+                      class="icon-img list_del"
+                      v-if="data.answerCount == 0"
+                      @click="deleteItemQna(data.qnaId)"
+                    />
+                    <div class="date-col q_type">&nbsp;</div>
+                    <div class="date-col g_info">
+                      <div class="g_info_wrap">
+                        <div class="g_info__img"><img class="icon-img" src="/static/images/icon/qna_q_s.png" alt="질문" /></div>
+                        <div class="g_info__txt">
+                          <div class="info_title">{{data.subject}}</div>
+                          <div class="info_total">{{data.question}}</div>
+                        </div>
+                      </div>
+                      <div class="g_info_wrap" v-if="data.answerCount > 0">
+                        <div class="g_info__img"><img class="icon-img" src="/static/images/icon/qna_a_s.png" alt="질문" /></div>
+                        <div class="g_info__txt">
+                          <div class="info_title">{{data.qnaAnswer.title}}</div>
+                          <div class="info_total">{{data.qnaAnswer.answer}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <pagination :current-page="result.currentPage" :total-pages="result.totalPages" @change="paging"></pagination>
+            </div>
+          </div>
+          <div class="list-none" v-if="!isNoData">문의하신 Q&A가 없습니다.</div>
+        </div>
+        <!-- </div> -->
+        <!-- </section> -->
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+
+        <!-- footer component -->
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //'layout-subsearch-ali': httpVueLoader('/components/layouts/subsearch_ali.vue'),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+        },
+        data: {
+          param: {
+            page: 1,
+            itemsPerPage: 10,
+            searchStartDate: "",
+            searchEndDate: "",
+            query: "",
+          },
+          result: {
+            content: [],
+          },
+          page: {
+            menuUrl: "/mypage/inquiryItem.html",
+          },
+          isNoData: false,
+          current: false,
+
+          itemPerPageList: [10, 20, 30, 50],
+        },
+        methods: {
+          loadingMounted: function () {
+            // 로딩바 컴포넌트가 화면에 그려진 이후 호출되는 함수. 부모컴포넌트에서 바로 로딩바 호출시 그려지기 전에 호출하여 오류 발생하는 경우 있음
+            vm.paging(1);
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          paging: function (page) {
+            vm.param.page = page;
+            vm.param.searchStartDate = $("#startDate").val();
+            vm.param.searchEndDate = $("#endDate").val();
+            vm.submit();
+          },
+          submit: function () {
+            if ($("input[name='startDate']").val() != "") {
+              vm.param.searchStartDate = $("input[name='startDate']").val();
+            }
+            if ($("input[name='endDate']").val() != "") {
+              vm.param.searchEndDate = $("input[name='endDate']").val();
+            }
+
+            $(".qna_body").hide();
+            vm.showLoading(true);
+            $s.api.getItemInquiries(
+              vm.param,
+              function (response) {
+                vm.showLoading(false);
+                vm.result = response;
+                // 데이터가 1건 이상일 경우에만 isNoData 비활성화
+                if (vm.result.content.length > 0) {
+                  vm.isNoData = true;
+                } else {
+                  // 데이터가 없을 경우 isNoData 활성화
+                  vm.isNoData = false;
+                }
+                $(".lnb-bar_2dep li").eq(2).addClass("currentT");
+                $(".lnb-bar_3dep").eq(2).show();
+              },
+              function (error) {
+                vm.showLoading(false);
+                $s.alert(error.response.data.message);
+              }
+            );
+          },
+          getDiffDate: function (mode, value) {
+            var date = new Date();
+            date.setDate(date.getDate() - 1); // 전일 기준으로 설정
+            var yesterday = date.getFullYear() + "-" + Saleson.addZero(date.getMonth() + 1, 2) + "-" + Saleson.addZero(date.getDate(), 2);
+
+            if (mode == "week") {
+              date.setDate(date.getDate() - value * 7);
+            } else if (mode == "day") {
+              date.setDate(date.getDate() - value);
+            } else if (mode == "month") {
+              date.setMonth(date.getMonth() - value);
+            } else if (mode == "year") {
+              date.setFullYear(date.getFullYear() - value);
+            }
+
+            if (mode != "all") {
+              $("#startDate").val(date.getFullYear() + "-" + Common.addZero(date.getMonth() + 1, 2) + "-" + Common.addZero(date.getDate(), 2));
+              $("#endDate").val(yesterday);
+              vm.param.searchStartDate = date.getFullYear() + "-" + Common.addZero(date.getMonth() + 1, 2) + "-" + Common.addZero(date.getDate(), 2);
+              vm.param.searchEndDate = yesterday;
+            } else {
+              // 전체를 선택하면 날짜 초기화
+              $("#startDate").val();
+              $("#endDate").val();
+              vm.param.searchStartDate = "";
+              vm.param.searchEndDate = "";
+            }
+          },
+          resetData: function () {
+            vm.param.searchStartDate = "";
+            vm.param.searchEndDate = "";
+            vm.param.query = "";
+          },
+          getSearchList: function () {
+            vm.showLoading(true);
+            vm.param.page = 1;
+            vm.submit();
+          },
+          openList(i, flag) {
+            if (!vm.current) {
+              $(".list-items").eq(i).children(".qna_body").slideToggle().css("display", "flex");
+              //   $(".list-search-group").eq(i).children(".dropdown").toggleClass("show"); // 추가 241030
+
+              const elId = `myInquiry_${i}`;
+              document.getElementById(elId).classList.toggle("show");
+            }
+          },
+          deleteItemQna: function (id) {
+            $s.confirm("해당 게시물을 삭제 하시겠습니까?", function () {
+              vm.param.qnaId = id;
+              $s.api.delItemInquiry(vm.param, function (response) {
+                if (response.status === "OK") {
+                  $s.alert("삭제되었습니다.", function () {
+                    location.reload();
+                  });
+                } else {
+                  $s.alert(response, "답변완료된 문의는 삭제할 수 없습니다.");
+                }
+              });
+            });
+          },
+        },
+        watch: {
+          "param.itemsPerPage": function () {
+            vm.paging(1);
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            //Saleson.init();
+            // 페이지 로딩 후 실행
+            Saleson.init({ loginPage: true });
+            //vm.paging(1);
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

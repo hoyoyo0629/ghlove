@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">시스템관리</a> &gt; <a href="">이메일 설정</a>
+                    </div>
+                    <h3><span>이메일 설정</span></h3>
+                    <ul class="mail_list">
+                        <!-- 20221114 수정 -->
+                        <li><a href="javascript:;">휴면안내</a></li>
+                        <li><a href="javascript:;">관리자권한 승인</a></li>
+                        <li><a href="javascript:;"  class="on">관리자 권한 거절</a></li>
+                        <li><a href="javascript:;">회원가입</a></li>
+                        <li><a href="javascript:;">포인트소멸예정</a></li>
+                        <!-- // 20221114 수정 -->
+                    </ul>
+
+                    <div class="btn_all btn_right mt30 mb15">
+                        <div class="flex_box gap-08">
+                            <span class="mail_code">
+                                <a href="javascript:;" class="btn_right btn gray02">메일 대체코드</a>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">발송여부</td>
+                                    <td>
+                                        <div class="flex_box gap-12">
+                                            <div class="input-form">
+                                                <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                <label for="rdo1-1">발송</label>
+                                            </div>
+                                            <div class="input-form">
+                                                <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                                <label for="rdo1-2">발송안함</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="board_write_table mt30" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">메일제목</td>
+                                    <td>
+                                        <div class="flex_box">
+                                            <input id="" name="" title="메일제목" class="input_txt required _filter half" type="text" value="【{site_name}】 관리자권한 승인 안내메일 입니다.">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">메일내용</td>
+                                    <td>
+                                        <!-- smart_editor2-wrap -->
+                                        <div style="width: 100%; height:300px; background:#eee;">스마트 에디터 영역 입니다.</div>
+                                        <!-- 실 사용 소스 -->
+                                        <div class="smart_editor2-wrap">
+                                            <form:textarea path="content" cols="30" rows="20" class="editor-content" title="message('M00006')" />
+                                        </div>
+                                        <!-- // 실 사용 소스 -->
+                                        <!-- smart_editor2-wrap -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="btn_all btn_center">
+                            <div class="flex_box">
+                                <button type="button" class="btn btn-dark-gray btn-small">저장</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

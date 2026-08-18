@@ -1,0 +1,20 @@
+@charset "utf-8";
+
+@media screen and (min-width:564px) {
+	.dona img {
+		display: block;
+		margin: auto;
+		position: absolute;
+		top: calc(50% - 142px);
+		left: calc(50% - 282px);
+	}
+}
+
+@media screen and (max-width:564px) {
+	.dona img {
+		display: block;
+		margin: auto;
+		position: absolute;
+		top: calc(50% - 142px);
+	}
+}

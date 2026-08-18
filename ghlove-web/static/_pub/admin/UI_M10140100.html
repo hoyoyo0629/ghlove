@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <!-- 상단 타이틀 영역 -->
+                    <div class="location">
+                        <a href="">답례품 관리</a> &gt; <a href="">제철식품관 관리</a>
+                    </div>
+                    <h3><span>제철식품관 관리</span></h3>
+                    <!-- // 상단 타이틀 영역 -->
+                    <div class="board_list">
+                        <table class="board_list_table" summary="메인 배너관리">
+                            <caption>메인 배너관리</caption>
+                            <colgroup>
+                                <col style="width:100px;">
+                                <col style="width:500px;">
+                                <col style="width:100px;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">월별</th>
+                                    <th scope="col">키워드</th>
+                                    <th scope="col">관리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">우엉,딸기,꼬막,더덕,삼치,명태,아귀,도미,과메기,한라봉</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>2월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">우엉,바지락,딸기,꼬막,더덕,삼치,아귀,도미,한라봉</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>3월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">달래,우엉,냉이,바지락,딸기,꼬막,더덕,주꾸미,취나물,쑥,도미,소라,씀바귀,한라봉</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>4월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">달래,우엉,냉이,바지락,딸기,꼬막,더덕,주꾸미,취나물,쑥,도미,소라,씀바귀,한라봉</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>5월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">딸기,두릅,주꾸미,취나물,장어,매실,키조개,멍게,다슬기,참다랑어,소라</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>6월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">감자,장어,매실,참외,다슬기,참다랑어,복분자,소라</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>7월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">옥수수,토마토,감자,블루베리,수박,복숭아,갈치,참외,복분자,자두,도라지</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>8월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">옥수수,토마토,전복,감자,고구마,블루베리,포도,도라지,수박,복숭아,참나물,갈치,참외,복분자,자두</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>9월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">옥수수,굴,게,토마도,고등어,전복,감자,고구마,대하,블루베리,배,참나물,귤,갈치,석류,은행,광어</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>10월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">굴,사과,게,홍합,고등어,전복,고구마,무,꽁치,늙은호박,대하,삼치,배,귤,갈치,석류,광어,해삼</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>11월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">굴,사과,홍합,꼬막,배추,고등어,무,꽁치,늙은호박,대하,삼치,유자,배,귤,석류,도미,가리비,광어,해삼,과메기</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>12월</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-left">-</div>
+                                    </td>
+                                    <td>
+                                        <div class="flex_box juc-center gap-08">
+                                            <button type="button" class="btn btn-dark-gray btn-sm">수정</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn_all btn_right mt20">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-default btn-small">등록</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.representativebanner.RepresentativeBannerMapper">
+
+	<resultMap id="RepresentativeBannerResult" type="saleson.shop.representativebanner.domain.RepresentativeBanner">
+		<result property="representativeBannerId" column="REPRST_BANNER_ID" />
+		<result property="title" column="TITLE" />
+		<result property="fileNamePc" column="FILE_NAME_PC" />
+		<result property="fileNameMobile" column="FILE_NAME_MOBILE" />
+		<result property="linkUrl" column="LINK_URL" />
+		<result property="useYn" column="USE_YN" />
+		<result property="displayOrder" column="DISPLAY_ORDER" />
+		<result property="bannerContent" column="BANNER_CONTENT" />
+		<result property="createdDate" column="FRST_REGIST_PNTTM" />
+		<result property="processType" column="PROCESS_TYPE" />
+	</resultMap>
+
+	<select id="getRepresentativeBannerList" resultMap="RepresentativeBannerResult" parameterType="saleson.shop.representativebanner.domain.RepresentativeBannerListParam">
+		/* saleson.shop.representativebanner.RepresentativeBannerMapper.getRepresentativeBannerList */
+		SELECT
+			 REPRST_BANNER_ID,
+			 TITLE,
+			 FILE_NAME_PC,
+			 FILE_NAME_MOBILE,
+			 LINK_URL,
+			 DECODE(USE_YN, 'Y', '사용', 'N', '중지') AS USE_YN,
+			 DISPLAY_ORDER,
+			 BANNER_CONTENT,
+			 FRST_REGIST_PNTTM
+		FROM G_REPRST_BANNER
+		WHERE PROCESS_TYPE = #{processType}
+		ORDER BY DISPLAY_ORDER ASC
+	</select>
+
+	<update id="updateRepresentativeBanneOrdering" parameterType="saleson.shop.representativebanner.domain.RepresentativeBanner">
+		/* saleson.shop.representativebanner.RepresentativeBannerMapper.updateRepresentativeBanneOrdering */
+		UPDATE G_REPRST_BANNER
+		   SET DISPLAY_ORDER = #{displayOrder}
+			, LAST_UPDUSR_ID = #{userId}
+			, LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime"/>
+		WHERE REPRST_BANNER_ID = #{representativeBannerId}
+	</update>
+
+	<select id="getRepresentativeBannerInfo" parameterType="Integer" resultMap="RepresentativeBannerResult">
+		/* saleson.shop.representativebanner.RepresentativeBannerMapper.getRepresentativeBannerInfo */
+		SELECT
+			 REPRST_BANNER_ID,
+			 TITLE,
+			 FILE_NAME_PC,
+			 FILE_NAME_MOBILE,
+			 LINK_URL,
+			 USE_YN,
+			 DISPLAY_ORDER,
+			 BANNER_CONTENT,
+			 FRST_REGIST_PNTTM
+		FROM G_REPRST_BANNER
+		WHERE
+			REPRST_BANNER_ID = #{representativeBannerId}
+	</select>
+
+	<insert id="insertRepresentativeBanner" parameterType="saleson.shop.representativebanner.domain.RepresentativeBanner">
+		/* saleson.shop.representativebanner.RepresentativeBannerMapper.insertRepresentativeBanner */
+		INSERT INTO G_REPRST_BANNER (REPRST_BANNER_ID, TITLE, FILE_NAME_PC, FILE_NAME_MOBILE, LINK_URL, USE_YN, DISPLAY_ORDER, BANNER_CONTENT, PROCESS_TYPE, FRST_REGISTER_ID, FRST_REGIST_PNTTM, LAST_UPDUSR_ID, LAST_UPDT_PNTTM)
+		VALUES (#{representativeBannerId}, #{title}, #{fileNamePc}, #{fileNameMobile}, #{linkUrl}, #{useYn}, (SELECT NVL(MAX(DISPLAY_ORDER),0)+1 FROM G_REPRST_BANNER), #{bannerContent}, #{processType}, #{userId}, <include refid="CommonMapper.datetime"/>, #{userId}, <include refid="CommonMapper.datetime"/>)
+	</insert>
+
+	<update id="updateRepresentativeBanner" parameterType="saleson.shop.representativebanner.domain.RepresentativeBanner">
+		/* saleson.shop.representativebanner.RepresentativeBannerMapper.updateRepresentativeBanner */
+		UPDATE G_REPRST_BANNER
+		   SET TITLE = #{title},
+			   LINK_URL = #{linkUrl},
+			   USE_YN = #{useYn}
+			<if test="fileNamePc != null and fileNamePc != ''">
+			 , FILE_NAME_PC = #{fileNamePc}
+			</if>
+			<if test="fileNameMobile != null and fileNameMobile != ''">
+			 , FILE_NAME_MOBILE = #{fileNameMobile}
+			</if>
+			<if test="bannerContent != null and bannerContent != ''">
+			 , BANNER_CONTENT = #{bannerContent}
+			</if>
+			, LAST_UPDUSR_ID = #{userId}
+			, LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime"/>
+		WHERE
+			REPRST_BANNER_ID = #{representativeBannerId}
+	</update>
+
+	<update id="deleteRepresentativeBanner" parameterType="Integer">
+		/* saleson.shop.representativebanner.RepresentativeBannerMapper.deleteRepresentativeBanner */
+		UPDATE G_REPRST_BANNER
+		   SET
+			LAST_UPDUSR_ID = #{userId}
+			, LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime"/>
+		    <if test='deleteFlag == "pc"'>
+			, FILE_NAME_PC = ''
+			</if>
+			<if test='deleteFlag == "mobile"'>
+			, FILE_NAME_MOBILE = ''
+			</if>
+		WHERE
+			REPRST_BANNER_ID = #{representativeBannerId}
+	</update>
+
+	<select id="getRepresentativeBannerListFront" resultMap="RepresentativeBannerResult" parameterType="saleson.shop.representativebanner.domain.RepresentativeBannerListParam">
+		/* saleson.shop.representativebanner.RepresentativeBannerMapper.getRepresentativeBannerListFront */
+		SELECT
+			 REPRST_BANNER_ID,
+			 TITLE,
+			 FILE_NAME_PC,
+			 FILE_NAME_MOBILE,
+			 LINK_URL,
+			 USE_YN,
+			 DISPLAY_ORDER,
+			 BANNER_CONTENT,
+			 FRST_REGIST_PNTTM
+		FROM G_REPRST_BANNER
+		WHERE USE_YN = 'Y'
+			AND PROCESS_TYPE = #{processType}
+		ORDER BY DISPLAY_ORDER ASC
+	</select>
+
+</mapper>

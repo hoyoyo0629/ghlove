@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_sel.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <!-- 반품 로그 popup -->
+    <div class="popup_wrap">
+        <div id="pop_header">
+            <h1 class="popup_title">반품 로그</h1>
+			<a href="javascript:self.close();" class="btn_close"><img src="../../content/opmanager/images/btn/btn_close.png" alt="닫기"></a>
+		</div>
+
+        <div class="popup_contents">
+            <div class="board_list">
+                <table class="board_list_table" summary="반품 로그">
+                    <caption>반품 로그</caption>
+                    <colgroup>
+                        <col style="width:150px;">
+                        <col style="width:500px;">
+                        <col style="width:150px;">
+                        <col style="width:100px;">
+                        <col style="width:200px;">
+                        <col style="width:200px;">
+                        <col style="width:200px;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>이미지</th>
+                            <th>상품정보</th>
+                            <th>상호명</th>
+                            <th>수량</th>
+                            <th>환불금액(상품)</th>
+                            <th>상태</th>
+                            <th>반품 신청일</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sortable">
+                        <tr>
+                            <!-- 이미지 -->
+                            <td>
+                                <div>
+                                    <img src="../../content/images/common/item_223-2.jpg" class="item_image" alt="이미지" />
+                                </div>
+                            </td>
+                            <!-- // 이미지 -->
+                            <!-- 상품정보 -->
+                            <td class="left break-word">
+                                <div>
+                                    <a href="" class="break-word">
+                                        <div>[G2000481961]</div>
+                                        <div>모노스윗 워싱 침구 3옵션형 test</div>
+                                        <div>상품구분 : 야구모자 / 색상 : 파랑 / 사이즈 : S (+1,000원)</div>
+                                    </a>
+                                </div>
+                            </td>
+                            <!-- // 상품정보 -->
+                            <!-- 상호명 -->
+                            <td>
+                                <div>농원</div>
+                            </td>
+                            <!-- // 상호명 -->
+                            <!-- 수량 -->
+                            <td>
+                                <div>2</div>
+                            </td>
+                            <!-- // 수량 -->
+                            <!-- 환불금액(상품) -->
+                            <td>
+                                <div>18,000</div>
+                            </td>
+                            <!-- // 환불금액(상품) -->
+                            <!-- 상태 -->
+                            <td>
+                                <div>반품 환불대기</div>
+                            </td>
+                            <!-- // 상태 -->
+                            <!-- 반품 신청일 -->
+                            <td>
+                                <div>2022-11-16</div>
+                                <div>16:50:50</div>
+                            </td>
+                            <!-- // 반품 신청일 -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="board_write mt40">
+                <table class="board_write_table" summary="">
+                    <colgroup>
+                        <col style="width:150px;">
+                        <col />
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td class="label">신청사유</td>
+                            <td>
+                                <div>
+                                    <p>[구매자 신청] 고객사유</p>
+                                    <p>상품이 잘못 배송됨</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">반품 송장 번호</td>
+                            <td>
+                                <div>
+                                    우체국택배 123481341
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">회수 요청지 주소</td>
+                            <td>
+                                <div>
+                                    <p>[홍길동]</p>
+                                    <p>(25012) 서울시 성동구 서울숲길 1</p>
+                                    <p>010-1234-1234</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- // 반품 로그 popup -->
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

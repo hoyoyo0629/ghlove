@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.openmarket.OpenmarketMapper">
+
+	<resultMap id="syncNaverItemResult" type="saleson.shop.openmarket.domain.SyncNaverItem">
+		<result property="itemId" column="ITEM_ID" />
+		<result property="itemUserCode" column="ITEM_USER_CODE" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="itemSummary" column="ITEM_SUMMARY" />
+		<result property="itemImage" column="ITEM_IMAGE" />
+		<result property="salePrice" column="SALE_PRICE" />
+		<result property="stockQuantity" column="STOCK_QUANTITY" />
+		<result property="stockFlag" column="STOCK_FLAG" />
+		<result property="shipmentReturnId" column="SHIPMENT_RETURN_ID" />
+		<result property="returnZipcode" column="RETURN_ZIPCODE" />
+		<result property="returnAddress" column="RETURN_ADDRESS" />
+		<result property="returnAddressDetail" column="RETURN_ADDRESS_DETAIL" />
+		<result property="returnName" column="RETURN_NAME" />
+		<result property="returnTelephoneNumber" column="RETURN_TELEPHONE_NUMBER" />
+		<result property="itemOptionFlag" column="ITEM_OPTION_FLAG" />
+		<result property="itemOptionType" column="ITEM_OPTION_TYPE" />
+		<result property="itemOptionTitle1" column="ITEM_OPTION_TITLE1" />
+		<result property="itemOptionTitle2" column="ITEM_OPTION_TITLE2" />
+		<result property="itemOptionTitle3" column="ITEM_OPTION_TITLE3" />
+		<collection property="options" resultMap="syncNaverItemOptionsResult"/>
+		<collection property="categories" resultMap="syncNaverCategoriesResult"/>
+	</resultMap>
+
+	<resultMap id="syncNaverItemOptionsResult" type="saleson.shop.openmarket.domain.SyncNaverItemOption">
+		<id property="itemOptionId" column="ITEM_OPTION_ID" />
+		<result property="itemId" column="ITEM_ID" />
+		<result property="name1" column="OPTION_NAME1" />
+		<result property="name2" column="OPTION_NAME2" />
+		<result property="name3" column="OPTION_NAME3" />
+	</resultMap>
+
+	<resultMap id="syncNaverCategoriesResult" type="saleson.shop.openmarket.domain.SyncNaverCategory">
+		<id property="itemCategoryId" column="ITEM_CATEGORY_ID" />
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="ordering" column="CATEGORY_ORDERING" />
+	</resultMap>
+
+	<select id="getSyncNaverItems" parameterType="list" resultMap="syncNaverItemResult">
+		SELECT distinct I.ITEM_ID,
+						I.ITEM_USER_CODE,
+						I.ITEM_NAME,
+						I.ITEM_SUMMARY,
+						I.ITEM_IMAGE,
+						I.SALE_PRICE,
+						I.STOCK_QUANTITY,
+						I.STOCK_FLAG,
+						I.SHIPMENT_RETURN_ID,
+						I.ITEM_OPTION_FLAG,
+						I.ITEM_OPTION_TYPE,
+						I.ITEM_OPTION_TITLE1,
+						I.ITEM_OPTION_TITLE2,
+						I.ITEM_OPTION_TITLE3,
+						IC.ITEM_CATEGORY_ID,
+						IC.CATEGORY_ID,
+						IC.ORDERING AS CATEGORY_ORDERING,
+						crypto_dec('normal', SR.ZIPCODE, '', 0)				AS RETURN_ZIPCODE,
+						crypto_dec('normal', SR.ADDRESS, '', 0)				AS RETURN_ADDRESS,
+						crypto_dec('normal', SR.ADDRESS_DETAIL, '', 0)		AS RETURN_ADDRESS_DETAIL,
+						crypto_dec('normal', SR.NAME, '', 0)				AS RETURN_NAME,
+						crypto_dec('normal', SR.TELEPHONE_NUMBER, '', 0)	AS RETURN_TELEPHONE_NUMBER,
+						IO.ITEM_OPTION_ID AS ITEM_OPTION_ID,
+						IO.OPTION_NAME1 AS OPTION_NAME1,
+						IO.OPTION_NAME2 AS OPTION_NAME2,
+						IO.OPTION_NAME3 AS OPTION_NAME3
+		FROM OP_ITEM I
+			INNER JOIN OP_ITEM_CATEGORY IC ON I.ITEM_ID = IC.ITEM_ID
+			INNER JOIN OP_CATEGORY C ON IC.CATEGORY_ID = C.CATEGORY_ID AND C.CATEGORY_FLAG = 'Y'
+			LEFT JOIN OP_ITEM_OPTION IO ON I.ITEM_ID = IO.ITEM_ID
+			LEFT JOIN OP_SHIPMENT_RETURN SR on I.SHIPMENT_RETURN_ID = SR.SHIPMENT_RETURN_ID
+		WHERE I.DATA_STATUS_CODE = '1'
+			AND I.DISPLAY_FLAG = 'Y'
+			AND I.ITEM_ID IN
+			<foreach collection="list" item="code" open="(" close=")" separator=",">
+				#{code}
+			</foreach>
+		ORDER BY IC.ORDERING ASC
+	</select>
+</mapper>

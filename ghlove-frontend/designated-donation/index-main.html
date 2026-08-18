@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <META http-equiv="Expires" content="-1">
+	<META http-equiv="Pragma" content="no-cache">
+	<META http-equiv="Cache-Control" content="No-Cache">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>기부하기 > 특정사업에 기부하기 목록 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <!-- <link rel="stylesheet" href="/static/css/event.css"> -->
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css?ver=20250522">
+    <link rel="stylesheet" href="/static/css/lclgv_chc/map.css" />
+    <link rel="stylesheet" href="/static/css/joind-agf.css" />
+    <link rel="stylesheet" href="/static/css/designation.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <layout-header-ali :export-mode="exportMode"></layout-header-ali>
+		<layout-header :menu-url="menuUrl" @search-by-keyword="searchByKeyword" ref="layoutHeaderSearch" @show-map-select="showMapSelect"></layout-header>
+
+		<div id="wrap">
+			<!-- 지자체 선택 팝업  -->
+			<div class="black-bg" ref="getParentModal">
+				<div class="overlayer join-complete">
+					<div class="overlayer-header" style="font-size: 26px; height: 60px; line-height: 60px; padding: 0">지자체 선택</div>
+					<div class="overlayer-body" style="padding-top: 30px; border-radius: 0 0 15px 15px">
+						<!-- prjStatus를 자식 컴포넌트에 보냄 -->
+						<layout-map-select ref="modalInit" @show-loading="showLoading" @select-lclgv="searchByLocgov" :prj-status="prjStatus" ></layout-map-select>
+					</div>
+					<div class="btn-box">
+						<button
+							type="button"
+							class="temp-button hidden_txt"
+							title="지자체 선택팝업 닫기"
+							style="top: 18px; right: 18px"
+							@click="closeMapSelect()"
+						>
+							지자체 선택 팝업 닫기
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <section class="main_contents">
+            <!-- banner Image -->
+            <div class="main_banner center" v-if="representativeBanners != ''">
+                <div class="swiper-button-prev pc" slot="button-prev"><span class="screen_out">이전슬라이드</span></div>
+                <swiper class="main_slider" :options="swiperOption.mainSlider" @click.native="goBannerPage"
+                        ref="awesomeNewSwiper">
+                    <swiper-slide v-for="(data, i) in representativeBanners"
+                                  :key="i">
+                        <!-- click event, a tag 사용시 함수 사용 불가... -->
+                        <!--<button type="button" @click="goBannerPageFn" :title="data.title + ' 이동'">-->
+                            <img class="de-img" :src="itemImage(data.imageSrcPc)" :alt="data.bannerContent" @error="errorImage($event)">
+                            <img class="mo-img" :src="itemImage(data.imageSrcMobile)" :alt="data.bannerContent" @error="errorImage($event)">
+                        <!--</button>-->
+                    </swiper-slide>
+                </swiper>
+                <div class="swiper-button-next pc" slot="button-next"><span class="screen_out">다음슬라이드</span></div>
+
+                <div class="swiper-control">
+                    <div class="stop_resume">
+                        <button type="button" v-if="AutoSlide == true" @click="stopAutoSlide">
+                            <img class="icon-img"
+                                 src="/static/images/icon/pause.png" alt="일시정지">
+                        </button>
+                        <button type="button" v-else @click="resumeAutoSlide">
+                            <img class="icon-img"
+                                 src="/static/images/icon/play.png" alt="재생">
+                        </button>
+                    </div>
+                    <div class="swiper-pagination" slot="pagination"></div>
+                </div>
+            </div>
+            <!-- //banner Image -->
+
+            <div class="center">
+                <div class="prj-filters">
+                    <div class="filter_radio">
+                        <!--<div class="radio-items">
+                            <input type="radio" name="prjStatus" id="allprj" value="" v-model="prjStatus">
+                            <label for="allprj">전체</label>
+                        </div>
+                        <div class="radio-items">
+                            <input type="radio" name="prjStatus" id="prjIng" value="PROCEEDING" v-model="prjStatus">
+                            <label for="prjIng">모금 진행중</label>
+                        </div>
+                        <div class="radio-items">
+                            <input type="radio" name="prjStatus" id="prjEnd" value="END" v-model="prjStatus">
+                            <label for="prjEnd">모금 종료</label>
+                        </div>-->
+                        <!-- 260107 <div class="radio-items" v-for="(status, i) in prjStatusList" :key="i"  >
+                            <input type="radio" name="prjStatus" :id="'prjStatus' + i" :value="status.value" v-model="radioYn" >
+                            <label :for="'prjStatus' + i">{{status.label}}</label>
+                        </div>-->
+
+                        <div class="radio-items">
+                            <input type="radio" name="prjStatus" id="prjStat0" value="2" v-model="radioYn">
+                            <label for="prjStat0">진행중</label>
+                        </div>
+                        <div class="radio-items">
+                            <input type="radio" name="prjStatus" id="prjStat1" value="9" v-model="radioYn">
+                            <label for="prjStat1">종료</label>
+                        </div>
+
+                    </div>
+                    <div class="filter_area">
+                        <div class="filter_price" @click="showDropSort()" @keydown="eventShowDropSort($event)" tabindex="0">
+                            <span class="s-txt">{{sortLabel}}</span><img src="/static/images/icon/filter_drop.png" class="icon-img" alt="정렬순서 필터 띄우기">
+                            <div class="drop_select" ref="sort_select">
+                                <ul>
+                                    <li v-for="(data,i) in arrList" :key="i">
+                                        <button type="button" @keydown="eventSelectSort(data, $event)" @click="selectSort(data)">{{data.label}}</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="v-line"></div>
+                        <div class="filter_price" @click="showDropBsns()" @keydown="eventShowDropBsns($event)" tabindex="0">
+                            <span class="s-txt">{{bsnsLabel}}</span><img src="/static/images/icon/filter_drop.png" class="icon-img" alt="사업구분 필터 띄우기">
+                            <div class="drop_select" ref="bsns_select">
+                                <ul>
+                                    <li v-for="(data,i) in prjList" :key="i" style="width: 300px;">
+                                    	<button type="button" @keydown="eventSelectBsnsType(data, $event)" @click="selectBsnsType(data)" style="white-space:break-spaces;text-align:left">{{data.label}}</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 프로젝트 카드 -->
+                <div class="section all_prj" id="contents" v-if="totalSearchCnt > 0">
+                    <ul class="prj-list-group">
+                        <li class="prj-list-items" v-for="(list,i) in prjCard" :key="i" tabindex="0" role="link" @click ="jumpToDetails(list)" @keydown="jumpToDetailsE(list, $event)">
+                            <div class="list_inner" >
+                                <span class="img_frame">
+                                <div class="img_cover_link">
+                                    <img class="item_img" :src="getPrjImgPath(list.prjId, list.listImg)" alt=""/>
+                                </div>
+                                </span>
+                                <div class="inner-group">
+                                    <span class="prj_period deepGray" style="max-width:100%;">{{list.prjStDtForm}} ~ {{list.prjEdDtForm}}</span>
+                                    <span class="prj_title deepGray">{{list.prjSubject}}</span>
+                                    <span class="prj_loc pointGray">{{ list.locgovNm }}</span>
+                                </div>
+                                <div class="inner-group">
+                                    <span class="prj_amount deepGray">{{ formatNumber(list.targetAmt) }}원</span>
+                                    <div class="prj_gauge">
+                                        <div class="gauge_back">
+                                            <div class="gauge_result" :style="{width:list.rateAmtStr+'%'}"
+                                                 :class="{'lt_goal': list.rateAmt < 100, 'goal': list.rateAmt == 100, 'gt_goal': list.rateAmt > 100}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="inner_wrap">
+                                        <div class="prj_gaugePer">
+                                            <img src="/static/images/icon/cli-icon_btn-donation2.png" alt="초과달성"
+                                                 v-show="list.rateAmt > 100">
+                                            <span class="perNum">{{ list.rateAmtStr }}</span>%
+                                        </div>
+                                        <div class="prj_status"
+                                             :class="[list.prjStatus == '2'? 'on':'']">{{list.prjStatus == '1' ? '승인 대기' : list.prjStatus == '2' ? '진행' : '종료'}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="card-pagination">
+                        <pagination :current-page="currentPage" :total-pages="totalPage"
+                                    @change="paging"></pagination>
+                    </div>
+                </div>
+                <div class="list-none" v-if="totalSearchCnt == 0">
+                    <img src="/static/images/icon/empty-prj.png" alt="결과 없음">
+                    검색된 특정사업기부 사업이 없습니다.
+                </div>
+            </div>
+
+        </section>
+        <layout-fixed-btn v-if="!exportMode"></layout-fixed-btn>
+        <layout-tabbar-ali :menu-url="menuUrl" @tab-bar-search="tabBarSearch" :export-mode="exportMode"></layout-tabbar-ali>
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted" :export-mode="exportMode"></layout-footer-ali>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                //'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header': httpVueLoader('/components/layouts/header_dsg_g.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-tabbar-ali': httpVueLoader('/components/layouts/m_tabbar_sdg_g.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+          		"layout-map-select": httpVueLoader("/components/ui/lclgv_chc/map_donation.vue"),
+            },
+            data: {
+                result: {},
+                arrList: [  {label: '최근등록순', value: 'LATEST'}
+                            , {label: '참여금액순', value: 'AMOUNT'}
+                            , {label: '모금율순', value: 'RATE'}
+                            , {label: '종료임박순', value: 'ENDING'}
+                ],
+                prjList: [
+                            /*{label: '사회적 취약계층의 지원 및 청소년 육성보호', value: '100'}
+                            , {label: '지역주민의 문화, 예술, 보건 등의 증진', value: '200'}
+                            , {label: '시민참여, 자원봉사 등 지역공동체 활성화 지원', value: '300'}
+                            , {label: '그 밖에 주민의 복리증진에 필요한 사업의 추진', value: '400'}*/
+                ],
+                prjCard: [
+                    /*{ imgUrl: '/static/images/prj01.png', donationAmount: '678,400,000', gaugeResult: 41, period: '2022-05-01 ~ 2023-12-31', status: '종료', name: "폭우가 지나간 자리, 희망이 필요합니다", locGovList: "전라남도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj02.png', donationAmount: '896,190,000', gaugeResult: 100, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "1.35kg으로 태어난 샛별이, 위탁 엄마의 걱정", locGovList: "경상북도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj03.png', donationAmount: '190,758,189,000', gaugeResult: 130, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "홀로 외롭게, 항암 치료를 견디는 경미씨", locGovList: "서울특별시", subLocGovList: "테스트구" },
+                    { imgUrl: '/static/images/prj04.png', donationAmount: '13,390,000,000', gaugeResult: 86, period: '2022-05-01 ~ 2023-12-31', status: '종료', name: "암소와 함께하는 변화의 시작, 암소 ‘해피’의 기적", locGovList: "전라남도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj05.png', donationAmount: '698,756,000,000', gaugeResult: 99, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "213시간만에 진화.. 역대 최장, 최악 산불기록한 화재 재난현장 도움의 손길을 보내주세요", locGovList: "강원특별자치도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj06.png', donationAmount: '456,148,000', gaugeResult: 53, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "거대바위 대형 낙석사고, 관심과 손길이 필요합니다.", locGovList: "경상북도", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj07.png', donationAmount: '170,000', gaugeResult: 9, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "독거 어르신들께 따뜻한 겨울을!", locGovList: "서울특별시", subLocGovList: "테스트군" },
+                    { imgUrl: '/static/images/prj08.png', donationAmount: '376,756,523,000', gaugeResult: 150, period: '2022-05-01 ~ 2023-12-31', status: '진행중', name: "겨울 대비 재난형 가축전염병 차단", locGovList: "충청남도", subLocGovList: "테스트군" },*/
+                ],
+
+                swiperOption: {
+                    mainSlider: {
+                        centeredSlides: true,
+                        slidesPerView: "auto",
+                        spaceBetween: 60,
+						autoplay: {
+							disableOnInteraction: false				// 드래그하여 슬라이드 넘길경우 멈추지 않게 하기 위함
+						},
+                        loop: true,
+                        pagination: {
+                            el: '.main_banner .swiper-pagination',
+                            type: "fraction",
+                        },
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+                        grabCursor: true
+                    },
+                    /*mdSlider: {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                        centerSlides: true,
+                        navigation: {
+                            nextEl: '.md_section .swiper-button-next',
+                            prevEl: '.md_section .swiper-button-prev',
+                        },
+                        breakpoints: {
+                            767: {
+                                slidesPerView: 2,
+                                spaceBetween: 16
+                            }
+                        },
+                        grabCursor: true
+                    },
+                    newSlider: {
+                        slidesPerView: 'auto',
+                        centerSlides: true
+                    },
+                    bestSlider: {
+                        slidesPerView: 'auto',
+                        resistance: true,
+                        resistanceRatio: 0,
+                        freeMode: true
+                    },*/
+                },
+                menuUrl: location.pathname,
+                representativeBanners: [],
+                AutoSlide: true,
+                /*sortLabel: '최근등록순',
+                sort: 'LATEST',*/
+                sortLabel: '',
+                sort: '',
+                prjStatus: '',
+                bsnsType: '',
+                bsnsLabel: '사업구분 전체',
+                searchKeyword: '',
+                upperLocgovCode: '',
+                locgovCode: '',
+                prjStatusList: [],
+                totalSearchCnt: 0,
+				totalPage: 0,
+				currentPage: 0,
+				exportMode: false,
+                radioYn: '2',
+                selectOption: false
+
+            },
+            methods: {
+                // 관심답례품 아이콘 상태 토글
+                // addMyGoods: function (e) {
+                //     let obj = e.target;
+                //     console.log(obj);
+                //     if (this.addMyGoodsS != true) {
+                //         $(obj).addClass('on');
+                //         return this.addMyGoodsS = true;
+                //     } else {
+                //         $(obj).removeClass('on');
+                //         return this.addMyGoodsS = false;
+                //     }
+                // },
+                jumpToDetails: function (data) {
+                    // location.href = "/items/details.html?code=" + item.itemUserCode;
+					if (this.exportMode) {
+                    	location.href = "/designated-donation/details.html?prjId=" + data.prjId + "&exportMode=true";
+					} else {
+                    	location.href = "/designated-donation/details.html?prjId=" + data.prjId;
+					}
+                },
+                jumpToDetailsE(data, event) {
+                    if (event.keyCode === 13 || event.keyCode === 32) {
+                        this.jumpToDetails(data);
+                    }
+                },
+                showDropSort: function () {
+                    //$(".drop_select").toggle();
+                    $(this.$refs.sort_select).toggle();
+                    $(this.$refs.bsns_select).hide();
+                },
+
+                eventShowDropSort: function (event) {
+                    if (event.keyCode === 13 || event.keyCode === 32) {
+                        $(this.$refs.sort_select).toggle();
+                        $(this.$refs.bsns_select).hide();
+                    }
+                },
+
+                showDropBsns: function () {
+                    $(this.$refs.sort_select).hide();
+                    $(this.$refs.bsns_select).toggle();
+                },
+
+                eventShowDropBsns: function (event) {
+                    if (event.keyCode === 13 || event.keyCode === 32) {
+                        $(this.$refs.sort_select).hide();
+                        $(this.$refs.bsns_select).toggle();
+                    }
+                },
+
+                getRepresentativeBanners: function () {
+                    let params = {processType: 'DESIGNATED_DONATION'};
+                    $s.api.getRepresentativeBanners(params, function (response) {
+                        vm.representativeBanners = response.list;
+
+                        setTimeout(function () {
+							try {
+								if (vm.representativeBanners.length < 2) {
+									vm.stopAutoSlide();
+								}
+								if (!vm.$refs.awesomeNewSwiper) {
+									return;
+								}
+                            	let realIndex = vm.$refs.awesomeNewSwiper.swiper.realIndex;
+                            	if (realIndex != NaN) {
+                                	vm.displayBannerIdx = realIndex + 1;
+                            	}
+
+                            	let loopedSlides = vm.$refs.awesomeNewSwiper.swiper.loopedSlides;
+                            	if (loopedSlides != NaN) {
+                                	vm.totalBannerCnt = loopedSlides;
+                            	}
+
+                            	vm.$refs.awesomeNewSwiper.swiper.eventsListeners.activeIndexChange.push(function () {
+                                	let activeIdx = vm.$refs.awesomeNewSwiper.swiper.realIndex;
+                                	if (activeIdx != NaN) {
+                                    	vm.displayBannerIdx = activeIdx + 1;
+                                	}
+                            	});
+							} catch (e) {
+								$s.error();
+							}
+                        }, 10);
+                    });
+                },
+
+                paging: function (page, pageTarget) {
+                    if (this.itemListPage == page) {
+                        return;
+                    }
+                    this.itemListPage = page;
+                    this.getItemList();
+                },
+
+                getItemList: function () {
+                    if (!this.itemListPage) {
+                        this.itemListPage = 1;
+                    } else {
+                        location.href = '#itemArea';
+                    }
+
+					if (!this.prjStatus) {
+						this.prjStatus = '2';
+					}
+
+                    let param = {
+                        'page': this.itemListPage
+                        , 'searchKeyword' : this.searchKeyword
+                        , 'upperLocgovCode' : this.upperLocgovCode
+                        , 'locgovCode' : this.locgovCode
+                        , 'prjStatus' : this.prjStatus
+                        , 'sort' : this.sort
+                        //, 'ascending' : false
+                        , 'bsnsType' : this.bsnsType
+						, 'itemsPerPage' : $goods.const.ITEMS_PER_GOODS
+                    };
+
+                    vm.showLoading(true);
+		   			// 검색엔진으로 변경
+                    // $s.api.getDesignatedDonationList(
+                    $s.api.getDesignatedDonationListBySearchEngine(
+                        param,
+                        function (response) {
+                            vm.showLoading(false);
+
+                            let content = response.content;
+                            vm.prjCard = [];
+
+                            if (content) {
+                                try {
+                                    vm.totalPage = response.totalPages;
+									vm.currentPage = response.currentPage;
+                                    let size = content.length;
+                                    if (size == 0) {
+                                        vm.totalSearchCnt = 0;
+                                        /* 260107 */
+                                        if(response.totalPages == 0 && vm.selectOption == true ){
+                                            vm.radioYn = '9';
+                                            vm.selectOption = false;
+                                            return;
+                                        }
+                                        $s.alert('검색결과가 없습니다.');
+                                        return;
+                                    } else {
+                                        vm.totalSearchCnt = size;
+                                        if (response.currentPage < response.totalPages) {
+                                            /*vm.showMoreBtn(true);*/
+                                        }
+                                        vm.selectOption = false;
+                                    }
+
+                                    for (let i = 0; i < size; i++) {
+                                        let itemInfo = content[i];
+                                        vm.prjCard.push(itemInfo);
+                                    }
+                                } catch (e) {
+
+                                    $s.alert('잠시 후 시도해 주세요.');
+                                }
+                            } else {
+                                vm.totalPage = 0;
+                                vm.totalSearchCnt = 0;
+                                $s.alert('검색결과가 없습니다.');
+                            }
+                        },
+                        function (error) {
+                            vm.showLoading(false);
+                            $s.api.handleApiExeption(error);
+                        }
+                    );
+                },
+                showLoading: function (isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+                },
+                initCallFunction: function () {
+                    this.getBsnsTypes();
+                    this.getRepresentativeBanners();
+                },
+                loadingMounted: function () {
+                    this.initCallFunction();
+                },
+                resumeAutoSlide: function () {
+                    setTimeout(function () {
+						try {
+							if (vm.$refs.awesomeNewSwiper) {
+                        		vm.$refs.awesomeNewSwiper.swiper.autoplay.start();
+							}
+						} catch (e) {
+							$s.error();
+						}
+                    }, 10);
+                    vm.AutoSlide = true;
+                },
+                stopAutoSlide: function () {
+                    setTimeout(function () {
+						try {
+							if (vm.$refs.awesomeNewSwiper) {
+                        		vm.$refs.awesomeNewSwiper.swiper.autoplay.stop();
+							}
+						} catch (e) {
+							$s.error();
+						}
+                    }, 10);
+                    vm.AutoSlide = false;
+                },
+                getBsnsTypes: function () {
+                    $s.api.getBsnsTypes(
+                        function (response) {
+                            vm.prjList = [];
+                            vm.prjList.push({label: '사업구분 전체', value: ''});
+
+                            try {
+                                let bsnsTypes = response.bsnsTypes;
+                                let length = bsnsTypes.length;
+                                for (let i = 0 ; i < length ; i++) {
+                                    let bnsnType = bsnsTypes[i];
+                                    let prjType = {label : bnsnType.detail, value: bnsnType.id};
+                                    vm.prjList.push(prjType);
+                                }
+                            } catch (e) {
+                                $s.error();
+                            }
+
+                            vm.prjStatusList = [];
+                            /* vm.prjStatusList.push({label: '전체', value: ''}); */
+
+                            try {
+                                let prjStatus = response.prjStatus;
+                                let length = prjStatus.length;
+                                for (let i = 0 ; i < length ; i++) {
+                                    let status = prjStatus[i];
+                                    if (status.extentionCode == 'FRONT') {
+                                        let prjType = {label : status.label, value: status.id};
+                                        vm.prjStatusList.push(prjType);
+                                    }
+                                }
+                            } catch (e) {
+                                $s.error();
+                            }
+                            vm.prjStatus = '';
+
+
+							if (!vm.sort) {
+								let now = Date.now();
+								let rdmCnt = now % 4;
+								let sort = vm.arrList[rdmCnt];
+								vm.selectSort(sort);
+							}
+                        }
+                    );
+                },
+                selectSort: function (selectedData) {
+                    this.sortLabel = selectedData.label;
+                    this.sort = selectedData.value;
+                    this.itemListPage = 1;
+                    this.getItemList();
+                },
+				eventSelectSort : function(selectedData, event) {
+					if (event.keyCode === 13 || event.keyCode === 32) {
+						this.selectSort(selectedData);
+                        $(this.$refs.bsns_select).hide();
+                        $(this.$refs.sort_select).hide();
+					}
+				},
+                selectBsnsType: function (selectedData) {
+                    this.itemListPage = 1;
+                    this.bsnsType = selectedData.value;
+                    this.bsnsLabel = selectedData.label;
+                    this.getItemList();
+                },
+
+                eventSelectBsnsType: function (selectedData, event) {
+                    if (event.keyCode === 13 || event.keyCode === 32) {
+						this.selectBsnsType(selectedData);
+                        $(this.$refs.bsns_select).hide();
+                        $(this.$refs.sort_select).hide();
+					}
+                },
+
+                selectPrjStatus: function (selectedData) {
+                    this.itemListPage = 1;
+                    this.getItemList();
+                },
+                searchByKeyword: function (keyword) {
+                    this.itemListPage = 1;
+                    this.searchKeyword = keyword;
+                    this.getItemList();
+                },
+                searchByLocgov: function (upperLocgovCode, locgovCode) {
+                    this.selectOption = true;
+                    this.itemListPage = 1;
+                    this.upperLocgovCode = upperLocgovCode;
+                    this.locgovCode = locgovCode;
+                    this.getItemList();
+					this.closeMapSelect();
+					this.$refs.layoutHeaderSearch.setLocgovNm(locgovCode);
+                },
+                getPrjImgPath: function (prjId, prjImage) {
+					//prjImage = prjImage.replace('_XS', '_M');
+                    return CDN_DOMAIN + '/upload/prj/' + prjId + '/' + prjImage;
+                },
+				tabBarSearch: function (upperLocgovCode, locgovCode, searchTxt) {
+                    this.upperLocgovCode = upperLocgovCode;
+                    this.locgovCode = locgovCode;
+					this.searchKeyword = searchTxt;
+					this.getItemList();
+				},
+          		showMapSelect: function () {
+            		this.$refs.getParentModal.setAttribute("style", "display: block;top: 0;");
+					this.$refs.modalInit.initLocgovCd();
+          		},
+				closeMapSelect: function () {
+					this.$refs.getParentModal.removeAttribute("style");
+				},
+            },
+            watch: {
+                /*prjStatus: function (val) {
+                    this.selectPrjStatus(val);
+                },*/
+                radioYn: function (val){
+                    this.prjStatus = val;
+                    this.selectPrjStatus(val);
+                }
+            },
+            computed: {
+                // 차후에 메인 배너 여러개 생기면 사용할 것
+                // topBanners: function () {
+                //     return this.promotion.displayImageList;
+                // },
+                //newSwiper: function () {
+                //    return this.$refs.awesomeNewSwiper.swiper;
+                //}
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    Saleson.init();
+					this.exportMode = $s.core.getParameter("exportMode") == 'true' ? true : false;
+                });
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

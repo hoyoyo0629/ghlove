@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/">
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta property="og:description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 " />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta property="og:image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png" />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음">
+    <meta itemprop="description"
+        content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 ">
+    <meta itemprop="image" content="https://ilovegohyang.go.kr/static/images/cli-logo.png">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>기부하기-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/joind-ag.css">
+    <link rel="stylesheet" href="/static/css/donation_doak.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css"><!-- 모달-->
+    <link rel="stylesheet" href="/static/css/notice-box.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap" class="dona">
+            <!-- 주소확인 모달  -->
+            <div class="black-bg address-c">
+                <div class="overlayer">
+                    <div class="overlayer-header">주소 확인 하기</div>
+                    <div class="overlayer-body">
+                        <h2>현재 자신의 주민등록 주소지를 확인해주세요.</h2>
+                        <!-- <p>이름과 주민번호는 해당 주소지 조회 용도로만 사용됩니다.</p> -->
+
+                        <div class="line"></div>
+                        <div class="info-field-group">
+                            <div class="info-field-items">
+                                <label for="userName" class="flied-title">이름</label>
+                                <div class="form-field">
+                                    <input type="text" v-model="userName" maxlength="10" readonly>
+                                </div>
+                            </div>
+                            <div class="info-field-items userNum">
+                                <label for="userNumer" class="flied-title">주민번호</label>
+                                <div class="form-field">
+                                    <input type="text" v-model="juminNo1" maxlength="6" readonly>
+                                    <span class="s-txt">-</span>
+                                    <input type="password" v-model="juminNo2" maxlength="7">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 버튼그룹 -->
+                        <div class="btn-box many">
+                            <button type="button" class="blueBtn cancellation" @click="closePopupA()">
+                                취소
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                            <button type="button" class="blueBtn u-confirm" @click="rsgstadresinfo()">
+                                동의
+                                <span>
+                                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- //주소확인 모달 -->
+
+            <!-- 기부하기 완료(서울시) 모달 : 수정  -->
+            <div class="black-bg donation-c">
+                <div class="overlayer">
+                    <div class="overlayer-header">
+                        고향사랑e음
+                        <span class="closeBtn">
+                            <img src="/static/images/icon/cli-icon_btn-close-modal.png" alt="닫기" @click="closePopupD()">
+                        </span>
+                    </div>
+                    <div class="overlayer-body">
+                        <div class="col do-thanks">
+                            <h2> 고향사랑e음에<br>기부해 주셔서 감사드립니다.</h2>
+                            <p><span id="userName">{{ userName }}</span> 께서 납부한 기부금액은 전액 지자체의 기부 목적에 맞게 사용될
+                                예정이며, 기부 투명성을 위해 사용된 기부 금액은 <br>
+                                “ 고향사항 기부 종합정보시스템 > 통계 > 기부금운용현황” 에서 확인하실수 있습니다.</p>
+                            <div class="do-thanks-img">
+                                <img src="/static/images/cli-donation-completed.png" alt="">
+                            </div>
+                            <!-- 버튼그룹 -->
+                            <div class="btn-box">
+                                <button type="button" class="illustBtn" @click="goToPresent()">
+                                    답례품 몰 바로가기
+                                    <span class="arrowAni">
+                                        <img src="/static/images/icon/cli-icon_btn-illust-arrow1.png" alt="">
+                                    </span>
+                                </button>
+                            </div>
+                            <!-- <a href="#">기부금 납부 정보 확인하기</a> -->
+                        </div>
+                        <div class="col">
+                            <div class="city-Info">
+                                <table>
+                                    <tr>
+                                        <th>기부자명</th>
+                                        <td>{{ userName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>기부 금액</th>
+                                        <td>{{ cntrAmt }} 원</td>
+                                    </tr>
+                                    <tr>
+                                        <th>기부 지자체</th>
+                                        <td>{{ selectedRegion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>제공 예정 포인트</th>
+                                        <td>{{ userPoint|comma }} P<br>
+                                            (기부금액 {{ pointRate }}% 포인트 제공, 시행령 기준)<br>
+                                            포인트 사용기준 : 기부한 지자체 답례품</td>
+                                    </tr>
+                                    <tr>
+                                        <th>납부정보 확인</th>
+                                        <td><button type="button" class="blueBtn formBtn" @click="goToMy()">
+                                                마이페이지 바로가기</button></td>
+                                    </tr>
+                                    <tr>
+                                        <th>세액공제</th>
+                                        <td>국세청 홈택스에 접속 하시면 전자 기부 영수증 및
+                                            세액 공제 처리 현황을 확인 할 수 있습니다.</td>
+                                    </tr>
+                                    <tr>
+                                        <th>전자납부 번호</th>
+                                        <td>{{ wElecNo }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- //기부하기 완료 모달 -->
+
+            <!-- ETAX 모달 -->
+            <div class="black-bg etax">
+            </div>
+            <!-- //ETAX 모달 -->
+
+            <!-- 기부하기 완료(서울시 제외) 모달 -->
+            <div class="black-bg wetax">
+                <div class="overlayer">
+                    <div class="overlayer-header">
+                        고향사랑 기부 (위택스용)
+                    </div>
+                    <div class="overlayer-body">
+                        <div class="col">
+                            <h2>전자 납부번호가 발급되었습니다.(위택스)</h2>
+                            <p>
+                                납부하기 버튼을 클릭 하시면 위택스 페이지로 이동합니다.<br>위택스에서 납부하시기 바랍니다.<br>&nbsp;
+                            </p>
+                        </div>
+                        <div class="col">
+                            <div class="city-Info">
+                                <table>
+                                    <tr>
+                                        <th>기부자명</th>
+                                        <td>{{ userName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>기부 금액</th>
+                                        <td>{{ cntrAmt }} 원</td>
+                                    </tr>
+                                    <tr>
+                                        <th>기부 지자체</th>
+                                        <td>{{ selectedRegion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>제공 포인트</th>
+                                        <td>{{ userPoint|comma }} P<br>
+                                            ( 기부금액 {{ pointRate }}% 포인트 제공, 시행령 기준 )<br>
+                                            포인트 사용기준 : 기부한 지자체 답례품)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>전자납부 번호</th>
+                                        <td class="moreSplit">
+                                            <span class="tax">
+                                                <span class="taxNum" id="wElecNo">{{ wElecNo }}</span>
+                                                <button class="formBtn" @click="goWtaxProcess()">납부하기</button>
+                                            </span>
+                                            <span class="s-txt">※ 납부하기 클릭 시 납부번호는 자동 복사됩니다.</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- //위택스 모달 -->
+
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+            <layout-donation-lnb-ali></layout-donation-lnb-ali>
+
+
+            <section class="center donation_steps">
+                <div class="page-title-box">
+                    <span class="ali_breadcrumb">
+                        <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로"></a>
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        기부하기
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        지자체선택
+                        <span class="txt-arrow"><span class="sr-only">></span></span>
+                        기부하기
+                    </span>
+                    <h2 class="page-title-txt">기부하기</h2>
+
+                </div>
+                <div class="steps-box">
+                    <div class="loc_select">
+                        <div class="steps-txt">지자체<br>선택</div>
+                        <div class="icon-bg"></div>
+                    </div>
+                    <div class="donation on">
+                        <div class="steps-txt">기부<br>하기</div>
+                        <div class="icon-bg"></div>
+                    </div>
+                    <div class="donation_complete">
+                        <div class="steps-txt">기부<br>완료</div>
+                        <div class="icon-bg"></div>
+                    </div>
+                </div>
+
+
+                <form name="AKCFrm" id="AKCFrm" method="post">
+                    <input type="hidden" name="confmKey" value="U01TX0FVVEgyMDIyMTEyNTE0MTUzMTExMzI1OTc=" />
+                    <input type="hidden" name="encodingType" value="" />
+                    <input type="hidden" name="cssUrl" value="" />
+                    <input type="hidden" name="resultType" value="4" />
+                    <input type="hidden" name="currentPage" id="currentPage" value="1" />
+                    <input type="hidden" name="countPerPage" value="1" />
+                    <input type="hidden" name="keyword" id="keyword" value="" />
+                </form>
+
+                <!-- 금결원 연계시 팝업으로 보낼 Form submit -->
+                <form id="frmLink" name="frmLink">
+                    <input type="hidden" id="ENC_DATA" name="ENC_DATA" />
+                </form>
+            </section>
+
+			<section id="contents" class="input_area">
+	            <form action="/" id="add-info" name="donation" class="donation">
+	                <!-- 정보입력 -->
+	                <fieldset>
+	                    <div class="donation-info-area joind center">
+	                        <div class="add-info-group">
+	                            <div class="lable-field">
+	                                <h3>기부대상</h3>
+	                            </div>
+	                            <div class="info-field">
+	                                <div class="info-field-group">
+	                                    <div class="info-field-items">
+	                                        <label for="memberLevel" class="flied-title">지자체명</label>
+	                                        <span class="form-field">
+	                                            <input type="text" name="memberLevel" id="memberLevel" class="user_input"
+	                                                :value="selectedRegion" readonly @click="addressModalLayer()">
+	                                            <button class="formBtn" type="button" @click="addressModalLayer()">주소
+	                                                확인하기</button>
+	                                        </span>
+	                                    </div>
+	                                    <div class="info-field-items selected-info" id="preAdress">
+	                                        <img src="/static/images/icon/cli-icon_donation-warning.png" alt="">
+	                                        <div class="selected-info-txt">
+	                                            <p>
+	                                                <span class="pointblue">{{ selectedRegion }}</span>에 기부하기를 선택 하셨습니다.
+	                                                <!-- 기부가능여부를 확인해주세요 -->
+	                                                <br>
+	                                                <span class="pointDg">고향사랑e음은 자신의 주소지, 지자체에 기부를 할 수가 없습니다.</span>
+	                                            </p>
+	                                            <p>
+	                                                “주소확인하기”를 클릭하여 행정정보 공동이용시스템에서 주소지 정보를 확인해 주세요.
+	                                            </p>
+	                                            <p class="wait">
+	                                                <img src="/static/images/icon/flag_wait.png" alt="잠깐!">
+	                                                <span class="pointRed pointSize">"주소확인" 하셨나요?</span>
+	                                            </p>
+	                                        </div>
+
+	                                    </div>
+
+	                                    <!-- 주소확인 후 -->
+	                                    <div class="info-field-items selected-info d-none" id="afterAdress">
+	                                        <img src="/static/images/icon/cli-icon_donation-ok.png" alt="">
+	                                        <div class="selected-info-txt">
+	                                            <p>귀하는
+	                                                <span class="pointblue">{{ selectedRegion }}</span>에 기부가 가능합니다.<br>
+	                                                해당 주소지 : {{ userRegion }}
+	                                            </p>
+	                                        </div>
+	                                    </div>
+	                                </div>
+
+	                            </div>
+	                        </div>
+	                        <div class="line"></div>
+	                        <div class="add-info-group">
+	                            <div class="lable-field">
+	                                <h3>기부자 정보</h3>
+	                            </div>
+	                            <div class="info-field">
+	                                <div class="info-field-group">
+	                                    <div class="info-field-items">
+	                                        <label for="userName" class="flied-title">기부자명</label>
+	                                        <span class="form-field">
+	                                            <input type="text" :value="userName" readonly>
+	                                        </span>
+	                                    </div>
+	                                    <div class="info-field-items">
+	                                        <label for="userBirth" class="flied-title">생년월일</label>
+	                                        <span class="form-field">
+	                                            <input type="text" :value="birthday" readonly>
+	                                        </span>
+	                                    </div>
+
+	                                    <div class="info-field-items userNum">
+	                                        <label for="userNumer" class="flied-title">휴대폰번호</label>
+
+	                                        <span class="form-field">
+	                                            <input type="text" :value="phoneNumber" readonly>
+	                                        </span>
+	                                    </div>
+	                                    <div class="info-field-items userEmail">
+	                                        <label for="userEmail" class="flied-title">이메일주소</label>
+	                                        <div class="form-field">
+	                                            <input type="text" :value="email" readonly>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="line"></div>
+	                        <div class="add-info-group">
+	                            <div class="lable-field">
+	                                <h3>기부금액 선택</h3>
+	                            </div>
+	                            <div class="info-field">
+	                                <div class="info-field-group">
+	                                    <div class="info-field-items">
+	                                        <label for="doLimit" class="flied-title">기부가능한도 <span
+	                                                class="s-txt">(원)</span></label>
+	                                        <div class="form-field">
+	                                            <div class="m-field">
+	                                                <input type="text" :value="userCntrLimitAmt|comma" readonly>
+	                                            </div>
+	                                            <span class="s-txt">개인 최대 기부 한도 금액 : 연 5백만원</span>
+	                                        </div>
+	                                    </div>
+	                                    <div class="info-field-items">
+	                                        <label for="doAmount" class="flied-title">기부액 <span
+	                                                class="s-txt">(원)</span></label>
+	                                        <div class="form-field">
+	                                            <div class="m-field">
+	                                                <input type="text" class="user_input" v-model="cntrAmt"
+	                                                    @keyup="printEvent($event)">
+	                                            </div>
+	                                            <span class="num_txt">{{ numTxt }} 원</span>
+	                                        </div>
+	                                    </div>
+	                                    <div class="info-field-items">
+	                                        <label for="doDay" class="flied-title">기부일자</label>
+	                                        <span class="form-field">
+	                                            <input type="text" :value="curDate" readonly>
+	                                        </span>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="line"></div>
+	                        <div class="add-info-group">
+	                            <div class="lable-field">
+	                                <h3>답례품 선택</h3>
+	                            </div>
+	                            <div class="info-field">
+	                                <div class="info-field-group">
+	                                    <div class="info-field-items">
+	                                        <label for="goods_select" class="flied-title">답례품</label>
+	                                        <div class="form-field">
+	                                            <div class="m-field radio_b">
+	                                                <div>
+	                                                    <input type="radio" name="reasonSelect" id="goodsY" value="100"
+	                                                        v-model="presentType" checked>
+	                                                    <label for="goodsY">답례품을 제공 받음</label>
+	                                                </div>
+	                                                <div>
+	                                                    <input type="radio" name="reasonSelect" id="goodsN" value="300"
+	                                                        v-model="presentType">
+	                                                    <label for="goodsN">답례품을 제공 받지 않음</label>
+	                                                </div>
+	                                            </div>
+	                                        </div>
+	                                    </div>
+	                                    <div class="info-field-items">
+	                                        <img class="d-img" src="/static/images/pc_no-goods.png" alt="">
+	                                        <img class="m-img" src="/static/images/m_no-goods.png" alt="">
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                        <div class="line"></div>
+
+	                        <div class="accept-terms-item">
+	                            <div class="accept-check last_check">
+	                                <input type="checkbox" name="checkA" id="checkA" class="user_input" v-model="agreement">
+	                                <label for="checkA">
+	                                    공무원, 공공기관 및 지방자치단체 간 업무나 고용관계에 의한 기부금 납부가 아님을 확인합니다.<br>
+	                                    <span class="s-txt">※ 고향사랑 기부금법상 기부금 강요·독려임이 밝혀질 경우 모금이 제한될 수
+	                                        있습니다.</span>
+	                                </label>
+	                            </div>
+	                            <p class="wait">
+	                                <img src="/static/images/icon/flag_wait.png" alt="잠깐!">
+                                    <span class="left_txt">
+                                        <span class="pointRed">기부가 완료되면 취소가 불가능합니다. </span> <br>
+                                        기부 진행 중 취소한 건에 대해서는 <strong>당일 자동 취소 처리</strong>됩니다. 작성하신 내용이 맞는지 다시 한 번 확인해
+                                        주세요.
+                                    </span>
+	                            </p>
+	                        </div>
+	                        <br>
+	                        <div class="info-field-items selected-info">
+
+	                            <img src="/static/images/icon/cli-icon_donation-warning.png" alt="주의">
+	                            <div class="selected-info-txt">
+	                               <div class="card_title"> <strong> 결제창 팝업이 차단될 수 있으니 <span class="pointRed moreView">미리 팝업 차단</span>을 해제해 주세요.</strong></div>
+	                                <div class="s-txt">
+	                                    ⇒ 팝업 차단 해제 방법 :&nbsp; <a href="/faq/list.html" class="pointblue moreView"> FAQ &#62;
+	                                        기부 전 팝업차단 해제 안내</a>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                    <!-- 버튼그룹 -->
+	                    <div class="btn-box many">
+	                        <button type="button" class="blueBtn cancellation" @click="goToBack()">
+	                            이전
+	                            <span>
+	                                <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+	                            </span>
+	                        </button>
+	                        <button type="button" class="blueBtn u-confirm" @click="donationPay()"
+	                            v-bind:disabled="donationBtnDisabled">
+	                            기부금 납부하기
+	                            <span>
+	                                <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+	                            </span>
+	                        </button>
+	                    </div>
+	                </fieldset>
+	                <input type="hidden" id="giroPopResult" name="giroPopResult">
+	            </form>
+	            <div class="notice-box center">
+	                <div class="notice-area">
+	                    <div class="notice-img">
+	                        <img src="/static/images/cli_notice.png" alt="">
+	                    </div>
+	                    <div class="notice-area research-area" @submit.prevent>
+	                        <div class="notice-group">
+	                            <div class="notice-title">
+	                                <span>고향사랑 기부금은 지방자치단체의</span>
+	                                <strong>4가지 사업 목적</strong>으로만 사용됩니다.
+	                            </div>
+	                            <ul class="notice-list">
+	                                <li><span class="l_num">1</span> <span class="l_txt">사회적 취약계층의 지원 및 청소년의
+	                                        육성ㆍ보호</span></li>
+	                                <li><span class="l_num">2</span> <span class="l_txt">지역 주민의 문화ㆍ예술ㆍ보건 등의 증진</span>
+	                                </li>
+	                                <li><span class="l_num">3</span> <span class="l_txt">시민참여, 자원봉사 등 지역공동체 활성화
+	                                        지원</span></li>
+	                                <li><span class="l_num">4</span> <span class="l_txt">그 밖에 주민의 복리 증진에 필요한 사업의
+	                                        추진</span></li>
+	                            </ul>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+            </section>
+
+            <!-- Top&Chatbot fixed -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <!-- 접속자대기 -->
+    <script type="text/javascript" src="/static/js/netfunnel.js"></script>
+    <script type="text/javascript" src="/static/js/netfunnel_skin.js"></script>
+
+    <script type="text/babel">
+        Vue.use(VueAwesomeSwiper);
+        let giroPopup, giroPopTimer;
+        let eTaxPopup, etaxPopTimer;
+
+        let vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-subsearch-ali': httpVueLoader('/components/layouts/subsearch_ali.vue'),
+                //'layout-donation-lnb-ali': httpVueLoader('/components/layouts/donation-lnb_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-help-btn': httpVueLoader('/components/ui/helpBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+            },
+            data: {
+                numTxt: '',// 입력금액 한글 표기
+                param: {
+                    page: 1,
+                    itemsPerPage: 10,
+                    sidoCode: ""
+                },
+                selectedRegion: "",
+                selectedRegionCd: "",
+                userRegion: "",
+                userRegionCd: "",
+                flag: '',
+                userCntrLimitAmt: "",
+                userLimitCntrAmt: "",
+                cntrAmt: "0",
+                agreement: false,
+                birthday: "",
+                phoneNumber: "",
+                email: "",
+                curDate: "",
+                userName: "",
+                juminNo1: "",
+                juminNo2: "",
+                nextStep: false,
+                rstJuso: [],    //행공센(주소간단조회 API) 응답데이터(주소)
+                bassAdres: "",
+                wElecNo: "",
+                wMngNo: "",
+                pointRate: "",
+                userPoint: "",
+                presentType: "100",
+                jusoResult: [],
+                donationBtnDisabled: false
+            },
+            filters: {
+                comma(val) {
+                    return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
+                emptyReplace(val) {
+                    return String(val).replace(null, "0");
+                }
+            },
+            methods: {
+                testDonation : function(obj) {
+                    location.href = "/ngdonation/ng-donation.html";
+                },
+
+                goToBack: function () {
+                    if (vm.flag == 'map') {
+                        location.href = "/donation/map-select.html";
+                    } else {
+                        location.href = "/donation/list-select.html";
+                    }
+                },
+
+                loadingStart : function() {
+                    $("#whitebg").show();
+                },
+
+                loadingEnd : function() {
+                    $(".black-bg.etax").removeClass("show");
+                    $("#whitebg").hide();
+                },
+
+                donationInit: function () {
+                    $s.api.postSubmit('/api/ngdonation/userCntrInfo', '', function (response) {
+                        if(response.result !== undefined && response.result !== null) {
+                            if(response.result.mberCiYn !== 'Y') {
+                                alert('본인인증 미완료상태입니다. \n 회원정보수정에서 본인인증을 해주시길 바랍니다.');
+                                //location.href = "/users/modify.html";
+                                return false;
+                            }
+                            vm.flag = $s.core.getParameter('flag');
+                            let locgovCode = $s.donation.getData($s.donation.const.LOCGOV_CODE);
+                            let locgovNm = $s.donation.getData($s.donation.const.LOCGOV_NM);
+                            let upperLocgovCode = $s.donation.getData($s.donation.const.UPPER_LOCGOV_CODE);
+                            let upperLocgovNm = $s.donation.getData($s.donation.const.UPPER_LOCGOV_NM);
+                            vm.selectedRegion = upperLocgovNm + " " + locgovNm;
+                            vm.selectedRegionCd = locgovCode;
+                            vm.birthday = response.result.birthday.substring(0, 4) + "-" + response.result.birthday.substring(4, 6) + "-" + response.result.birthday.substring(6, 8);
+                            vm.juminNo1 = response.result.birthday.substring(2);
+                            vm.phoneNumber = response.result.phoneNumber;
+                            vm.email = response.result.email;
+                            vm.userName = response.result.userName;
+                            vm.userCntrLimitAmt = response.result.userCntrLimitAmt;
+
+                            // 기부일자 항목에 오늘 날짜 setting
+                            let js_date = new Date();
+                            let year = js_date.getFullYear();
+                            let month = js_date.getMonth() + 1;
+                            let day = js_date.getDate();
+                            if (month < 10) {
+                                month = '0' + month;
+                            }
+                            if (day < 10) {
+                                day = '0' + day;
+                            }
+                            vm.curDate = year + '-' + month + '-' + day;
+
+                            // 선택 지자체 포인트 지급율
+                            vm.pointRate = $s.donation.getData($s.donation.const.POINT_RATE);
+
+							$(".lnb-bar_2dep li").find('.currentT').removeClass('currentT');
+							$(".lnb-bar_2dep li").eq(vm.flag == 'map' ? 0 : 1).find('a').addClass('currentT');
+
+
+                        } else {
+                            alert('기부자 정보 조회에 실패하였습니다. 고객센터에 문의 부탁드립니다.');
+                        }
+
+                    }, function(error) {
+                        alert('기부자 정보 조회에 실패하였습니다. 고객센터에 문의 부탁드립니다.');
+                    });
+                },
+                // 사용자 실거주지 확인 modal
+                addressModalLayer: function (e) {
+                    $(".black-bg.address-c").addClass("show");
+                    // e.preventDefault();
+                },
+                closePopupA: function (e) {
+                    $(".black-bg.address-c").removeClass("show");
+                },
+                // 행공센 주소간단조회 서비스 호출
+                rsgstadresinfo: function () {
+                    let params = {
+                        'userName': vm.userName,
+                        'juminNo': vm.juminNo2
+                    }
+
+                    if (vm.userName == "") {
+                        alert("이름을 입력해주세요");
+                        return;
+                    }
+                    if (vm.juminNo1 == "" || vm.juminNo2 == "") {
+                        alert("주민번호를 입력해주세요");
+                        return;
+                    }
+
+                    $s.donation.setData($s.donation.const.JUMIN_NO, vm.juminNo1 + vm.juminNo2);
+
+                    $s.api.postSubmit('/api/ngdonation/rsgstadresinfo', params, function (response) {
+                        if(response.result !== undefined && response.result !== null) {
+                            let rsgstadresinfo = JSON.parse(response.result.api_response);
+
+                            if (rsgstadresinfo.serviceResult == '1') {
+                                let mapLocgov = response.result.mapLocgov;
+                                vm.rstJuso = rsgstadresinfo;
+                                vm.userRegionCd = mapLocgov;
+                                vm.bassAdres = response.result.bassAdres;
+                                let jusoTxt = vm.rstJuso.juso.split(' ');
+                                vm.userRegion = jusoTxt[0] + " " + jusoTxt[1];
+
+                                if (vm.selectedRegionCd == vm.userRegionCd || vm.selectedRegionCd == (JSON.stringify(response.result.mapLocgov).slice(1, 3) + "000")) {
+                                    alert("자신의 주민등록주소지의 지자체에는 기부를 하실 수 없습니다.\n 다른 지자체를 선택해 주세요.");
+                                    if (vm.flag == 'map') {
+                                        location.href = "/donation/map-select.html";
+                                    } else {
+                                        location.href = "/donation/list-select.html";
+                                    }
+                                } else {
+                                    // 기부금 납부 가능여부 true
+                                    vm.nextStep = true;
+                                    $("#preAdress").addClass("d-none");
+                                    $("#afterAdress").removeClass("d-none");
+                                }
+                            } else if (rsgstadresinfo.serviceResult == '2') {
+                                vm.nextStep = false;
+                                $("#preAdress").removeClass("d-none");
+                                $("#afterAdress").addClass("d-none");
+                                alert("주민등록번호 오류입니다.");
+                            } else if (rsgstadresinfo.serviceResult == '3') {
+                                vm.nextStep = false;
+                                $("#preAdress").removeClass("d-none");
+                                $("#afterAdress").addClass("d-none");
+                                alert("이름 오류입니다.");
+                            } else if (rsgstadresinfo.serviceResult == '99') {
+                                vm.nextStep = false;
+                                $("#preAdress").removeClass("d-none");
+                                $("#afterAdress").addClass("d-none");
+                                alert("등록된 이용기관이 아닙니다.");
+                            } else {
+                                vm.nextStep = false;
+                                $("#preAdress").removeClass("d-none");
+                                $("#afterAdress").addClass("d-none");
+                                alert("알수 없는 원인으로 인한 주소조회를 실패하였습니다. 고객센터에 문의하세요.");
+                            }
+                        }
+                    }, function(error) {
+                        vm.nextStep = false;
+                        $("#preAdress").removeClass("d-none");
+                        $("#afterAdress").addClass("d-none");
+                        alert('행정망공동이용센터 API호출에 실패하였습니다. 고객센터에 문의하세요.');
+                        vm.loadoingEnd();
+                    });
+                    vm.closePopupA();
+                },
+                donationPay: function (e) {
+					var params = {
+                    	'cityCode': $s.donation.getData($s.donation.const.LOCGOV_CODE)
+                	}
+                    $s.api.postSubmit('/api/ngdonation/getLocGovLmtt', params, function (response) {
+						if (response.data) {
+							$s.alert("선택하신 지자체는\n" + response.data.violtResnCn + "으로\n" + response.data.lmttBgnDe + "부터 " + response.data.lmttEndDe + "일까지 \n기부가 불가능합니다.", function () {
+								if (vm.flag == 'map') {
+                                    location.href = "/donation/map-select.html";
+                                } else {
+                                    location.href = "/donation/list-select.html";
+                                }
+
+                                $s.closeAlert();
+							});
+						} else {
+							vm.donationRequest(e);
+						}
+					});
+				},
+                //기부금 납부하기 버튼 클릭 시 validation Check
+                donationRequest: function (e) {
+                    vm.donationBtnDisabled = true;
+                    $s.api.postSubmit('/api/ngdonation/userCntrInfo', '', function (response) {
+                        if(response.result !== undefined && response.result !== null) {
+                            vm.userCntrLimitAmt = response.result.userCntrLimitAmt;
+                            // 기부금 입력값
+                            let strCntrAmt = String(vm.cntrAmt).replace(/[^\d]+/g, '');
+                            // // 거주지 확인여부 checked
+                            if (!vm.nextStep) {
+                                alert("거주지 확인이 되지 않았습니다.");
+                                vm.donationBtnDisabled = false;
+                                return;
+                            }
+                            // // 고용관계 납부여부 항목 checked
+                            if (!vm.agreement) {
+                                alert("고용관계 기부 납부여부 항목을 체크해주시기 바랍니다.");
+                                vm.donationBtnDisabled = false;
+                                return;
+                            }
+                            // // 최소기부금액 checked
+                            if (strCntrAmt < 100) {
+                                alert("기부금액은 최소 100원입니다. ");
+                                vm.donationBtnDisabled = false;
+                                return;
+                            }
+                            // // 기부한도 checked
+                            if (strCntrAmt > vm.userCntrLimitAmt) {
+                                alert("기부금액이 기부한도를 초과했습니다. ");
+                                vm.donationBtnDisabled = false;
+                                return;
+                            }
+                            // // 기부금액 100원단위 절사
+                            if (!Number.isInteger(strCntrAmt / 100)) {
+                                let koreanAmt = String(Math.floor(strCntrAmt / 100) * 100).replace(/(^0+)/, "").replace(/[^\d]+/g, '');
+                                alert("기부 금액 단위는 100원 단위입니다.");
+                                vm.cntrAmt = String(Math.floor(strCntrAmt / 100) * 100).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                vm.changeKoreanAmt(koreanAmt);
+                                vm.donationBtnDisabled = false;
+                                return;
+                            }
+                            // 지급 포인트 Set
+                            if (vm.pointRate == 0) {
+                                vm.pointRate = "30";
+                            }
+                            vm.userPoint = strCntrAmt * vm.pointRate / 100;
+                            vm.donationModalLayer();
+                        } else {
+                            alert('기부자 정보가 존재하지 않습니다.');
+                            vm.donationBtnDisabled = false;
+                        }
+
+                    }, function(error) {
+                        alert('기부자 정보 조회 API연결에 실패하였습니다.');
+                    });
+                },
+
+                //기부하기 모달 띠우기(서울세외 / 지방세외)
+                donationModalLayer: function (e) {
+                    vm.donationBtnDisabled = true;
+
+                    if (String(vm.selectedRegionCd).substring(0, 2) == "11") {
+                        this.seoulDonation();     //서울세외
+                    } else {
+                        this.contryDonation();    //지방세외
+                    }
+                },
+
+                /**
+                 * 서울지자체에 기부하기
+                 * STEP0 . 행공센을 통한 주소정보 가져오기
+                 * STEP1 . 서울세외시스템 부과정보 API REQUEST > 전자납부번호 발행
+                 * STEP2 . 이택스 팝업을 통한 결제
+                 * STEP3 . 결제 완료 시 수납여부 조회 API REQUEST > 수납 확인 여부
+                 * STEP4 . 수납확인 RESPONSE > UPDATE G_CNT(결제일자 및 포인트 업데이트)
+                 **/
+                seoulDonation: function (e) {
+                    let semokCd = "";
+                    let js_date = new Date();
+                    let year = js_date.getFullYear();
+                    let month = js_date.getMonth() + 1;
+
+                    if (vm.selectedRegionCd == "11000") {
+                        semokCd = "10228802";
+                    } else {
+                        semokCd = "50228802";
+                    }
+
+                    let bugaParams = {
+                        'systemCd': "01",                   // 인터페이스 구분코드
+                        'jijacheCd': vm.selectedRegionCd,   // 기부지자체 코드
+                        'siguCd': "6110000",                //시구코드
+                        'semokCd': semokCd,                 //세목코드
+                        'taxYm': year + month,              //과세년월
+                        'taxGubun': "3",                    //과세구분
+                        'sidoCd': "11",                     //시도코드
+                        'napId': vm.juminNo1 + vm.juminNo2, //납세자 ID
+                        'napNm': vm.userName,               //납세자 이름
+                        'napGubun': "10",                   //납세자 구분
+                        'taxAmt': String(vm.cntrAmt).replace(/[^\d]+/g, ''),    //본세합계
+                        'sise': String(vm.cntrAmt).replace(/[^\d]+/g, ''),      //병기항목 아닌경우 본세
+                        'resideStatus': "10",                                   //거주상태
+                        'mulGubun': '03',                                       //물건구분
+                        'mulNm': "고향사랑기부제",                               //물건명
+                        'bookNo': "",                                           //원천 시스템의 대장번호
+                        'sysGubun': "LVHT",                                     //시스템 고유번호 LVHT
+                        'selectedRegionCd': vm.selectedRegionCd,
+                        'userRegionCd': vm.userRegionCd,
+                        'enapbuNo': '',
+                        'presentType': vm.presentType                           //답례품 여부
+                    }
+
+                    // STEP1 서울세외시스템 부과정보 API REQUEST > 전자납부번호 발행
+                    $s.api.postSubmit('/api/ngdonation/sntrBugaInsert', bugaParams, function (response) {
+                        if(response.result !== undefined && response.result !== null) {
+                            let sntrBugaInfo = JSON.parse(response.result.api_response);
+                            let mngNo = response.result.mngNo;
+                            if (sntrBugaInfo.errorCode == 0) {
+                                let enapbuNo = sntrBugaInfo.enapbuNo;
+                                vm.wElecNo = enapbuNo;
+                                let etaxParam = {
+                                    'systemCd': "02",                   // 인터페이스 구분코드
+                                    'jijacheCd': vm.selectedRegionCd,   // 기부지자체 코드
+                                    'enapbuNo': enapbuNo,               // 전자납부번호
+                                    'bookNo': mngNo                     // 전문대장관리번호
+                                }
+
+                                //STEP2 이택스 팝업을 통한 결제 *팝업 닫을 시 성공팝업이 뜨고 해당 팝업 닫을 시 마이페이지 이동.
+                                vm.etaxPopOpen(mngNo, enapbuNo, bugaParams.taxAmt, etaxParam);
+
+
+                            } else {
+                                alert('서울세외시스템 부과정보 등록 실패되었습니다. 고객센터에 문의 부탁드립니다.\n 실패원인 : '+sntrBugaInfo.errorMsg);
+                                location.reload();
+                            }
+                        } else {
+                            alert('서울세외시스템 응답결과가 올바르지 않습니다. 고객센터에 문의 부탁드립니다.');
+                            location.reload();
+                        }
+
+                    }, function(error) {
+                        alert('서울세외시스템 API호출에 실패하였습니다. 고객센터에 문의 부탁드립니다.');
+                        location.reload();
+                    });
+
+                },
+
+                //ETAX 결제 팝업 오픈
+                etaxPopOpen : function(mngNo, enapbuNo, taxAmt, etaxParam) {
+                    let etaxUrl = "https://etax.seoul.go.kr/jsp/etaxlink.jsp?pay_link=GO&checkable=N&mng_no=" + mngNo + "&tax_info=1@@" + enapbuNo + "@@" + taxAmt;
+                    eTaxPopup = window.open(etaxUrl, 'eTaxPopup', 'width=750, height=700, titlebar=0, toolbar=0, left=300, top=200', '_blank');
+                    $(".black-bg.etax").addClass("show");
+
+                    etaxPopTimer = setInterval(function () {
+                        if (eTaxPopup.closed) {
+                            clearInterval(etaxPopTimer);
+                            //STEP3 결제 완료 시 수납여부 조회
+                            setTimeout(function () {
+                                //STEP4 수납확인 RESPONSE > UPDATE G_CNT(결제일자 및 포인트 업데이트)
+                                vm.etaxSunapConfirm(etaxParam);
+
+                            }, 3000);
+                        }
+                    }, 1000);
+                },
+
+                //ETAX 수납여부 확인 API
+                etaxSunapConfirm : function(etaxParam) {
+                    $(".black-bg.etax").removeClass("show");
+                    $s.api.postSubmit('/api/ngdonation/etaxSunapInfo', etaxParam, function (response) {
+                        if(response.result !== undefined && response.result !== null) {
+                            let etaxSunapInfo = JSON.parse(response.result.api_response);
+                            //수납 확인
+                            if (etaxSunapInfo.RST_CD == "100" && etaxSunapInfo.ARR_RESULT[0].SUNAP_YN == "Y") {
+                                let sunapParam = {
+                                    'enapbuNo': vm.wElecNo,               // 전자납부번호
+                                    'userCntrPoint': vm.userPoint,      // 기부포인트
+                                    'taxAmt': String(vm.cntrAmt).replace(/[^\d]+/g, ''),    // 기부금액
+                                    'jijacheCd': vm.selectedRegionCd,   // 기부지자체 코드
+                                    'presentType': vm.presentType,      // 답례품 선택 여부
+                                    'sttemntPayDe': etaxSunapInfo.ARR_RESULT[0].SUNAP_DT
+                                }
+                                // 수납일자 및 포인트 적립
+                                vm.donationSunapSuccess(sunapParam);
+                            } else {
+                                alert('수납확인은 마이페이지에서 확인 바랍니다.');
+                                location.reload();
+                                // console.log('응답성공, 수납아직 안됨. /api/ngdonation/etaxSunapInfo 응답결과{RST_CD : ', etaxSunapInfo.RST_CD , ' RST_MSG : ' , etaxSunapInfo.RST_CD, '} ');
+
+                            }
+                        } else {
+                            alert('수납확인은 마이페이지에서 확인 바랍니다.');
+                            location.reload();
+                            // console.log('응답성공, 데이터 없음, /api/ngdonation/etaxSunapInfo' , response);
+                        }
+                    }, function(error) {
+                        alert('수납확인에 실패하였습니다. 고객센터에 문의 부탁드립니다.');
+                        location.reload();
+                        // console.log('응답실패,/api/ngdonation/etaxSunapInfo' , error);
+                    });
+                },
+
+                //수납확인 처리(결제일자 및 포인트 업데이트)
+                donationSunapSuccess : function(sunapParam) {
+                    $s.api.postSubmit('/api/ngdonation/sunapSuccess', sunapParam, function (response) {
+                        if(response.status !== undefined && response.status !== null) {
+                            if(response.status === 'OK') {
+                                $(".black-bg.donation-c").addClass("show");
+                            }
+                        } else {
+                            alert('수납확인완료처리에 문제가 생겼습니다. 고객센터에 문의 부탁드립니다.');
+                            location.reload();
+                        }
+                    }, function(error) {
+                        alert('수납확인완료처리에 문제가 생겼습니다. 고객센터에 문의 부탁드립니다.');
+                        location.reload();
+                    });
+
+                },
+
+
+                /**
+                 * 지방세외(현세대) 기부하기
+                 * STEP0 . 행공센을 통한 주소정보 가져오기
+                 * STEP0-1 . 주소기반산업지원서비스 API를 통한 도로명 건물, 우편번호, 행정동코드 상세주소 등을 조회한다.
+                 * STEP1 . 지방세외(현세대) 시스템 부과정보 API REQUEST > 전자납부번호 발행
+                 * STEP2 . 금결원 지로 팝업을 통한 결제
+                 * STEP3 . 결제 완료 시 수납여부 조회 API REQUEST > 수납 확인 여부
+                 * STEP4 . 수납확인 RESPONSE > UPDATE G_CNT(결제일자 및 포인트 업데이트)
+                 **/
+                contryDonation: function (e) {
+                    //STEP0-1 주소기반산업지원서비스 API 호출
+                    vm.businessJusoAPI(function(jusoObj) {
+                        if(jusoObj !== undefined && jusoObj.result === 'success') {
+                            //STEP1 지방세외(현세대) 시스템 부과정보 등록
+                            vm.contryBugaInsert(jusoObj.bugaParams);
+                        } else {
+                            //추후 해당 지자체의 대표주소로 값 가져올 거임
+                            vm.changeLocgovBusinessJusoAPI();
+                            return false;
+                        }
+                    });
+
+                },
+
+                /** 지방세외 부과등록 */
+                contryBugaInsert : function(bugaParams) {
+                    $s.api.postSubmit('/api/ngdonation/contryBugaInsert', bugaParams, function (response) {
+                        if(response.result !== undefined && response.result !== null) {
+                            let contryBugaInfo = JSON.parse(response.result.api_response);
+                            if (contryBugaInfo.result_code == "100") {
+                                vm.wElecNo = contryBugaInfo.elctPayNo;
+                                /** STEP2 금결원 지로 팝업 호출
+                                 * 15초 : 부과등록 연계가 진행되는 예상시간.
+                                 */
+                                 vm.loadingStart();
+                                 $(".black-bg.etax").addClass("show");
+                                setTimeout(function () { vm.giroPay();}, 15000);
+
+                            }
+                        } else {
+                            alert('지방세외(현세대) 시스템에 응답결과가 올바르지 않습니다. 고객센터에 문의 부탁드립니다.');
+                            location.reload();
+                        }
+                    }, function(error) {
+                        alert("지방세외(현세대) 시스템연결에 실패하였습니다. 고객센터에 문의 부탁드립니다.");
+                        location.reload();
+                    });
+                },
+
+
+                /** 주소기반산업지원서비스 API */
+                businessJusoAPI : function(fnc) {
+                    let obj = {
+                        result : 'fail'
+                        , bugaParams : {}
+                    };
+                    let frm = document.AKCFrm;
+                    let sJuso = vm.rstJuso.juso.split(',');
+                    frm.keyword.value = sJuso[0];
+
+                    $.ajax({
+                        url: "https://business.juso.go.kr/addrlink/addrLinkApiJsonp.do"  //인터넷망
+                        , type: "post"
+                        , data: $("#AKCFrm").serialize()
+                        , dataType: "jsonp"
+                        , crossDomain: true
+                        , success: function (xmlStr) {
+                            if($(xmlData).find("totalCount").text() === '0') {
+                                return fnc(obj);
+                            }
+
+                            let xmlData = xmlStr.returnXml;
+                            let rnMgtSn = $(xmlData).find("rnMgtSn").text();    // 도로명 코드
+                            let udrtYn = $(xmlData).find("udrtYn").text();      // 지하여부
+                            let buldMnnm = $(xmlData).find("buldMnnm").text();  // 건물본번
+                            let buldSlno = $(xmlData).find("buldSlno").text();    // 건물부번
+                            let zipNo = $(xmlData).find("zipNo").text();      // 우편번호
+                            let admCd = $(xmlData).find("admCd").text();    // 행정동코드
+                            let bdMgtSn = $(xmlData).find("bdMgtSn").text();    // 건물관리번호
+                            let roadAddr = $(xmlData).find("roadAddrPart2").text();    // 상세주소
+
+                            let siGunGuGubun = String(vm.selectedRegionCd).substring(2);
+                            let js_date = new Date();
+                            let year = js_date.getFullYear();
+                            let month = js_date.getMonth() + 1;
+
+                            let bugaParams = {
+                                'systemCd': "03",       // 인터페이스 구분코드
+                                'jijacheCd': vm.selectedRegionCd,   // 기부지자체 코드
+                                'deptCd': "99999999999",    // 자치단체 부서코드
+                                'fisyy': year,         // 회계년도
+                                'fisSp': '',        // 회계구분코드
+                                'ptclCd': "260004",    // 세목코드
+                                'taxAmt': String(vm.cntrAmt).replace(/[^\d]+/g, ''),   // 기부금액
+                                'impsSp': "02",        // 부과구분
+                                'decsSp': "02",        // 감경구분
+                                'txprSp': "01",        // 납부자구분
+                                'txprNo': vm.juminNo1 + vm.juminNo2, // 납부자번호
+                                'txprNm': vm.userName, // 납부자 이름
+                                'newAddrYn': "1",      // 새주소 여부
+                                'txprRoadCd': rnMgtSn,    // 도로명 코드
+                                'txprBdFlrSp': udrtYn,    // 지하여부
+                                'txprBdPrcpNo': buldMnnm, // 건물본번
+                                'txprBdSubNo': buldSlno,  // 건물부번
+                                'statCd': "10",        // 납부자상태
+                                'spclFisBizCd': "092020",   // 특별회계사업코드
+                                'txprZipCd': zipNo,       // 우편번호
+                                'txprTwnvilCd': admCd,    // 행정동코드
+                                'txprBdMngNo': bdMgtSn,   // 건물관리번호
+                                'txprDtlAddr': roadAddr,  // 상세주소
+                                'objNm': "고향사랑기부금",     // 물건지명
+                                'taxObjSp': "15",            // 부과대상구분코드
+                                'taxObjNewAddrYn': "1",        // 물건지 새주소 여부
+                                'mngHtm1': "고향사랑기부금",   // 기부금 명칭 및 기타항목
+                                'mngHtm5': "",                 // 기부금 시스템키(유일키)
+                                'sysCd': "S020",        // 시스템 코드
+                                'intgrtnSp': "02",     // 통합구분
+                                'selectedRegionCd': vm.selectedRegionCd,
+                                'userRegionCd': vm.userRegionCd,
+                                'enapbuNo': '',
+                                'presentType': vm.presentType
+                            }
+
+                            obj.result = 'success';
+                            obj.bugaParams = bugaParams;
+                            return fnc(obj);
+
+                        }
+                        , error: function (xhr, status, error) {
+                            alert('주소기반산업지원서비스에 실패하였습니다. 고객센터에 문의 부탁드립니다.\n(회사, 관공서 pc로 기부를 진행할 경우 방화벽, 보안프로그램으로 인해 기부진행에 제한이 있습니다.)');
+                            return fnc(obj);
+                        }
+                    });
+                },
+
+                /** 로그인 사용자 지자체 주소로 대체한 주소 api 요청 */
+               	changeLocgovBusinessJusoAPI : function() {
+                    let frm = document.AKCFrm;
+                    let sJuso = vm.bassAdres.split(',');
+                    frm.keyword.value = sJuso[0];
+
+                    $.ajax({
+                        url: "https://business.juso.go.kr/addrlink/addrLinkApiJsonp.do"  //인터넷망
+                        , type: "post"
+                        , data: $("#AKCFrm").serialize()
+                        , dataType: "jsonp"
+                        , crossDomain: true
+                        , success: function (xmlStr) {
+                            if($(xmlData).find("totalCount").text() === '0') {
+                                alert('주소기반산업지원서비스 조회에 실패하였습니다. 고객센터에 문의해주세요.');
+                                location.reload();
+                                return false;
+                            }
+
+                            let xmlData = xmlStr.returnXml;
+                            let rnMgtSn = $(xmlData).find("rnMgtSn").text();    // 도로명 코드
+                            let udrtYn = $(xmlData).find("udrtYn").text();      // 지하여부
+                            let buldMnnm = $(xmlData).find("buldMnnm").text();  // 건물본번
+                            let buldSlno = $(xmlData).find("buldSlno").text();    // 건물부번
+                            let zipNo = $(xmlData).find("zipNo").text();      // 우편번호
+                            let admCd = $(xmlData).find("admCd").text();    // 행정동코드
+                            let bdMgtSn = $(xmlData).find("bdMgtSn").text();    // 건물관리번호
+                            let roadAddr = $(xmlData).find("roadAddrPart2").text();    // 상세주소
+
+                            let siGunGuGubun = String(vm.selectedRegionCd).substring(2);
+                            let js_date = new Date();
+                            let year = js_date.getFullYear();
+                            let month = js_date.getMonth() + 1;
+
+                            let bugaParams = {
+                                'systemCd': "03",       // 인터페이스 구분코드
+                                'jijacheCd': vm.selectedRegionCd,   // 기부지자체 코드
+                                'deptCd': "99999999999",    // 자치단체 부서코드
+                                'fisyy': year,         // 회계년도
+                                'fisSp': '',        // 회계구분코드
+                                'ptclCd': "260004",    // 세목코드
+                                'taxAmt': String(vm.cntrAmt).replace(/[^\d]+/g, ''),   // 기부금액
+                                'impsSp': "02",        // 부과구분
+                                'decsSp': "02",        // 감경구분
+                                'txprSp': "01",        // 납부자구분
+                                'txprNo': vm.juminNo1 + vm.juminNo2, // 납부자번호
+                                'txprNm': vm.userName, // 납부자 이름
+                                'newAddrYn': "1",      // 새주소 여부
+                                'txprRoadCd': rnMgtSn,    // 도로명 코드
+                                'txprBdFlrSp': udrtYn,    // 지하여부
+                                'txprBdPrcpNo': buldMnnm, // 건물본번
+                                'txprBdSubNo': buldSlno,  // 건물부번
+                                'statCd': "10",        // 납부자상태
+                                'spclFisBizCd': "092020",   // 특별회계사업코드
+                                'txprZipCd': zipNo,       // 우편번호
+                                'txprTwnvilCd': admCd,    // 행정동코드
+                                'txprBdMngNo': bdMgtSn,   // 건물관리번호
+                                'txprDtlAddr': roadAddr,  // 상세주소
+                                'objNm': "고향사랑기부금",     // 물건지명
+                                'taxObjSp': "15",            // 부과대상구분코드
+                                'taxObjNewAddrYn': "1",        // 물건지 새주소 여부
+                                'mngHtm1': "고향사랑기부금",   // 기부금 명칭 및 기타항목
+                                'mngHtm5': "",                 // 기부금 시스템키(유일키)
+                                'sysCd': "S020",        // 시스템 코드
+                                'intgrtnSp': "02",     // 통합구분
+                                'selectedRegionCd': vm.selectedRegionCd,
+                                'userRegionCd': vm.userRegionCd,
+                                'enapbuNo': '',
+                                'presentType': vm.presentType
+                            }
+                            vm.contryBugaInsert(bugaParams);
+                        }
+                        , error: function (xhr, status, error) {
+                            alert('주소기반산업지원서비스에 실패하였습니다. 고객센터에 문의 부탁드립니다.\n(회사, 관공서 pc로 기부를 진행할 경우 방화벽, 보안프로그램으로 인해 기부진행에 제한이 있습니다.)');
+                            location.reload();
+                        }
+                    });
+                },
+
+                // 금결원 지로 결제
+                giroPay: function () {
+                    $(".black-bg.etax").addClass("show");
+                    let domain = (window.location.protocol + "//" + window.location.host);
+                    let giroParams = {
+                        'domain': domain,
+                        'jijacheCd': vm.selectedRegionCd,
+                        'eNapbuNo': vm.wElecNo,
+                        'userCntrPoint': vm.userPoint,      // 기부포인트
+                        'taxAmt': String(vm.cntrAmt).replace(/[^\d]+/g, ''),    // 기부금액
+                        'jijacheCd': vm.selectedRegionCd,   // 기부지자체 코드
+                        'presentType': vm.presentType      // 답례품 선택 여부
+                    }
+
+                    $s.api.postSubmit('/api/ngdonation/giroPay', giroParams, function (response) {
+                        vm.loadoingEnd();
+                        if(response.result.errorMsg === undefined) {
+
+                            let popOption;
+                            if (response.result.isMobile == 'Y') {   //모바일
+                                popOption = "width=550, height=800, titlebar=0, toolbar=0, left=300, top=200";
+                            } else {
+                                popOption = "width=600, height=800, titlebar=0, toolbar=0, left=300, top=200";
+                            }
+
+                            giroPopup = window.open("", "popOpen", popOption);
+
+                            $("#ENC_DATA").val(response.result.data);
+
+                            frmLink.method = "post";
+                            frmLink.target = "popOpen";
+                            frmLink.action = response.result.popUrl;
+                            frmLink.submit();
+                            //STEP3 지방세외 수납확인
+                            vm.giroSunapConfirmStart(giroParams);
+                        } else {
+                            $(".black-bg.etax").removeClass("show");
+                            alert(response.result.errorMsg);
+                        }
+
+                    }, function(error) {
+                        vm.loadoingEnd();
+                        if (confirm('표준세외시스템에서 금결원으로 납부정보가 아직 넘어오지 않았습니다. 다시 시도 하시겠습니까?')) {
+                            vm.loadoingStart();
+                            setTimeout(function () { vm.giroPay();}, 3000);
+                        } else {
+                            location.href = "/mypage/cntrList.html";
+                        }
+                    });
+                },
+
+
+                /** 지로 수납확인 시작 */
+                giroSunapConfirmStart : function(giroParams) {
+                    giroPopTimer = setInterval(function () {
+                        if (giroPopup.closed) {
+                            clearInterval(giroPopTimer);
+                            if($("#giroPopResult").val() === 'SUCCESS') {
+                                vm.donationSunapSuccess(giroParams);
+                            }
+                            if($("#giroPopResult").val() === 'FAIL') {
+                                if (confirm('기부정보처리 요청을 계속 하시겠습니까?')) {
+                                    setTimeout(function () { vm.giroPay();}, 1500);
+                                } else {
+                                    location.reload();
+                                }
+                            }
+                        }
+                    }, 1000);
+                },
+
+                // 기부완료 모달 닫기(이택스)
+                closePopupD: function (e) {
+                    $(".black-bg.donation-c").removeClass("show");
+                    location.href = "/mypage/cntrList.html";
+                },
+
+                // Mypage 이동(이택스)
+                goToMy: function (e) {
+                    $(".black-bg.donation-c").removeClass("show");
+                    location.href = "/mypage/cntrList.html";
+                },
+
+                // 날짜 형식 checked
+                currentDate: function () {
+
+                    // 현재 Date 혹은 DateTime 데이터를 javaScript date 타입화
+                    let js_date = new Date();
+
+                    // 연도, 월, 일 추출
+                    let year = js_date.getFullYear();
+                    let month = js_date.getMonth() + 1;
+                    let day = js_date.getDate();
+
+                    // 월, 일의 경우 한자리 수 값이 있기 때문에 공백에 0 처리
+                    if (month < 10) {
+                        month = '0' + month;
+                    }
+
+                    if (day < 10) {
+                        day = '0' + day;
+                    }
+
+                    // 최종 포맷 (ex - '2021-10-08')
+                    vm.currentDate = year + '-' + month + '-' + day;
+                },
+                // 기부한도 checked
+                limitCntrAmt: function () {
+                    vm.cntrAmt = String(vm.userCntrLimitAmt).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
+                // 기부금액 수정시 천단위 입력
+                printEvent: function (e) {
+                    let koreanAmt = String(e.target.value).replace(/(^0+)/, "").replace(/[^\d]+/g, '');
+                    vm.cntrAmt = String(e.target.value).replace(/(^0+)/, "").replace(/[^\d]+/g, '');
+                    vm.cntrAmt = String(vm.cntrAmt).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    if (parseInt(koreanAmt) > parseInt(vm.userCntrLimitAmt)) {
+                        alert('기부가능한도 이하 금액을 입력하십시오.');
+                        vm.cntrAmt = '';
+                        vm.numTxt = '';
+                        return;
+                    }
+
+                    vm.changeKoreanAmt(koreanAmt);
+
+                },
+
+                //기부금액 한글금액으로 변환
+                changeKoreanAmt: function (amt) {
+                    const hanA = new Array("", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구", "십");
+                    const danA = new Array("", "십", "백", "천", "", "십", "백", "천", "", "십", "백", "천", "", "십", "백", "천");
+                    let result = "";
+                    for (let i = 0; i < amt.length; i++) {
+                        let str = "";
+                        let han = hanA[amt.charAt(amt.length - (i + 1))];
+                        if (han != "") str += han + danA[i];
+                        if (i == 4) str += "만";
+                        if (i == 8) str += "억";
+                        if (i == 12) str += "조";
+                        result = str + result;
+                    }
+                    if (amt != 0) {
+                        vm.numTxt = result;
+                    } else {
+                        vm.numTxt = '';
+                    }
+                },
+
+                // 답례품몰 이동
+                goToPresent: function () {
+                    let url = "&SCH_goods_category_serial=~" + vm.selectedRegionCd;
+					location.href = '/goods/searchGoods.html?type=L&locgov=' + vm.selectedRegionCd;
+                    /* $s.api.getSubmit('/api/present/login', '', function (response) {
+                        let param = '';
+                        if (response.isSuccess) {
+                            param = (response.data == null) ? '' : response.data;
+                            let domain = "";
+                            if (window.location.hostname.indexOf("ilovegohyang.go.kr") > -1) {
+                                domain = 'https://shop.ilovegohyang.go.kr';
+                            } else {
+                                domain = 'https://gohyang01.bbiz.kr';
+                            }
+                            // window.open('https://gohyang01.bbiz.kr?_tss_=' + param + url, 'presentPopup', '_blank');
+
+                            if ($s.config.isUseNetFunnel) {
+                                NetFunnel_Action({ action_id: 'shop' }, function (ev, ret) {
+                                    window.open(domain + '?_tss_=' + param + url, 'presentPopup');
+                                });
+                            } else {
+                                window.open(domain + '?_tss_=' + param + url, 'presentPopup');
+                            }
+                        }
+                    }); */
+
+                },
+
+            },
+            computed: {
+
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    Saleson.init({ loginPage: true });
+                    this.donationInit();
+                });
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>

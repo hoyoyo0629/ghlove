@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.user.JoinMapper">
+	<resultMap id="LocGovInfoResult" type="saleson.shop.user.domain.LocGovInfo">
+		<id property="locgovCode" column="LOCGOV_CODE" />
+		<result property="locgovNm" column="LOCGOV_NM" />
+		<result property="upperLocgovCode" column="UPPER_LOCGOV_CODE" />
+		<result property="locgovIntrcnCn" column="LOCGOV_INTRCN_CN" />
+		<result property="chargerCttpc" column="CHARGER_CTTPC" />
+		<result property="chargerNm" column="CHARGER_NM" />
+		<result property="chargerPsitnDept" column="CHARGER_PSITN_DEPT" />
+		<result property="locgovHmpg" column="LOCGOV_HMPG" />
+		<result property="locgovPopltnCo" column="LOCGOV_POPLTN_CO" />
+		<result property="locgovAr" column="LOCGOV_AR" />
+		<result property="locgovSpcprd" column="LOCGOV_SPCPRD" />
+		<result property="gcctUseAt" column="GCCT_USE_AT" />
+        <result property="etrcsh_use_at" column="ETRCSH_USE_AT" />
+        <result property="useAt" column="USE_AT" />
+		<result property="frstRegisterId" column="FRST_REGISTER_ID" />
+		<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" />
+        <result property="lastUpdusrId" column="LAST_UPDUSR_ID" />
+        <result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM" />
+	</resultMap>
+
+	<select id="getLocGovList" parameterType="saleson.shop.user.domain.LocGovInfo" resultMap="LocGovInfoResult">
+		SELECT
+			LOCGOV_CODE,
+			LOCGOV_NM,
+			UPPER_LOCGOV_CODE
+		FROM G_LOCGOV
+		WHERE USE_AT = 'Y'
+		AND UPPER_LOCGOV_CODE = #{upperLocgovCode}
+		ORDER BY ORDERING
+	</select>
+
+	<select id="getUserInfoByUserId" parameterType="String" resultType="Integer">
+		SELECT COUNT(U.LOGIN_ID)
+		FROM OP_USER U
+		INNER JOIN OP_USER_DETAIL UD ON U.USER_ID = UD.USER_ID
+		AND U.LOGIN_ID = #{userID}
+		LIMIT 1
+	</select>
+
+	<insert id="insertIntrstLocgovInfo" parameterType="saleson.shop.user.domain.LocGovInfo">
+		INSERT INTO G_INTRST_LOCGOV(
+			LOCGOV_CODE,
+			USER_ID,
+			REGIST_DE,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+			) VALUES(
+				#{locgovCode},
+				#{userId},
+				DATE_FORMAT(now(),'%Y%m%d'),
+				#{userId},
+				<include refid="CommonMapper.datetime" />,
+				#{userId},
+				<include refid="CommonMapper.datetime" />
+			)
+	</insert>
+
+	<insert id="insertInststRtnpsntInfo" parameterType="saleson.shop.user.domain.RtnpsntInfo">
+		insert into g_intrst_rtnpsnt(
+			USER_ID,
+			REGIST_SN,
+			LOCGOV_CODE,
+			REGIST_DE,
+			CATEGORY_CODE,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		)values(
+			#{userId},
+			(select num from(select IFNULL(MAX(REGIST_SN),0)+1 as num from g_intrst_rtnpsnt where user_id = #{userId}) a),
+			#{locgovCode},
+			date_format(now(),'%Y%m%d'),
+			#{categoryCode},
+			#{userId},
+			<include refid="CommonMapper.datetime" />,
+			#{userId},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<select id="getCategoryList" resultType="saleson.shop.categories.domain.Categories">
+		SELECT B.CATEGORY_CODE , B.CATEGORY_NAME
+		FROM OP_CATEGORY B
+		WHERE B.CATEGORY_GROUP_ID = (
+			SELECT A.CATEGORY_GROUP_ID
+			FROM OP_CATEGORY_GROUP A
+			WHERE A.CATEGORY_GROUP_ID = '1'
+		)
+	</select>
+
+	<update id="updateUserInfo" parameterType="saleson.shop.user.domain.UserDetail">
+		UPDATE OP_USER A
+		SET
+			A.LOCGOV_CODE = (
+				SELECT locgov_mapng_code
+				FROM G_INSTT_CODE
+				WHERE locgov_code = #{locgovCode}
+			),
+			A.MBER_CI = #{mberCi},
+			A.MBER_DI = #{mberDi},
+			<if test="mberDn !=null and mberDn !=''">
+				A.MBER_DN = crypto_enc('normal',#{mberDn},''),
+			</if>
+			<if test="mberFinDn !=null and mberFinDn !=''">
+				A.MBER_FIN_DN = crypto_enc('normal',#{mberFinDn},''),
+			</if>
+			<if test="userKey !=null and userKey !=''">
+				A.USER_KEY = #{userKey},
+			</if>
+			<if test="kakaoUserKey != null and kakaoUserKey !=''">
+				A.KAKAO_USER_KEY = #{kakaoUserKey},
+			</if>
+			<if test="naverUserKey != null and naverUserKey !=''">
+				A.NAVER_USER_KEY = #{naverUserKey},
+			</if>
+			A.SBSCRB_SE_CODE = (
+								SELECT occ.id
+								FROM OP_COMMON_CODE occ
+								WHERE code_type = 'SBSCRB_SE'
+								AND "language" ='ko'
+								AND id='100'
+								),
+			A.UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<select id="getPolicyInfo" resultType="saleson.shop.user.domain.PolicyInfo" parameterType="String">
+		SELECT policy_id , policy_type , title, content
+		FROM OP_POLICY
+		WHERE exhibition_status ='Y'
+		AND policy_type = #{policyType}
+		ORDER BY CREATED_DATE DESC
+        LIMIT 1
+	</select>
+
+	<update id="updateloginPathCode" parameterType="saleson.shop.user.domain.UserDetail">
+		UPDATE OP_USER A
+		SET LOGIN_PATH_CODE = #{loginPathCode}
+		WHERE USER_ID = #{userId}
+	</update>
+
+</mapper>

@@ -1,0 +1,69 @@
+server:
+  port: 8000
+
+spring:
+  application.name: ghlove-batch
+
+saleson:
+  root: "/home/ghlove"
+  batch: true
+
+# Logging Level      
+logging:
+  level:
+    org.springframework.web: INFO
+    com.onlinepowers: INFO
+    saleson: INFO
+    saleson.batch.job.JobServiceImpl: INFO
+    jdbc:
+      sqltiming: DEBUG
+      resultsettable: INFO
+      
+#######################
+# TotalSearch Engine
+#######################
+totalsearch-server:
+  engine-url: 192.168.100.248:7577
+  ksf-url: 192.168.100.248:7614
+  
+ems:
+  host: http://192.168.84.11:8682/api/sendMail.do
+  send:
+    username: 고향사랑e음
+    email: webmatser@ilovegohyang.go.kr
+    
+# Outside Connection
+outconn:
+  # administration net
+  admin-addressinfo-url: http://123.213.1.217:4141/api/mopas/rsgstadresinfo
+  # juso search api
+  juso-api:
+    url: http://www.juso.go.kr/addrlink/addrLinkApiJsonp.do
+    key: U01TX0FVVEgyMDIyMTEyNTE0MTUzMTExMzI1OTc=
+  # korea receipt api
+  korea-api:
+    loginIp: 152.99.104.11
+    loginUrl: https://116.67.103.158/jwtLoginAction.do
+    actionUrl: https://116.67.103.158/jwtAction.do?actionId=ATESFACA001C11
+    key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/RzW8TWg9hB7T1BWFSrwAASoNt/tBjTYWojvo3gB5MRjx+TI+tI7BqmhhxjAPv3mDNjBgeCW/J5UsCdYOt/dDyYyGiXjHSTE+JsX6Z1i3soDJJzwGnYLbRpbAb9mUi75T0Imwa4P4TLMHFzjw7r57MvJd26RKJnJe0IPGBK0CcQIDAQAB
+    id : ilovegohyang
+    password : rhgid\#rlqn
+  # seoul buga regist
+  seoul-buga-url: http://123.213.1.217:4141/api/seoul/epaymentno
+  # seoul sunap search
+  seoul-sunap-url: http://123.213.1.217:4142/api/etax/getSunapStatus
+  # contry(now) buga regist
+  contry-now-buga-url: http://123.213.1.217:4141/api/curgnr/epaymentno
+  # contry(now) sunap search
+  contry-now-sunap-url: http://123.213.1.217:4142/api/curgnr/receipt   
+
+######금융인증서#######
+fincert:
+  url: https://t-certapi.yeskey.or.kr/oauth/2.0/api/token
+  ucpidUrl: https://t-certapi.yeskey.or.kr/v1/ucpid/ucpid-info
+  client-id: dba3f9f8-0ada-4661-91f2-18e53681d255
+  client-secret: 87b70351-7d6a-42f4-96cf-b8c9d39c1770
+  scope: ucpid
+  grant-type: client_credentials
+  server-id: server_ilovegohyang
+  cp-code: Y30000001301

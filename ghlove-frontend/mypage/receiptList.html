@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 기부 > 기부확인증 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/joind-agf.css" />
+    <!-- Modal -->
+
+    <link rel="stylesheet" href="/static/css/mypage-status.css" />
+    <link rel="stylesheet" href="/static/css/notice-box.css" />
+
+    <link rel="stylesheet" href="/static/css/receipt-modal.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+
+        <!-- HEARDER COMPONENT -->
+        <layout-header-ali></layout-header-ali>
+        <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+        <section>
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"> <img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              <a href="/mypage/index.html">마이페이지</a>
+              <span class="txt-arrow"><span class="sr-only">></span></span>
+              기부확인증</span>
+            <h2 class="page-title-txt">기부확인증</h2>
+            <div class="user-grade point">
+              <span class="grade-bg">
+                <img class="icon-img" src="/static/images/icon/cli-icon_my-user-name.png" alt="회원님" />
+                <span class="blue-txt">{{userName}} </span> 회원님
+              </span>
+            </div>
+            <p class="point-txt">기부 결제 후 연계 시스템 지연에 따라 <span style="font-weight: bold;">기부 결제 내역이 최대 3일</span>까지 반영되지 않을 수 있으므로 참고 바랍니다.</p>
+          </div>
+        </section>
+
+        <section id="contents" class="receipt-contents">
+          <div class="center">
+            <div class="contents-wrap myDonation">
+
+            <!-- SEARCH -->
+              <div class="s-contents mypageS">
+                <div class="mypage-top">
+                	<div class="mypage-top-list">
+                    	<label class="search-title" for="totalAmt">
+                      		<img class="icon-img" src="/static/images/icon/cli-icon_my-amount-all.png" alt="총 기부금액" />
+                      		<span class="label-title"> 총 기부금액</span>
+                    	</label>
+                    	<span class="m-field">
+                      		<input type="text" :value="formatNumber(result.totalCntrAmt)" readonly id="totalAmt" /><span class="s_txt">원</span>
+                    	</span>
+                    	<span class="s_txt">(실 납부액 기준)</span>
+                  	</div>
+                  </div>
+
+                  <div class="line"></div>
+
+                 <div class="mypage-top">
+                  <label class="search-title">검색</label>
+                  <div class="selected-field">
+                    <div class="selected-field-line">
+	                    <div class="selected-item">
+	                      <label for="startDate" class="sr-only">시작일</label>
+	                      <input type="date" name="startDate" id="startDate" v-model="param.searchStartDate" />
+	                      <span class="s_txt"> ~ </span>
+	                      <input type="date" name="endDate" id="endDate" v-model="param.searchEndDate" />
+	                      <label for="endDate" class="sr-only">종료일</label>
+	                    </div>
+	                    <div class="formbtn-box">
+	                      <button class="formBtn week-1" type="button" @click="getDiffDate('week', '1')">1주일</button>
+	                      <button class="formBtn month-1" type="button" @click="getDiffDate('month', '1')">1개월</button>
+	                      <button class="formBtn month-3" type="button" @click="getDiffDate('month', '3')">3개월</button>
+	                      <button class="formBtn month-6" type="button" @click="getDiffDate('month', '6')">6개월</button>
+	                    </div>
+                    </div>
+                    <div class="selected-field-line city">
+                      <div class="selected-item">
+                      <label for="locSearch" class="sr-only">시·군·구 선택</label>
+                        <select title="시·도 선택" name="" id="locSearch" v-model="param.upperLocgovCode" @change="getLocGov();">
+                          <option value="">시·도 선택</option>
+                          <option v-for="(data, i) in wdrList" :value="data.key.id">{{data.label}}</option>
+                        </select>
+                      </div>
+                      <div class="selected-item">
+                      <label for="locgov" class="sr-only">시·군·구 선택</label>
+                        <select title="시·군·구 선택" name="" id="locgov" v-model="param.locgovCode">
+                          <option value="">시·군·구 선택</option>
+                          <option v-for="(data, i) in locGovList" :value="data.locgovCode">{{data.locgovNm}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- SEARCH END -->
+
+              <!-- BUTTON GROUP -->
+              <div class="btn-box many">
+                <button type="button" class="blueBtn cancellation" @click="resetData()">
+                  초기화<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="초기화" /></span>
+                </button>
+                <button type="button" class="blueBtn u-confirm" @click="getSearchList()">
+                  검색<span>
+                    <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="검색" />
+                  </span>
+                </button>
+              </div>
+              <!-- BUTTON GROUP END -->
+
+            </div>
+          </div>
+        </section>
+
+
+        <section class="s-con receipt-con">
+          <div class="center">
+            <div class="s-contents table-wrapper myDonation">
+              <div class="table-top">
+
+                <!-- BUTTON GROUP -->
+                <div class="btn-box many" style="margin-bottom: 20px;">
+					<button type="button" class="blueBtn u-confirm" @click="modalView_receipt($event)">
+					기부확인증 보기
+					<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="기부확인증 보기"/></span>
+                	</button>
+                	<button type="button" class="blueBtn u-confirm" @click="receipt_print()">
+					기부확인증 출력
+					<span><img src="/static/images/icon/cli-icon_btn-hover-arrow.png"alt="기부확인증 출력"/></span>
+                	</button>
+                </div>
+                <!-- BUTTON GROUP END -->
+
+              </div>
+              <div class="table-container">
+                <div class="table-result-body">
+                  <table>
+                  <caption class="sr-only">기부확인증 목록</caption>
+					<colgroup>
+						<col style="width:10%">
+						<col style="width:20%">
+						<col style="width:50%">
+						<col style="width:20%">
+					</colgroup>
+                    <tr class="result-title">
+                      <th>
+                      	<label for="toggleCheckbox" class="sr-only">기부확인증 전체 선택</label>
+                      	<input
+                      		id="toggleCheckbox"
+                      		type="checkbox"
+                      		v-model="selectAll"
+                      		@change="toggleSelectAll" />
+                      </th>
+                      <th>기부일자</th>
+                      <th>기부지자체</th>
+                      <th>기부액 (원)</th>
+                    </tr>
+
+                    <tr class="result-row" v-for="(data,i) in result.content" :key="i">
+                    <td>
+                    	<label :for="data.cntrSn" class="sr-only">기부확인증 {{data.upperLocgovNm}} 선택</label>
+                   		<input
+                   			type="checkbox"
+                   			v-model="data.checked"
+							@change="checkIndividual"
+							:value="data.cntrSn"
+							:id="data.cntrSn"
+							/>
+                   	</td>
+                      <td class="">{{data.cntrDe}}</td>
+                      <td class="">{{data.upperLocgovNm}} {{data.locgovNm}}</td>
+                      <td class="">{{formatNumber(data.cntrAmt)}}</td>
+                    </tr>
+                  </table>
+                </div>
+
+                <pagination :current-page="result.currentPage" :total-pages="result.totalPages" @change="paging"></pagination>
+                <div class="table-overlap">
+                  <span>←&nbsp;-&nbsp;&nbsp; 화면을 좌우로 움직이세요 &nbsp;&nbsp;-&nbsp;→</span><br />
+                  <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 모바일 탑 & 도움말 버튼 -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+
+	   	<!-- 기부확인증 모달 -->
+	  	<modal-receipt_view></modal-receipt_view>
+
+      </div>
+      <!--//#wrap-->
+    </div>
+
+
+
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script src="/modules/payment.js?v=202412020000"></script>
+    <script src="/modules/op.donation.js?v=20240402"></script>
+
+    <script type="text/babel">
+
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+		  "modal-receipt_view": httpVueLoader("/components/ui/modal-receipt_view.vue"), //기부확인증
+        },
+        data: {
+          	userName: "",
+          	locgovNm: "",
+          	result: {},
+          	wdrList: "",
+          	locGovList: "",
+			receiptFromType: "", // main: 상단 버튼, mypage: 마이페이지 버튼 ( 어떤 버튼을 통해 인입되었는지 검증 )
+
+			selectAll: false,
+
+          	param: {
+            	page : 1,
+            	itemsPerPage: 10,
+            	upperLocgovCode: "",
+            	locgovCode: "",
+            	searchStartDate: "",
+            	searchEndDate: "",
+          	},
+			receiptInfo: {
+				cntrSnList : [],
+				result : {
+					userName		: "",
+					birthday 		: "",
+					totalCnt 		: 0,
+          			totalCntrAmt	: 0,
+          			list 			: [],
+          			topLocGov 		: "",
+					nowDate			: "",
+				},
+			},
+			page: {
+				menuUrl: "/mypage/receiptList.html",
+			},
+        },
+        methods: {
+			// 로딩바 출력
+        	showLoading: function (isLoading) {
+          		this.$refs.layoutFooter.showLoading(isLoading);
+        	},
+			// 로딩이 완료된 뒤 초기화
+        	loadingMounted: function () {
+            	// 로딩바 컴포넌트가 화면에 그려진 이후 호출되는 함수. 부모컴포넌트에서 바로 로딩바 호출시 그려지기 전에 호출하여 오류 발생하는 경우 있음
+            	vm.showLoading(true);
+            	vm.getInitData();
+        	},
+          	// 상단 메뉴 활성화
+        	init: function () {
+            	// page init
+            	$(".lnb-bar_2dep li").eq(1).addClass("currentT").siblings("li").removeClass("currentT");
+            	$(".lnb-bar_3dep").eq(1).show();
+        	},
+			// 페이지네이션
+        	paging: function (page) {
+	            vm.param.page = page;
+				vm.unCheckedAll();
+            	vm.submit();
+        	},
+			// 검색
+        	getSearchList: function () {
+            	vm.param.page = 1;
+				vm.unCheckedAll();
+            	vm.submit();
+        	},
+			// 모바일 전용
+        	closeTableOverlap: function () {
+            	$(".table-overlap").css("display", "none");
+    	    },
+			// 리스트 조회
+        	submit: function () {
+            	vm.showLoading(true);
+            	$s.api.getSubmit("/api/mypage/getReceiptInitInfo", vm.param, function (response) {
+              		vm.result = response;
+              		vm.showLoading(false);
+            	});
+        	},
+
+			// init 데이터
+        	getInitData: function () {
+            	$s.api.getSubmit("/api/mypage/getReceiptInitInfo", vm.param, function (response) {
+              		vm.result = response;
+              		vm.wdrList = response.wdrList;
+			  		vm.totalCntrAmt = response.totalCntrAmt;
+			  		vm.userName = response.userName;
+              		vm.showLoading(false);
+
+					//상단 메뉴바 출력
+              		$(".lnb-bar_2dep li").eq(1).addClass("currentT");
+              		$(".lnb-bar_3dep").eq(1).show();
+            	});
+
+
+	        },
+
+			//시.도 선택시 시.군.구 출력
+	        getLocGov: function () {
+    	        $s.api.postSubmit("/api/mypage/getLocGov", vm.param, function (response) {
+        	      vm.locGovList = response.locGovList;
+            	});
+            	vm.param.locgovCode = "";
+        	},
+
+			//초기화버튼 클릭 시 발생하는 이벤트
+			resetData: function () {
+            	vm.param.locgovCode = "";
+            	vm.param.upperLocgovCode = "";
+            	vm.param.searchStartDate = "";
+            	vm.param.searchEndDate = "";
+        	},
+
+			//날짜 동작 스크립트
+			getDiffDate: function (mode, value) {
+            	var date = new Date();
+            	//date.setDate(date.getDate() - 1); // 전일 기준으로 설정
+            	var yesterday = date.getFullYear() + "-" + Saleson.addZero(date.getMonth() + 1, 2) + "-" + Saleson.addZero(date.getDate(), 2);
+
+            	if (mode == "week") {
+              		date.setDate(date.getDate() - value * 7);
+            	} else if (mode == "day") {
+            		date.setDate(date.getDate() - value);
+            	} else if (mode == "month") {
+              		date.setMonth(date.getMonth() - value);
+            	} else if (mode == "year") {
+              		date.setFullYear(date.getFullYear() - value);
+            	}
+
+            	$("#startDate").val(date.getFullYear() + "-" + Common.addZero(date.getMonth() + 1, 2) + "-" + Common.addZero(date.getDate(), 2));
+            	$("#endDate").val(yesterday);
+            	vm.param.searchStartDate = date.getFullYear() + "-" + Common.addZero(date.getMonth() + 1, 2) + "-" + Common.addZero(date.getDate(), 2);
+            	vm.param.searchEndDate = yesterday;
+          	},
+
+			// 기부확인증 팝업 호출
+			modalView_receipt: function (e) {
+
+				vm.showLoading(true);
+
+				//팝업 리셋
+				vm.popReset();
+
+				//파라미터 셋팅
+				let cntrSnList = vm.checkedValues();
+
+				if(cntrSnList.length > 0){
+					vm.receiptInfo.cntrSnList = cntrSnList;
+					$s.api.postSubmit("/api/mypage/getReceiptPopInfo", vm.receiptInfo, function (response) {
+						$("#receipt_modal").show();
+        		    	$("button").removeClass("btnOrderCancel");
+            			$(e.target).addClass("btnOrderCancel");
+
+						vm.receiptInfo.result.userName 		= response.userName;
+						vm.receiptInfo.result.birthday 		= vm.formatBirthday(response.userBirthday);
+						vm.receiptInfo.result.totalCntrAmt 	= response.totalCntrAmt;
+						vm.receiptInfo.result.totalCnt 		= response.totalCnt;
+						vm.receiptInfo.result.topLocGov 	= vm.topLocGov(response.topLocGovMap.locgovNm, response.topLocGovMap.locCount);
+						vm.receiptInfo.result.nowDate 		= vm.nowDate();
+						vm.receiptInfo.result.list 			= response.content;
+
+						vm.showLoading(false);
+					});
+				}else{
+					vm.showLoading(false);
+					$s.alert("선택한 기부내역이 없습니다.\n선택한 기부내역만 기부확인증에 출력됩니다.");
+
+				}
+
+			},
+
+          	// 기부확인증 팝업데이터 초기화
+			popReset: function () {
+				vm.receiptInfo.cntrSnList = [];
+				vm.receiptInfo.result = {
+					userName: "",
+          			totalCntrAmt: 0,
+          			list : [],
+				};
+			},
+			// 기부확인증 출력
+			receipt_print : function(){
+
+				vm.showLoading(true);
+
+				//파라미터 셋팅
+				let cntrSnList = vm.checkedValues();
+
+				if(cntrSnList.length > 0){
+					vm.receiptInfo.cntrSnList = cntrSnList;
+					$s.api.postSubmit("/api/mypage/getReceiptPopInfo", vm.receiptInfo, function (response) {
+
+						vm.receiptInfo.result.userName 		= response.userName;
+						vm.receiptInfo.result.birthday 		= vm.formatBirthday(response.userBirthday);
+						vm.receiptInfo.result.totalCntrAmt 	= response.totalCntrAmt;
+						vm.receiptInfo.result.totalCnt 		= response.totalCnt;
+						vm.receiptInfo.result.topLocGov 	= vm.topLocGov(response.topLocGovMap.locgovNm, response.topLocGovMap.locCount);
+						vm.receiptInfo.result.nowDate 		= vm.nowDate();
+						vm.receiptInfo.result.list 			= response.content;
+
+						sessionStorage.setItem("receiptPrintData", JSON.stringify(vm.receiptInfo.result));
+
+						vm.showLoading(false);
+
+						window.open("/mypage/receiptListPrint.html","_blank")
+
+					});
+				}else{
+					vm.showLoading(false);
+					$s.alert("선택한 기부 내역이 없습니다.\n선택한 내역만 기부확인증에 출력됩니다.");
+				}
+			},
+
+			formatBirthday: function(birthday){
+				if(birthday.length == 8){
+					const year 	= birthday.substring(0,4);
+					const month = parseInt(birthday.substring(4,6),10);
+					const day	= parseInt(birthday.substring(6,8),10);
+					birthday = year + "." + month + "." + day + ".";
+            	}else{
+                	birthday = "";
+            	}
+            	return birthday;
+			},
+
+			topLocGov: function(locgovNm, locCount){
+            	if(locCount - 1 > 0){
+                	locgovNm = locgovNm + " 등 " + (locCount-1) + "건";
+            	}
+            	return locgovNm;
+        	},
+
+			nowDate: function(){
+				let date = new Date();
+				return date.getFullYear() + "년 " + (date.getMonth() + 1) + "월 " + (date.getDate()) + "일"
+			},
+
+			//전체 선택
+			toggleSelectAll: function(){
+				const checkedAll = vm.selectAll;
+				vm.result.content.forEach(function(content){
+					Vue.set(content,"checked",checkedAll);
+				});
+			},
+
+			//row 하나라도 선택 시 전체 선택체크 되도록
+			checkIndividual: function(){
+				vm.selectAll = vm.result.content.filter(content => content.checked).length == vm.result.content.length;
+			},
+
+			//전체 체크 삭제
+			unCheckedAll: function(){
+				vm.selectAll = false;
+				vm.result.content.forEach(function(content){
+					Vue.set(content,"checked",false);
+				});
+			},
+
+			//체크된 항목의 값
+			checkedValues: function(){
+				return vm.result.content.filter(content => content.checked).map(content => content.cntrSn);
+			},
+
+        },
+
+        mounted: function () {
+          this.$nextTick(function () {
+            // 페이지 로딩 후 실행
+            Saleson.init({ loginPage: true });
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

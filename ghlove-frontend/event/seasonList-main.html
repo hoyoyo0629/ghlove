@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="ko">
+
+<head id="saleson-head">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta http-equiv="Expires" content="-1">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Cache-Control" content="No-Cache">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>답례품 > 제철 식품관 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+    <link rel="stylesheet" href="/static/css/event.css">
+    <link rel="stylesheet" href="/static/css/evt_card.css">
+    <link rel="stylesheet" href="/static/css/goods_card.css">
+    <link rel="stylesheet" href="/static/css/lclgv_chc/map.css">
+    <link rel="stylesheet" href="/static/css/joind-agf.css"> <!-- 모달 -->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <layout-header-ali ref="layoutHeader"></layout-header-ali>
+        <layout-header :menu-url="menuUrl" @show-map-select="showMapSelect" ref="layoutHeaderSearchPc"></layout-header>
+
+		<div id="wrap">
+            <!-- 지자체 선택 팝업  -->
+            <div class="black-bg" ref="getParentModal">
+                <div class="overlayer join-complete">
+                    <div class="overlayer-header" style="font-size: 26px; height: 60px;line-height: 60px;padding: 0;">지자체 선택</div>
+                    <div class="overlayer-body" style="padding-top: 30px; border-radius: 0 0 15px 15px;">
+                        <layout-map-select @show-loading="showLoading" @select-lclgv="selectLclgvPc"></layout-map-select>
+                    </div>
+                    <div class="btn-box">
+                        <button type="button" class="temp-button hidden_txt" title="지자체 선택팝업 닫기" style="top: 18px; right: 18px;" @click="closeMapSelect()">지자체 선택 팝업 닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="season page-title-box" id="contents">
+            <div class="center">
+                <h2 class="page-title-txt">제철 식품관 </h2>
+                <p class="deepGray">식품의 영양이 최고일때는 제철에 나온 음식이 단연 으뜸입니다.<br>
+                    인간은 자연에서 얻은 영양분으로 살아가는 것입니다. 인간도 결국 자연의 일부분이기에 자연의 섭리에 따른 제철 식품이 섭취해야 됩니다.
+                    <span class="pointblue">
+                        고향사랑e음에서는 243개 지자체에서 제공하는 제철 식품코너를 운영하고 있습니다.<br>
+                        월별 다양한 제철식품을 만나보시기 바랍니다.
+                    </span>
+                </p>
+                <div class="loc_select_area">
+                    <select v-model="month" title="월 선택">
+                        <option value="">월 선택</option>
+                        <option v-for="v in 12" :value="v">{{v}}월</option>
+                    </select>
+                    <span class="loc_select_group">
+                        <select title="시·도 선택" class="shirink_s" name="upperLocgovCode" id="upperLocgovCode"
+                            v-model="sidoCode" @change="changeSidoEvent">
+                            <option v-for="(sido, index) in sidoList" :value="sido.sidoCode" :key="index">
+                                {{sido.sidoName}}
+                            </option>
+                        </select>
+                        <select title="시·군·구 선택" class="shirink_s" name="locgovCodeSet" id="locgovCodeSet"
+                            v-model="sigunguCode">
+                            <option v-for="(sigungu, index) in sigunguList" :value="sigungu.cityCode" :key="index">
+                                {{sigungu.cityName}}
+                            </option>
+                        </select>
+                    </span>
+                    <div class="submit_btns">
+                        <button type="button" class="formBtn" @click="searchDetailClick(1)">검색</button>
+                        <button type="button" class="formBtn reset_img" @click="initData">
+                            <img src="/static/images/icon/loc_reset.png" alt="초기화" class="icon-img">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contents seasonCard" v-if="!isShowDetail">
+            <div class="center">
+                <ul class="season_group">
+                    <li class="season_list cursor" tabindex="0" v-for="(v,i) in dataList" :key="i">
+                        <span>
+                    	<a @click="monthClick(dataList[i].month)" @keydown="monthEnter(dataList[i].month,$event)" role="관련 상품 조회">
+                            <div class="card_tit"> <span>{{v.month}}월</span></div>
+                            <div class="card_list_items">{{v.keyword}}</div>
+                    	</a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 답례품 카드 -->
+        <section class="center" v-show="isShowDetail" id="itemArea">
+            <div class="section all_goods pt_t60">
+                <div class="main_con_top">
+                    <div class="amount_goods">전체 {{totalSerchCnt}}건</div>
+                </div>
+                <ul class="goods-list-group">
+                    <li class="goods-list-items" v-for="(val,i,arr) in goodsCard" :key="i">
+                        <div class="list_inner" >
+                            <span class="img_frame">
+                            	<a class="img_cover_link" @click.prevent="jumpToDetails(val)" tabindex="0" @keydown="jumpToDetailsE($event,val)">
+                                <img class="item_img" v-bind:src="itemImage(val.itemImage)" :alt="val.itemName"
+                                    @error="this.$goodsItem.errorImage($event)">
+                                 </a>
+                                <img src="/static/images/goods/goods_sold-out.png" alt="품절"
+                                    v-show="!(val.adultItemYn === 'Y' && adultYn === 'N') && val.itemSoldOutFlag === 'Y'">
+                                <img src="/static/images/goods/goods_19.png" alt="19세구매가능"
+                                    v-show="val.adultItemYn === 'Y' && adultYn === 'N'">
+                                <button type="button" class="icon-md-img hidden_txt" :class="val.wishlistFlag ? 'on' : ''"
+                                    @click.prevent="this.$goodsItem.addToWishList($event)"
+                                    @keydown="keydownDetails($event)" v-bind:id="val.itemId"
+                                    :aria-label="val.wishlistFlag ? '관심 답례품 등록 상태, 해제하기' : '관심 답례품 해제 상태, 등록하기'">관심답례품</button>
+                                <button type="button" class="cart hidden_txt" @keydown="keydownDetails($event)" aria-label="장바구니에 추가"
+                                    @click.stop="this.$goodsItem.addToCart(val.itemId, val.adultItemYn, adultYn)" v-if="this.$goodsItem.isShowCartIcon(val)">장바구니</button>
+                            </span>
+                            <button type="button" class="do_btn"
+                                @click.stop="this.$goodsItem.getLocGovInfo(val.locgovCode)">
+                                <span class="btn_icon"></span>
+                                <span class="btn_txt">{{ val.locgovNm }} 기부</span>
+                                <span class="btn_arrow"></span>
+                            </button>
+                            <a class="card_title"
+                                :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }" @click.prevent="jumpToDetails(val)" tabindex="0" @keydown="jumpToDetailsE($event,val)">{{val.itemName}}</a>
+                            <span class="deepBlue" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }"><span
+                                    class="pointSize">{{ formatNumber(val.salePrice) }}</span> P</span>
+                            <!--관심답례품 아이콘 상태 토글-->
+                            <span class="tag_box" v-if="val.itemNewFlag == 'Y'">신규</span>
+                        </div>
+                    </li>
+                </ul>
+                <!--<div class="btn-box moreBtn" v-show="moreBtnDisplay">
+                    <button class="formBtn more" type="button" v-on:click="nextPage">더보기</button>
+                </div>-->
+                <pagination :current-page="itemListPage" :total-pages="totalPage" @change="paging"></pagination>
+            </div>
+        </section>
+        <layout-fixed-btn></layout-fixed-btn>
+        <layout-tabbar-ali ref="layoutHeaderSearchMobile" :menu-url="menuUrl" @show-map-select="showMapSelect"></layout-tabbar-ali>
+        <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted"></layout-footer-ali>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/event.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/goods.item.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+
+    <script type="text/babel">
+        // Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-header': httpVueLoader('/components/layouts/header_g.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+                'layout-tabbar-ali': httpVueLoader('/components/layouts/m_tabbar_g.vue'),
+                'pagination': httpVueLoader('/components/ui/pagination.vue'), //pagination
+                'layout-map-select': httpVueLoader('/components/ui/lclgv_chc/map.vue'),
+            },
+            data: {
+                dataList: [],
+                sidoList: [],
+                sigunguList: [],
+                sidoCode: '',
+                sigunguCode: '',
+                menuUrl: location.pathname,
+                month: '',
+                totalSerchCnt: 0,
+                goodsCard: [],
+                moreBtnDisplay: false,
+                adultYn: 'N',
+                itemListPage: 0,
+                totalPage: 0,
+                isShowDetail: false,
+                isFirstSearch: true,
+            },
+            methods: {
+                jumpToDetails(v) {
+                    if (v.adultItemYn === 'Y' && this.adultYn === 'N')
+                        return;
+
+                    $s.redirect("/items/details.html?code=" + v.itemUserCode);
+                },
+                jumpToDetailsE(e, v) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        this.jumpToDetails(v);
+                    }
+                },
+                keydownDetails(e) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        if ($(e.target).parents().is(".list_inner")) {
+                            e.stopPropagation();
+                        }
+                    }
+                },
+                search() {
+                    const params = {};
+                    this.showLoading(true);
+                    $s.api.searchSeasonFood(params, function (response) {
+                        vm.showLoading(false);
+                        if (response.list && response.list.length > 0) {
+                            for (let i = 0; i < 12; i++) {
+                                const idx = response.list.findIndex((v) => {
+                                    return v.month === i + 1;
+                                });
+
+                                if (idx > -1) {
+                                    vm.dataList.push(response.list[idx]);
+                                } else {
+                                    vm.dataList.push({ month: i + 1, keyword: '' });
+                                }
+                            }
+                        } else {
+                            for (let i = 0; i < 12; i++) {
+                                vm.dataList.push({ month: i + 1, keyword: '' });
+                            }
+                        }
+                    }, function (error) {
+                        vm.showLoading(false);
+                        //$s.error(error);
+                        $s.alert(error.response.data.message, function () {
+                            vm.historyBack();
+                            $s.closeAlert();
+                        });
+                        // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                        $('#saleson').on('click', '#op-alert', function () {
+                            vm.historyBack();
+                        });
+                    });
+                },
+                searchDetailClick(page) {
+                    this.isFirstSearch = true;
+                    this.searchDetail(page);
+                },
+                searchDetail(page) {
+                    if (!this.month) {
+                        $s.alert("월을 선택하세요.");
+                        return;
+                    }
+
+                    var locgov = "";
+
+                    if (this.sidoCode && !this.sigunguCode) {
+                        //$s.alert("시·군·구를 선택하세요.");
+                        //return;
+                        locgov = "U"+this.sidoCode;
+                    } else {
+                        locgov = this.sigunguCode;
+                    }
+
+                    this.itemListPage = page;
+                    // if (page === 1) {
+                    //     this.goodsCard = [];
+                    // }
+
+                    if (!this.isFirstSearch) {
+                        location.href = '#itemArea';
+                    }
+
+                    this.isFirstSearch = false;
+
+                    const params = {
+                        'locgov': locgov,
+                        'month': this.month,
+                        'page': this.itemListPage,
+                        'itemsPerPage': $goods.const.ITEMS_PER_GOODS
+                    };
+
+                    this.showMoreBtn(false);
+                    this.showLoading(true);
+                    $s.api.searchSeasonFoodDetail(params, function (response) {
+                        vm.showLoading(false);
+                        let content = response.content;
+                        vm.goodsCard = [];
+                        if (content) {
+                            try {
+                                let size = content.length;
+                                vm.totalPage = response.totalPages;
+                                vm.totalSerchCnt = response.totalElements;
+                                if (size == 0) {
+                                    vm.totalPage = 0;
+                                    vm.totalSerchCnt = 0;
+                                    vm.adultYn = 'N';
+                                    $s.alert('검색결과가 없습니다.');
+                                    return;
+                                } else {
+                                    if (response.currentPage < response.totalPages) {
+                                        vm.showMoreBtn(true);
+                                    }
+                                    vm.isShowDetail = true;
+                                }
+                                // vm.adultYn = response.adultYn;       // 19세 답례품 모두 보여주는 걸로 변경되어 수정
+                                vm.adultYn = 'Y';
+                                for (let i = 0; i < size; i++) {
+                                    let itemInfo = content[i];
+                                    vm.goodsCard.push(itemInfo);
+                                }
+                            } catch (e) {
+                                let errorBoolean = true;
+                                $s.alert('잠시 후 시도해 주세요.');
+                            }
+                        } else {
+                            vm.totalPage = 0;
+                            vm.totalSerchCnt = 0;
+                            $s.alert('검색결과가 없습니다.');
+                        }
+                    },
+                        function (error) {
+                            vm.showLoading(false);
+                            //$s.api.handleApiExeption(error);
+                            $s.alert(error.response.data.message, function () {
+                                vm.historyBack();
+                                $s.closeAlert();
+                            });
+                            // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                            $('#saleson').on('click', '#op-alert', function () {
+                                vm.historyBack();
+                            });
+                        });
+                },
+                historyBack: function () {
+                    if (history.length == 1) {
+                        $s.redirect('/');
+                    } else {
+                        history.back();
+                    }
+                },
+                paging: function (page, pageTarget) {
+                    if (this.itemListPage == page) {
+                        return;
+                    }
+                    if (page < 1) {
+                        return;
+                    }
+                    this.itemListPage = page;
+                    this.searchDetail(page);
+                },
+                loadSido() {
+                    return $goods.getCommonRegionCode();
+                },
+                changeSidoEvent() {
+                    this.sigunguCode = '';
+                    return new Promise((resolve, reject) => {
+                        $goodsItem.loadSiGungu(this.sidoCode).then((res) => {
+                            this.sigunguList = res;
+                            resolve(this.sigunguList);
+                        }).catch((e) => {
+                            reject(e);
+                        });
+                    });
+                },
+                initData() {
+                    this.sigunguList = [{ cityCode: '', cityName: '시·군·구 선택' }];
+                    this.sidoCode = '';
+                    this.sigunguCode = '';
+                    this.month = '';
+                    this.isShowDetail = false;
+                },
+                loadingMounted() {
+                    this.search();
+                },
+                nextPage() {
+                    this.itemListPage++;
+                    this.searchDetail();
+                },
+                showLoading(isLoading) {
+                    this.$refs.layoutFooter.showLoading(isLoading);
+                },
+                showMoreBtn(isShow) {
+                    this.moreBtnDisplay = isShow;
+                },
+                monthClick(month) {
+                    this.month = month;
+                    this.sidoCode = '';
+                    this.sigunguCode = '';
+                    this.isFirstSearch = true;
+                    this.searchDetail(1);
+                },
+                monthEnter(month, e) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        this.monthClick(month);
+                    }
+                },
+                selectLclgvPc: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+                    this.$refs.layoutHeaderSearchPc.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+                    this.closeMapSelect();
+                },
+                selectLclgvMo: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+                    this.$refs.layoutHeaderSearchMobile.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+                    this.closeMapSelect();
+                },
+                showMapSelect: function () {
+                    this.$refs.getParentModal.setAttribute('style', 'display: block;top: 0;');
+                },
+                closeMapSelect: function () {
+                    this.$refs.getParentModal.removeAttribute('style');
+                },
+            },
+            mounted() {
+                this.$nextTick(function () {
+                    //Saleson.init({loginPage:true});
+                    Saleson.init();
+                    this.loadSido().then((res) => {
+                        this.sidoList = res;
+                    });
+                    this.sigunguList = [{ cityCode: '', cityName: '시·군·구 선택' }];
+                    // vm.getEvent();
+                });
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

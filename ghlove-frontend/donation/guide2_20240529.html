@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="https://ilovegohyang.go.kr/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해  기부희망 지자체에 직접 기부하여  열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템 "
+    />
+    <meta
+      itemprop="image"
+      content="https://ilovegohyang.go.kr/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>온라인 기부절차안내-고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <!-- ali Section Style :) -->
+    <link rel="stylesheet" href="/static/css/donation_guge.css?d=20230703" />
+    <link rel="stylesheet" href="/static/css/research-box.css" />
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <div id="wrap">
+        <!-- header component -->
+        <layout-header-ali></layout-header-ali>
+        <layout-donation-lnb-ali
+          :menu-url="page.menuUrl"
+        ></layout-donation-lnb-ali>
+
+        <section class="center">
+          <div class="page-title-box">
+            <span class="ali_breadcrumb">
+              <a href="/"
+                ><img
+                  class="icon-img"
+                  src="/static/images/icon/cli-icon_home.png"
+                  alt="홈으로"
+              /></a>
+              <span class="txt-not-arrow"></span>
+              기부안내
+              <span class="txt-not-arrow"></span>
+              온라인기부절차안내
+            </span>
+            <h2 class="page-title-txt">온라인 기부절차 안내</h2>
+          </div>
+        </section>
+        <section id="contents">
+          <div class="">
+            <div class="center">
+              <div class="s-contents d-guide first">
+                <div class="tab_menu_wrap" id="tabMenu">
+                  <div class="tab_group">
+                    <button
+                      type="button"
+                      class="tab_items on"
+                      @click="goToTabMenu(0)"
+                    >
+                      기부따라하기
+                    </button>
+                    <button
+                      type="button"
+                      class="tab_items"
+                      @click="goToTabMenu(1)"
+                    >
+                      회원가입
+                    </button>
+                    <button
+                      type="button"
+                      class="tab_items"
+                      @click="goToTabMenu(2)"
+                    >
+                      금융인증서
+                    </button>
+                    <button
+                      type="button"
+                      class="tab_items"
+                      @click="goToTabMenu(3)"
+                    >
+                      <span class="liLabel">고향사랑e음</span
+                      ><span class="liLabel"> 로그인</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="tab_items"
+                      @click="goToTabMenu(4)"
+                    >
+                      기부하기
+                    </button>
+                    <button
+                      type="button"
+                      class="tab_items"
+                      @click="goToTabMenu(5)"
+                    >
+                      <span class="liLabel">전자결제</span
+                      ><span class="liLabel xst">(16개 시·도-서울시 제외)</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="tab_items"
+                      @click="goToTabMenu(6)"
+                    >
+                      <span class="liLabel">전자결제</span
+                      ><span class="liLabel xst">(서울시)</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="tab_items"
+                      @click="goToTabMenu(7)"
+                    >
+                      답례품 선택
+                    </button>
+                  </div>
+                </div>
+                <!-- 기부따라하기 -->
+                <div class="tab_con view">
+                  <div class="btn-box do_video">
+                    <button
+                      type="button"
+                      class="blueBtn do_video"
+                      @click="goToYoutube()"
+                      title="새 창 열림"
+                    >
+                      영상으로 보기
+                      <span>
+                        <img
+                          src="/static/images/icon/cli-icon_btn-hover-arrow.png"
+                          alt=""
+                        />
+                      </span>
+                    </button>
+                  </div>
+                  <!-- <div class="video_frame">
+                                <iframe class="youtube_frame" src="https://www.youtube.com/embed/Xgb2btcKyr4"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen></iframe>
+                            </div> -->
+
+                  <div class="card_news">
+                    <img
+                      src="/static/images/card-news/card_news01.jpg"
+                      alt="고향의 봄을 부르는 고향사랑 기부제 기부하는 방법"
+                    />
+                    <img
+                      src="/static/images/card-news/card_news02.jpg"
+                      alt="개인이 고향에 기부하면 답례품과 세액공제를 받는 제도입니다!"
+                    />
+                    <img
+                      src="/static/images/card-news/card_news03.jpg"
+                      alt="반드시 본인명의의 휴대폰 또는 금융인증서를 이용하여 가입하여 주시기 바랍니다."
+                    />
+                    <img
+                      src="/static/images/card-news/card_news04.jpg"
+                      alt="로그인 후 기부하기 클릭, 기부 정보 입력, 잠시 기다리기"
+                    />
+                    <img
+                      src="/static/images/card-news/card_news05.jpg"
+                      alt="납부시스템 약관 동의, 납부방법 선택, 결제 완료, 답례품 몰 바로가기"
+                    />
+                    <img
+                      src="/static/images/card-news/card_news06.jpg"
+                      alt="답례품 둘러보기 후 기부한 지역 선택 후 조회하여 답례품을 선택합니다."
+                    />
+                    <img
+                      src="/static/images/card-news/card_news07.jpg"
+                      alt="PC 또는 모바일을 활용하여 기부하기 어려우신 분들은 농협은행에서 기부할 수 있습니다."
+                    />
+                    <img
+                      src="/static/images/card-news/card_news08.jpg"
+                      alt="내 고향에 기부하고 답례품도 받고! 고향사랑 기부제 많은 관심 부탁드립니다!"
+                    />
+                    <!--<img src="/static/images/card-news/card_news09.png"
+                                        alt="PC 또는 모바일을 활용하여 기부하기 어려우신 분들은 농협은행에서 기부할 수 있습니다.">
+                                    <img src="/static/images/card-news/card_news10.png"
+                                        alt="내 고향에 기부하고 답례품도 받고! 고향사랑 기부제 많은 관심 부탁드립니다!"> -->
+                  </div>
+                </div>
+
+                <div class="tab_con">
+                  <div class="pc_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_join1.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          온라인 기부를 위해서는 회원에 가입되어 있어야 합니다.
+                          절차에 따라 가입을 진행해 주세요.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 상단 회원가입
+                          버튼을 선택하여 약관동의 페이지가 열리면
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 이용약관과
+                          개인정보수집 제3자 이용에 동의를 체크한 후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 03.</strong> 다음 버튼을
+                          클릭합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_join2.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 금융인증서
+                          또는 휴대폰 인증을 통해 본인 인증을 진행합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_join3.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 아이디 입력 후
+                          중복확인을 해 주세요.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 06.</strong> 비밀번호
+                          규칙에 따라 X표시된 항목 전체가 체크 표시로 변경되어야
+                          회원가입이 정상적으로 진행됩니다. 이메일주소, 주소 등
+                          필수정보를 입력하고
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 07.</strong> 회원등록
+                          버튼을 클릭하면 회원가입이 완료됩니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mobile_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-join1.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          온라인 기부를 위해서는 회원에 가입되어 있어야 합니다.
+                          절차에 따라 가입을 진행해 주세요.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 고향사랑e음
+                          웹사이트에 접속하여 화면 상단의 전체메뉴 아이콘 선택한
+                          후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 회원가입
+                          버튼을 선택하여 약관동의 페이지가 열리면
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-join2.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 03.</strong> 이용약관과
+                          개인정보수집 제3자 이용에 동의를 체크한 후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 다음 버튼을
+                          클릭합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 금융인증서
+                          또는 휴대폰 인증을 통해 본인 인증을 진행합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-join3.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 아이디 입력 후
+                          중복확인을 해 주세요.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 06.</strong> 비밀번호
+                          규칙에 따라 X표시된 항목 전체가 체크 표시로 변경되어야
+                          회원가입이 정상적으로 진행됩니다. 이메일주소, 주소 등
+                          필수정보를 입력하고
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 07.</strong> 회원등록
+                          버튼을 클릭하면 회원가입이 완료됩니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 금융인증서 -->
+                <div class="tab_con">
+                  <div class="fince_explan">
+                    <div class="fince_header">
+                      <div>
+                        <img
+                          src="/static/images/icon/cli-icon-bullet.png"
+                          alt=""
+                        />
+                        <div class="fince_tit">
+                          <span
+                            >고향사랑e음 금융인증서로 회원가입 및 본인인증
+                            방법(내국인)</span
+                          >
+                        </div>
+                      </div>
+                      <div class="fince_sub_header">
+                        <div class="fince_line flex_1"></div>
+                        <div class="fince_block"></div>
+                        <span class="fince_sub_tit">기본 절차 이용화면</span>
+                        <div class="fince_block"></div>
+                        <div class="fince_line right flex_1"></div>
+                      </div>
+                      <div class="fince_sub_explan">
+                        <img src="/static/images/icon/flag_wait.png" alet="" />
+                        <span class="fince_wait_txt line_270"
+                          >기부자의 금융계좌가 개설되어 있는 금융기관을 통해
+                          먼저 금융인증서를 발급 받으셔야 합니다.</span
+                        >
+                      </div>
+                    </div>
+
+                    <div class="pc_img">
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_01.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              회원가입 > 약관동의 > 본인인증에서
+                              <strong>금융인증서를 선택</strong>해 주세요.
+                            </p>
+                            <p><strong>금융인증서를 선택</strong>해 주세요.</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_02.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>가입정보 확인을 위해</p>
+                            <p><strong>이름/전화번호/생년월일</strong>을</p>
+                            <p>입력해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_03.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>본인확인을 위해 휴대폰으로</p>
+                            <p>받은 <strong>SMS/ARS 확인코드 숫자를</strong></p>
+                            <p><strong>입력</strong>해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_04.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              <strong>사용할 인증서</strong>를 선택해 주세요
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="details_steps" style="display: flex">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_05.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>금융인증서 <strong>비밀번호 6자리</strong>를</p>
+                            <p>입력해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_06.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>아이디, 비밀번호 등 <strong>회원</strong></p>
+                            <p><strong>가입정보</strong>를 입력해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_07.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>회원가입 완료 버튼 선택하여</p>
+                            <p>로그인해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1"></div>
+                      </div>
+                    </div>
+
+                    <div class="mobile_img">
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_01.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              회원가입 > 약관동의 > 본인인증에서
+                              <strong>금융인증서를 선택</strong>해 주세요.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_02.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>가입정보 확인을 위해</p>
+                            <p><strong>이름/전화번호/생년월일</strong>을</p>
+                            <p>입력해 주세요</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_03.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              본인확인을 위해 휴대폰으로 받은
+                              <strong>SMS/ARS 확인코드 숫자를 입력</strong>해
+                              주세요
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_04.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              <strong>사용할 인증서</strong>를 선택해 주세요
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_05.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              금융인증서 <strong>비밀번호 6자리</strong>를
+                              입력해 주세요
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_06.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              아이디, 비밀번호 등
+                              <strong>회원 가입정보</strong>를 입력해 주세요
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_07.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>회원가입 완료 버튼 선택하여 로그인해 주세요</p>
+                          </div>
+                        </div>
+
+                        <div class="flex_1"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="fince_explan">
+                    <div class="fince_header">
+                      <div>
+                        <img
+                          src="/static/images/icon/cli-icon-bullet.png"
+                          alt=""
+                        />
+                        <div class="fince_tit">
+                          <span
+                            >고향사랑e음 금융인증서로 회원가입 및 본인인증 방법
+                            (해외에 체류중인 국민)</span
+                          >
+                        </div>
+                      </div>
+
+                      <div class="fince_sub_header">
+                        <div class="fince_line flex_1 m_hide"></div>
+                        <div class="fince_block"></div>
+                        <span class="fince_sub_tit"
+                          >해외전화번호, 전화거는 ARS인증</span
+                        >
+                        <div class="fince_block"></div>
+                        <div class="fince_line right flex_1 m_hide"></div>
+                      </div>
+                      <div class="fince_sub_explan">
+                        <img src="/static/images/icon/flag_wait.png" alet="" />
+                        <div class="line_139">
+                          <p class="fince_wait_txt">
+                            기부자의 금융계좌가 개설되어 있는 금융기관을 통해
+                            먼저 금융인증서를 발급 받으셔야 합니다.
+                          </p>
+                          <p class="fince_wait_sub_txt">
+                            ※ 국내 계좌보유 등 전자금융거래서비스에 가입한 해외
+                            체류중인 국민(재외국민)도 금융인증서를 활용하여 국내
+                            휴대전화 없이 해외전화번호 ARS인증을 통해 회원가입
+                            가능
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pc_img">
+                      <div class="details_steps" style="display: flex">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_overseas_01.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>회원가입 > 약관동의 > 본인인증에서</p>
+                            <p><strong>금융인증서를 선택</strong>해 주세요.</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_overseas_02.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>금융인증서 이용을 위해</p>
+                            <p><strong>해외전화 이용</strong>을</p>
+                            <p>선택해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_overseas_03.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>가입정보 확인을 위해</p>
+                            <p><strong>이름/전화번호/생년월일을</strong></p>
+                            <p>입력해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_overseas_04.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>본인확인을 위해 휴대폰으로</p>
+                            <p>받은 <strong>SMS/ARS 확인코드 숫자를</strong></p>
+                            <p><strong>입력</strong>해 주세요.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="details_steps" style="display: flex">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_overseas_05.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              <strong>사용할 인증서</strong>를 선택해 주세요
+                            </p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_overseas_06.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>금융인증서 <strong>비밀번호 6자리를</strong></p>
+                            <p>입력해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_overseas_07.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>아이디, 비밀번호 등 <strong>회원</strong></p>
+                            <p><strong>가입정보</strong>를 입력해 주세요</p>
+                          </div>
+                        </div>
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/pc_fince_give_overseas_08.png"
+                            alt=""
+                            class="pc_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>회원가입 완료 버튼 선택하여</p>
+                            <p>로그인해 주세요</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mobile_img">
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_overseas_01.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              회원가입 > 약관동의 > 본인인증에서
+                              <strong>금융인증서를 선택</strong>해 주세요.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_overseas_02.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              금융인증서 이용을 위해
+                              <strong>해외전화 이용</strong>을 선택해 주세요
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_overseas_03.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>가입정보 확인을 위해</p>
+                            <p><strong>이름/전화번호/생년월일을</strong></p>
+                            <p>입력해 주세요</p>
+                          </div>
+                        </div>
+
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_overseas_04.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              본인확인을 위해 휴대폰으로 받은
+                              <strong>SMS/ARS 확인코드 숫자를 입력</strong>해
+                              주세요
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_overseas_05.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              <strong>사용할 인증서</strong>를 선택해 주세요
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_overseas_06.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              금융인증서 <strong>비밀번호 6자리</strong>를
+                              입력해 주세요
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="details_steps">
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_overseas_07.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>
+                              아이디, 비밀번호 등
+                              <strong>회원 가입정보</strong>를 입력해 주세요
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="flex_1">
+                          <img
+                            src="/static/images/do_info/m_fince_give_overseas_08.png"
+                            alt=""
+                            class="mobile_img margin_center"
+                          />
+                          <div class="fince_description">
+                            <p>회원가입 완료 버튼 선택하여 로그인해 주세요</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 로그인 안내 -->
+                <div class="tab_con">
+                  <div class="details_steps">
+                    <img
+                      src="/static/images/do_info/pc-login-info1.png"
+                      alt=""
+                      class="pc_img"
+                    />
+                    <img
+                      src="/static/images/do_info/m_login-info1.jpg"
+                      alt=""
+                      class="mobile_img"
+                    />
+
+                    <div class="detailsTxt">
+                      <p>
+                        금융/간편인증을 통한 로그인과 일반로그인, 디지털원패스
+                        세가지 방법으로 로그인이 가능합니다.
+                      </p>
+                      <p>
+                        <strong class="pointblue"> 01.</strong> 화면 상단의
+                        로그인 > 일반 로그인 선택 후
+                      </p>
+                      <p>
+                        <strong class="pointblue"> 02.</strong> 아이디와
+                        비밀번호를 입력하고 로그인 버튼을 클릭합니다.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="details_steps">
+                    <img
+                      src="/static/images/do_info/pc-login-info2.png"
+                      alt=""
+                      class="pc_img"
+                    />
+                    <img
+                      src="/static/images/do_info/m_login-info2.jpg"
+                      alt=""
+                      class="mobile_img"
+                    />
+
+                    <div class="detailsTxt">
+                      <p>
+                        <strong class="pointblue"> 02.</strong> 금융/간편 인증
+                        탭을 선택합니다.
+                      </p>
+                      <p>
+                        <strong class="pointblue"> 03.</strong> 금융인증서
+                        로그인 버튼을 클릭합니다.
+                      </p>
+                      <p>
+                        <strong class="pointblue"> 04.</strong> 금융인증 창이
+                        열리면 인증에 필요한 정보를 입력하고 인증을 진행하면
+                        로그인이 됩니다.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="details_steps">
+                    <img
+                      src="/static/images/do_info/pc-login-info3.png"
+                      alt=""
+                      class="pc_img"
+                    />
+                    <img
+                      src="/static/images/do_info/m_login-info3.jpg"
+                      alt=""
+                      class="mobile_img"
+                    />
+
+                    <div class="detailsTxt">
+                      <p>
+                        <strong class="pointblue"> 02.</strong> 금융/간편 인증
+                        탭을 선택합니다.
+                      </p>
+                      <p>
+                        <strong class="pointblue"> 03.</strong> 간편인증 로그인
+                        버튼을 클릭합니다.
+                      </p>
+                      <p>
+                        <strong class="pointblue"> 04.</strong> 간편인증 창이
+                        열리면 인증 가능한 방식을 선택하여 인증을 진행하면
+                        로그인이 됩니다.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 기부하기 안내 -->
+                <div class="tab_con">
+                  <div class="pc_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc-donation1.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 01-1.</strong> 메인의
+                          메인배너 하단의 기부하기 버튼을 선택하거나
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 01-2.</strong> 상단의
+                          메뉴에서 기부하기 > 기부하기를 선택하여 화면을
+                          이용합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc-donation2.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 먼저 기부하실
+                          지자체를 선택합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 03.</strong> '주소
+                          확인하기' 버튼을 클릭하여 기부자의 주민등록 상의
+                          주소지를 확인합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc-donation3.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>기부가능 여부를 확인합니다.</p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc-donation4.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 기부가능한도를
+                          확인하여 한도 내에서 기부금액을 입력한 후,
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 답례품
+                          제공받음 여부를 선택합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 06.</strong> 본인 의지에
+                          의한 기부임을 확인하는 체크박스를 체크한 후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 07.</strong> 기부금
+                          납부하기 버튼을 클릭합니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mobile_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-donation1.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 01-1.</strong> 메인의
+                          메인배너 하단의 기부하기 버튼을 선택하거나
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 01-2.</strong> 상단의
+                          메뉴에서 기부하기 > 기부하기를 선택하여 화면을
+                          이용합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-donation2.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 먼저 기부하실
+                          지자체를 선택합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 03.</strong> '주소
+                          확인하기' 버튼을 클릭하여 기부자의 주민등록 상의
+                          주소지를 확인합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-donation3.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>기부가능 여부를 확인합니다.</p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-donation4.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 기부가능한도를
+                          확인하여 한도 내에서 기부금액을 입력한 후,
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 답례품
+                          제공받음 여부를 선택합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 06.</strong> 본인 의지에
+                          의한 기부임을 확인하는 체크박스를 체크한 후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 07.</strong> 기부금
+                          납부하기 버튼을 클릭합니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 위택스 전자결제 안내 -->
+                <div class="tab_con">
+                  <div class="pc_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_wetax1.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          기부정보 처리를 위해 잠시
+                          <strong class="pointblue">기다려주세요. </strong>
+                        </p>
+                        <p>납부시스텝 팝업창이 뜨면 약관을 내용 확인합니다.</p>
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 약관동의 체크
+                          박스를 클릭해주신 후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 확인버튼을
+                          클릭해주세요.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_wetax2.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 03.</strong>
+                          <strong class="pointblue">납부방법</strong>에서
+                          계좌이체와 신용카드 중 하나를 선택 후,
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 결제 정보를
+                          입력합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 다음 버튼을
+                          클릭합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_wetax3.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>납부가 완료되었습니다. 내용확인 후</p>
+                        <p>
+                          <strong class="pointblue"> 06.</strong> 확인 버튼을
+                          눌러주세요.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_wetax4.jpg"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          납부창 팝업창이 닫히면 고향사랑 e음 사이트에서 완료
+                          안내창에 열립니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 08.</strong> 마이 페이지
+                          바로가기 버튼을 클릭하여 기부내역을 확인합니다.
+                        </p>
+                        <p class="pointRed martop10">
+                          ※ 전자납부번호 및 납부결과 확인은 "마이페이지 >
+                          기부내역 현황"에서 다시 확인 하실 수 있습니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_wetax5.jpg"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p style="font-weight: bold">
+                          기부금 결제가 실패했거나 강제 중단한 경우는 "다시
+                          기부하기" 버튼을 클릭하여 다시 기부금 결제를 진행할 수
+                          있습니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 마이 페이지
+                          바로가기 버튼을 클릭하여 기부내역을 확인합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 기부금액 및
+                          기부지역을 다시 확인하고 "다시 기부하기" 버튼을
+                          클릭합니다.
+                        </p>
+                        <p>
+                          이후 진행 절차는 "기부 후 바로 결제한 경우"와 동일하게
+                          진행됩니다.
+                        </p>
+                      </div>
+                    </div>
+                    <!-- <div class="details_steps">
+                                    <img src="/static/images/do_info/tab_wetax5.png" alt="" class="pc_img">
+                                    <div class="detailsTxt">
+                                        <p>기부는 하셨지만 결제는 안한 경우 </p>
+                                        <p><strong class="pointblue"> 01.</strong> '고향사랑 e음' 사이트에서 '기부마이페이지 > 기부내역 현황'
+                                            에서
+                                        </p>
+                                        <p><strong class="pointblue"> 02.</strong> 전자납부번호 를 마우스로 긁어서 복사해주세요.</p>
+                                        <p><strong class="pointblue"> 03.</strong> '위택스'사이트의 메인 화면에 빠른납부 칸에 복사한 전자납부번호를
+                                            붙여
+                                            넣기를 합니다. ( 전자납부번호를 직접입력하셔도 됩니다 )</p>
+                                        <p>이후 결제방법을 선택후 결제를 진행해주시면 됩니다.</p>
+                                    </div>
+                                </div> -->
+                  </div>
+                  <div class="mobile_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-wetax1.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          기부정보 처리를 위해 잠시
+                          <strong class="pointblue">기다려주세요. </strong>
+                        </p>
+                        <p>납부시스텝 팝업창이 뜨면 약관을 내용 확인합니다.</p>
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 약관동의 체크
+                          박스를 클릭해주신 후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 확인버튼을
+                          클릭해주세요.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-wetax2.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 03.</strong>
+                          <strong class="pointblue">납부방법</strong>에서
+                          계좌이체와 신용카드 중 하나를 선택 후,
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 결제 정보를
+                          입력합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 다음 버튼을
+                          클릭합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-wetax3.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>납부가 완료되었습니다. 내용확인 후</p>
+                        <p>
+                          <strong class="pointblue"> 06.</strong> 확인 버튼을
+                          눌러주세요.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-wetax4.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          납부창 팝업창이 닫히면 고향사랑 e음 사이트에서 완료
+                          안내창에 열립니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 08.</strong> 마이 페이지
+                          바로가기 버튼을 클릭하여 기부내역을 확인합니다.
+                        </p>
+                        <p class="pointRed martop10">
+                          ※ 전자납부번호 및 납부결과 확인은 "마이페이지 >
+                          기부내역 현황"에서 다시 확인 하실 수 있습니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-wetax5.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p style="font-weight: bold">
+                          기부금 결제가 실패했거나 강제 중단한 경우는 "다시
+                          기부하기" 버튼을 클릭하여 다시 기부금 결제를 진행할 수
+                          있습니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 마이 페이지
+                          바로가기 버튼을 클릭하여 기부내역을 확인합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 기부금액 및
+                          기부지역을 다시 확인하고 "다시 기부하기" 버튼을
+                          클릭합니다.
+                        </p>
+                        <p>
+                          이후 진행 절차는 "기부 후 바로 결제한 경우"와 동일하게
+                          진행됩니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 전자결제(서울시) 안내 -->
+                <div class="tab_con">
+                  <div class="pc_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_etax1.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          서울지역에 기부는
+                          <strong class="pointblue">이택스</strong> 납부화면
+                          창이 열립니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 3가지 결제수단
+                          중 하나를 선택하여
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 결제수단별로
+                          결제를 진행합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_etax2.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>납부가 완료되었습니다. 납부확인증을 확인해주세요.</p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_etax3.jpg"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>고향사랑 e음 사이트에서 완료 안내창에 열리면,</p>
+                        <p>
+                          <strong class="pointblue"> 03.</strong> 마이 페이지
+                          바로가기 버튼을 클릭하여 기부내역을 확인합니다.
+                        </p>
+                        <p class="pointRed martop10">
+                          ※ 전자납부번호 및 납부결과 확인은 "마이페이지 >
+                          기부내역 현황"에서 다시 확인 하실 수 있습니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mobile_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-etax1.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          서울지역에 기부는
+                          <strong class="pointblue">이택스</strong> 납부화면
+                          창이 열립니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 해당
+                          기부내역을 선택하고
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 납부내용을
+                          확인 후 맨 아래 '납부'버튼을 선택합니다.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-etax2.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 03.</strong> 해당 지
+                          결제수단 중 하나를 선택하여
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 결제 정보를
+                          입력한 후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 05.</strong> '납부'버튼을
+                          선택하여 결제를 진행합니다.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-etax3.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          결제수단에 따라 결제를 하신 후, 세입금 납부
+                          필독사항에서 내용을 확인해주세요.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 06.</strong> 납부동의를
+                          선택 후,
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 07.</strong> 세입금
+                          납부(취소불가) 버튼을 선택해주세요. 납부가 정상적으로
+                          완료되었습니다. 맨 아래의
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 08.</strong> 확인을
+                          선택하시거나 해당 창을 닫아 "고향사랑 e음" 사이트로
+                          돌아갑니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-etax4.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>고향사랑 e음 사이트에서 완료 안내창에 열리면,</p>
+                        <p>
+                          <strong class="pointblue"> 09.</strong> 마이 페이지
+                          바로가기 버튼을 클릭하여 기부내역을 확인합니다.
+                        </p>
+                        <p class="pointRed martop10">
+                          ※ 전자납부번호 및 납부결과 확인은 "마이페이지 >
+                          기부내역 현황"에서 다시 확인 하실 수 있습니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 답례품 구매 -->
+                <div class="tab_con">
+                  <div class="pc_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_goods1.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 상단
+                          '마이페이지' 버튼을 클릭한 후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 마이페이지
+                          화면에서 ''기부포인트 현황'을 클릭합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_goods2.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>포인트가 정상적으로 적립이 되었는지 확인하고</p>
+                        <p>
+                          <strong class="pointblue"> 03.</strong> '답례품몰
+                          가기'를 클릭하면 기부한 지자체의 답례품몰이 새 창으로
+                          열립니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/pc_goods3.png"
+                        alt=""
+                        class="pc_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 내가 기부한
+                          지자체의 답례품 중 구매가 가능한 포인트 한도 내의
+                          상품을 선택합니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 옵션과 수량을
+                          선택한 후 '선택하기' 버튼을 선택하여 구매를
+                          진행합니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mobile_img">
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-goods1.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 01.</strong> 고향사랑e음
+                          웹사이트에 접속하여 화면 상단의 전체메뉴 아이콘 선택한
+                          후
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 02.</strong> 마이페이지
+                          화면에서 '기부포인트 현황'을 선택합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-goods2.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>포인트가 정상적으로 적립이 되었는지 확인하고</p>
+                        <p>
+                          <strong class="pointblue"> 03.</strong> '답례품몰
+                          가기'를 선택하면 기부한 지자체의 답례품몰이 새 창으로
+                          열립니다.
+                        </p>
+                        <p>
+                          <strong class="pointblue"> 04.</strong> 내가 기부한
+                          지자체의 답례품 중 구매가 가능한 포인트 한도 내의
+                          답례품을 선택합니다.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="details_steps">
+                      <img
+                        src="/static/images/do_info/m-goods3.jpg"
+                        alt=""
+                        class="mobile_img"
+                      />
+                      <div class="detailsTxt">
+                        <p>
+                          <strong class="pointblue"> 05.</strong> 옵션과 수량을
+                          선택한 후 '선택하기' 버튼을 선택하여 구매를
+                          진행합니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 버튼그룹 -->
+                <div class="btn-box">
+                  <button
+                    type="button"
+                    class="blueBtn cancellation"
+                    @click="scrollTop()"
+                  >
+                    맨위로
+                    <span>
+                      <img
+                        src="/static/images/icon/cli-icon_btn-hover-arrow.png"
+                        alt=""
+                      />
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <!-- 콘텐츠 만족도 -->
+              <layout-content-stsfdg></layout-content-stsfdg>
+            </div>
+          </div>
+        </section>
+
+        <!-- Top&Chatbot fixed -->
+        <layout-fixed-btn></layout-fixed-btn>
+        <!-- footer component -->
+        <layout-footer-ali></layout-footer-ali>
+        <!-- footer component -->
+      </div>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader(
+            "/components/layouts/header_ali.vue"
+          ),
+          "layout-subsearch-ali": httpVueLoader(
+            "/components/layouts/subsearch_ali.vue"
+          ),
+          //"layout-donation-lnb-ali": httpVueLoader("/components/layouts/donation_info-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader(
+            "/components/layouts/footer_ali.vue"
+          ),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+          "layout-content-stsfdg": httpVueLoader(
+            "/components/layouts/content-stsfdg/stsfdg.vue"
+          ),
+        },
+        data: {
+          // ali data
+          userName: "",
+          userGrade: "",
+          selectedSurvey: "01",
+          result: {},
+          tabMenu: [
+            "회원가입",
+            "고향사랑e음 로그인",
+            "기부하기",
+            "전자결제(16개 시·도-서울시 제외) ",
+            "전자결제(서울시)",
+            "답례품 구매",
+          ],
+          page: {
+            menuUrl: "/donation/guide2.html",
+          },
+        },
+        methods: {
+          // *************** ali-add methods
+          goToYoutube: function () {
+            window.open("https://youtu.be/Xgb2btcKyr4");
+            // location.href="https://youtu.be/Xgb2btcKyr4";
+          },
+          goToTabMenu: function (n) {
+            let thisList = n;
+
+            $(".tab_items").eq(n).addClass("on").siblings().removeClass("on");
+            $(".tab_con").eq(n).addClass("view").siblings().removeClass("view");
+          },
+
+          scrollTop() {
+            location.href = "#tabMenu";
+          },
+          // init: function () { // page init
+          //     $(".lnb-bar_2dep li").eq(1).addClass("currentT").siblings("li").removeClass("currentT");
+          //     $(".lnb-bar_3dep").eq(0).show();
+          //     $(".lnb-bar_3dep:eq(0) li:eq(1) a").addClass("currentP");
+          // },
+          radioChange: function (e) {
+            // radio button checked value
+            vm.selectedSurvey = e.target.value;
+          },
+          goToSurvey: function () {
+            // 현재 페이지 만족도
+            console.log(
+              "############### current radio checked value : " +
+                vm.selectedSurvey
+            );
+            var message = "";
+            if (vm.selectedSurvey != null && vm.selectedSurvey != "") {
+              message = "만족도 평가를 등록하였습니다. 감사합니다.";
+            } else {
+              message = "만족도 평가 항목을 선택해 주세요";
+            }
+
+            $s.alert(message, function () {
+              location.reload();
+            });
+          },
+        },
+        computed: {},
+        mounted: function () {
+          this.$nextTick(function () {
+            // 페이지 로딩 후 실행
+            Saleson.init();
+            //setTimeout(() => this.init(), 100);
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

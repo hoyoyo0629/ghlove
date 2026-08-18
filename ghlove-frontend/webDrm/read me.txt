@@ -1,0 +1,19 @@
+1. WebGuide\Setup 폴더 하위에 설치셋 복사
+
+2. WebGuide\js 폴더의 web_guide.js 파일 수정
+
+1) 설치셋 정보 수정
+	var ClientSetupExe32Url = "../Setup/32 설치셋 파일 이름";
+	var ClientSetupExe64Url = "../Setup/64 설치셋 파일 이름";
+
+	*설치셋 파일 이름을 Setup폴더에 있는 셋 이름으로 수정
+
+2) 헬프데스크 가이드 옵션 및 고객사 연락처 수정
+	* 헬프데스크 가이드 옵션 : 미지원 시, 에러 페이지에 헬프데스크 관련 정보 표시되지 않음 (사명, 연락처, 메일주소)
+	var helpdesk_guide_option = 0 or 1  (0 = 미지원, 1 = 지원)
+	var companyInfo = "고객사명"
+	var telInfo = "고객사 연락처";
+	var emailInfo = "고객사 메일 주소";
+
+3. _test_guide.html은 가이드 페이지 테스트용으로 작성된 리소스입니다. 
+고객사 적용 시 참고용으로 사용하시기 바라며 실제 구축 시에는 제외해주시기 바랍니다.

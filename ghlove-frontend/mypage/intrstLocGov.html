@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Expires" content="-1" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="No-Cache" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>마이페이지 > 관심지자체 | 고향사랑e음</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+    <link rel="stylesheet" href="/static/css/favo_info.css" />
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <!-- header component -->
+      <layout-header-ali></layout-header-ali>
+      <layout-mypage-lnb-ali :menu-url="page.menuUrl"></layout-mypage-lnb-ali>
+
+      <section class="cart_contents">
+        <div class="page-title-box">
+          <span class="ali_breadcrumb">
+            <a href="/"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            마이페이지
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            관심지자체
+          </span>
+          <h2 class="page-title-txt">관심지자체</h2>
+        </div>
+      </section>
+
+      <section class="contents" id="contents">
+        <form class="center cart_wrap needs-validation" @submit.prevent="submit">
+          <div class="contents_wrap" v-if="result.content.length > 0">
+            <div class="s-contents">
+              <div class="cart_top">
+                <div class="chk_box check-level1">
+                  <input type="checkbox" id="all" v-model="allSelected" />
+                  <label for="all">전체선택</label>
+                </div>
+                <div class="btn_area">
+                  <button type="button" class="formBtn del" @click="deleteCartList()">선택삭제</button>
+                </div>
+              </div>
+
+              <!-- <div class="list_body">
+	                            <div class="list_wrap">
+	                                <div class="list-title">
+	                                    <div class="date-col chk_date">
+	                                        <div class="check_input"><input type="checkbox" name="" id=""></div>
+	                                    </div>
+	                                    <div class="items_wrap">
+	                                    <div class="date-col index">No.</div>
+	                                        <div class="date-col info_loc">기부지자체</div>
+	                                        <div class="date-col do_status">나의 기부현황</div>
+	                                        <div class="button_wrap">
+	                                            <div class="date-col btn_col">기부하기</div>
+	                                            <div class="date-col btn_col">바로가기</div>
+	                                        </div>
+	                                    </div>
+	                                </div>
+
+	                                <ul class="item_list-group">
+	                                    <li class="list-items" v-for="(data,i) in result.content" :key="data.locgovCode">
+	                                        <div class="date-col chk_date">
+	                                            <div class="check_input"><input type="checkbox" :name="i" :id="i" :value="data.locgovCode" v-model="selected"></div>
+	                                        </div>
+	                                        <div class="items_wrap">
+	                                            <div class="date-col index">{{result.totalCnt - ((result.currentPage -1 ) * result.size) - i}}</div>
+	                                            <div class="date-col info_loc">{{data.upperLocgovNm}}&nbsp;{{data.locgovNm}}</div>
+	                                            <div class="date-col do_status"><span class="m_txt s_txt">나의 기부현황 &nbsp;</span> <span>{{data.cntrAmt}}<span class="m_txt s_txt">&nbsp;P</span></span></div>
+	                                            <div class="date-col do_status">{{formatNumber(data.cntrAmt)}}</div>
+	                                            <div class="button_wrap">
+	                                                <div class="date-col btn_col"><button type="button" class="formBtn dona"
+	                                                        @click="goCntr(data)">기부하기</button>
+	                                                </div>
+	                                                <div class="date-col btn_col"><button type="button"
+	                                                        class="formBtn intrs" @click="goShop(data)">답례품몰</button>
+	                                                </div>
+	                                            </div>
+	                                        </div>
+	                                    </li>
+	                                </ul>
+	                            </div>
+
+	                        </div> -->
+
+              <!-- 수정 241024 -->
+              <div class="list_body table-container w3c_v_2410">
+                <!-- 접근성 적용 클래스명 : w3c_v_2410 -->
+                <div class="list_wrap">
+                  <table>
+                    <caption>
+                      관심지자체 - 기부지자체, 나의 기부현황, 기부하기, 바로가기로 구성
+                    </caption>
+                    <thead class="list-title">
+                      <tr class="items_wrap">
+                        <th class="date-col chk_date" scope="col">
+                          <label for="checkAll" class="sr-only">전체선택</label>
+                          <div class="check_input"><input type="checkbox" name="" id="checkAll" /></div>
+                        </th>
+                        <th class="date-col index" scope="col">No.</th>
+                        <th class="date-col info_loc" scope="col">기부지자체</th>
+                        <th class="date-col do_status" scope="col">나의 기부현황</th>
+                        <th class="date-col btn_col" scope="col">기부하기</th>
+                        <th class="date-col btn_col" scope="col">바로가기</th>
+                      </tr>
+                    </thead>
+                    <tbody class="item_list-group">
+                      <tr class="list-items" v-for="(data,i) in result.content" :key="data.locgovCode">
+                        <td class="date-col chk_date">
+                          <label :for="i" class="sr-only">{{data.upperLocgovNm}}&nbsp;{{data.locgovNm}} 선택</label>
+                          <div class="check_input">
+                            <input
+                              type="checkbox"
+                              :name="i"
+                              :id="i"
+                              :value="data.locgovCode"
+                              :title="`${data.upperLocgovNm} ${data.locgovNm} 선택`"
+                              v-model="selected"
+                            />
+                          </div>
+                        </td>
+                        <td class="date-col index">{{result.totalCnt - ((result.currentPage -1 ) * result.size) - i}}</td>
+                        <td class="date-col info_loc">{{data.upperLocgovNm}}&nbsp;{{data.locgovNm}}</td>
+                        <td class="date-col do_status">{{formatNumber(data.cntrAmt)}}</td>
+                        <td class="date-col btn_col"><button type="button" class="formBtn dona" @click="goCntr(data)">기부하기</button></td>
+                        <td class="date-col btn_col"><button type="button" class="formBtn intrs" @click="goShop(data)">답례품몰</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="table-overlap">
+                  <span>←&nbsp;-&nbsp;&nbsp; 가로로 스와이프 하세요 &nbsp;&nbsp;-&nbsp;→</span><br />
+                  <button type="button" class="formBtn" @click="closeTableOverlap()">확인</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="common_none" v-else-if="result.content.length == 0">
+            <p>관심지자체가 없습니다.</p>
+          </div>
+        </form>
+      </section>
+
+      <layout-fixed-btn></layout-fixed-btn>
+      <layout-footer-ali></layout-footer-ali>
+      <!--//#wrap-->
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+      Vue.use(VueAwesomeSwiper);
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          //"layout-mypage-lnb-ali": httpVueLoader("/components/layouts/mypage-lnb_ali.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          pagination: httpVueLoader("/components/ui/pagination.vue"), //pagination
+        },
+        data: {
+          param: {
+            page: 1,
+            itemsPerPage: 10,
+            locgovCode: "",
+          },
+          result: {
+            currentPage: 1,
+            totalPages: 0,
+            totalElements: 0,
+            content: [],
+            totalCnt: 0,
+          },
+          selected: [],
+          page: {
+            menuUrl: "/mypage/intrstLocGov.html",
+          },
+        },
+        methods: {
+          closeTableOverlap: function () {
+            $(".table-overlap").css("display", "none");
+          },
+
+          submit: function () {
+            $s.api.getSubmit("/api/mypage/intrstLocGovInfo", vm.param, function (response) {
+              vm.result = response;
+              $(".lnb-bar_2dep li").eq(3).addClass("currentT");
+              $(".lnb-bar_3dep").eq(3).show();
+            });
+          },
+          paging: function (page) {
+            vm.param.page = page;
+            vm.submit();
+          },
+          delIntrstLocGov: function (locgovCode) {
+            vm.param.locgovCode = locgovCode;
+            $s.api.postSubmit(
+              "/api/mypage/deleteIntrstLocGov",
+              vm.param,
+              function (response) {
+                if (response.status === "OK") {
+                  if (response.resultCnt > 0) {
+                    vm.paging(1);
+                  }
+                }
+              },
+              function (error) {
+                $s.alert(error.response.data.description);
+              }
+            );
+          },
+          goCntr: function (data) {
+            //location.href = "/donation/donation.html?locgovCode=" + data.locgovCode;
+            $s.donation.goDonationPage("?locgovCode=" + data.locgovCode);
+          },
+          goShop: function (data) {
+            location.href = "/goods/searchGoods.html?type=L&locgov=" + data.locgovCode;
+          },
+          deleteCartList: function () {
+            if (vm.selected.length <= 0) {
+              $s.alert("선택된 지자체가 없습니다.");
+              return false;
+            }
+            $s.api.postSubmit(
+              "/api/mypage/deleteIntrstLocGovAll",
+              vm.selected,
+              function (response) {
+                if (response.status === "OK") {
+                  if (response.resultCnt > 0) {
+                    location.reload();
+                  }
+                }
+              },
+              function (error) {
+                $s.alert(error.response.data.description);
+              }
+            );
+          },
+        },
+        computed: {
+          allSelected: {
+            get: function () {
+              return this.result.content.length === this.selected.length;
+            },
+            set: function (checked) {
+              this.selected = [];
+              if (checked) {
+                for (var i in this.result.content) {
+                  this.selected.push(this.result.content[i].locgovCode);
+                }
+              }
+            },
+          },
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+            // 페이지 로딩 후 실행
+            Saleson.init({ loginPage: true });
+            vm.paging(1);
+          });
+        },
+      });
+    </script>
+  </body>
+</html>

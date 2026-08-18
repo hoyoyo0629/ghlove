@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.community.freeboard.CommunityMapper">
+	<resultMap id="BoardResult" type="saleson.shop.community.doamin.CommunityDto">
+		<result property="id" column="ID" />
+		<result property="subject" column="SUBJECT" />
+		<result property="content" column="CONTENT" />
+		<result property="useyn" column="USEYN" />
+		<result property="noticeFlag" column="NOTICE_FLAG" />
+		<result property="userId" column="USER_ID" />
+		<result property="locgovNm" column="LOCGOV_NM" />
+		<result property="upperLocgovNm" column="upper_locgov_nm" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="hits" column="HITS" />
+	</resultMap>
+
+
+	<insert  id="insertFreeBoard" parameterType="saleson.shop.community.doamin.CommunityDto">
+		INSERT INTO OP_COMMUNITY_FREEBOARD (ID,USER_ID, SUBJECT, CONTENT, USEYN, NOTICE_FLAG,CREATED_DATE)
+		VALUES (#{id},#{userId},#{subject},#{content},#{useYn},#{noticeFlag},<include refid="CommonMapper.datetime" />)
+	</insert>
+
+
+	<select id="countFreeBoard" parameterType="saleson.shop.community.doamin.CommunityDto" resultType="Integer">
+
+		SELECT COUNT(*)
+		FROM OP_COMMUNITY_FREEBOARD	as C
+		left join op_manager as A on
+			C.user_id = A.user_id
+		left join g_locgov as G on
+			G.locgov_code = A.locgov_code
+		<where>
+			<if test="shLocgovCode != null and shLocgovCode != ''">
+		    	AND G.locgov_code = #{shLocgovCode}
+		    </if>
+		    <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+		    	AND C.updated_date BETWEEN #{shCntrDeStart} AND DATE_ADD( #{shCntrDeEnd}, INTERVAL 1 DAY)
+		    </if>
+		    <if test="query != null and query != ''">
+				<if test="where == 'SUBJECT'">
+					AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'CONTENT'">
+					AND CONTENT LIKE CONCAT('%', #{query}, '%')
+				</if>
+			</if>
+			AND C.is_delete = 'N'
+		</where>
+		order by C.created_date DESC;
+
+	</select>
+
+	<select id="listFreeBoard"  parameterType="saleson.shop.community.doamin.CommunityDto" resultMap="BoardResult">
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+			 A.id 
+			,A.user_id
+			,A.subject 
+			,A.content 
+			,A.useyn 
+			,A.is_delete
+			,A.notice_flag 
+			,A.hits 
+			,A.created_date
+			,A.updated_date
+			,crypto_dec('normal',A.user_name,'',0) AS USER_NAME
+			,A.locgov_nm
+			,A.upper_locgov_nm
+		FROM
+			(
+				SELECT
+					 c.id 
+					,c.user_id
+					,c.subject 
+					,c.content 
+					,c.useyn 
+					,c.is_delete
+					,c.notice_flag 
+					,c.hits 
+					,c.created_date
+					,c.updated_date
+					,A.user_name
+					,CASE
+				        WHEN A.locgov_code IS NOT NULL THEN G.locgov_nm
+				        ELSE NULL
+				    END AS locgov_nm
+				    ,CASE
+				        WHEN A.locgov_code IS NOT NULL THEN G.upper_locgov_nm
+				        ELSE NULL
+				    END AS upper_locgov_nm
+				FROM
+					OP_COMMUNITY_FREEBOARD as c
+				LEFT JOIN op_manager as A ON C.user_id = A.user_id
+				LEFT JOIN g_locgov as G ON G.locgov_code = A.locgov_code
+				<where>
+					<if test="shLocgovCode != null and shLocgovCode != ''">
+				    	AND G.locgov_code = #{shLocgovCode}
+				    </if>
+				    <if test="shCntrDeStart != null and shCntrDeStart != '' and shCntrDeEnd != null and shCntrDeEnd != ''">
+				    	AND c.updated_date BETWEEN #{shCntrDeStart} AND DATE_ADD( #{shCntrDeEnd}, INTERVAL 1 DAY)
+				    </if>
+				    <if test="query != null and query != ''">
+						<if test="where == 'SUBJECT'">
+							AND SUBJECT LIKE CONCAT('%', #{query}, '%')
+						</if>
+						<if test="where == 'CONTENT'">
+							AND CONTENT LIKE CONCAT('%', #{query}, '%')
+						</if>
+					</if>
+					AND c.is_delete = 'N'
+				</where>
+				order by c.created_date DESC
+			) A
+		<include refid="CommonMapper.paginationFooter" />		
+	</select>
+
+	<select id="deatilFreeBoard" parameterType="saleson.shop.community.doamin.CommunityDto" resultMap="BoardResult">
+					
+	SELECT
+		 A.id 
+		,A.user_id
+		,A.subject 
+		,A.content 
+		,A.useyn 
+		,A.is_delete
+		,A.notice_flag 
+		,A.hits 
+		,A.created_date
+		,A.updated_date
+		,crypto_dec('normal',A.user_name,'',0) AS USER_NAME
+		,A.locgov_nm
+		,A.upper_locgov_nm
+	FROM
+		(
+			SELECT
+				c.id 
+				,c.user_id
+				,c.subject 
+				,c.content 
+				,c.useyn 
+				,c.is_delete
+				,c.notice_flag 
+				,c.hits 
+				,c.created_date
+				,c.updated_date
+				,a.user_name
+				,CASE
+			        WHEN A.locgov_code IS NOT NULL THEN g.locgov_nm
+			        ELSE NULL
+			    END AS locgov_nm
+			    ,CASE
+			        WHEN A.locgov_code IS NOT NULL THEN g.upper_locgov_nm
+			        ELSE NULL
+			    END AS upper_locgov_nm
+			FROM
+				op_community_freeboard as c
+			LEFT JOIN op_manager as a ON c.user_id = a.user_id
+			LEFT JOIN g_locgov as g ON g.locgov_code = a.locgov_code
+			WHERE c.id = #{id}
+		) A
+	</select>
+
+	<update id="deleteFreeBoard" parameterType="saleson.shop.community.doamin.CommunityDto" >
+		update op_community_freeboard
+		set is_delete = 'Y'
+		where id = #{id}
+
+	</update>
+
+	<update id="updateFreeBoard"  parameterType="saleson.shop.community.doamin.CommunityDto" >
+		update op_community_freeboard
+		set subject = #{subject},
+		content = #{content},
+		UPDATED_DATE = 	<include refid="CommonMapper.datetime" />
+		where id = #{id}
+
+	</update>
+
+	<update id="databoardListDelete" parameterType="Integer" >
+		update op_community_freeboard
+		set is_delete = 'Y'
+		WHERE ID = #{value}
+	</update>
+
+
+	<update id="addHitCount" parameterType="Integer">
+		UPDATE op_community_freeboard
+		SET HITS = HITS + 1
+		WHERE ID = #{id}
+	</update>
+
+</mapper>

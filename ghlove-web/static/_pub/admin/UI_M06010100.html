@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 관리자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">오프라인 기부금 접수</a> &gt; <a href="">기부금 접수관리</a> &gt; <a href="" class="on">기탁서 등록</a>
+                    </div>
+                    <h3><span>기탁서 등록</span></h3>
+                    <div class="btn_all btn_right mb15">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-dark-gray btn-small">기탁서 양식 및 약관 출력</button>
+                        </div>
+                    </div>
+
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>이름</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="이름" class="input_txt required _filter wd-150" type="text" value="">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>주민등록번호</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="주민등록번호 앞자리" class="input_txt required _filter wd-150" type="text" value="">
+                                            <span class="wave">-</span>
+                                            <input id="" name="" title="주민등록번호 뒷자리" class="input_txt required _filter wd-150" type="text" value="">
+
+                                            <button type="button" class="btn btn-default btn-mini"><span>실명인증</span></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>휴대폰</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <select id="" name="" title="선택" class="wd-100">
+                                                <option value="">010</option>
+                                            </select>
+                                            <span class="wave">-</span>
+                                            <input id="" name="" title="" class="input_txt required _filter wd-100" type="text">
+                                            <span class="wave">-</span>
+                                            <input id="" name="" title="" class="input_txt required _filter wd-100" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>거주지 주소</td>
+                                    <td>
+                                        <div class="flex_box gap-08">
+                                            <input id="" name="" title="" class="input_txt required _filter wd-150" type="text" disabled>
+                                            <button type="button" class="btn btn-default btn-mini">주소찾기</button>
+                                        </div>
+                                        <div class="flex_box gap-08">
+                                            <input id="" name="" title="" class="input_txt required _filter half" type="text" disabled>
+                                            <input id="" name="" title="" class="input_txt required _filter half" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>행정정보 공동이용 동의</td>
+                                    <td>
+                                        <div class="flex_box gap-12 item-center">
+                                            <div class="input-form">
+                                                <input id="rdo2-1" name="rdo2" type="radio" value="" checked="checked">
+                                                <label for="rdo2-1">동의</label>
+                                            </div>
+                                            <div class="input-form">
+                                                <input id="rdo2-2" name="rdo2" type="radio" value="">
+                                                <label for="rdo2-2">비동의</label>
+                                            </div>
+                                            <button type="button" class="btn btn-default btn-mini">주소검색</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>기부자 행정지 주소</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <select id="" name="" title="시도선택" class="wd-150" disabled>
+                                                <option value="">시도선택</option>
+                                            </select>
+                                            <select id="" name="" title="시,구,군" class="wd-150" disabled>
+                                                <option value="">시,구,군</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>기부 지자체</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <select id="" name="" title="시도선택" class="wd-150">
+                                                <option value="">시도선택</option>
+                                            </select>
+                                            <select id="" name="" title="시,구,군" class="wd-150">
+                                                <option value="">시,구,군</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>기부금액</td>
+                                    <td>
+                                        <div class="flex_box gap-08 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter wd-150" type="text" disabled>
+                                            <span class="wave">원</span>
+                                            <span class="wave tip wd-120 flex_box juc-sbt"><span class="mr-auto">(한도&nbsp;:&nbsp;</span><span>5,000,000</span>원)</span>
+                                            <button type="button" class="btn btn-default btn-mini">한도체크</button>
+                                            <span class="wave tip">* 일년에 최대 5백만원까지 기부가 가능합니다.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>답례품</td>
+                                    <td>
+                                        <div class="flex_box gap-12 item-center">
+                                            <div class="input-form">
+                                                <input id="rdo1-1" name="rdo1" type="radio" value="" checked="checked">
+                                                <label for="rdo1-1">답례품을 제공 받음</label>
+                                            </div>
+                                            <div class="input-form">
+                                                <input id="rdo1-2" name="rdo1" type="radio" value="">
+                                                <label for="rdo1-2">답례품을 제공 받지 않음</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">접수은행</td>
+                                    <td>
+                                        <div>
+                                            농협은행 서대문지점
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label"><span class="required_mark">*</span>약관 동의</td>
+                                    <td>
+                                        <div class="flex_box gap-12">
+                                            <div class="checkbox">
+                                                <input type="checkbox" id="chk">
+                                                <label for="chk">동의함</label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn_all btn_center">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-dark-gray btn-small">등록</button>
+                            <button type="button" class="btn btn-defualt btn-small">초기화</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

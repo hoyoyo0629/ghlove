@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.seller.user.SellerUserMapper">
+
+	<resultMap id="SellerUserResult" type="com.onlinepowers.framework.security.userdetails.User">
+		<id property="userId" column="USER_ID" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="email" column="EMAIL" />
+		<result property="password" column="PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="statusCode" column="STATUS_CODE" />
+		<result property="loginCount" column="LOGIN_COUNT" />
+		<result property="loginDate" column="LOGIN_DATE" />
+		<result property="denyDate" column="DENY_DATE" />
+		<result property="leaveDate" column="LEAVE_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<association property="userRoles" resultMap="SellerUserRoleResult" />
+	</resultMap>
+
+	<resultMap id="SellerUserResult2" type="saleson.shop.user.domain.SellerUser">
+		<id property="userId" column="USER_ID" />
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="email" column="EMAIL" />
+		<result property="password" column="PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="statusCode" column="STATUS_CODE" />
+		<result property="loginCount" column="LOGIN_COUNT" />
+		<result property="loginDate" column="LOGIN_DATE" />
+		<result property="denyDate" column="DENY_DATE" />
+		<result property="leaveDate" column="LEAVE_DATE" />
+		<result property="updatedDate" column="UPDATED_DATE" />
+		<result property="createdDate" column="CREATED_DATE" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="pwdChgSellerYn" column="PWD_CHG_SELLER_YN" />
+		<association property="userRoles" resultMap="SellerUserRoleResult" />
+	</resultMap>
+
+	<resultMap id="SellerUserRoleResult" type="com.onlinepowers.framework.security.userdetails.UserRole">
+		<result property="userId" column="USER_ID" />
+		<result property="authority" column="AUTHORITY" />
+	</resultMap>
+
+	<insert id="insertSellerUser" parameterType="com.onlinepowers.framework.security.userdetails.User">
+		INSERT INTO OP_SELLER_USER (USER_ID, LOGIN_ID, PASSWORD, PHONE_NUMBER, USER_NAME, EMAIL, LOGIN_COUNT, LOGIN_DATE, UPDATED_DATE, DENY_DATE, LEAVE_DATE, STATUS_CODE, CREATED_DATE, PASSWORD_EXPIRED_DATE, LOCGOV_CODE, RECEIVE_SMS)
+		VALUES (#{userId}, #{loginId}, #{password}, crypto_enc('normal', #{phoneNumber}, ''), crypto_enc('normal', #{userName}, ''), crypto_enc('normal', #{email}, ''), 0, null, <include refid="CommonMapper.datetime" />, null, null, #{statusCode}, <include refid="CommonMapper.datetime" />, #{passwordExpiredDate}, (SELECT SUBSTR(#{loginId}, 0, 5)), #{dormancyMailSent})
+	</insert>
+
+	<update id="updateSellerUser" parameterType="com.onlinepowers.framework.security.userdetails.User">
+		UPDATE OP_SELLER_USER
+		<set>
+			<if test="password != null and password != ''">
+				PASSWORD = #{password},
+			</if>
+			<if test="userName != null and userName != ''">
+				USER_NAME = (SELECT CRYPTO_ENC('normal', #{userName}, '')),
+			</if>
+			<if test="phoneNumber != null">
+				PHONE_NUMBER = (SELECT CRYPTO_ENC('normal', #{phoneNumber}, '')),
+			</if>
+			EMAIL = (SELECT CRYPTO_ENC('normal', #{email}, '')),
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		</set>
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<delete id="deleteSellerUserById" parameterType="long">
+		UPDATE OP_SELLER_USER
+		SET
+			LEAVE_DATE = <include refid="CommonMapper.datetime" /> ,
+			STATUS_CODE = '3',
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE USER_ID = #{userId}
+	</delete>
+
+	<sql id="sqlBaseSellerUserColumns">
+		SU.*,
+		UR.AUTHORITY
+	</sql>
+
+	<sql id="sqlSellerUserWhere">
+		<where>
+			SU.STATUS_CODE = '9'
+			<if test="query != null and query != ''">
+				<if test="where == 'USER_NAME'">
+					AND SU.USER_NAME LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'EMAIL'">
+					AND SU.EMAIL LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'LOGIN_ID'">
+					AND SU.LOGIN_ID LIKE CONCAT('%', #{query}, '%')
+				</if>
+			</if>
+			<if test='loginId != null'>
+				AND SU.LOGIN_ID = #{loginId}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="sqlSellerUserForm">
+		FROM OP_SELLER_USER SU
+		INNER JOIN OP_USER_ROLE UR
+			ON SU.USER_ID = UR.USER_ID
+	</sql>
+
+	<select id="getSellerUserList" parameterType="saleson.shop.user.support.UserSearchParam"
+	        resultMap="SellerUserResult">
+		SELECT T_A.*
+			, CRYPTO_DEC('normal', T_A.USER_NAME_ENC, '', 0) AS USER_NAME
+			, CRYPTO_DEC('normal', T_A.EMAIL_ENC, '', 0) AS EMAIL
+			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		FROM (
+			SELECT
+				SU.USER_ID,
+				SU.LOGIN_ID,
+				SU.PASSWORD,
+				SU.USER_NAME AS USER_NAME_ENC,
+				SU.EMAIL AS EMAIL_ENC,
+				SU.PHONE_NUMBER AS PHONE_NUMBER_ENC,
+				SU.STATUS_CODE,
+				SU.LOGIN_COUNT,
+				SU.LOGIN_DATE,
+				SU.DENY_DATE,
+				SU.LEAVE_DATE,
+				SU.LOGIN_FAIL_COUNT,
+				SU.LOGIN_TRY_DATE,
+				SU.PASSWORD_TYPE,
+				SU.PASSWORD_EXPIRED_DATE,
+				SU.UPDATED_DATE,
+				SU.CREATED_DATE,
+				SU.LOCGOV_CODE,
+				IFNULL(SU.PWD_CHG_SELLER_YN, 'Y') AS PWD_CHG_SELLER_YN,
+				SU.MBER_DN,
+				UR.AUTHORITY
+				FROM OP_SELLER_USER SU
+				INNER JOIN OP_USER_ROLE UR
+					ON SU.USER_ID = UR.USER_ID
+			INNER JOIN (
+				<include refid="CommonMapper.paginationHeader" />
+					SELECT
+						SU.USER_ID
+					FROM OP_SELLER_USER SU
+					INNER JOIN OP_USER_ROLE UR
+						ON SU.USER_ID = UR.USER_ID
+					AND UR.AUTHORITY = CONCAT('ROLE_SELLER_',#{sellerId})
+					<where>
+						SU.STATUS_CODE = '9'
+						<if test="query != null and query != ''">
+							<if test="where == 'USER_NAME'">
+								AND SU.USER_NAME LIKE CONCAT('%', #{query}, '%')
+							</if>
+							<if test="where == 'EMAIL'">
+								AND SU.EMAIL LIKE CONCAT('%', #{query}, '%')
+							</if>
+							<if test="where == 'LOGIN_ID'">
+								AND SU.LOGIN_ID LIKE CONCAT('%', #{query}, '%')
+							</if>
+						</if>
+						<if test='loginId != null'>
+							AND SU.LOGIN_ID = #{loginId}
+						</if>
+					</where>
+				<include refid="CommonMapper.paginationFooter" />
+			) BASE ON BASE.USER_ID = SU.USER_ID
+			ORDER BY SU.USER_ID DESC
+		) T_A
+	</select>
+
+	<select id="getSellerUserListCount" parameterType="saleson.shop.user.support.UserSearchParam" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM OP_SELLER_USER SU
+		INNER JOIN OP_USER_ROLE UR
+			ON SU.USER_ID = UR.USER_ID
+		AND UR.AUTHORITY = CONCAT('ROLE_SELLER_',#{sellerId})
+		<where>
+			SU.STATUS_CODE = '9'
+			<if test="query != null and query != ''">
+				<if test="where == 'USER_NAME'">
+					AND SU.USER_NAME LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'EMAIL'">
+					AND SU.EMAIL LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'LOGIN_ID'">
+					AND SU.LOGIN_ID LIKE CONCAT('%', #{query}, '%')
+				</if>
+			</if>
+			<if test='loginId != null'>
+				AND SU.LOGIN_ID = #{loginId}
+			</if>
+		</where>
+	</select>
+
+	<select id="getSellerUserById" parameterType="long" resultMap="SellerUserResult2">
+		SELECT
+			SU.*,
+			UR.AUTHORITY
+		FROM OP_SELLER_USER SU
+		INNER JOIN OP_USER_ROLE UR
+		ON SU.USER_ID = UR.USER_ID
+		WHERE SU.STATUS_CODE = '9'
+		AND SU.USER_ID = #{userId}
+	</select>
+
+	<select id="getSellerUserByLoginId" parameterType="String" resultMap="SellerUserResult">
+		SELECT T_A.*
+			, CRYPTO_DEC('normal', T_A.USER_NAME_ENC, '', 0) AS USER_NAME
+			, CRYPTO_DEC('normal', T_A.EMAIL_ENC, '', 0) AS EMAIL
+			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		FROM (
+			SELECT
+				SU.USER_ID,
+				SU.LOGIN_ID,
+				SU.PASSWORD,
+				SU.USER_NAME AS USER_NAME_ENC,
+				SU.EMAIL AS EMAIL_ENC,
+				SU.PHONE_NUMBER AS PHONE_NUMBER_ENC,
+				SU.STATUS_CODE,
+				SU.LOGIN_COUNT,
+				SU.LOGIN_DATE,
+				SU.DENY_DATE,
+				SU.LEAVE_DATE,
+				SU.LOGIN_FAIL_COUNT,
+				SU.LOGIN_TRY_DATE,
+				SU.PASSWORD_TYPE,
+				SU.PASSWORD_EXPIRED_DATE,
+				SU.UPDATED_DATE,
+				SU.CREATED_DATE,
+				SU.LOCGOV_CODE,
+				IFNULL(SU.PWD_CHG_SELLER_YN, 'Y') AS PWD_CHG_SELLER_YN,
+				SU.MBER_DN,
+				UR.AUTHORITY
+			FROM OP_SELLER_USER SU
+			INNER JOIN OP_USER_ROLE UR
+				ON SU.USER_ID = UR.USER_ID
+			WHERE SU.STATUS_CODE = '9'
+			AND SU.LOGIN_ID = #{loginId}
+		) T_A
+	</select>
+
+	<select id="getDuplicateSellerUserByLoginId" parameterType="String" resultType="int">
+		SELECT
+			COUNT(*) AS CNT
+		FROM OP_SELLER_USER
+		WHERE LOGIN_ID = #{loginId}
+	</select>
+
+	<update id="updatePasswordForSellerUser" parameterType="com.onlinepowers.framework.security.userdetails.User">
+		UPDATE OP_SELLER_USER
+		SET
+			PASSWORD = #{password},
+			PASSWORD_TYPE = #{passwordType},
+			PASSWORD_EXPIRED_DATE = #{passwordExpiredDate},
+			LOGIN_FAIL_COUNT = 0,
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<update id="updatePasswordForSellerUser2" parameterType="saleson.shop.user.domain.SellerUser">
+		UPDATE OP_SELLER_USER
+		SET
+			PASSWORD = #{password},
+			PASSWORD_TYPE = #{passwordType},
+			PASSWORD_EXPIRED_DATE = #{passwordExpiredDate},
+			PWD_CHG_SELLER_YN = #{pwdChgSellerYn},
+			LOGIN_FAIL_COUNT = 0,
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE USER_ID = #{userId}
+	</update>
+
+	<select id="getSellerUserIdByLoginId" parameterType="String" resultType="long">
+		SELECT USER_ID
+		FROM OP_SELLER_USER
+		WHERE LOGIN_ID = #{loginId}
+	</select>
+
+	<update id="updateSellerUserPassword" parameterType="com.onlinepowers.framework.security.userdetails.User">
+		UPDATE OP_SELLER_USER
+		<set>
+			PASSWORD = #{password},
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />,
+			<if test="actionType == 'INIT_PWD'">
+				PWD_CHG_SELLER_YN = 'Y',
+			</if>
+			LOGIN_FAIL_COUNT = 0
+		</set>
+		WHERE USER_ID = #{userId}
+	</update>
+
+
+	<select id="getSellerUserByLoginIdAndPwd" parameterType="saleson.shop.user.domain.SellerUser" resultType="saleson.shop.user.domain.SellerUser">
+
+		SELECT
+			SU.USER_ID
+			, S.SELLER_ID
+			, IFNULL(SU.PWD_CHG_SELLER_YN, 'Y') AS PWD_CHG_SELLER_YN
+			, SU.PASSWORD_EXPIRED_DATE
+			, SU.MBER_DN
+			, SU.LOGIN_COUNT
+			, SU.LOGIN_FAIL_COUNT
+			, S.STATUS_CODE
+			, SU.LOGIN_ID
+			, SU.PASSWORD
+			<!-- , CRYPTO_DEC('normal', SU.EMAIL, '', 0) AS EMAIL -->
+			, CRYPTO_DEC('normal', S.EMAIL, '', 0) AS EMAIL		<!-- srhan. 20251029. 로그인시 이메일 체크와 발송 주소 통일 -->
+			, CRYPTO_DEC('normal', S.user_name , '', 0) AS USER_NAME
+			FROM OP_SELLER_USER SU
+			, OP_SELLER S
+			, OP_USER_ROLE UR
+			WHERE SU.LOGIN_ID = S.LOGIN_ID
+			AND SU.STATUS_CODE = '9'
+			<!-- AND S.STATUS_CODE IN ('2', '3') -->
+			AND S.STATUS_CODE = '2'
+			AND SU.LOGIN_ID = #{loginId}
+			AND SU.PASSWORD = CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{loginId}, #{password}), '')
+			<!-- AND SU.LOGIN_FAIL_COUNT <![CDATA[ < ]]>  (
+															SELECT
+																	`VALUE`
+																FROM OP_CONFIG_ISMS
+																WHERE `KEY` = 'FAIL_PASSWORD_COUNT'
+														) java 단에서 별도 처리로직이 있어서 주석처리 -->
+			AND UR.USER_ID = SU.USER_ID
+			GROUP BY SU.USER_ID
+
+	</select>
+
+
+
+	<update id="updatePasswordForSellerUserLogin" parameterType="saleson.shop.user.domain.SellerUser">
+		UPDATE OP_SELLER_USER
+		SET
+			PASSWORD = #{password},
+			PASSWORD_TYPE = #{passwordType},
+			PASSWORD_EXPIRED_DATE = #{passwordExpiredDate},
+			PWD_CHG_SELLER_YN = #{pwdChgSellerYn},
+			LOGIN_FAIL_COUNT = 0,
+			UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE LOGIN_ID = #{loginId}
+			AND STATUS_CODE = '9'
+	</update>
+
+
+	<select id="getPkiSellerFormValid" parameterType="saleson.seller.main.domain.PkiSellerLogin" resultType="saleson.seller.main.domain.PkiSellerLogin">
+		/** seller-user-mapper.getPkiSellerFormValid (PKI 폼 유효성 조회) */
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', IFNULL(T_A.PHONE_NUMBER_ENC, '') , '', 0) AS PHONE_NUMBER
+		FROM (
+			SELECT
+					SU.USER_ID,
+					<!-- SU.PHONE_NUMBER, -->
+					SU.MBER_DN,
+					SU.MBER_FIN_DN,
+					<!-- SU.MBER_CI, -->
+					IFNULL(S.PHONE_NUMBER, '') AS PHONE_NUMBER_ENC
+			FROM
+					OP_SELLER_USER SU
+					, OP_SELLER S
+			WHERE
+					SU.STATUS_CODE = '9'
+				AND S.STATUS_CODE = '2'
+				AND SU.LOGIN_ID = S.LOGIN_ID
+				AND SU.LOGIN_ID = #{loginId}
+				<!-- AND SU.LOGIN_ID = crypto_enc('normal', #{loginId}, '') -->
+				AND S.BUSINESS_NUMBER = #{businessNumber}
+				AND S.PHONE_NUMBER = (SELECT CRYPTO_ENC('normal', #{phoneNumber}, ''))
+		) T_A
+	</select>
+
+	<update id="updatePkiManagerMberDn" parameterType="saleson.seller.main.domain.PkiSellerLogin" >
+		/** seller-user-mapper.updatePkiManagerMberDn (회원 DN 수정) */
+		UPDATE
+				OP_SELLER_USER
+		SET
+			<choose>
+				<when test='mode == "D"'>
+					<if test='mberDn != null and mberDn != ""'>
+						MBER_DN = null,
+					</if>
+					<if test='mberFinDn != null and mberFinDn != ""'>
+						MBER_FIN_DN = null,
+					</if>
+				</when>
+				<otherwise>
+					<if test='mberDn != null and mberDn != ""'>
+						MBER_DN = (SELECT CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{mberDn}), '')),
+					</if>
+					<if test='mberFinDn != null and mberFinDn != ""'>
+						MBER_FIN_DN = (SELECT CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{mberFinDn}), '')),
+					</if>
+
+					<if test='mberCi != null and mberCi != ""'>
+						MBER_CI = (
+									CASE WHEN MBER_CI = '' OR MBER_CI IS NULL
+											THEN (SELECT CRYPTO_ENC('normal', #{mberCi}, ''))
+										ELSE MBER_CI
+									END
+									),
+					</if>
+				</otherwise>
+			</choose>
+				UPDATED_DATE = <include refid="CommonMapper.datetime" />
+		WHERE 1=1
+				AND LOGIN_ID = #{loginId}
+				AND STATUS_CODE = '9'
+	</update>
+
+
+	<select id="getSellerUserByMberDn" parameterType="saleson.seller.main.domain.PkiSellerLogin" resultType="saleson.shop.user.domain.SellerUser">
+
+		SELECT
+			SU.USER_ID
+			, S.SELLER_ID
+			, IFNULL(SU.PWD_CHG_SELLER_YN, 'Y') AS PWD_CHG_SELLER_YN
+			, SU.PASSWORD_EXPIRED_DATE
+			, SU.MBER_DN
+			, SU.LOGIN_COUNT
+			, SU.LOGIN_FAIL_COUNT
+			, S.STATUS_CODE
+			, SU.LOGIN_ID
+			, CONCAT(L.UPPER_LOCGOV_NM, ' ', L.LOCGOV_NM) AS LOCGOV_NAME
+			FROM OP_SELLER_USER SU
+				, OP_SELLER S
+				, G_LOCGOV L
+			WHERE SU.LOGIN_ID = S.LOGIN_ID
+				AND SU.STATUS_CODE = '9'
+				<!-- AND S.STATUS_CODE IN ('2', '3') -->
+				AND S.STATUS_CODE = '2'
+				<!-- AND SU.MBER_DN = CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{loginId}, #{mberDn}), '') -->
+				<if test="mberDn != null and mberDn != ''">
+					AND SU.MBER_DN = (SELECT CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{mberDn}), ''))
+				</if>
+				<if test="mberFinDn != null and mberFinDn != ''">
+					AND SU.MBER_FIN_DN = (SELECT CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{mberFinDn}), ''))
+				</if>
+				<if test="loginId != null and loginId != ''">
+					AND S.LOGIN_ID = #{loginId}
+				</if>
+				AND S.LOCGOV_CODE = L.LOCGOV_CODE(+)
+
+	</select>
+
+	<update id="updateLoginFailCnt" parameterType="String">
+
+		UPDATE OP_SELLER_USER
+			SET LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1
+		WHERE LOGIN_ID = #{value}
+		AND LOGIN_FAIL_COUNT <![CDATA[ < ]]>  <!-- 5 -->(
+															SELECT
+																	`VALUE`
+																FROM OP_CONFIG_ISMS
+																WHERE `KEY` = 'FAIL_PASSWORD_COUNT'
+														)
+
+	</update>
+
+	<update id="clearLoginFailCnt" parameterType="String">
+
+		UPDATE OP_SELLER_USER
+			SET LOGIN_FAIL_COUNT = 0
+		WHERE LOGIN_ID = #{value}
+
+	</update>
+
+
+	<update id="modSellerMberCi" parameterType="saleson.seller.main.domain.PkiSellerLogin">
+
+		UPDATE OP_SELLER_USER SU
+			, OP_SELLER S
+			SET SU.MBER_CI = (SELECT CRYPTO_ENC('normal', #{mberCi}, ''))
+		WHERE 	S.LOGIN_ID = #{loginId}
+			AND SU.LOGIN_ID = S.LOGIN_ID
+			AND SU.USER_ID = #{userId}
+
+	</update>
+
+
+	<update id="delSellerMberCi" parameterType="long">
+
+		UPDATE OP_SELLER_USER
+			SET MBER_CI = null
+		WHERE USER_ID = #{value}
+
+	</update>
+
+
+	<select id="getSellerUserByLoginIdForSms" parameterType="string" resultType="saleson.shop.user.domain.SellerUser">
+		SELECT
+			T_A.*
+			, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
+			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		FROM (
+			SELECT
+				S.COMPANY_NAME AS USER_NAME
+				, SU.MBER_CI AS MBER_CI_ENC
+				, S.PHONE_NUMBER AS PHONE_NUMBER_ENC
+				, SU.RECEIVE_SMS
+			FROM OP_SELLER S
+				, OP_SELLER_USER SU
+			WHERE 1=1
+				AND S.LOGIN_ID = #{value}
+				AND S.LOGIN_ID = SU.LOGIN_ID
+		) T_A
+
+	</select>
+
+	<!-- OP_SELLER_USER 테이블 EMAIL UPDATE -->
+	<update id="updateSellerUserInfo" parameterType="saleson.seller.main.domain.Seller">
+		UPDATE OP_SELLER_USER
+		<set>
+			<if test="email != null and email != ''">
+				EMAIL = #{email}
+			</if>
+		</set>
+		WHERE LOGIN_ID = #{loginId}
+	</update>
+
+
+</mapper>

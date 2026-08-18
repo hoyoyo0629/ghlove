@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.maintenance.MaintenanceMapper">
+
+
+
+<resultMap id="FaqBbsCmntDto" type="saleson.shop.community.doamin.CmntyFaqBbsCmntDto">
+	<result property="cmntId" column="CMNT_ID" />
+	<result property="bbsId" column="BBS_ID" />
+	<result property="cmntCn" column="CMNT_CN" />
+	<result property="useYn" column="USE_YN" />
+	<result property="frstCrtId" column="FRST_CRT_ID" />
+	<result property="frstCrtDt" column="FRST_CRT_DT" />
+	<result property="lastMdfcnId" column="LAST_MDFCN_ID" />
+	<result property="lastMdfcnDt" column="LAST_MDFCN_DT" />
+	<result property="authority" column="AUTHORITY" />
+	<result property="isSecret" column="IS_SECRET" />
+	<result property="upperLocgovNm" column="UPPER_LOCGOV_NM" />
+	<result property="locgovNm" column="LOCGOV_NM" />
+	<result property="userName" column="USER_NAME" />
+	<collection property="cmntyFaqBbsCmntFileList" resultMap="FaqBbsCmntFileDto">
+	</collection>
+</resultMap>
+
+<resultMap id="FaqBbsCmntFileDto" type="saleson.shop.community.doamin.CmntyFaqBbsCmntFileDto">
+	<result property="fileId" column="FILE_ID" />
+	<result property="cmntId" column="FILE_CMNT_ID" />
+	<result property="orgnlAtchFileNm" column="ORGNL_ATCH_FILE_NM" />
+	<result property="atchFileNm" column="ATCH_FILE_NM" />
+	<result property="atchFileExtnNm" column="ATCH_FILE_EXTN_NM" />
+	<result property="atchFileSz" column="ATCH_FILE_SZ" />
+	<result property="atchFileSeq" column="ATCH_FILE_SEQ" />
+	<result property="atchFilePathNm" column="ATCH_FILE_PATH_NM" />
+	<result property="frstCrtId" column="FILE_FRST_CRT_ID" />
+	<result property="frstCrtDt" column="FILE_FRST_CRT_DT" />
+
+</resultMap>
+
+
+	<select id="countMaintenance" parameterType="saleson.shop.maintenance.MaintenanceDto" resultType="Integer">
+		SELECT COUNT(*)
+		FROM
+			(
+				SELECT
+					    a.bbs_id
+					 , a.sr_no
+					 , a.req_type
+					 , a.process_type
+					 , a.req_channel
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.process_state
+					 , a.process_cn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id as reqManagerId
+					 , m1.user_name as reqManagerNm
+					 , a.process_manager_id
+					 , m2.user_name AS processManagerNm
+					 , a.urgent_yn
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , a.use_yn
+				FROM
+					G_SR_MAINTENANCE AS a
+				LEFT JOIN op_manager AS m1 on a.frst_crt_id = m1.user_id
+				LEFT JOIN op_manager AS m2 on a.process_manager_id = m2.user_id
+				WHERE
+					1=1
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'CSRNO'">
+								AND sr_no LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'CN'">
+								AND bbs_cn LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<otherwise>
+								AND (
+								    sr_no LIKE CONCAT('%', #{query}, '%') OR
+								    bbs_ttl LIKE CONCAT('%', #{query}, '%') OR
+								    bbs_cn LIKE CONCAT('%', #{query}, '%')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					<!-- 검색조건 : 완료구분 -->
+					<if test="shArrProcessState != null and shArrProcessState.length gt 0">
+						AND a.process_state IN (
+							<foreach item="item" index="index" collection="shArrProcessState" separator=",">
+								#{item}
+							</foreach>
+						)
+					</if>
+					AND a.use_yn = 'Y'
+			)
+	</select>
+
+	<select id="listMaintenance"  parameterType="saleson.shop.maintenance.MaintenanceDto" resultType="saleson.shop.maintenance.MaintenanceDto">
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				a.bbs_id
+				, a.sr_no
+				, a.req_type
+				, a.process_type
+				, a.req_channel
+				, a.bbs_ttl
+				, a.bbs_cn
+				, a.process_state
+				, crypto_dec('normal', a.process_cn, '', '0') as process_cn
+				, IFNULL(a.inq_cnt, 0) as inq_cnt
+				, a.frst_crt_id as reqManagerId
+				, crypto_dec('normal',a.reqManagerNm,'',0) AS reqManagerNm
+				, a.process_manager_id
+				, crypto_dec('normal',a.process_Manager_Nm,'',0) AS processManagerNm
+				, a.urgent_yn
+				, a.frst_crt_id
+				, a.frst_crt_dt
+				, a.last_mdfcn_id
+				, a.last_mdfcn_dt
+				, a.process_start_date
+				, a.process_end_date
+				, a.use_yn
+				, (select count(*) from G_SR_MAINTENANCE_file where use_yn = 'Y' and bbs_id = a.bbs_id) as attachedFileCnt
+				, a.reqTypeNm  				<!-- 업무구분 -->
+				, a.reqChannelNm  			<!-- 요청경로 -->
+				, a.processTypeNm  			<!-- 처리구분 -->
+				, a.processStateNm  		<!-- 완료구분 -->
+			FROM
+			(
+				SELECT
+					   a.bbs_id
+					 , a.sr_no
+					 , a.req_type
+					 , a.process_type
+					 , a.req_channel
+					 , a.bbs_ttl
+					 , a.bbs_cn
+					 , a.process_state
+					 , a.process_cn
+					 , IFNULL(a.inq_cnt, 0) as inq_cnt
+					 , a.frst_crt_id as reqManagerId
+					 , m1.user_name as reqManagerNm
+					 , a.process_manager_id
+					 , a.process_Manager_Nm
+					 , a.urgent_yn
+					 , a.frst_crt_id
+					 , a.frst_crt_dt
+					 , a.last_mdfcn_id
+					 , a.last_mdfcn_dt
+					 , a.process_start_date
+					 , a.process_end_date
+					 , a.use_yn
+					 , c1.label as reqTypeNm  			<!-- 업무구분 -->
+					 , c2.label as reqChannelNm  		<!-- 요청경로 -->
+					 , c3.label as processTypeNm  		<!-- 처리구분 -->
+					 , c4.label as processStateNm  		<!-- 완료구분 -->
+				FROM
+					G_SR_MAINTENANCE AS a
+				LEFT JOIN op_manager AS m1 on a.frst_crt_id = m1.user_id
+				LEFT JOIN op_manager AS m2 on a.process_manager_id = m2.user_id
+				LEFT JOIN op_common_code AS c1 on a.req_type = c1.id AND c1.CODE_TYPE = 'MAINTEN_CATE_CODE'
+				LEFT JOIN op_common_code AS c2 on a.req_channel = c2.id AND c2.CODE_TYPE = 'MAINTEN_PATH_CODE'
+				LEFT JOIN op_common_code AS c3 on a.process_type = c3.id AND c3.CODE_TYPE = 'MAINTEN_PROC_CODE'
+				LEFT JOIN op_common_code AS c4 on a.process_state = c4.id AND c4.CODE_TYPE = 'MAINTEN_STATE_CODE'
+				WHERE
+					1=1
+				    <if test="startDt != null and startDt != '' and endDt != null and endDt != ''">
+				    	AND DATE_FORMAT(a.frst_crt_dt, '%Y%m%d') BETWEEN #{startDt} AND #{endDt}
+				    </if>
+				    <if test="query != null and query != ''">
+						<choose>
+							<when test="where == 'CSRNO'">
+								AND sr_no LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'SUBJECT'">
+								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<when test="where == 'CN'">
+								AND bbs_cn LIKE CONCAT('%', #{query}, '%')
+							</when>
+							<otherwise>
+								AND (
+								    sr_no LIKE CONCAT('%', #{query}, '%') OR
+								    bbs_ttl LIKE CONCAT('%', #{query}, '%') OR
+								    bbs_cn LIKE CONCAT('%', #{query}, '%')
+								)
+							</otherwise>
+						</choose>
+					</if>
+					<!-- 검색조건 : 완료구분 -->
+					<if test="shArrProcessState != null and shArrProcessState.length gt 0">
+						AND a.process_state IN (
+							<foreach item="item" index="index" collection="shArrProcessState" separator=",">
+								#{item}
+							</foreach>
+						)
+					</if>
+					AND a.use_yn = 'Y'
+				ORDER BY a.urgent_yn DESC, a.frst_crt_dt DESC
+			) a
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+		<insert id="insertMaintenance" parameterType="saleson.shop.maintenance.MaintenanceDto" useGeneratedKeys="true" keyProperty="bbsId">
+		INSERT INTO
+			G_SR_MAINTENANCE
+			(
+				SR_NO
+				, KI_TYPE
+				, REQ_CHANNEL
+				, REQ_TYPE
+				, PROCESS_TYPE
+				, PROCESS_STATE
+				, REQ_USER_PHONE_NUMBER
+				, REQ_USER_INFO
+				, REQ_CRT_DATE
+				, BBS_TTL
+				, BBS_CN
+				, PROCESS_CN
+				, PROCESS_MANAGER_NM
+				, PROCESS_RECEIPT_DATE
+				, PROCESS_TARGET_END_DATE
+				, PROCESS_START_DATE
+				, PROCESS_END_DATE
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				(SELECT CONCAT('GGSR-', DATE_FORMAT(NOW(), '%y'), '-', IFNULL(SUBSTRING_INDEX(MAX(sr_no),'-',-1),0) + 1) AS SR_NO
+					FROM G_SR_MAINTENANCE
+					WHERE SR_NO like CONCAT('GGSR-', DATE_FORMAT(NOW(),'%y'), '-%'))
+				, #{kiType}
+				, #{reqChannel}
+				, #{reqType}
+				, #{processType}
+				, #{processState}
+				, crypto_enc('normal',#{reqUserPhoneNumber}, '')
+				, crypto_enc('normal',#{reqUserInfo}, '')
+				, DATE_FORMAT(SYSDATE,'%Y%m%d')
+				, #{bbsTtl}
+				, #{bbsCn}
+				, #{processCn}
+				, crypto_enc('normal',#{processManagerNm}, '')
+				, #{processReceiptDate}
+				, #{processTargetEndDate}
+				, #{processStartDate}
+				, #{processEndDate}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+	<insert id="insertMaintenanceFile" parameterType="saleson.shop.maintenance.MaintenanceDto">
+		INSERT INTO
+			G_SR_MAINTENANCE_FILE
+			(
+				BBS_ID
+				, ORGNL_ATCH_FILE_NM
+				, ATCH_FILE_NM
+				, ATCH_FILE_EXTN_NM
+				, ATCH_FILE_SZ
+				, ATCH_FILE_SEQ
+				, ATCH_FILE_PATH_NM
+				, FRST_CRT_ID
+				, FRST_CRT_DT
+			)
+		VALUES
+			(
+				#{bbsId}
+				, #{orgnlAtchFileNm}
+				, #{atchFileNm}
+				, #{atchFileExtnNm}
+				, #{atchFileSz}
+				, (SELECT IFNULL(MAX(ATCH_FILE_SEQ)+1, 1) FROM G_SR_MAINTENANCE_FILE WHERE BBS_ID = #{bbsId})
+				, #{atchFilePathNm}
+				, #{frstCrtId}
+				, NOW()
+			)
+	</insert>
+
+
+	<update id="updateMaintenanceInqCnt" parameterType="long">
+	/**cmnty-mapper.updateMaintenanceInqCnt */
+		UPDATE
+			G_SR_MAINTENANCE
+		SET
+			INQ_CNT = INQ_CNT + 1
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+
+	<select id="getMaintenanceDetail" parameterType="long" resultType="saleson.shop.maintenance.MaintenanceDto">
+		/**cmnty-mapper.getMaintenanceDetail */
+		SELECT
+			A.BBS_ID
+			, A.KI_TYPE
+			, A.sr_no
+			, date_format(str_to_date(req_crt_date, '%Y%m%d'), '%Y-%m-%d') as req_crt_date
+			, req_dt
+			, CRYPTO_DEC('normal',req_user_phone_number,'',0) AS req_user_phone_number
+			, req_channel
+			, req_type
+			, process_type
+			, A.BBS_TTL
+			, A.BBS_CN
+			, CRYPTO_DEC('normal',A.req_user_info,'',0) AS req_user_info
+			, A.urgent_yn
+			, A.req_source
+			, A.process_manager_id
+			, CRYPTO_DEC('normal',A.process_manager_nm,'',0) AS process_manager_nm
+			, A.process_cn
+			, A.process_receipt_date
+			, A.process_target_end_date
+			, A.process_start_date
+			, A.process_end_date
+			, A.process_state
+			, A.rm
+			, (SELECT ATCH_FILE_SZ  FROM G_SR_MAINTENANCE_FILE WHERE BBS_ID = A.BBS_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
+			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS req_manager_nm
+			, C.LOCGOV_NM
+			, C.UPPER_LOCGOV_NM
+			, A.USE_YN
+			, A.FRST_CRT_ID
+			, A.FRST_CRT_DT
+			, A.LAST_MDFCN_ID
+			, A.LAST_MDFCN_DT
+			, (SELECT MIN(AUTHORITY) FROM OP_USER_ROLE WHERE USER_ID = A.FRST_CRT_ID) AS AUTHORITY
+			, A.INQ_CNT
+		FROM
+			G_SR_MAINTENANCE A
+		LEFT JOIN
+			OP_MANAGER B ON A.FRST_CRT_ID  = B.USER_ID
+		LEFT JOIN
+			G_LOCGOV C ON B.LOCGOV_CODE  = C.LOCGOV_CODE
+		WHERE
+			A.BBS_ID = #{bbsId}
+			AND A.USE_YN = 'Y'
+	</select>
+
+	<select id="getMaintenancefileList" parameterType="long" resultType="saleson.shop.maintenance.MaintenanceFileDto">
+		/**cmnty-mapper.getMaintenancefileList */
+		SELECT
+			FILE_ID
+			, BBS_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_SR_MAINTENANCE_FILE
+		WHERE
+			BBS_ID = #{bbsId}
+			AND USE_YN = 'Y'
+	</select>
+
+	<select id="getMaintenanceFileDetail" parameterType="long" resultType="saleson.shop.maintenance.MaintenanceFileDto">
+		/**cmnty-mapper.getMaintenanceFileDetail */
+		SELECT
+			FILE_ID
+			, BBS_ID
+			, ORGNL_ATCH_FILE_NM
+			, ATCH_FILE_NM
+			, ATCH_FILE_EXTN_NM
+			, ATCH_FILE_SZ
+			, ATCH_FILE_SEQ
+			, ATCH_FILE_PATH_NM
+		FROM
+			G_SR_MAINTENANCE_FILE
+		WHERE
+			FILE_ID = #{fileId}
+	</select>
+
+	<update id="deleteMaintenanceFileByFileId" parameterType="saleson.shop.maintenance.MaintenanceFileDto">
+		/**cmnty-mapper.deleteMaintenanceFileByFileId */
+		UPDATE
+			G_SR_MAINTENANCE_FILE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<update id="updateMaintenance" parameterType="saleson.shop.maintenance.MaintenanceDto">
+		/**cmnty-mapper.updateMaintenance */
+		UPDATE
+			G_SR_MAINTENANCE
+		SET
+			KI_TYPE = #{kiType}
+			, REQ_CHANNEL = #{reqChannel}
+			, REQ_TYPE = #{reqType}
+			, PROCESS_TYPE = #{processType}
+			, PROCESS_STATE = #{processState}
+			, REQ_USER_PHONE_NUMBER = crypto_enc('normal',#{reqUserPhoneNumber}, '')
+			, REQ_USER_INFO = crypto_enc('normal',#{reqUserInfo}, '')
+			, BBS_TTL = #{bbsTtl}
+			, BBS_CN = #{bbsCn}
+			, PROCESS_MANAGER_NM = crypto_enc('normal',#{processManagerNm}, '')
+			, PROCESS_CN = #{processCn}
+			, PROCESS_RECEIPT_DATE = #{processReceiptDate}
+			, PROCESS_TARGET_END_DATE = #{processTargetEndDate}
+			, PROCESS_START_DATE = #{processStartDate}
+			, PROCESS_END_DATE = #{processEndDate}
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+
+	<update id="deleteMaintenance" parameterType="saleson.shop.community.doamin.CmntyRpstrDto">
+	/**cmnty-mapper.deleteMaintenance */
+		UPDATE
+			G_SR_MAINTENANCE
+		SET
+			USE_YN = 'N'
+			, LAST_MDFCN_ID = #{lastMdfcnId}
+			, LAST_MDFCN_DT = NOW()
+		WHERE
+			BBS_ID = #{bbsId}
+	</update>
+
+</mapper>

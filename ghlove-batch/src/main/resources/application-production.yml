@@ -1,0 +1,114 @@
+server:
+  port: 8000
+
+spring:
+  application.name: ghlove-batch
+
+saleson:
+  root: "/home/ghlove"
+  batch: true
+  license:
+    clientid: icraft
+    creation.date: 20221214103614
+    hash.key: b667ac4e5ffcd3aafda3e2f7aa4d0f25ba3e1fc93431dbcb3767a73d823c9bc4
+    file: ${saleson.license-root}/license/icraft-20221214103614.license
+    key: ${saleson.license-root}/license/icraft-20221214103614.key
+  # datasource
+  datasource:
+    driver-class-name: cubrid.jdbc.driver.CUBRIDDriver
+    jdbc-url: jdbc:CUBRID:192.168.84.24:33000:ghlove2:::?altHosts=192.168.84.25:33000&charset=utf-8
+    username: dba
+    password: rhgidtkfkd!1234A
+    connection-test-query: SELECT 1
+    minimum-idle: 10
+    maximum-pool-size: 10
+    pool-name: pool-saleson
+    data-source-properties:
+      rewriteBatchedStatements: true
+      
+slave:
+  datasource:
+    driver-class-name: cubrid.jdbc.driver.CUBRIDDriver
+    jdbc-url: jdbc:CUBRID:192.168.84.25:44000:ghlove2:::?altHosts=192.168.84.24:44000&charset=utf-8
+    username: dba
+    password: rhgidtkfkd!1234A
+    connection-test-query: SELECT 1
+    minimum-idle: 10
+    maximum-pool-size: 10
+
+
+analysis:
+  datasource:
+    driver-class-name: cubrid.jdbc.driver.CUBRIDDriver
+    jdbc-url: jdbc:CUBRID:192.168.84.28:48000:ghlove_analysis:::?charset=utf-8
+    username: dba
+    password: ghlove54321
+    connection-test-query: SELECT 1
+    minimum-idle: 10
+    maximum-pool-size: 10
+    pool-name: pool-analysis
+    data-source-properties:
+      rewriteBatchedStatements: true
+      
+nhapi:
+  datasource:
+    driver-class-name: cubrid.jdbc.driver.CUBRIDDriver
+    jdbc-url: jdbc:CUBRID:192.168.84.28:48000:ghlove_api:::?charset=utf-8
+    username: dba
+    password: ghlove54321
+    connection-test-query: SELECT 1
+    minimum-idle: 10
+    maximum-pool-size: 10
+    pool-name: pool-nhapi
+    data-source-properties:
+      rewriteBatchedStatements: true
+      
+# Log DataSource
+log:
+  datasource:
+    driver-class-name: cubrid.jdbc.driver.CUBRIDDriver
+    jdbc-url: jdbc:CUBRID:192.168.84.24:33000:ghlove2:::?altHosts=192.168.84.25:33000&charset=utf-8
+    username: dba
+    password: rhgidtkfkd!1234A
+    connection-test-query: SELECT 1
+    minimum-idle: 10
+    maximum-pool-size: 10
+    pool-name: pool-log
+      
+  # Logging Level
+logging:
+  level:
+    root: FATAL
+    org.springframework.web: FATAL
+    com.onlinepowers: FATAL
+    saleson: FATAL
+    saleson.batch.job.JobServiceImpl: FATAL
+    jdbc:
+      sqltiming: FATAL
+      resultsettable: FATAL
+      
+#######################
+# TotalSearch Engine
+#######################
+totalsearch-server:
+  engine-url: 192.168.84.12:7577
+  ksf-url: 192.168.84.12:7614
+  
+ems:
+  host: http://192.168.84.11:8682/api/sendMail.do
+  send:
+    username: 고향사랑e음
+    email: webmatser@ilovegohyang.go.kr
+    
+######금융인증서#######
+fincert:
+  #url: https://certapi.yeskey.or.kr/oauth/2.0/api/token
+  #ucpidUrl: https://certapi.yeskey.or.kr/v1/ucpid/ucpid-info
+  url: https://192.168.239.18:4141/oauth/2.0/api/token
+  ucpidUrl:  https://192.168.239.18:4141/v1/ucpid/ucpid-info
+  client-id: ea1525f5-f619-4398-abc2-2c6d9581550d
+  client-secret: 8a6aa6d9-47d9-4999-9dd5-8f4a36d1b526
+  scope: ucpid
+  grant-type: client_credentials
+  server-id: server_ilovegohyang
+  cp-code: Y30000001301

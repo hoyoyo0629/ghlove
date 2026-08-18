@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.menu.MenuMapper">
+
+	<resultMap id="MenuResult" type="saleson.shop.menu.domain.Menu">
+		<result property="menuId" column="MENU_ID" />
+		<result property="menuParentId" column="MENU_PARENT_ID" />
+		<result property="menuType" column="MENU_TYPE" />
+		<result property="menuName" column="MENU_NAME" />
+		<result property="menuCode" column="MENU_CODE" />
+		<result property="menuUrl" column="MENU_URL" />
+		<result property="menuSeq" column="MENU_SEQ" />
+		<result property="menuIcon" column="MENU_ICON" />
+		<result property="displayFlag" column="DISPLAY_FLAG" />
+		<result property="statusCode" column="STATUS_CODE" />
+		<result property="menuChild" column="MENU_CHILD" />
+		<result property="menuPath" column="MENU_PATH" />
+		<result property="menuPageContent" column="MENU_PAGE_CONTENT" />
+	</resultMap>
+	
+	<sql id="sqlMenuWhere">
+		<if test='menuGubun != null or menuGubun != ""'>
+			<choose>
+				<when test='menuGubun == "OPMANAGER"'>
+					OP_MENU
+				</when>
+				<when test='menuGubun == "SELLER"'>
+					OP_MENU_SELLER
+				</when>
+			</choose>
+		</if>
+	</sql>
+
+	<select id="getMenuCount" parameterType="saleson.shop.menu.support.MenuParam" resultType="Integer">
+		SELECT COUNT(MENU_ID)
+		FROM <include refid="sqlMenuWhere" />
+		WHERE MENU_PARENT_ID IS NOT NULL
+		START WITH MENU_ID = '0'
+		CONNECT BY PRIOR MENU_ID = MENU_PARENT_ID
+		ORDER SIBLINGS BY MENU_SEQ
+	</select>
+	
+	<select id="getManagerMenuList" parameterType="saleson.shop.menu.support.MenuParam" resultMap="MenuResult">
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT T.MENU_ID, T.MENU_PARENT_ID, T.MENU_TYPE, T.MENU_NAME, T.MENU_CODE, T.MENU_URL, T.MENU_SEQ, 
+			       T.MENU_ICON, T.DISPLAY_FLAG, T.STATUS_CODE, (SELECT COUNT(MENU_ID) FROM OP_MENU WHERE MENU_PARENT_ID = T.MENU_ID) AS MENU_CHILD,
+			       SUBSTRING(SYS_CONNECT_BY_PATH(MENU_NAME, '> '), 8) AS MENU_PATH
+			FROM OP_MENU T
+			WHERE MENU_PARENT_ID IS NOT NULL
+			START WITH T.MENU_ID = '0'
+			CONNECT BY PRIOR T.MENU_ID = T.MENU_PARENT_ID
+			ORDER SIBLINGS BY T.MENU_SEQ
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+	
+	<select id="getSellerMenuList" parameterType="saleson.shop.menu.support.MenuParam" resultMap="MenuResult">
+		<include refid="CommonMapper.paginationHeader" />
+			SELECT T.MENU_ID, T.MENU_PARENT_ID, T.MENU_TYPE, T.MENU_NAME, T.MENU_CODE, T.MENU_URL, T.MENU_SEQ, 
+			       T.DISPLAY_FLAG, T.STATUS_CODE, (SELECT COUNT(MENU_ID) FROM OP_MENU_SELLER WHERE MENU_PARENT_ID = T.MENU_ID) AS MENU_CHILD,
+			       SUBSTRING(SYS_CONNECT_BY_PATH(MENU_NAME, '> '), 8) AS MENU_PATH
+			FROM OP_MENU_SELLER T
+			WHERE MENU_PARENT_ID IS NOT NULL
+			START WITH T.MENU_ID = '0'
+			CONNECT BY PRIOR T.MENU_ID = T.MENU_PARENT_ID
+			ORDER SIBLINGS BY T.MENU_SEQ
+		<include refid="CommonMapper.paginationFooter" />
+	</select>	
+	
+	<select id="getMenuById" parameterType="java.util.HashMap" resultMap="MenuResult">
+		<if test='menuGubun != null or menuGubun != ""'>
+			<choose>
+				<when test='menuGubun == "OPMANAGER"'>
+					SELECT MENU_ID, MENU_PARENT_ID, MENU_TYPE, MENU_NAME, MENU_CODE, MENU_URL, MENU_SEQ, MENU_ICON,
+					       DISPLAY_FLAG, STATUS_CODE, T.MENU_PAGE_CONTENT
+					FROM OP_MENU T
+					WHERE MENU_ID = #{menuId}
+				</when>
+				<when test='menuGubun == "SELLER"'>
+					SELECT MENU_ID, MENU_PARENT_ID, MENU_TYPE, MENU_NAME, MENU_CODE, MENU_URL, MENU_SEQ,
+					       DISPLAY_FLAG, STATUS_CODE, T.MENU_PAGE_CONTENT
+					FROM OP_MENU_SELLER T
+					WHERE MENU_ID = #{menuId}
+				</when>
+			</choose>
+		</if>	
+	</select>
+
+	<insert id="insertMenu" parameterType="saleson.shop.menu.domain.Menu">
+		<if test='menuGubun != null or menuGubun != ""'>
+			<choose>
+				<when test='menuGubun == "OPMANAGER"'>
+					INSERT INTO OP_MENU (
+						MENU_ID, MENU_PARENT_ID, MENU_TYPE, MENU_NAME, MENU_CODE, MENU_URL, MENU_SEQ, MENU_ICON, DISPLAY_FLAG, STATUS_CODE
+					)
+					VALUES (
+						#{menuId}, #{menuParentId}, #{menuType}, #{menuName}, #{menuCode}, #{menuUrl}, #{menuSeq}, '1', #{displayFlag}, #{statusCode}
+					)
+				</when>
+				<when test='menuGubun == "SELLER"'>
+					INSERT INTO OP_MENU_SELLER (
+						MENU_ID, MENU_PARENT_ID, MENU_TYPE, MENU_NAME, MENU_CODE, MENU_URL, MENU_SEQ, DISPLAY_FLAG, STATUS_CODE
+					)
+					VALUES (
+						#{menuId}, #{menuParentId}, #{menuType}, #{menuName}, #{menuCode}, #{menuUrl}, #{menuSeq}, #{displayFlag}, #{statusCode}
+					)
+				</when>
+			</choose>
+		</if>	
+	</insert>
+
+	<update id="updateMenu" parameterType="saleson.shop.menu.domain.Menu">
+		UPDATE <include refid="sqlMenuWhere" />
+		SET MENU_NAME      = #{menuName},
+			MENU_CODE      = #{menuCode},
+			MENU_URL       = #{menuUrl},
+			MENU_SEQ       = #{menuSeq},
+			DISPLAY_FLAG   = #{displayFlag},
+			STATUS_CODE    = #{statusCode}
+		WHERE MENU_ID = #{menuId}
+	</update>	
+	
+	<delete id="deleteMenu" parameterType="saleson.shop.menu.domain.Menu">
+		DELETE FROM <include refid="sqlMenuWhere" />
+		WHERE MENU_ID = #{menuId}
+	</delete>	
+	
+	<insert id="insertMenuCode" parameterType="saleson.shop.menu.domain.Menu">
+		INSERT INTO OP_COMMON_MESSAGE (
+			ID, `LANGUAGE`, MESSAGE
+		)
+		VALUES (
+			'MENU_'||#{menuId}, 'ko', #{menuName}
+		)
+	</insert>
+
+	<update id="updateMenuCode" parameterType="saleson.shop.menu.domain.Menu">
+		UPDATE OP_COMMON_MESSAGE
+		SET MESSAGE  = #{menuName}
+		WHERE ID = 'MENU_'||#{menuId}
+		AND `LANGUAGE` = 'ko'
+	</update>	
+	
+	<delete id="deleteMenuCode" parameterType="saleson.shop.menu.domain.Menu">
+		DELETE FROM OP_COMMON_MESSAGE
+		WHERE ID = 'MENU_'||#{menuId}
+		AND `LANGUAGE` = 'ko'
+	</delete>		
+
+	<select id="getFirstMenuList" parameterType="saleson.shop.menu.domain.Menu" resultMap="MenuResult">
+		SELECT MENU_ID, MENU_NAME
+		FROM <include refid="sqlMenuWhere" />
+		WHERE MENU_TYPE = 1
+		ORDER BY MENU_SEQ 
+	</select>
+	
+	<select id="getSecondMenuList" parameterType="saleson.shop.menu.domain.Menu" resultMap="MenuResult">
+		SELECT MENU_ID, MENU_NAME
+		FROM <include refid="sqlMenuWhere" />
+		WHERE MENU_PARENT_ID = #{menuParentId}
+		ORDER BY MENU_SEQ 
+	</select>	
+	
+	<select id="getMenuId" parameterType="saleson.shop.menu.domain.Menu" resultType="Integer">
+		<if test='menuType != null or menuType != ""'>
+			<choose>
+				<when test='menuType == "1"'>
+					SELECT NVL(MAX(MENU_ID),0)+1000 FROM <include refid="sqlMenuWhere" /> WHERE MENU_TYPE = #{menuType}
+				</when>
+				<when test='menuType == "2"'>
+					SELECT NVL(MAX(MENU_ID),#{menuParentId})+100 FROM <include refid="sqlMenuWhere" /> WHERE MENU_TYPE = #{menuType} AND MENU_PARENT_ID = #{menuParentId}
+				</when>
+				<when test='menuType == "3"'>
+					SELECT NVL(MAX(MENU_ID),#{menuParentId})+1 FROM <include refid="sqlMenuWhere" /> WHERE MENU_TYPE = #{menuType} AND MENU_PARENT_ID = #{menuParentId}
+				</when>				
+			</choose>
+		</if>
+	</select>	
+	
+	<update id="savePage" parameterType="saleson.shop.menu.domain.Menu">
+		UPDATE <include refid="sqlMenuWhere" />
+		SET MENU_PAGE_CONTENT = #{menuPageContent}
+		WHERE MENU_ID = #{menuId}
+	</update>	
+
+</mapper>

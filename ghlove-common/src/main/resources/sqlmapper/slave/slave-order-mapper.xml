@@ -1,0 +1,1332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.slave.SlaveOrderMapper">
+
+	<resultMap id="BaseOrderItemResult" type="saleson.shop.order.domain.OrderItem">
+		<id property="orderCode" column="ORDER_CODE" />
+		<id property="orderSequence" column="ORDER_SEQUENCE" />
+		<id property="itemSequence" column="ITEM_SEQUENCE" />
+
+		<result property="itemCount" column="ITEM_COUNT" />
+		<result property="cancelCount" column="CANCEL_COUNT" />
+
+		<result property="orderStatus" column="ORDER_STATUS" />
+		<result property="shippingSequence" column="SHIPPING_SEQUENCE" />
+		<result property="shippingInfoSequence" column="SHIPPING_INFO_SEQUENCE" />
+
+		<result property="additionItemFlag" column="ADDITION_ITEM_FLAG" />
+		<result property="parentItemId" column="PARENT_ITEM_ID" />
+		<result property="parentItemSequence" column="PARENT_ITEM_SEQUENCE" />
+
+		<result property="deviceType" column="DEVICE_TYPE" />
+		<result property="userId" column="USER_ID" />
+		<result property="guestFlag" column="GUEST_FLAG" />
+		<result property="sellerId" column="SELLER_ID" />
+		<result property="categoryTeamId" column="CATEGORY_TEAM_ID" />
+		<result property="categoryGroupId" column="CATEGORY_GROUP_ID" />
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="categoryName" column="CATEGORY_NAME" />
+		<result property="shipmentId" column="SHIPMENT_ID" />
+		<result property="couponUserId" column="COUPON_USER_ID" />
+		<result property="addCouponUserId" column="ADD_COUPON_USER_ID" />
+		<result property="itemId" column="ITEM_ID" />
+		<result property="itemCode" column="ITEM_CODE" />
+		<result property="itemUserCode" column="ITEM_USER_CODE" />
+		<result property="itemName" column="ITEM_NAME" />
+		<result property="freeGiftName" column="FREE_GIFT_NAME" />
+		<result property="imageSrc" column="IMAGE_SRC" />
+		<result property="shippingReturn" column="SHIPPING_RETURN" />
+
+		<result property="purchasePrice" column="PURCHASE_PRICE" />
+		<result property="costPrice" column="COST_PRICE" />
+		<result property="price" column="PRICE" />
+		<result property="optionPrice" column="OPTION_PRICE" />
+		<result property="salePrice" column="SALE_PRICE" />
+
+		<result property="quantity" column="QUANTITY" />
+		<result property="claimQuantity" column="CLAIM_QUANTITY" />
+		<result property="orderQuantity" column="ORDER_QUANTITY" />
+
+		<result property="couponDiscountPrice" column="COUPON_DISCOUNT_PRICE" />
+		<result property="spotSaleFlag" column="SPOT_SALE_FLAG" />
+		<result property="spotType" column="SPOT_TYPE" />
+		<result property="spotDiscountPrice" column="SPOT_DISCOUNT_PRICE" />
+		<result property="taxType" column="TAX_TYPE" />
+		<result property="commissionType" column="COMMISSION_TYPE" />
+		<result property="commissionRate" column="COMMISSION_RATE" />
+
+		<result property="commissionBasePrice" column="COMMISSION_BASE_PRICE" />
+		<result property="commissionPrice" column="COMMISSION_PRICE" />
+
+		<result property="supplyPrice" column="SUPPLY_PRICE" />
+
+		<result property="sellerDiscountFlag" column="SELLER_DISCOUNT_FLAG" />
+		<result property="sellerDiscountType" column="SELLER_DISCOUNT_TYPE" />
+		<result property="sellerDiscountPrice" column="SELLER_DISCOUNT_PRICE" />
+		<result property="sellerDiscountDetail" column="SELLER_DISCOUNT_DETAIL" />
+		<result property="adminDiscountPrice" column="ADMIN_DISCOUNT_PRICE" />
+		<result property="adminDiscountDetail" column="ADMIN_DISCOUNT_DETAIL" />
+
+		<result property="brand" column="BRAND" />
+		<result property="options" column="OPTIONS" />
+
+		<result property="orderStatus" column="ORDER_STATUS" />
+		<result property="orderItemStatus" column="ORDER_ITEM_STATUS" />
+		<result property="deliveryCompanyId" column="DELIVERY_COMPANY_ID" />
+		<result property="deliveryCompanyName" column="DELIVERY_COMPANY_NAME" />
+		<result property="deliveryCompanyUrl" column="DELIVERY_COMPANY_URL" />
+		<result property="deliveryNumber" column="DELIVERY_NUMBER" />
+
+		<result property="shipmentReturnType" column="SHIPMENT_RETURN_TYPE" />
+
+		<result property="pointType" column="POINT_TYPE" />
+		<result property="pointConfigType" column="POINT_CONFIG_TYPE" />
+		<result property="point" column="POINT" />
+		<result property="pointLog" column="POINT_LOG" />
+		<result property="earnPoint" column="EARN_POINT" />
+		<result property="earnPointFlag" column="EARN_POINT_FLAG" />
+
+		<result property="sellerPoint" column="SELLER_POINT" />
+
+		<result property="payDate" column="PAY_DATE" />
+		<result property="shippingReadyDate" column="SHIPPING_READY_DATE" />
+		<result property="shippingDate" column="SHIPPING_DATE" />
+		<result property="shippingFinishDate" column="SHIPPING_FINISH_DATE" />
+
+		<result property="textOption" column="TEXT_OPTION" />							<!-- 20260325 필수 추가정보 ibs -->
+		<result property="cancelRequestDate" column="CANCEL_REQUEST_DATE" />
+		<result property="cancelRequestFinishDate" column="CANCEL_REQUEST_FINISH_DATE" />
+
+		<result property="salesDate" column="SALES_DATE" />
+		<result property="salesCancelDate" column="SALES_CANCEL_DATE" />
+
+		<result property="confirmDate" column="CONFIRM_DATE" />
+		<result property="returnRequestDate" column="RETURN_REQUEST_DATE" />
+		<result property="exchangeRequestDate" column="EXCHANGE_REQUEST_DATE" />
+		<result property="returnRequestFinishDate" column="RETURN_REQUEST_FINISH_DATE" />
+		<result property="exchangeRequestFinishDate" column="EXCHANGE_REQUEST_FINISH_DATE" />
+
+		<result property="returnPointFlag" column="RETURN_POINT_FLAG" />
+		<result property="delayDay" column="DELAY_DAY" />
+		<result property="createdDate" column="CREATED_DATE" />
+
+		<result property="shipmentReturnId" column="SHIPMENT_RETURN_ID" />
+		<result property="cancelFlag" column="CANCEL_FLAG" />
+		<result property="refundStatus" column="REFUND_STATUS" />
+		<result property="itemReturnFlag" column="ITEM_RETURN_FLAG" />
+		<result property="sellerName" column="SELLER_NAME" />
+		<result property="isShippingView" column="IS_SHIPPING_VIEW" />
+
+		<result property="deliveryType" column="DELIVERY_TYPE" />
+		<result property="shipmentGroupCode" column="SHIPMENT_GROUP_CODE" />
+
+		<result property="remittanceId" column="REMITTANCE_ID" />
+		<result property="remittanceType" column="REMITTANCE_TYPE" />
+		<result property="remittanceDay" column="REMITTANCE_DAY" />
+		<result property="remittanceExpectedDate" column="REMITTANCE_EXPECTED_DATE" />
+		<result property="remittanceDate" column="REMITTANCE_DATE" />
+		<result property="remittanceStatusCode" column="REMITTANCE_STATUS_CODE" />
+		<result property="escrowStatus" column="ESCROW_STATUS" />
+		<result property="levelId" column="LEVEL_ID" />
+		<result property="levelName" column="LEVEL_NAME" />
+		<result property="userLevelDiscountRate" column="USER_LEVEL_DISCOUNT_RATE" />
+		<result property="userLevelDiscountPrice" column="USER_LEVEL_DISCOUNT_PRICE" />
+		<result property="approvalType" column="APPROVAL_TYPE" />
+
+		<result property="setItemFlag" column="SET_ITEM_FLAG" />
+		<result property="setDiscountType" column="SET_DISCOUNT_TYPE" />
+		<result property="setDiscountPrice" column="SET_DISCOUNT_PRICE" />
+		<result property="locgovNm" column="LOCGOV_NM" />
+		<result property="locgovCode" column="LOCGOV_CODE" />
+		<result property="mobileItemYn" column="MOBILE_ITEM_YN" />
+		<result property="cancelClaimStatus" column="CANCEL_CLAIM_STATUS" />
+		<result property="cancelRefusalReasonText" column="CANCEL_REFUSAL_REASON_TEXT" />
+		<result property="claimRefusalReasonText" column="CLAIM_REFUSAL_REASON_TEXT" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="mobileNumber" column="MOBILE_NUMBER" />
+		<result property="etcAmt" column="ETC_AMT" />
+
+		<result property="campaignCode" column="CAMPAIGN_CODE" />
+	</resultMap>
+
+	<resultMap id="OrderListResult" type="saleson.shop.order.domain.OrderList" extends="BaseOrderItemResult">
+		<result property="loginId" column="LOGIN_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="mobile" column="MOBILE" />
+		<result property="mobileNumber" column="MOBILE_NUMBER" />
+		<result property="mobileItemYn" column="MOBILE_ITEM_YN" />
+
+		<result property="buyerName" column="BUYER_NAME" />
+
+		<result property="receiveName" column="RECEIVE_NAME" />
+		<result property="receiveMobile" column="RECEIVE_MOBILE" />
+		<result property="receiveZipcode" column="RECEIVE_ZIPCODE" />
+		<result property="receiveNewZipcode" column="RECEIVE_NEW_ZIPCODE" />
+		<result property="receiveAddress" column="RECEIVE_ADDRESS" />
+		<result property="receiveAddressDetail" column="RECEIVE_ADDRESS_DETAIL" />
+        <result property="isPoint" column="IS_POINT" />
+		<result property="memo" column="MEMO" />
+		<result property="itemTextOptionFlag" column="ITEM_TEXT_OPTION_FLAG" />  							<!-- 20260325 필수 추가정보 ibs -->
+		<result property="itemTextOptionTitle1" column="ITEM_TEXT_OPTION_TITLE1" /> 						<!-- 20260325 필수 추가정보 ibs -->
+		<result property="itemTextOptionTitle2" column="ITEM_TEXT_OPTION_TITLE2" /> 						<!-- 20260325 필수 추가정보 ibs -->
+		<result property="itemTextOptionTitle3" column="ITEM_TEXT_OPTION_TITLE3" /> 						<!-- 20260325 필수 추가정보 ibs -->
+	</resultMap>
+
+	<sql id="sqlFormOrderListForManager" >
+        FROM OP_ORDER_ITEM OI
+        INNER JOIN OP_ORDER O
+            ON OI.ORDER_CODE = O.ORDER_CODE
+            AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+            AND O.DATA_STATUS_CODE = '1'
+
+        INNER JOIN OP_ORDER_SHIPPING_INFO OSI
+            ON OI.ORDER_CODE = OSI.ORDER_CODE
+            AND OI.ORDER_SEQUENCE = OSI.ORDER_SEQUENCE
+            AND OI.SHIPPING_INFO_SEQUENCE = OSI.SHIPPING_INFO_SEQUENCE
+    </sql>
+
+	<select id="getAllOrderCountByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultType="Integer">
+		/* saleson.shop.slave.SlaveOrderMapper.getAllOrderCountByParamForManager */
+		SELECT
+			COUNT(*)
+			<!-- id="getAllOrderListByParamForManager"
+			, CONCAT(
+   			OG.NAME
+   			, ' > '
+    		, CASE
+    			WHEN SUBSTR(C.CATEGORY_CODE, 4, 3) = '000'
+    			THEN C.CATEGORY_NAME
+   				ELSE CONCAT(P.CATEGORY_NAME, ' > ', C.CATEGORY_NAME)
+			END
+			) AS CATEGORY_NAME
+			-->
+		FROM (
+			<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				OI.*
+				<if test='conditionType == "OPMANAGER"'>
+				, IFNULL(U.BIRTHDAY,'') AS BIRTHDAY
+				</if>
+			FROM (
+				SELECT
+					*
+				FROM (
+					SELECT
+						O.LOGIN_ID,
+						O.BUYER_NAME,
+						OI.*,
+						OSI.RECEIVE_NAME,
+						(SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV WHERE LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM,
+						IFNULL(S.SELLER_NAME, '') AS SELLER_NAME,
+						IFNULL(S.COMPANY_NAME,  '') AS COMPANY_NAME,
+						OI.USER_ID AS OI_USER_ID,
+						<!-- U.USER_NAME -->
+						(SELECT USER_NAME FROM OP_USER WHERE USER_ID = OI.USER_ID) AS USER_NAME_ENC
+						<!-- <if test='downloadExcel'> -->
+						, O.MOBILE
+						, OSI.RECEIVE_MOBILE
+						, OSI.RECEIVE_ZIPCODE
+						, OSI.RECEIVE_NEW_ZIPCODE
+						, OSI.RECEIVE_ADDRESS
+						, OSI.RECEIVE_ADDRESS_DETAIL
+						, OSI.MEMO
+						, (SELECT OP.APPROVAL_TYPE FROM OP_ORDER_PAYMENT OP WHERE OI.ORDER_CODE = OP.ORDER_CODE AND OI.ORDER_SEQUENCE = OP.ORDER_SEQUENCE) AS APPROVAL_TYPE
+						<!-- </if> -->
+						, CASE
+				        	WHEN OI.CAMPAIGN_CODE = 'MOBILE' THEN 'Y'
+				        	ELSE 'N'
+				    	END AS MOBILE_ITEM_YN
+			        FROM OP_ORDER_ITEM OI
+
+			        INNER JOIN OP_ORDER O
+		            ON OI.ORDER_CODE = O.ORDER_CODE
+		            AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+		            AND O.DATA_STATUS_CODE = '1'
+
+			        INNER JOIN OP_ORDER_SHIPPING_INFO OSI
+		            ON OI.ORDER_CODE = OSI.ORDER_CODE
+		            AND OI.ORDER_SEQUENCE = OSI.ORDER_SEQUENCE
+		            AND OI.SHIPPING_INFO_SEQUENCE = OSI.SHIPPING_INFO_SEQUENCE
+
+   					INNER JOIN OP_ITEM OT
+					ON OI.ITEM_CODE = OT.ITEM_CODE
+					<choose>
+						<when test="(upperLocgovCode != null and upperLocgovCode != '') or (shWdr != null and shWdr != '') or ((query != null and query != '') and where == 'COMPANY_NAME')">
+							JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						</when>
+						<otherwise>
+							LEFT JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						</otherwise>
+					</choose>
+					<!-- LEFT JOIN OP_USER U ON OI.USER_ID = U.USER_ID  -->		<!-- 속도 개선위해 수정 -->
+					<where>
+						<choose>
+							<when test='conditionType == "SELLER"'>
+								AND OI.SELLER_ID = #{sellerId}
+								AND OI.DELIVERY_TYPE = '2'
+
+								<if test="status != null and status.length > 0">
+									AND OI.ORDER_STATUS IN
+									<foreach collection="status" item="status" index="i" open="(" separator="," close=")">
+										#{status}
+									</foreach>
+								</if>
+							</when>
+							<when test='conditionType == "OPMANAGER"'>
+
+								<if test="sellerId > 0">
+									AND OI.SELLER_ID = #{sellerId}
+								</if>
+
+								<if test="deliveryType != null and deliveryType != ''">
+									<if test="sellerId == 0">
+										AND OI.SELLER_ID > #{sellerId}
+									</if>
+
+									AND OI.DELIVERY_TYPE = #{deliveryType}
+								</if>
+
+								<if test="status != null and status.length > 0">
+									AND OI.ORDER_STATUS IN
+									<foreach collection="status" item="status" index="i" open="(" separator="," close=")">
+										#{status}
+									</foreach>
+								</if>
+
+							</when>
+						</choose>
+						<choose>
+							<when test='downloadExcel'>
+								<if test="orderCodes != null and orderCodes.isEmpty()">
+									AND OI.ORDER_CODE IN
+									<foreach item="orderCode" index="index" collection="orderCodes" open="(" separator="," close=")">
+										#{orderCode}
+									</foreach>
+								</if>
+							</when>
+							<otherwise>
+								<if test="orderCode != null and orderCode != ''">
+									AND OI.ORDER_CODE = #{orderCode}
+								</if>
+							</otherwise>
+						</choose>
+
+						<if test="orderSequence != null and orderSequence != ''">
+							AND OI.ORDER_SEQUENCE = #{orderSequence}
+						</if>
+
+						<if test="itemSequence > 0">
+							AND OI.ITEM_SEQUENCE = #{itemSequence}
+						</if>
+
+						<choose>
+							<when test="orderStatusList != null and !orderStatusList.isEmpty()">
+								AND OI.ORDER_STATUS IN
+								<foreach item="orderStatus" index="index" collection="orderStatusList" open="(" separator="," close=")">
+									#{orderStatus}
+								</foreach>
+							</when>
+							<otherwise>
+								<if test="orderStatus != null and orderStatus != ''">
+									AND OI.ORDER_STATUS = #{orderStatus}
+								</if>
+							</otherwise>
+						</choose>
+
+						<if test='cancelFlag != null and cancelFlag != ""'>
+							AND OI.CANCEL_FLAG = #{cancelFlag}
+						</if>
+
+						<if test="userId > 0">
+							AND OI.USER_ID = #{userId}
+							AND OI.GUEST_FLAG = 'N'
+						</if>
+
+						<if test="guestUserName != null and guestUserName != ''">
+							AND OI.GUEST_FLAG = 'Y'
+							AND O.BUYER_NAME = #{guestUserName}
+							AND O.MOBILE = #{guestPhoneNumber}
+						</if>
+
+						<if test="upperLocgovCode != null and upperLocgovCode != ''">
+							<choose>
+								<when test="locgovCode != null and locgovCode != ''">
+									<!-- AND OI.LOCGOV_CODE = #{locgovCode} -->
+									AND S.LOCGOV_CODE = #{locgovCode}
+								</when>
+								<otherwise>
+									<!-- AND OI.LOCGOV_CODE LIKE CONCAT(SUBSTR(#{upperLocgovCode}, 0, 2), '%') -->
+									AND S.LOCGOV_CODE LIKE CONCAT(SUBSTR(#{upperLocgovCode}, 0, 2), '%')
+								</otherwise>
+							</choose>
+						</if>
+
+						<if test="itemName != null and itemName != ''">
+							AND OI.ITEM_NAME LIKE CONCAT('%', #{itemName}, '%')
+						</if>
+
+						<if test="searchDateType != null and searchDateType != ''">
+							<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+								<choose>
+									<when test="(searchStartDateTime != null and searchStartDateTime != '') and (searchEndDateTime != null and searchEndDateTime != '')">
+										<if test='searchDateType == "OI.CREATED_DATE"'>
+											<!-- AND DATE_FORMAT(OI.CREATED_DATE, '%Y%m%d%H') BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}) AND CONCAT(#{searchEndDate},#{searchEndDateTime}) -->
+											AND OI.CREATED_DATE BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}, '0000') AND CONCAT(#{searchEndDate},#{searchEndDateTime}, '9999')
+										</if>
+										<if test='searchDateType == "O.CREATED_DATE"'>
+											<!-- AND DATE_FORMAT(O.CREATED_DATE, '%Y%m%d%H') BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}) AND CONCAT(#{searchEndDate},#{searchEndDateTime}) -->
+											AND O.CREATED_DATE BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}, '0000') AND CONCAT(#{searchEndDate},#{searchEndDateTime} , '9999')
+										</if>
+									</when>
+									<otherwise>
+										<!-- AND DATE_FORMAT(#{searchDateType}, '%Y%m%d') BETWEEN #{searchStartDate} AND #{searchEndDate} -->
+										AND #{searchDateType} BETWEEN CONCAT(#{searchStartDate}, '000000') AND CONCAT(#{searchEndDate}, '239999')
+									</otherwise>
+								</choose>
+							</if>
+						</if>
+
+						<if test="(query != null and query != '') and (where != null and where != '')">
+							<choose>
+								<!-- <when test="where == 'USER_NAME'">
+									AND O.BUYER_NAME LIKE CONCAT('%', #{query}, '%')
+									AND U.USER_NAME LIKE CONCAT('%', #{query}, '%')user_name 기준으로 수정
+								</when> -->
+								<when test="where == 'USER_ID'">
+									AND OI.USER_ID IN (
+										SELECT USER_ID FROM OP_USER
+										WHERE LOGIN_ID LIKE CONCAT('%', #{query},'%')
+									)
+								</when>
+								<when test="where == 'PHONE'">
+									AND (
+										REPLACE(OSI.PHONE, '-', '') LIKE CONCAT(REPLACE(#{query}, '-', ''), '%')
+										OR REPLACE(OSI.MOBILE, '-', '') LIKE CONCAT(REPLACE(#{query}, '-', ''), '%')
+									)
+								</when>
+								<when test="where == 'RECEIVE_NAME'">
+									AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_NAME'">
+									AND OI.ITEM_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_CODE'">
+									AND (OI.ITEM_CODE = #{query} OR OI.ITEM_USER_CODE = #{query})
+								</when>
+								<when test="where == 'EMAIL'">
+									AND OSI.EMAIL LIKE CONCAT(#{query}, '%')
+								</when>
+								<when test="where == 'ORDER_CODE'">
+									AND OI.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
+								</when>
+								<when test="where == 'COMPANY_NAME'">
+									AND S.COMPANY_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_SELLER_CODE'">
+									AND OI.ITEM_ID IN (SELECT ITEM_ID FROM OP_ITEM WHERE ITEM_SELLER_CODE LIKE CONCAT('%', #{query},'%'))
+								</when>
+							</choose>
+						</if>
+						<!-- <if test="shWdr != null and shWdr != ''"> --><!-- 지자체 코드 검색 -->
+							<choose>
+								<when test="shLocgovCode != null and shLocgovCode != ''">	<!-- 시군구 코드 있을 경우 -->
+									AND S.LOCGOV_CODE = #{shLocgovCode}
+								</when>
+								<when test="shWdr != null and shWdr != ''">		<!-- 시도 코드만 있을 경우 -->
+									AND S.LOCGOV_CODE IN (
+										SELECT LOCGOV.LOCGOV_CODE
+											FROM G_LOCGOV LOCGOV
+											WHERE LOCGOV.UPPER_LOCGOV_CODE = #{shWdr}
+									)
+								</when>
+							</choose>
+						<!-- </if> -->
+						<if test="isSellerLogin">
+							<if test="isSelectLimited">
+								AND (
+									<!-- OI.CONFIRM_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000')
+									OR OI.CANCEL_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000')
+									OR OI.RETURN_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000') -->
+									OI.CONFIRM_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+									OR OI.CANCEL_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+									OR OI.RETURN_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+									OR (
+										(OI.CONFIRM_DATE = '00000000000000' OR OI.CONFIRM_DATE IS NULL OR OI.CONFIRM_DATE = '')
+										AND (OI.CANCEL_REQUEST_FINISH_DATE = '00000000000000' OR OI.CANCEL_REQUEST_FINISH_DATE IS NULL OR OI.CANCEL_REQUEST_FINISH_DATE = '')
+										AND (OI.RETURN_REQUEST_FINISH_DATE = '00000000000000' OR OI.RETURN_REQUEST_FINISH_DATE IS NULL OR OI.RETURN_REQUEST_FINISH_DATE = '')
+									)
+								)
+							</if>
+						</if>
+					</where>
+					<!-- ORDER BY OI.CREATED_DATE DESC -->
+					ORDER BY OI.CREATED_DATE DESC, OI.ORDER_CODE DESC, OI.ORDER_SEQUENCE ASC, OI.SHIPPING_INFO_SEQUENCE ASC, OI.ITEM_SEQUENCE ASC
+				) T_A
+				<where>
+					<if test="(query != null and query != '') and (where != null and where != '')">
+						<choose>
+							<when test="where == 'USER_NAME'">
+								AND T_A.USER_NAME_ENC = #{query}
+							</when>
+						</choose>
+					</if>
+					<if test="createdDate != null and createdDate != ''">
+						AND T_A.CREATED_DATE <![CDATA[ <= ]]> #{createdDate}
+					</if>
+				</where>
+			) OI
+			<if test='conditionType == "OPMANAGER"'>
+				LEFT JOIN OP_USER_DETAIL U ON OI.USER_ID = U.USER_ID
+			</if>
+
+			<!--LEFT JOIN OP_USER U ON OI.OI_USER_ID = U.USER_ID-->
+			<!-- ORDER BY OI.CREATED_DATE DESC, OI.ORDER_CODE DESC, OI.ORDER_SEQUENCE ASC, OI.SHIPPING_INFO_SEQUENCE ASC, OI.ITEM_SEQUENCE ASC
+			<include refid="CommonMapper.paginationFooter" /> -->
+		) OI
+
+		<!-- 카테고리 조회
+		INNER JOIN OP_ITEM_CATEGORY IC
+		ON OI.ITEM_ID = IC.ITEM_ID
+
+		INNER JOIN OP_CATEGORY C
+		ON IC.CATEGORY_ID = C.CATEGORY_ID
+
+		LEFT JOIN OP_CATEGORY P
+		ON P.CATEGORY_CODE = CONCAT(SUBSTR(C.CATEGORY_CODE, 1, 3), '000000000')
+
+		INNER JOIN OP_CATEGORY_GROUP OG
+		ON C.CATEGORY_GROUP_ID = OG.CATEGORY_GROUP_ID
+		-->
+		<if test="pagination != null and pagination.itemsPerPage != 0">
+			<include refid="CommonMapper.paginationFooter" />
+		</if>
+	</select>
+
+	<!-- 주문 내역 리스트 - 주문별 그룹 -->
+	<select id="getAllOrderListByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultMap="OrderListResult">
+		/* saleson.shop.slave.SlaveOrderMapper.getAllOrderListByParamForManager */
+		SELECT
+			OI.*
+			, IFNULL(CRYPTO_DEC('normal', USER_NAME_ENC, '', 0),'') AS USER_NAME
+			<if test='conditionType == "OPMANAGER"'>
+	<!-- 		, IFNULL(CRYPTO_DEC('normal', BIRTHDAY_ENC, '', 0), '') AS BIRTHDAY -->
+			</if>
+	 		<!-- <if test='downloadExcel'> -->
+			, IFNULL(CRYPTO_DEC('normal', MOBILE, '', 0), '') AS MOBILE_DEC
+			, IFNULL(CRYPTO_DEC('normal', RECEIVE_ADDRESS, '', 0), '') || ' ' || IFNULL(CRYPTO_DEC('normal', RECEIVE_ADDRESS_DETAIL, '', 0), '') AS RECEIVE_ADDRESS_DEC
+			, IFNULL(CRYPTO_DEC('normal', RECEIVE_NAME, '', 0), '') AS RECEIVE_NAME_DEC
+			<!-- 카테고리 조회
+			, CONCAT(
+	   			OG.NAME
+	   			, ' > '
+	    		, CASE
+	    			WHEN SUBSTR(C.CATEGORY_CODE, 4, 3) = '000'
+	    			THEN C.CATEGORY_NAME
+	   				ELSE CONCAT(P.CATEGORY_NAME, ' > ', C.CATEGORY_NAME)
+				END
+			) AS CATEGORY_NAME
+			-->
+		FROM (
+			<include refid="CommonMapper.paginationHeader" />
+			SELECT
+				OI.*
+				<if test='conditionType == "OPMANAGER"'>
+				, IFNULL(U.BIRTHDAY,'') AS BIRTHDAY
+				</if>
+			FROM (
+				SELECT
+					*
+				FROM (
+					SELECT
+						O.LOGIN_ID
+						, O.BUYER_NAME
+						, OI.*
+						, OSI.RECEIVE_NAME
+						, (SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV WHERE LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM
+						, IFNULL(S.SELLER_NAME, '') AS SELLER_NAME
+						, IFNULL(S.COMPANY_NAME,  '') AS COMPANY_NAME
+						, OI.USER_ID AS OI_USER_ID
+						<!-- U.USER_NAME -->
+						, (SELECT USER_NAME FROM OP_USER WHERE USER_ID = OI.USER_ID) AS USER_NAME_ENC
+						<!-- <if test='downloadExcel'> -->
+						, O.MOBILE
+						, OSI.RECEIVE_MOBILE
+						, OSI.RECEIVE_ZIPCODE
+						, OSI.RECEIVE_NEW_ZIPCODE
+						, OSI.RECEIVE_ADDRESS
+						, OSI.RECEIVE_ADDRESS_DETAIL
+						, OSI.MEMO
+						, (SELECT OP.APPROVAL_TYPE FROM OP_ORDER_PAYMENT OP WHERE OI.ORDER_CODE = OP.ORDER_CODE AND OI.ORDER_SEQUENCE = OP.ORDER_SEQUENCE) AS APPROVAL_TYPE
+						<!-- </if> -->
+						, CRYPTO_DEC('normal', S.TELEPHONE_NUMBER, '', 0) AS TELEPHONE_NUMBER
+						, CRYPTO_DEC('normal', S.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+						, CASE
+				        	WHEN OI.CAMPAIGN_CODE = 'MOBILE' THEN 'Y'
+				        	ELSE 'N'
+				    	END AS MOBILE_ITEM_YN
+						, OT.ITEM_TEXT_OPTION_FLAG 							<!-- 20260325 필수 추가정보 ibs 수정 -->
+			        FROM OP_ORDER_ITEM OI
+
+			        INNER JOIN OP_ORDER O
+		            ON OI.ORDER_CODE = O.ORDER_CODE
+		            AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+		            AND O.DATA_STATUS_CODE = '1'
+
+			        INNER JOIN OP_ORDER_SHIPPING_INFO OSI
+		            ON OI.ORDER_CODE = OSI.ORDER_CODE
+		            AND OI.ORDER_SEQUENCE = OSI.ORDER_SEQUENCE
+		            AND OI.SHIPPING_INFO_SEQUENCE = OSI.SHIPPING_INFO_SEQUENCE
+					INNER JOIN OP_ITEM OT
+					ON OI.ITEM_CODE = OT.ITEM_CODE
+					<choose>
+						<when test="(upperLocgovCode != null and upperLocgovCode != '') or (shWdr != null and shWdr != '') or ((query != null and query != '') and where == 'COMPANY_NAME')">
+							JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						</when>
+						<otherwise>
+							LEFT JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						</otherwise>
+					</choose>
+					<!-- LEFT JOIN OP_USER U ON OI.USER_ID = U.USER_ID  -->		<!-- 속도 개선위해 수정 -->
+					<where>
+						<choose>
+							<when test='conditionType == "SELLER"'>
+								AND OI.SELLER_ID = #{sellerId}
+								AND OI.DELIVERY_TYPE = '2'
+
+								<if test="status != null and status.length > 0">
+									AND OI.ORDER_STATUS IN
+									<foreach collection="status" item="status" index="i" open="(" separator="," close=")">
+										#{status}
+									</foreach>
+								</if>
+							</when>
+							<when test='conditionType == "OPMANAGER"'>
+
+								<if test="sellerId > 0">
+									AND OI.SELLER_ID = #{sellerId}
+								</if>
+
+								<if test="deliveryType != null and deliveryType != ''">
+									<if test="sellerId == 0">
+										AND OI.SELLER_ID > #{sellerId}
+									</if>
+
+									AND OI.DELIVERY_TYPE = #{deliveryType}
+								</if>
+
+								<if test="status != null and status.length > 0">
+									AND OI.ORDER_STATUS IN
+									<foreach collection="status" item="status" index="i" open="(" separator="," close=")">
+										#{status}
+									</foreach>
+								</if>
+
+							</when>
+						</choose>
+						<choose>
+							<when test='downloadExcel'>
+								<if test="orderCodes != null and orderCodes.isEmpty()">
+									AND OI.ORDER_CODE IN
+									<foreach item="orderCode" index="index" collection="orderCodes" open="(" separator="," close=")">
+										#{orderCode}
+									</foreach>
+								</if>
+							</when>
+							<otherwise>
+								<if test="orderCode != null and orderCode != ''">
+									AND OI.ORDER_CODE = #{orderCode}
+								</if>
+							</otherwise>
+						</choose>
+
+						<if test="orderSequence != null and orderSequence != ''">
+							AND OI.ORDER_SEQUENCE = #{orderSequence}
+						</if>
+
+						<if test="itemSequence > 0">
+							AND OI.ITEM_SEQUENCE = #{itemSequence}
+						</if>
+
+						<choose>
+							<when test="orderStatusList != null and !orderStatusList.isEmpty()">
+								AND OI.ORDER_STATUS IN
+								<foreach item="orderStatus" index="index" collection="orderStatusList" open="(" separator="," close=")">
+									#{orderStatus}
+								</foreach>
+							</when>
+							<otherwise>
+								<if test="orderStatus != null and orderStatus != ''">
+									AND OI.ORDER_STATUS = #{orderStatus}
+								</if>
+							</otherwise>
+						</choose>
+
+						<if test='cancelFlag != null and cancelFlag != ""'>
+							AND OI.CANCEL_FLAG = #{cancelFlag}
+						</if>
+
+						<if test="userId > 0">
+							AND OI.USER_ID = #{userId}
+							AND OI.GUEST_FLAG = 'N'
+						</if>
+
+						<if test="guestUserName != null and guestUserName != ''">
+							AND OI.GUEST_FLAG = 'Y'
+							AND O.BUYER_NAME = #{guestUserName}
+							AND O.MOBILE = #{guestPhoneNumber}
+						</if>
+
+						<if test="upperLocgovCode != null and upperLocgovCode != ''">
+							<choose>
+								<when test="locgovCode != null and locgovCode != ''">
+									<!-- AND OI.LOCGOV_CODE = #{locgovCode} -->
+									AND S.LOCGOV_CODE = #{locgovCode}
+								</when>
+								<otherwise>
+									<!-- AND OI.LOCGOV_CODE LIKE CONCAT(SUBSTR(#{upperLocgovCode}, 0, 2), '%') -->
+									AND S.LOCGOV_CODE LIKE CONCAT(SUBSTR(#{upperLocgovCode}, 0, 2), '%')
+								</otherwise>
+							</choose>
+						</if>
+
+						<if test="itemName != null and itemName != ''">
+							AND OI.ITEM_NAME LIKE CONCAT('%', #{itemName}, '%')
+						</if>
+
+						<if test="searchDateType != null and searchDateType != ''">
+							<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+								<choose>
+									<when test="(searchStartDateTime != null and searchStartDateTime != '') and (searchEndDateTime != null and searchEndDateTime != '')">
+										<if test='searchDateType == "OI.CREATED_DATE"'>
+											<!-- AND DATE_FORMAT(OI.CREATED_DATE, '%Y%m%d%H') BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}) AND CONCAT(#{searchEndDate},#{searchEndDateTime}) -->
+											AND OI.CREATED_DATE BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}, '0000') AND CONCAT(#{searchEndDate},#{searchEndDateTime}, '9999')
+										</if>
+										<if test='searchDateType == "O.CREATED_DATE"'>
+											<!-- AND DATE_FORMAT(O.CREATED_DATE, '%Y%m%d%H') BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}) AND CONCAT(#{searchEndDate},#{searchEndDateTime}) -->
+											AND O.CREATED_DATE BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}, '0000') AND CONCAT(#{searchEndDate},#{searchEndDateTime} , '9999')
+										</if>
+									</when>
+									<otherwise>
+										<!-- AND DATE_FORMAT(#{searchDateType}, '%Y%m%d') BETWEEN #{searchStartDate} AND #{searchEndDate} -->
+										AND #{searchDateType} BETWEEN CONCAT(#{searchStartDate}, '000000') AND CONCAT(#{searchEndDate}, '239999')
+									</otherwise>
+								</choose>
+							</if>
+						</if>
+
+						<if test="(query != null and query != '') and (where != null and where != '')">
+							<choose>
+								<!-- <when test="where == 'USER_NAME'">
+									AND O.BUYER_NAME LIKE CONCAT('%', #{query}, '%')
+									AND U.USER_NAME LIKE CONCAT('%', #{query}, '%')user_name 기준으로 수정
+								</when> -->
+								<when test="where == 'USER_ID'">
+									AND OI.USER_ID IN (
+										SELECT USER_ID FROM OP_USER
+										WHERE LOGIN_ID LIKE CONCAT('%', #{query},'%')
+									)
+								</when>
+								<when test="where == 'PHONE'">
+									AND (
+										REPLACE(OSI.PHONE, '-', '') LIKE CONCAT(REPLACE(#{query}, '-', ''), '%')
+										OR REPLACE(OSI.MOBILE, '-', '') LIKE CONCAT(REPLACE(#{query}, '-', ''), '%')
+									)
+								</when>
+								<when test="where == 'RECEIVE_NAME'">
+									AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_NAME'">
+									AND OI.ITEM_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_CODE'">
+									AND (OI.ITEM_CODE = #{query} OR OI.ITEM_USER_CODE = #{query})
+								</when>
+								<when test="where == 'EMAIL'">
+									AND OSI.EMAIL LIKE CONCAT(#{query}, '%')
+								</when>
+								<when test="where == 'ORDER_CODE'">
+									AND OI.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
+								</when>
+								<when test="where == 'COMPANY_NAME'">
+									AND S.COMPANY_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_SELLER_CODE'">
+									AND OI.ITEM_ID IN (SELECT ITEM_ID FROM OP_ITEM WHERE ITEM_SELLER_CODE LIKE CONCAT('%', #{query},'%'))
+								</when>
+							</choose>
+						</if>
+						<!-- <if test="shWdr != null and shWdr != ''"> --><!-- 지자체 코드 검색 -->
+						<choose>
+							<when test="shLocgovCode != null and shLocgovCode != ''">	<!-- 시군구 코드 있을 경우 -->
+								AND S.LOCGOV_CODE = #{shLocgovCode}
+							</when>
+							<when test="shWdr != null and shWdr != ''">		<!-- 시도 코드만 있을 경우 -->
+								AND S.LOCGOV_CODE IN (
+									SELECT LOCGOV.LOCGOV_CODE
+										FROM G_LOCGOV LOCGOV
+										WHERE LOCGOV.UPPER_LOCGOV_CODE = #{shWdr}
+								)
+							</when>
+						</choose>
+						<!-- </if> -->
+						<if test="isSellerLogin">
+							<if test="isSelectLimited">
+								AND (
+									<!-- OI.CONFIRM_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000')
+									OR OI.CANCEL_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000')
+									OR OI.RETURN_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000') -->
+									OI.CONFIRM_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+									OR OI.CANCEL_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+									OR OI.RETURN_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+									OR (
+										(OI.CONFIRM_DATE = '00000000000000' OR OI.CONFIRM_DATE IS NULL OR OI.CONFIRM_DATE = '')
+										AND (OI.CANCEL_REQUEST_FINISH_DATE = '00000000000000' OR OI.CANCEL_REQUEST_FINISH_DATE IS NULL OR OI.CANCEL_REQUEST_FINISH_DATE = '')
+										AND (OI.RETURN_REQUEST_FINISH_DATE = '00000000000000' OR OI.RETURN_REQUEST_FINISH_DATE IS NULL OR OI.RETURN_REQUEST_FINISH_DATE = '')
+									)
+								)
+							</if>
+						</if>
+					</where>
+					<!-- ORDER BY OI.CREATED_DATE DESC -->
+					ORDER BY OI.CREATED_DATE DESC, OI.ORDER_CODE DESC, OI.ORDER_SEQUENCE ASC, OI.SHIPPING_INFO_SEQUENCE ASC, OI.ITEM_SEQUENCE ASC
+				) T_A
+				<where>
+					<if test="(query != null and query != '') and (where != null and where != '')">
+						<choose>
+							<when test="where == 'USER_NAME'">
+								AND T_A.USER_NAME_ENC = #{query}
+							</when>
+						</choose>
+					</if>
+					<if test="createdDate != null and createdDate != ''">
+						<![CDATA[
+							AND T_A.CREATED_DATE <= #{createdDate}
+						]]>
+					</if>
+				</where>
+			) OI
+			<if test='conditionType == "OPMANAGER"'>
+				LEFT JOIN OP_USER_DETAIL U ON OI.USER_ID = U.USER_ID
+			</if>
+
+			<!--LEFT JOIN OP_USER U ON OI.OI_USER_ID = U.USER_ID-->
+			<!-- ORDER BY OI.CREATED_DATE DESC, OI.ORDER_CODE DESC, OI.ORDER_SEQUENCE ASC, OI.SHIPPING_INFO_SEQUENCE ASC, OI.ITEM_SEQUENCE ASC
+			<include refid="CommonMapper.paginationFooter" /> -->
+		) OI
+		<!-- 카테고리 조회
+		INNER JOIN OP_ITEM_CATEGORY IC
+		ON OI.ITEM_ID = IC.ITEM_ID
+
+		INNER JOIN OP_CATEGORY C
+		ON IC.CATEGORY_ID = C.CATEGORY_ID
+
+		LEFT JOIN OP_CATEGORY P
+		ON P.CATEGORY_CODE = CONCAT(SUBSTR(C.CATEGORY_CODE, 1, 3), '000000000')
+
+		INNER JOIN OP_CATEGORY_GROUP OG
+		ON C.CATEGORY_GROUP_ID = OG.CATEGORY_GROUP_ID
+		-->
+		<if test="pagination != null and pagination.itemsPerPage != 0">
+			<include refid="CommonMapper.paginationFooter" />
+		</if>
+	</select>
+
+	<!-- 오프라인 전체 주문 건수 조회 -->
+	<select id="getOfflineAllOrderCountByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultType="Integer">
+	/* saleson.shop.slave.SlaveOrderMapper.getAllOrderCountByParamForManager */
+	SELECT COUNT(*)
+		FROM (
+			SELECT *
+				FROM (
+					SELECT (SELECT USER_NAME FROM OP_USER WHERE USER_ID = OI.USER_ID) AS USER_NAME
+					<include refid="sqlFormOrderListForManager" />
+					<if test='downloadExcel'>
+						LEFT JOIN OP_ORDER_PAYMENT OP
+						ON OI.ORDER_CODE = OP.ORDER_CODE
+						AND OI.ORDER_SEQUENCE = OP.ORDER_SEQUENCE
+					</if>
+					<choose>
+						<when test="(upperLocgovCode != null and upperLocgovCode != '') or (shWdr != null and shWdr != '') or ((query != null and query != '') and where == 'COMPANY_NAME')">
+							JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						</when>
+						<otherwise>
+							LEFT JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						</otherwise>
+					</choose>
+					<where>
+						<!-- 오프라인 답례품 구매 시 FILLER9 컬럼에 수납번호가 들어감 / 비어있거나 NULL인 경우에는 오프라인 답례품이 아닌 일반 구매 건 -->
+						AND (OI.FILLER9 IS NOT NULL OR OI.FILLER9 != '')
+						<choose>
+							<when test='conditionType == "SELLER"'>
+								AND OI.SELLER_ID = #{sellerId}
+								AND OI.DELIVERY_TYPE = '2'
+
+								<if test="status != null and status.length > 0">
+									AND OI.ORDER_STATUS IN
+									<foreach collection="status" item="status" index="i" open="(" separator="," close=")">
+										#{status}
+									</foreach>
+								</if>
+							</when>
+							<when test='conditionType == "OPMANAGER"'>
+
+								<if test="sellerId > 0">
+									AND OI.SELLER_ID = #{sellerId}
+								</if>
+
+								<if test="deliveryType != null and deliveryType != ''">
+									<if test="sellerId == 0">
+										AND OI.SELLER_ID > #{sellerId}
+									</if>
+
+									AND OI.DELIVERY_TYPE = #{deliveryType}
+								</if>
+
+								<if test="status != null and status.length > 0">
+									AND OI.ORDER_STATUS IN
+									<foreach collection="status" item="status" index="i" open="(" separator="," close=")">
+										#{status}
+									</foreach>
+								</if>
+
+							</when>
+						</choose>
+						<choose>
+							<when test='downloadExcel'>
+								<if test="orderCodes != null and orderCodes.isEmpty()">
+									AND OI.ORDER_CODE IN
+									<foreach item="orderCode" index="index" collection="orderCodes" open="(" separator="," close=")">
+										#{orderCode}
+									</foreach>
+								</if>
+							</when>
+							<otherwise>
+								<if test="orderCode != null and orderCode != ''">
+									AND OI.ORDER_CODE = #{orderCode}
+								</if>
+							</otherwise>
+						</choose>
+
+						<if test="orderSequence != null and orderSequence != ''">
+							AND OI.ORDER_SEQUENCE = #{orderSequence}
+						</if>
+
+						<if test="itemSequence > 0">
+							AND OI.ITEM_SEQUENCE = #{itemSequence}
+						</if>
+
+						<choose>
+							<when test="orderStatusList != null and !orderStatusList.isEmpty()">
+								AND OI.ORDER_STATUS IN
+								<foreach item="orderStatus" index="index" collection="orderStatusList" open="(" separator="," close=")">
+									#{orderStatus}
+								</foreach>
+							</when>
+							<otherwise>
+								<if test="orderStatus != null and orderStatus != ''">
+									AND OI.ORDER_STATUS = #{orderStatus}
+								</if>
+							</otherwise>
+						</choose>
+
+						<if test='cancelFlag != null and cancelFlag != ""'>
+							AND OI.CANCEL_FLAG = #{cancelFlag}
+						</if>
+
+						<if test="userId > 0">
+							AND OI.USER_ID = #{userId}
+							AND OI.GUEST_FLAG = 'N'
+						</if>
+
+						<if test="guestUserName != null and guestUserName != ''">
+							AND OI.GUEST_FLAG = 'Y'
+							AND O.BUYER_NAME = #{guestUserName}
+							AND O.MOBILE = #{guestPhoneNumber}
+						</if>
+
+						<if test="upperLocgovCode != null and upperLocgovCode != ''">
+							<choose>
+								<when test="locgovCode != null and locgovCode != ''">
+									AND S.LOCGOV_CODE = #{locgovCode}
+								</when>
+								<otherwise>
+									AND S.LOCGOV_CODE LIKE CONCAT(SUBSTR(#{upperLocgovCode}, 0, 2), '%')
+								</otherwise>
+							</choose>
+						</if>
+
+						<if test="itemName != null and itemName != ''">
+							AND OI.ITEM_NAME LIKE CONCAT('%', #{itemName}, '%')
+						</if>
+
+						<if test="searchDateType != null and searchDateType != ''">
+							<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+								<choose>
+									<when test="(searchStartDateTime != null and searchStartDateTime != '') and (searchEndDateTime != null and searchEndDateTime != '')">
+										<if test='searchDateType == "OI.CREATED_DATE"'>
+											AND OI.CREATED_DATE BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}, '0000') AND CONCAT(#{searchEndDate},#{searchEndDateTime}, '9999')
+										</if>
+										<if test='searchDateType == "O.CREATED_DATE"'>
+											AND O.CREATED_DATE BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}, '0000') AND CONCAT(#{searchEndDate},#{searchEndDateTime}, '9999')
+										</if>
+									</when>
+									<otherwise>
+										AND #{searchDateType} BETWEEN CONCAT(#{searchStartDate}, '000000') AND CONCAT(#{searchEndDate}, '239999')
+									</otherwise>
+								</choose>
+							</if>
+						</if>
+
+						<if test="(query != null and query != '') and (where != null and where != '')">
+							<choose>
+								<when test="where == 'USER_ID'">
+									AND OI.USER_ID IN (
+										SELECT USER_ID FROM OP_USER
+										WHERE LOGIN_ID LIKE CONCAT('%', #{query},'%')
+									)
+								</when>
+								<when test="where == 'PHONE'">
+									AND (
+										REPLACE(OSI.PHONE, '-', '') LIKE CONCAT(REPLACE(#{query}, '-', ''), '%')
+										OR REPLACE(OSI.MOBILE, '-', '') LIKE CONCAT(REPLACE(#{query}, '-', ''), '%')
+									)
+								</when>
+								<when test="where == 'RECEIVE_NAME'">
+									AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_NAME'">
+									AND OI.ITEM_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_CODE'">
+									AND (OI.ITEM_CODE = #{query} OR OI.ITEM_USER_CODE = #{query})
+								</when>
+								<when test="where == 'EMAIL'">
+									AND OSI.EMAIL LIKE CONCAT(#{query}, '%')
+								</when>
+								<when test="where == 'ORDER_CODE'">
+									AND OI.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
+								</when>
+								<when test="where == 'COMPANY_NAME'">
+									AND S.COMPANY_NAME LIKE CONCAT('%', #{query},'%')
+								</when>
+								<when test="where == 'ITEM_SELLER_CODE'">
+									AND OI.ITEM_ID IN (SELECT ITEM_ID FROM OP_ITEM WHERE ITEM_SELLER_CODE LIKE CONCAT('%', #{query},'%'))
+								</when>
+							</choose>
+						</if>
+							<choose>
+								<when test="shLocgovCode != null and shLocgovCode != ''">	<!-- 시군구 코드 있을 경우 -->
+									AND S.LOCGOV_CODE = #{shLocgovCode}
+								</when>
+								<when test="shWdr != null and shWdr != ''">		<!-- 시도 코드만 있을 경우 -->
+									AND S.LOCGOV_CODE IN (
+										SELECT LOCGOV.LOCGOV_CODE
+											FROM G_LOCGOV LOCGOV
+											WHERE LOCGOV.UPPER_LOCGOV_CODE = #{shWdr}
+									)
+								</when>
+							</choose>
+						<!-- </if> -->
+						<if test="isSellerLogin">
+							<if test="isSelectLimited">
+									AND (
+										OI.CONFIRM_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+										OR OI.CANCEL_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+										OR OI.RETURN_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+										OR (
+											(OI.CONFIRM_DATE = '00000000000000' OR OI.CONFIRM_DATE IS NULL OR OI.CONFIRM_DATE = '')
+											AND (OI.CANCEL_REQUEST_FINISH_DATE = '00000000000000' OR OI.CANCEL_REQUEST_FINISH_DATE IS NULL OR OI.CANCEL_REQUEST_FINISH_DATE = '')
+											AND (OI.RETURN_REQUEST_FINISH_DATE = '00000000000000' OR OI.RETURN_REQUEST_FINISH_DATE IS NULL OR OI.RETURN_REQUEST_FINISH_DATE = '')
+										)
+									)
+							</if>
+						</if>
+					</where>
+				)
+				<if test="(query != null and query != '') and (where != null and where != '')">
+					<choose>
+						<when test="where == 'USER_NAME'">
+							WHERE USER_NAME LIKE CONCAT('%', #{query}, '%')
+						</when>
+					</choose>
+				</if>
+			)
+
+	</select>
+
+	<!-- 오프라인 주문 내역 리스트 - 주문별 그룹 -->
+	<select id="getOfflineAllOrderListByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultMap="OrderListResult">
+	/* saleson.shop.slave.SlaveOrderMapper.getAllOrderListByParamForManager */
+	SELECT OI.*
+		, IFNULL(CRYPTO_DEC('normal', USER_NAME_ENC, '', 0),'') AS USER_NAME
+		<if test='conditionType == "OPMANAGER"'>
+<!-- 		, IFNULL(CRYPTO_DEC('normal', BIRTHDAY_ENC, '', 0), '') AS BIRTHDAY -->
+		</if>
+		FROM (
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+			OI.*
+			<if test='conditionType == "OPMANAGER"'>
+			, IFNULL(U.BIRTHDAY, '') AS BIRTHDAY
+			</if>
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					O.LOGIN_ID,
+					O.BUYER_NAME,
+					OI.*,
+					OSI.RECEIVE_NAME,
+					(SELECT UPPER_LOCGOV_NM || ' ' || LOCGOV_NM FROM G_LOCGOV WHERE LOCGOV_CODE = S.LOCGOV_CODE) AS LOCGOV_NM,
+					IFNULL(S.SELLER_NAME, '') AS SELLER_NAME,
+					IFNULL(S.COMPANY_NAME,  '') AS COMPANY_NAME,
+					OI.USER_ID AS OI_USER_ID,
+					(SELECT USER_NAME FROM OP_USER WHERE USER_ID = OI.USER_ID) AS USER_NAME_ENC
+					<if test='downloadExcel'>
+						, O.MOBILE
+						, OSI.RECEIVE_MOBILE
+						, OSI.RECEIVE_ZIPCODE
+						, OSI.RECEIVE_NEW_ZIPCODE
+						, OSI.RECEIVE_ADDRESS
+						, OSI.RECEIVE_ADDRESS_DETAIL
+						, OSI.MEMO
+						, (SELECT OP.APPROVAL_TYPE FROM OP_ORDER_PAYMENT OP WHERE OI.ORDER_CODE = OP.ORDER_CODE AND OI.ORDER_SEQUENCE = OP.ORDER_SEQUENCE) AS APPROVAL_TYPE
+					</if>
+					, CASE
+			        	WHEN OI.CAMPAIGN_CODE = 'MOBILE' THEN 'Y'
+			        	ELSE 'N'
+			    	END AS MOBILE_ITEM_YN
+				        FROM OP_ORDER_ITEM OI
+			        INNER JOIN OP_ORDER O
+			            ON OI.ORDER_CODE = O.ORDER_CODE
+			            AND OI.ORDER_SEQUENCE = O.ORDER_SEQUENCE
+			            AND O.DATA_STATUS_CODE = '1'
+
+			        INNER JOIN OP_ORDER_SHIPPING_INFO OSI
+			            ON OI.ORDER_CODE = OSI.ORDER_CODE
+			            AND OI.ORDER_SEQUENCE = OSI.ORDER_SEQUENCE
+			            AND OI.SHIPPING_INFO_SEQUENCE = OSI.SHIPPING_INFO_SEQUENCE
+					<choose>
+						<when test="(upperLocgovCode != null and upperLocgovCode != '') or (shWdr != null and shWdr != '') or ((query != null and query != '') and where == 'COMPANY_NAME')">
+							JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						</when>
+						<otherwise>
+							LEFT JOIN OP_SELLER S ON OI.SELLER_ID = S.SELLER_ID
+						</otherwise>
+					</choose>
+				<where>
+					AND (OI.FILLER9 IS NOT NULL OR OI.FILLER9 != '')
+					<choose>
+						<when test='conditionType == "SELLER"'>
+							AND OI.SELLER_ID = #{sellerId}
+							AND OI.DELIVERY_TYPE = '2'
+
+							<if test="status != null and status.length > 0">
+								AND OI.ORDER_STATUS IN
+								<foreach collection="status" item="status" index="i" open="(" separator="," close=")">
+									#{status}
+								</foreach>
+							</if>
+						</when>
+						<when test='conditionType == "OPMANAGER"'>
+
+							<if test="sellerId > 0">
+								AND OI.SELLER_ID = #{sellerId}
+							</if>
+
+							<if test="deliveryType != null and deliveryType != ''">
+								<if test="sellerId == 0">
+									AND OI.SELLER_ID > #{sellerId}
+								</if>
+
+								AND OI.DELIVERY_TYPE = #{deliveryType}
+							</if>
+
+							<if test="status != null and status.length > 0">
+								AND OI.ORDER_STATUS IN
+								<foreach collection="status" item="status" index="i" open="(" separator="," close=")">
+									#{status}
+								</foreach>
+							</if>
+
+						</when>
+					</choose>
+					<choose>
+						<when test='downloadExcel'>
+							<if test="orderCodes != null and orderCodes.isEmpty()">
+								AND OI.ORDER_CODE IN
+								<foreach item="orderCode" index="index" collection="orderCodes" open="(" separator="," close=")">
+									#{orderCode}
+								</foreach>
+							</if>
+						</when>
+						<otherwise>
+							<if test="orderCode != null and orderCode != ''">
+								AND OI.ORDER_CODE = #{orderCode}
+							</if>
+						</otherwise>
+					</choose>
+
+					<if test="orderSequence != null and orderSequence != ''">
+						AND OI.ORDER_SEQUENCE = #{orderSequence}
+					</if>
+
+					<if test="itemSequence > 0">
+						AND OI.ITEM_SEQUENCE = #{itemSequence}
+					</if>
+
+					<choose>
+						<when test="orderStatusList != null and !orderStatusList.isEmpty()">
+							AND OI.ORDER_STATUS IN
+							<foreach item="orderStatus" index="index" collection="orderStatusList" open="(" separator="," close=")">
+								#{orderStatus}
+							</foreach>
+						</when>
+						<otherwise>
+							<if test="orderStatus != null and orderStatus != ''">
+								AND OI.ORDER_STATUS = #{orderStatus}
+							</if>
+						</otherwise>
+					</choose>
+
+					<if test='cancelFlag != null and cancelFlag != ""'>
+						AND OI.CANCEL_FLAG = #{cancelFlag}
+					</if>
+
+					<if test="userId > 0">
+						AND OI.USER_ID = #{userId}
+						AND OI.GUEST_FLAG = 'N'
+					</if>
+
+					<if test="guestUserName != null and guestUserName != ''">
+						AND OI.GUEST_FLAG = 'Y'
+						AND O.BUYER_NAME = #{guestUserName}
+						AND O.MOBILE = #{guestPhoneNumber}
+					</if>
+
+					<if test="upperLocgovCode != null and upperLocgovCode != ''">
+						<choose>
+							<when test="locgovCode != null and locgovCode != ''">
+								AND S.LOCGOV_CODE = #{locgovCode}
+							</when>
+							<otherwise>
+								AND S.LOCGOV_CODE LIKE CONCAT(SUBSTR(#{upperLocgovCode}, 0, 2), '%')
+							</otherwise>
+						</choose>
+					</if>
+
+					<if test="itemName != null and itemName != ''">
+						AND OI.ITEM_NAME LIKE CONCAT('%', #{itemName}, '%')
+					</if>
+
+					<if test="searchDateType != null and searchDateType != ''">
+						<if test="(searchStartDate != null and searchStartDate != '') and (searchEndDate != null and searchEndDate != '')">
+							<choose>
+								<when test="(searchStartDateTime != null and searchStartDateTime != '') and (searchEndDateTime != null and searchEndDateTime != '')">
+									<if test='searchDateType == "OI.CREATED_DATE"'>
+										AND OI.CREATED_DATE BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}, '0000') AND CONCAT(#{searchEndDate},#{searchEndDateTime}, '9999')
+									</if>
+									<if test='searchDateType == "O.CREATED_DATE"'>
+										AND O.CREATED_DATE BETWEEN CONCAT(#{searchStartDate},#{searchStartDateTime}, '0000') AND CONCAT(#{searchEndDate},#{searchEndDateTime} , '9999')
+									</if>
+								</when>
+								<otherwise>
+									AND #{searchDateType} BETWEEN CONCAT(#{searchStartDate}, '000000') AND CONCAT(#{searchEndDate}, '239999')
+								</otherwise>
+							</choose>
+						</if>
+					</if>
+
+					<if test="(query != null and query != '') and (where != null and where != '')">
+						<choose>
+							<when test="where == 'USER_ID'">
+								AND OI.USER_ID IN (
+									SELECT USER_ID FROM OP_USER
+									WHERE LOGIN_ID LIKE CONCAT('%', #{query},'%')
+								)
+							</when>
+							<when test="where == 'PHONE'">
+								AND (
+									REPLACE(OSI.PHONE, '-', '') LIKE CONCAT(REPLACE(#{query}, '-', ''), '%')
+									OR REPLACE(OSI.MOBILE, '-', '') LIKE CONCAT(REPLACE(#{query}, '-', ''), '%')
+								)
+							</when>
+							<when test="where == 'RECEIVE_NAME'">
+								AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query},'%')
+							</when>
+							<when test="where == 'ITEM_NAME'">
+								AND OI.ITEM_NAME LIKE CONCAT('%', #{query},'%')
+							</when>
+							<when test="where == 'ITEM_CODE'">
+								AND (OI.ITEM_CODE = #{query} OR OI.ITEM_USER_CODE = #{query})
+							</when>
+							<when test="where == 'EMAIL'">
+								AND OSI.EMAIL LIKE CONCAT(#{query}, '%')
+							</when>
+							<when test="where == 'ORDER_CODE'">
+								AND OI.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
+							</when>
+							<when test="where == 'COMPANY_NAME'">
+								AND S.COMPANY_NAME LIKE CONCAT('%', #{query},'%')
+							</when>
+							<when test="where == 'ITEM_SELLER_CODE'">
+								AND OI.ITEM_ID IN (SELECT ITEM_ID FROM OP_ITEM WHERE ITEM_SELLER_CODE LIKE CONCAT('%', #{query},'%'))
+							</when>
+						</choose>
+					</if>
+					<!-- <if test="shWdr != null and shWdr != ''"> --><!-- 지자체 코드 검색 -->
+						<choose>
+							<when test="shLocgovCode != null and shLocgovCode != ''">	<!-- 시군구 코드 있을 경우 -->
+								AND S.LOCGOV_CODE = #{shLocgovCode}
+							</when>
+							<when test="shWdr != null and shWdr != ''">		<!-- 시도 코드만 있을 경우 -->
+								AND S.LOCGOV_CODE IN (
+									SELECT LOCGOV.LOCGOV_CODE
+										FROM G_LOCGOV LOCGOV
+										WHERE LOCGOV.UPPER_LOCGOV_CODE = #{shWdr}
+								)
+							</when>
+						</choose>
+					<!-- </if> -->
+					<if test="isSellerLogin">
+						<if test="isSelectLimited">
+							AND (
+								<!-- OI.CONFIRM_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000')
+								OR OI.CANCEL_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000')
+								OR OI.RETURN_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m%d'), '000000') -->
+								OI.CONFIRM_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+								OR OI.CANCEL_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+								OR OI.RETURN_REQUEST_FINISH_DATE <![CDATA[ >= ]]> CONCAT(DATE_FORMAT(ADD_MONTHS(CURRENT_DATETIME, -1), '%Y%m'), '01000000')
+								OR (
+									(OI.CONFIRM_DATE = '00000000000000' OR OI.CONFIRM_DATE IS NULL OR OI.CONFIRM_DATE = '')
+									AND (OI.CANCEL_REQUEST_FINISH_DATE = '00000000000000' OR OI.CANCEL_REQUEST_FINISH_DATE IS NULL OR OI.CANCEL_REQUEST_FINISH_DATE = '')
+									AND (OI.RETURN_REQUEST_FINISH_DATE = '00000000000000' OR OI.RETURN_REQUEST_FINISH_DATE IS NULL OR OI.RETURN_REQUEST_FINISH_DATE = '')
+								)
+							)
+						</if>
+					</if>
+				</where>
+				<!-- ORDER BY OI.CREATED_DATE DESC -->
+				ORDER BY OI.CREATED_DATE DESC, OI.ORDER_CODE DESC, OI.ORDER_SEQUENCE ASC, OI.SHIPPING_INFO_SEQUENCE ASC, OI.ITEM_SEQUENCE ASC
+			) T_A
+			<if test="(query != null and query != '') and (where != null and where != '')">
+				<choose>
+					<when test="where == 'USER_NAME'">
+						WHERE T_A.USER_NAME_ENC = #{query}
+					</when>
+				</choose>
+			</if>
+			<include refid="CommonMapper.paginationFooter" />
+		) OI
+		<if test='conditionType == "OPMANAGER"'>
+		LEFT JOIN OP_USER_DETAIL U ON OI.USER_ID = U.USER_ID
+		</if>
+
+	) OI
+	</select>
+</mapper>

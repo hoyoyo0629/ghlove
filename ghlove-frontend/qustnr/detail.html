@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>온라인설문참여 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css">
+    <link rel="stylesheet" href="/static/css/common.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/popup.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    <link rel="stylesheet" href="/static/css/event.css">
+
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css">
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css">
+
+    <link rel="stylesheet" href="/static/css/joind-ag.css">
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+
+</head>
+
+<body>
+    <div id="saleson" v-cloak>
+        <div id="wrap">
+            <!-- header component -->
+            <layout-header-ali></layout-header-ali>
+
+            <section v-if="isShow">
+                <div class="page-title-box">
+                    <h2 class="page-title-txt">{{result.qustnrSj}}</h2>
+                    <p>기간 : {{formatDate(result.qustnrBgnDe,'-')}} ~ {{formatDate(result.qustnrEndDe,'-')}}</p>
+                </div>
+            </section>
+
+            <section id="contents" class="survey">
+                <div class="contents-wrap" v-if="isShow">
+                    <div class="center accept-terms-area" v-for="(survey, i) in result.qustnrQesitm" :key="i" :id="'question_' + survey.qustnrSn + '_' + survey.qustnrQesitmSn">
+                        <h3 class="survey_tit"><span class="idx">{{i+1}}</span><span
+                                class="survey_txt">{{survey.qestnCn}}</span></h3>
+                        <div class="line"></div>
+                        <ul class="radio_list">
+                            <template>
+                                <li v-for="(survItem, j) in survey.qustnrIem" :key="j">
+                                    <input type="radio" :name="'selectAnswer_' + survey.qustnrQesitmSn" :id="i+'-'+j" v-model="survey.selected" :value="survItem.qustnrIemSn">
+                                    <label :for="i+'-'+j">{{survItem.iemCn}}</label>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                    <!-- 버튼그룹 -->
+                    <div class="btn-box" >
+                        <button id="qustnrBtn" type="button" class="blueBtn u-confirm" @click="submit()" v-if="result.isShow == 'Y'">
+                            제출하기
+                            <span>
+                                <img src="/static/images/icon/cli-icon_btn-hover-arrow.png" alt="">
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- topBtn component -->
+            <layout-fixed-btn></layout-fixed-btn>
+            <!-- footer component -->
+            <layout-footer-ali></layout-footer-ali>
+
+        </div>
+        <!--//#wrap-->
+
+    </div>
+    <!--//#saleson-->
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <script src="/static/js/jquery.cookie.js"></script>
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+
+    <script type="text/babel">
+
+        Vue.use(VueAwesomeSwiper);
+        var vm = new Vue({
+            el: '#saleson',
+            components: {
+                'layout-header-ali': httpVueLoader('/components/layouts/header_ali.vue'),
+                'layout-fixed-btn': httpVueLoader('/components/ui/fixedBtn.vue'),
+                'layout-footer-ali': httpVueLoader('/components/layouts/footer_ali.vue'),
+            },
+            data: {
+                userName: "",
+                userGrade: "",
+                qustnrSn: "",
+                result: {},
+                isShow : false
+            },
+            methods: {
+				surveyInit: function () {
+					vm.qustnrSn = $s.core.getParameter('qustnrSn');
+					if (!vm.qustnrSn) {
+						setTimeout(function() {
+							$s.alert('설문이 선택되지 않았습니다.', function () {
+								location.href = '/';
+							});
+						},100);
+						return false;
+					}
+
+					$s.api.getSubmit('/api/qustnr/' + vm.qustnrSn, {}, function (response) {
+						vm.result = response.qustnr;
+						if (!$s.isLogin()) vm.result.isShow = 'N';
+						vm.isShow = true;
+					})
+
+
+				},
+				formatDate: function(date, str) {
+
+					var year = date.substring(0,4),
+					month = date.substring(4,6),
+					day = date.substring(6,8);
+
+
+				    if (month.length < 2)
+				        month = '0' + month;
+				    if (day.length < 2)
+				        day = '0' + day;
+
+			    	return [year, month, day].join(str);
+				},
+				wait: function (sec) {
+					var start = Date.now(), now = start;
+				    while (now - start < sec * 1000) {
+				        now = Date.now();
+				    }
+				},
+				submit: function () {
+					var params = [];
+
+					for (var i in vm.result.qustnrQesitm) {
+						var d = vm.result.qustnrQesitm[i];
+						if (!d.selected) {
+							$s.alert('아직 답변하지 않은 질문이 있습니다.', i + '-' + 0);
+							return false;
+						}
+
+						params.push({
+							qustnrSn : d.qustnrSn,
+							qustnrQesitmSn : d.qustnrQesitmSn,
+							qustnrIemSn : d.selected
+						});
+
+					}
+
+					$s.api.postSubmit('/api/qustnr/' + vm.qustnrSn, params, function(response) {
+						if (response.status ==  'OK') {
+							$s.alert('설문에 참여해주셔서 감사합니다.', function () {
+								location.href = '/';
+							});
+							return false;
+						} else {
+							$s.alert(response.message, 'qustnrBtn');
+							return false;
+						}
+					}, function (err) {
+						$s.alert(response.message, 'qustnrBtn');
+							return false;
+					});
+
+
+
+				}
+            },
+            computed: {
+
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    // 페이지 로딩 후 실행
+                    //Saleson.init({ loginPage: true });
+                    Saleson.init();
+                    vm.surveyInit();
+                });
+
+            }
+        });
+    </script>
+
+</body>
+
+</html>

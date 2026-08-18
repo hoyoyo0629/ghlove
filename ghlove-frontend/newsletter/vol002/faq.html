@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:url" content="https://www.ilovegohyang.go.kr/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="고향사랑e음" />
+    <meta
+      property="og:description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta property="og:site_name" content="고향사랑e음" />
+    <meta
+      property="og:image"
+      content="/static/images/cli-logo.png"
+    />
+    <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+    <meta itemprop="name" content=" 고향사랑e음" />
+    <meta
+      itemprop="description"
+      content="고향사랑e음 시스템을 통해 기부희망 지자체에 직접 기부하여 열악한 지방재정 확충에 기여 하고, 대상지자체로부터 답례품을 제공받을수 있는 종합정보시스템"
+    />
+    <meta
+      itemprop="image"
+      content="/static/images/cli-logo.png"
+    />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>제2회 고향사랑의 날 기념식과 박람회 : 고향사랑e음 기부제 소식</title>
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/newsletter/static/css/news_detail.css">
+    <link rel="stylesheet" href="/newsletter/static/css/news_header.css">
+
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script type="text/babel">
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "newsletter-header": httpVueLoader(
+            "/newsletter/components/header/header.vue"
+          ),
+        },
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: function () {
+          this.$nextTick(function () {
+
+          });
+        },
+      });
+
+      $(".faq_tit_area").click(function() {
+        $(this).toggleClass("spin").next().toggleClass("active")
+      });
+    </script>
+  </head>
+
+<body>
+  <div id="saleson" v-cloak>
+    <newsletter-header :ver="'vol002'"></newsletter-header>
+
+    <div class="newsletter_detail_page faq_page">
+      <div id="wrap">
+
+        <h2>자주묻는 질문</h2>
+
+        <div class="detail_cont_wrap">
+          <div class="faqbox_inner">
+            <div class="faq_tit_area">
+              <a href="#;" onclick="return false;">고향사랑기부 가능한 사이트 알려주세요</a>
+            </div>
+            <div class="faq_answer_area active">
+              <p>
+                2024년 12월 부터는 다양한 사이트에서 고향사랑기부금 모금을 시작합니다.<br>
+                고향사랑기부 가능한 사이트 8개 안내드립니다.<br>
+                <br>
+                1. 행정안전부 - 고향사랑e음 (<a class="tel" href="http://www.ilovegohyang.go.kr" target="_blank">www.ilovegohyang.go.kr</a>)<br>
+                2. 공감만세 - 위기브 (<a class="tel" href="http://www.wegive.co.kr" target="_blank">www.wegive.co.kr</a>)<br>
+                3. KB국민은행 - KB스타뱅킹 앱<br>
+                4. IBK기업은행 - i-ONE Bank 앱<br>
+                5. NH농협은행 - NH올원뱅크 앱<br>
+                6. 신한은행 - 신한SOL Bank 앱<br>
+                7. 액티부키 - 놀고팜 (<a class="tel" href="http://www.nolgofarm.com" target="_blank">www.nolgofarm.com</a>)<br>
+                8. 하나은행 - 하나원큐 앱
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail_cont_wrap">
+          <div class="faqbox_inner">
+            <div class="faq_tit_area">
+              <a href="#;" onclick="return false;">고향사랑기부 관련 문의는 어디로 하면 되나요&#63;</a>
+            </div>
+            <div class="faq_answer_area active">
+              <p>
+                고향사랑기부 사이트 관련 상담센터 번호는 아래와 같습니다.<br>
+                <br>
+                1. 행정안전부 고향사랑e음 상담센터: <a class="tel" href="tel:15222431">1522-2431</a><br>
+                2. 공감만세(위기브) 상담센터: <a class="tel" href="tel:16602888">1660-2888</a><br>
+                3. KB국민은행 상담센터: <a class="tel" href="tel:15889999">1588-9999</a><br>
+                4. IBK기업은행 상담센터: <a class="tel" href="tel:15662566">1566-2566</a> / <a class="tel" href="tel:15882588">1588-2588</a><br>
+                5. NH농협은행 상담센터: <a class="tel" href="tel:16613000">1661-3000</a> / <a class="tel" href="tel:15223000">1522-3000</a><br>
+                6. 신한은행 상담센터: <a class="tel" href="tel:15778000">1577-8000</a><br>
+                7. 액티부키(놀고팜) 상담센터: <a class="tel" href="tel:0632298599">063-229-8599</a><br>
+                8. 하나은행 상담센터: <a class="tel" href="tel:15881111">1588-1111</a> / <a class="tel" href="tel:15991111">1599-1111</a><br>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="detail_cont_wrap">
+          <div class="faqbox_inner">
+            <div class="faq_tit_area long">
+              <a href="#;" onclick="return false;">민간플랫폼을 통한 기부와 고향사랑e음 사이트에서 진행하는 기부와의 차이점은 무엇인가요&#63;</a>
+            </div>
+            <div class="faq_answer_area active">
+              <p>
+                지금까지는 행정안전부 고향사랑기부는 ‘고향사랑e음’ (<a class="tel" href="http://www.ilovegohyang.go.kr" target="_blank">ilovegohyang.go.kr</a>)을 통해서만 할 수 있지만, 24년 12월 부터는 국민이 자주 쓰는 민간 사이트와 앱을 통해 고향사랑기부를 할 수 있게 됩니다.
+              </p>
+            </div>
+          </div>
+        </div> -->
+
+        <div class="detail_cont_wrap">
+          <div class="faqbox_inner">
+            <div class="faq_tit_area long">
+              <a href="#;" onclick="return false;">민간플랫폼에서 기부 후 답례품 신청은 어디서 하나요&#63;</a>
+            </div>
+            <div class="faq_answer_area active">
+              <p>
+                민간플랫폼에서 기부 후 고향사랑e음 카카오톡 인증 또는 간편 인증을 통한 로그인 진행 후 기부하신 지자체의 답례품몰에서 신청하실 수 있습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail_cont_wrap">
+          <div class="faqbox_inner">
+            <div class="faq_tit_area long">
+              <a href="#;" onclick="return false;">민간플랫폼 가입자 고향사랑e음 접속 방법 알려주세요</a>
+            </div>
+            <div class="faq_answer_area active">
+              <p>
+                고향사랑e음 로그인 방법<br>
+                <br>
+                방법1. 고향사랑e음 홈페이지(<a class="tel" href="http://www.ilovegohyang.go.kr" target="_blank">http://www.ilovegohyang.go.kr</a>)에 접속 후 카카오톡 인증 또는 간편 인증을 통한 로그인 가능합니다.<br>
+                <br>
+                방법2. 민간사이트에서 아이디 받은 경우<br>
+                오른쪽 상단에 로그인 > 일반 로그인 > 아이디/비밀번호 찾기 > 비밀번호 찾기 클릭 후 본인인증 뒤 원하시는 비밀번호로 설정이 가능합니다.<br>
+                <br>
+                아이디를 분실했을 경우 로그인 > 아이디/비밀번호 찾기 > 아이디 찾기를 먼저 진행해주세요.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail_cont_wrap">
+          <div class="faqbox_inner">
+            <div class="faq_tit_area long">
+              <a href="#;" onclick="return false;">민간앱에서 기부한 내용이 확인이 안되는데 확인할 수 있는 다른 방법이 있나요&#63;</a>
+            </div>
+            <div class="faq_answer_area active">
+              <p>
+                민간앱에서 고향사랑기부 내역이 확인되지 않을 경우고향사랑e음 홈페이지(<a class="tel" href="http://www.ilovegohyang.go.kr" target="_blank">https://www.ilovegohyang.go.kr</a>)에 로그인 하시어  "마이페이지 > 기부내역 현황" 에서 확인 부탁드립니다.
+                (고향사랑e음 로그인 방법 :  카카오톡 인증 또는 간편 인증을 통한 로그인 진행)
+                다만, 당일 기부건일 경우 기부자님이 납부하신 기부 내역이 고향사랑 쪽으로 넘어가는데 시간이 소요될 수 있습니다.
+                1~2일 여유를 두고 확인 부탁드리며 그 후에도 기부 내역이 확인되지 않는 경우 고향사랑e음 고객센터 <a class="tel" href="tel:15222431">1522-2431</a>로 문의 부탁드립니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <a href="#wrap" class="goHome">
+          <img src="/newsletter/static/images/common/btn_goTop.png" alt="화면 맨위로 올라가는 버튼">
+        </a>
+        
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+
+    $(".faq_tit_area").click(function() {
+      $(this).toggleClass("spin").next().toggleClass("active")
+    })
+
+    // ios vh 현상 잡기
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty(`--vh`, `${vh}`);
+
+  </script>
+
+  </body>
+</html>

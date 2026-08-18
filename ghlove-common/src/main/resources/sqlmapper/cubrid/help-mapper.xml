@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.help.HelpMapper">
+	<sql id="sqlFrontHelpListWhere">
+		<where>
+			<if test="query != null and query != ''">
+				<if test="where == 'MENU_SJ'">
+					AND M.MENU_SJ LIKE CONCAT('%', #{query}, '%')
+				</if>
+				<if test="where == 'ORGINL_FILE_NM'">
+					AND M.ORGINL_FILE_NM LIKE CONCAT('%', #{query}, '%') 
+				</if>
+			</if>
+		</where>
+	</sql>
+	
+	<select id="getFrontHelpListCount" parameterType="saleson.shop.help.support.HelpParam" resultType="Integer">
+		/** help-mapper.getFrontHelpListCount (도움말 목록 갯수 조회) */
+		SELECT 
+				COUNT(*)
+		FROM
+				G_MNL M
+		<include refid="sqlFrontHelpListWhere" />
+	</select>
+	
+	<select id="getFrontHelpList" parameterType="saleson.shop.help.support.HelpParam" resultType="saleson.shop.help.domain.Help">
+		/** help-mapper.getFrontHelpList (도움말 목록 조회) */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT 
+				M.MNL_SN,
+				M.MENU_SE_CODE,
+				M.MENU_URL,
+				M.MENU_NM,
+				M.FILE_NM,
+				M.ORGINL_FILE_NM,
+				M.FILE_TY,
+				M.INQIRE_CO,
+				M.MENU_SJ,
+				M.MENU_CN,
+				M.FRST_REGISTER_ID,
+				DATE_FORMAT(M.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM,
+				M.LAST_UPDUSR_ID,
+				DATE_FORMAT(M.LAST_UPDT_PNTTM,'%Y-%m-%d') AS LAST_UPDT_PNTTM
+		FROM
+				G_MNL M
+		<include refid="sqlFrontHelpListWhere" />
+		ORDER BY
+		<choose>
+			<when test="(sort != '' and sort != null) and (orderBy != '' and orderBy != null)">
+				<choose>
+					<when test='orderBy == "CREATED_DATE"'> M.FRST_REGIST_PNTTM </when>
+					<when test='orderBy == "INQIRE_CO"'> M.INQIRE_CO </when>
+					<otherwise> M.FRST_REGIST_PNTTM </otherwise>
+				</choose>
+				<choose>
+					<when test='sort == "ASC"'>ASC</when>
+					<otherwise>DESC</otherwise>
+				</choose>
+			</when>
+			<otherwise>
+				M.FRST_REGIST_PNTTM DESC
+			</otherwise>
+		</choose>
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+	
+	<select id="getFrontHelpDetail" parameterType="saleson.shop.help.support.HelpParam" resultType="saleson.shop.help.domain.Help">
+		/** help-mapper.getFrontHelpDetail (도움말 상세 조회) */
+		SELECT 
+			A.mnl_sn,
+			A.menu_se_code,
+			A.menu_url,
+			A.menu_nm,
+			A.file_nm,
+			A.orginl_file_nm,
+			A.file_ty,
+			A.inqire_co,
+			A.menu_sj,
+			A.menu_cn,
+			A.frst_register_id,
+			A.frst_regist_pnttm,
+			A.last_updusr_id,
+			A.last_updt_pnttm,
+			crypto_dec('normal', A.user_name, '', 0) AS user_name
+		FROM 
+			(
+				SELECT 
+					M.mnl_sn,
+					M.menu_se_code,
+					M.menu_url,
+					M.menu_nm,
+					M.file_nm,
+					M.orginl_file_nm,
+					M.file_ty,
+					M.inqire_co,
+					M.menu_sj,
+					M.menu_cn,
+					M.frst_register_id,
+					DATE_FORMAT(M.frst_regist_pnttm,'%Y-%m-%d') AS frst_regist_pnttm,
+					M.last_updusr_id,
+					DATE_FORMAT(M.last_updt_pnttm,'%Y-%m-%d') AS last_updt_pnttm,
+					IFNULL(MG.user_name, U.user_name) AS user_name
+				FROM
+					g_mnl M
+				LEFT OUTER JOIN op_manager MG ON IFNULL(M.last_updusr_id, M.frst_register_id) = MG.user_id
+				LEFT OUTER JOIN op_user U ON IFNULL(M.last_updusr_id, M.frst_register_id) = U.user_id
+				WHERE
+					M.mnl_sn = #{mnlSn}
+			) A
+	</select>
+	
+	<update id="addHitCount" parameterType="Integer">
+		/** help-mapper.addHitCount (조회수 증가) */
+		UPDATE
+				G_MNL
+		SET
+				INQIRE_CO = INQIRE_CO + 1
+		WHERE
+				MNL_SN = #{mnlSn}
+	</update>
+	
+	<select id="getFrontHelpFileInfo" parameterType="saleson.shop.help.support.HelpParam" resultType="saleson.shop.help.domain.Help">
+		/** help-mapper.getFrontHelpFileInfo (도움말 파일 정보 조회) */
+		SELECT 
+				M.MNL_SN,
+				M.MENU_SE_CODE,
+				C.LABEL AS MENU_URL,
+				C.DETAIL AS MENU_NM,
+				M.FILE_NM,
+				M.ORGINL_FILE_NM,
+				M.FILE_TY,
+				M.INQIRE_CO,
+				M.MENU_SJ,
+				M.MENU_CN,
+				M.FRST_REGISTER_ID,
+				DATE_FORMAT(M.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM,
+				M.LAST_UPDUSR_ID,
+				DATE_FORMAT(M.LAST_UPDT_PNTTM,'%Y-%m-%d') AS LAST_UPDT_PNTTM
+		FROM
+				G_MNL M
+		INNER JOIN 
+				OP_COMMON_CODE C 
+			ON	C.CODE_TYPE = 'MENU_URL'
+			AND	C.LANGUAGE = 'ko'
+			AND C.USE_YN = 'Y'
+			AND C.ID = M.MENU_SE_CODE
+			AND C.LABEL = #{menuUrl}
+		LIMIT 1
+	</select>
+</mapper>

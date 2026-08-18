@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="/static/favicon.ico" />
+    <title>답례품 > 답례품 몰 > 통합검색결과 | 고향사랑e음</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css" />
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="/static/css/swiper.min.css" />
+    <link rel="stylesheet" href="/static/css/common.css" />
+    <link rel="stylesheet" href="/static/css/layout.css" />
+    <link rel="stylesheet" href="/static/css/popup.css" />
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="stylesheet" href="/static/css/event.css" />
+
+    <!-- ali custom Style -->
+    <link rel="stylesheet" href="/static/css/default_ali.css" />
+    <link rel="stylesheet" href="/static/css/header-footer_ali.css" />
+
+    <link rel="stylesheet" href="/static/css/goods_card.css" />
+    <link rel="stylesheet" href="/static/css/lclgv_chc/map.css" />
+    <link rel="stylesheet" href="/static/css/joind-agf.css" />
+    <!-- 모달 -->
+
+    <!-- UI/UX 신규추가 -->
+    <link rel="stylesheet" href="/static/css/new.css" />
+    <script src="/static/js/swiper-bundle.min.js"></script>
+    <!-- <script defer src="/static/js/ui-script.js"></script> -->
+  </head>
+
+  <body>
+    <div id="saleson" v-cloak>
+      <layout-header-ali ref="layoutHeader" :export-mode="exportMode"></layout-header-ali>
+      <layout-header :menu-url="menuUrl" ref="layoutHeaderSearchPc" @show-map-select="showMapSelect" :export-mode="exportMode"></layout-header>
+
+      <div id="wrap">
+        <!-- 지자체 선택 팝업  -->
+        <div class="black-bg" ref="getParentModal">
+          <div class="overlayer join-complete">
+            <div class="overlayer-header" style="font-size: 25px; height: 60px; line-height: 60px; padding: 0">지자체 선택</div>
+            <div class="overlayer-body" style="padding-top: 30px; border-radius: 0 0 15px 15px">
+              <layout-map-select @show-loading="showLoading" @select-lclgv="selectLclgvPc"></layout-map-select>
+            </div>
+            <div class="btn-box">
+              <button
+                type="button"
+                class="temp-button hidden_txt"
+                title="지자체 선택팝업 닫기"
+                style="top: 18px; right: 18px"
+                @click="closeMapSelect()"
+              >
+                지자체 선택 팝업 닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <section class="loc_header" v-if="type==='L'" :style="computedLocgovStyle"> -->
+      <section class="loc_header" v-if="type==='L'">
+        <div class="loc_skin" :style="computedLocgovStyle"></div>
+        <div class="center">
+          <div class="loc_name_area">
+            <img src="/static/images/goods/loc_mall-header.png" alt="" />
+            <h3>{{upperLocSearchTxt}} {{locSearchTxt}}</h3>
+            <p>답례품 몰</p>
+          </div>
+          <div class="loc_main-btn_box">
+            <button type="button" class="loc_main" @click.prevent="this.$goods.goSearchGoods({type, locgov}, exportMode)">
+              <span class="loc_btn main"></span>지자체몰 메인
+            </button>
+            <button type="button" class="add_intrst" :class="{'on' : intrstLocgovCnt > 0}" @click="addIntrstLocgov" v-if="exportMode">
+              <span class="loc_btn intrst"></span>관심지자체 등록
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="page-title-box mall center" v-if="type==='C'">
+        <span class="ali_breadcrumb">
+          <a href="/" v-if="!exportMode"><img class="icon-img" src="/static/images/icon/cli-icon_home.png" alt="홈으로" /></a>
+          <span class="txt-arrow" v-if="!exportMode"><span class="sr-only">></span></span>
+          <span @click.prevent="this.$s.redirect('/goods/index.html')" style="cursor: pointer" v-if="!exportMode">답례품</span>
+          <span @click.prevent="this.$s.redirect('/goods/index.html?exportMode=true')" style="cursor: pointer" v-if="exportMode">답례품</span>
+          <span v-for="(val,i) in categoryPath" :key="i">
+            <span class="txt-arrow"><span class="sr-only">></span></span>
+            <span
+              @click.prevent="this.$goods.goSearchGoods({type, keyword, locgov, group: i===0? val.categoryUrl:'' , category: i>0? val.categoryUrl:'', price}, exportMode)"
+              style="cursor: pointer"
+              >{{ val.categoryName }}</span
+            >
+          </span>
+        </span>
+        <h2 class="page-title-txt">{{ currentCategoryName }}</h2>
+      </section>
+      <section class="main_contents">
+        <div class="center" id="itemArea">
+          <div class="section condi_section">
+            <!-- 데스크탑 : 카테고리별 | 포인트별 조회 -->
+            <div class="category_group">
+              <ul class="condition_list">
+                <!-- <li v-for="(categoryGroup, i) in category.groups" :key="i"> -->
+                <li v-for="(categoryGroup, i) in category.groups" :key="i">
+                  <button
+                    type="button"
+                    :class="categoryGroup.url === group ? 'on' : ''"
+                    @click.prevent="searchSelfCategoryGroup(categoryGroup.url, 'C')"
+                  >
+                    <span class="icon_img">
+                      <img class="de-img" v-bind:src="categoryGroup.description" :alt="categoryGroup.name" />
+                      <img class="mo-img" v-bind:src="categoryGroup.descriptionM" :alt="categoryGroup.name" />
+                    </span>
+                    <span class="icon_txt">{{ categoryGroup.name }}</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pointCon" @click.prevent="searchPrice(10000, 'C')" :class="price == 10000 ? 'on' : ''">
+                    <span class="icon_img">
+                      <img src="/static/images/goods/cli-icon_amount01.png" alt="" />
+                    </span>
+                    <span class="icon_txt">1만 포인트 이하</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pointCon" @click.prevent="searchPrice(30000, 'C')" :class="price == 30000 ? 'on' : ''">
+                    <span class="icon_img">
+                      <img src="/static/images/goods/cli-icon_amount02.png" alt="" />
+                    </span>
+                    <span class="icon_txt">3만 포인트 이하</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pointCon" @click.prevent="searchPrice(50000, 'C')" :class="price == 50000 ? 'on' : ''">
+                    <span class="icon_img">
+                      <img src="/static/images/goods/cli-icon_amount03.png" alt="" />
+                    </span>
+                    <span class="icon_txt">5만 포인트 이하</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="pointCon" @click.prevent="searchPrice(50001, 'C')" :class="price == 50001 ? 'on' : ''">
+                    <span class="icon_img">
+                      <img src="/static/images/goods/cli-icon_amount04.png" alt="" />
+                    </span>
+                    <span class="icon_txt">5만 포인트 이상</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- //데스크탑 : 카테고리별 | 포인트별 조회 -->
+
+          <!-- 검색어&검색건수 -->
+          <div class="mall_search-result-info" v-if="type==='T'">
+            <p class="title-txt">
+              <span>검색어 <strong class="pointblue">{{keyword}}</strong>에 대한 </span>
+              <!-- <span v-if="totalSerchCnt != '0'">검색결과는 총 <strong class="pointblue">{{totalSerchCnt}}</strong>건 입니다.</span> -->
+              <span v-if="totalSerchCnt != '0'">검색결과입니다.</span>
+              <span v-if="totalSerchCnt == '0'">검색결과가 없습니다.</span>
+            </p>
+          </div>
+          <!-- 검색어//&검색건수 -->
+
+          <div class="line" v-if="type==='C' || type==='L'"></div>
+          <div class="main_con_top" v-if="type==='C'">
+            <div class="count_goods"><!-- 전체 {{totalSerchCnt}}건 --></div>
+            <div class="filter_area">
+              <button type="button" class="filter_reset" @click.prevent="reloadPage">
+                <img src="/static/images/icon/filter_reset.png" alt="새로고침" class="icon-img" /><span class="s-txt">새로고침</span>
+              </button>
+              <div class="v-line"></div>
+              <div class="filter_price" @click="showDrop()" @keydown="showDropE($event)" tabindex="0">
+                <span class="s-txt">{{ currentPriceText }}</span
+                ><img src="/static/images/icon/filter_drop.png" alt="검색필터 열기" class="icon-img" />
+                <span class="drop_select">
+                  <button
+                    type="button"
+                    v-for="data in pointSelect"
+                    @click.prevent="this.$goods.goSearchGoods({type:'C',price: data.value,group,category: ccategory}, exportMode)"
+                  >
+                    {{data.text}}
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="main_con_top" v-if="type==='L'">
+            <div class="count_goods"></div>
+            <div class="filter_area">
+              <div class="filter_price" @click="showDropSort()" tabindex="0">
+                <span class="s-txt">{{sortLabel}}</span><img src="/static/images/icon/filter_drop.png" alt="정렬순서 선택창 열기" class="icon-img" />
+                <div class="drop_select" ref="sort_select">
+                  <ul>
+                    <li v-for="(data,i) in arrList" :key="i" @click="selectSort(data)"><button type="button">{{data.label}}</button></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 검색결과 없을 경우 -->
+          <div class="search_ru" v-if="totalSerchCnt == '0'">
+            <div class="list-none">
+              <img src="/static/images/icon/cli-icon_result-none.png" alt="결과 없음" />
+              "검색된 답례품이 없습니다."
+            </div>
+          </div>
+
+          <!-- 답례품 카드 -->
+          <div class="section all_goods categoryGoods"  id="contents">
+            <ul class="goods-list-group">
+              <li class="goods-list-items" v-for="(val,i) in goodsCard" :key="i">
+                <div class="list_inner">
+                  <span class="img_frame">
+                    <a class="img_cover_link"
+                      @click.prevent="jumpToDetails(val)"
+                      tabindex="0"
+                      @keydown="jumpToDetailsE($event,val)"
+                    >
+                      <img class="item_img" v-bind:src="itemImage(val.itemImage)" alt="답례품아이템" @error="this.$goodsItem.errorImage($event)" />
+                      <img
+                        src="/static/images/goods/goods_sold-out.png"
+                        alt="품절"
+                        v-show="!(val.adultItemYn === 'Y' && adultYn === 'N') && val.itemSoldOutFlag === 'Y'"
+                      />
+                      <img src="/static/images/goods/goods_19.png" alt="19세구매가능" v-show="val.adultItemYn === 'Y' && adultYn === 'N'" />
+                    </a>
+                    <button
+                      type="button"
+                      class="icon-md-img hidden_txt"
+                      :class="val.wishlistFlag ? 'on' : ''"
+                      @keydown="keydownDetails($event)"
+                      @click.prevent="this.$goodsItem.addToWishList($event)"
+                      v-bind:id="val.itemId"
+                      :aria-label="val.wishlistFlag ? '관심 답례품 등록 상태, 해제하기' : '관심 답례품 해제 상태, 등록하기'"
+                      v-if="!exportMode"
+                    >
+                      관심답례품
+                    </button>
+                    <!--관심답례품 아이콘 상태 토글-->
+                    <!-- 26.03.24 필수 추가정보 기능 추가에 의해 장바구니 버튼 삭제(이유: 검색엔진 수정 필요) -->
+                    <!--<button
+                      type="button"
+                      class="cart hidden_txt"
+                      @keydown="keydownDetails($event)"
+                      aria-label="장바구니에 추가"
+                      @click.stop="this.$goodsItem.addToCart(val.itemId, val.adultItemYn, buyFlag, 'item-' + val.itemId)"
+                      style="cursor: pointer"
+                      v-if="this.$goodsItem.isShowCartIcon(val) && !exportMode"
+                      :id="'item-' + val.itemId"
+                    >
+                      장바구니
+                    </button>-->
+                  </span>
+                  <button type="button" class="do_btn" @click.stop="this.$goodsItem.getLocGovInfo(val.locgovCode)" v-if="!exportMode">
+                    <span class="btn_icon"></span>
+                    <span class="btn_txt">{{ val.locgovNm }} 기부</span>
+                    <span class="btn_arrow"></span>
+                  </button>
+                  <a @click.prevent="jumpToDetails(val)"
+                  tabindex="0"
+                  @keydown="jumpToDetailsE($event,val)" class="card_title" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }" v-html="val.itemName"></a>
+                  <span class="deepBlue" :class="{ 'grayTxt_so' :  val.itemSoldOutFlag === 'Y' }"
+                    ><span class="pointSize">{{ formatNumber(val.salePrice) }}</span> P</span
+                  >
+                  <span class="tag_box" v-if="val.itemNewFlag == 'Y'">신규</span>
+                </div>
+              </li>
+            </ul>
+            <!--
+            	v-if="(type==='C' || type === 'T') && goodsCard.length == itemsPerPage"
+
+	            기존에는 RANDOM 정렬이였기 때문에 페이지가 무한대였어서
+	            goodsCard(답례품개수) == itemsPerPage(페이지당 답례품개수)가
+	            동일해야만 페이지 넘버를 보여줬던 것으로 예상 됨
+
+	            RANDOM SORT → 최근등록일순 등으로 변경하기 때문에 해당 조건문이 필요가 없어짐
+            -->
+            <pagination-typec
+              :current-page="itemListPage"
+              :total-pages="totalPage"
+              @change="paging"
+              v-if="(type==='C' || type === 'T')"
+            ></pagination-typec>
+            <pagination-typel :current-page="itemListPage" :total-pages="totalPage" @change="paging" v-if="type==='L'"></pagination-typel>
+          </div>
+        </div>
+      </section>
+      <layout-fixed-btn v-if="!exportMode"></layout-fixed-btn>
+      <layout-tabbar-ali ref="layoutHeaderSearchMobile" @show-map-select="showMapSelect" :export-mode="exportMode"></layout-tabbar-ali>
+      <layout-footer-ali ref="layoutFooter" @loading-mounted="loadingMounted" :export-mode="exportMode"></layout-footer-ali>
+      <!-- <layout-popup></layout-popup> -->
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/swiper.min.js"></script>
+    <script src="/modules/swiper/vue-awesome-swiper.js"></script>
+    <script src="/static/js/bootstrap/vendor/popper.min.js"></script>
+    <script src="/static/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.popupoverlay.js"></script>
+    <script src="/static/js/jquery.waypoints.min.js"></script>
+    <script src="/static/js/jquery.counterup.min.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/header.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script src="/modules/babel.min.js"></script>
+    <script src="/modules/es6-promise.min.js"></script>
+    <script src="/modules/es6-promise.auto.min.js"></script>
+    <script src="/modules/axios.js"></script>
+    <script src="/modules/vue.js"></script>
+    <script src="/modules/httpVueLoader.js"></script>
+    <script src="/modules/op.config.js"></script>
+    <script src="/modules/op.saleson.js"></script>
+    <script src="/modules/op.common.js"></script>
+    <script src="/modules/op.wcslog.js"></script>
+    <script src="/modules/goods.item.js"></script>
+    <script type="text/babel" src="/modules/op.vue.js"></script>
+    <script type="text/babel">
+      var vm = new Vue({
+        el: "#saleson",
+        components: {
+          "layout-header-ali": httpVueLoader("/components/layouts/header_ali.vue"),
+          "layout-header": httpVueLoader("/components/layouts/header_g.vue"),
+          "layout-fixed-btn": httpVueLoader("/components/ui/fixedBtn.vue"),
+          "layout-footer-ali": httpVueLoader("/components/layouts/footer_ali.vue"),
+          "layout-tabbar-ali": httpVueLoader("/components/layouts/m_tabbar_g.vue"),
+          "pagination-typel": httpVueLoader("/components/ui/pagination.vue"), //pagination
+          "pagination-typec": httpVueLoader("/components/ui/pagination_lclgv_mall.vue"), //pagination
+          "layout-map-select": httpVueLoader("/components/ui/lclgv_chc/map.vue"),
+        },
+        data: {
+          totalSerchCnt: 0,
+          goodsCard: [],
+          category: {
+            groups: [],
+          },
+          param: {
+            arrayRequiredItems: [],
+          },
+          promotion: {
+            displayImageList: [],
+          },
+          featured: {
+            displayImageList: [],
+          },
+          mdItems: [],
+          newItems: [],
+          groupBestItems: [],
+          firstGroupBestUrl: "",
+          event: [],
+          paramObj: {},
+          moreBtnDisplay: false,
+          menuUrl: location.pathname,
+          // 헤더 검색용
+          sidoList: [],
+          sigunguList: [{ cityCode: "", cityName: "시군구를 선택하세요." }],
+          selectedSido: "",
+          selectedSigungu: "",
+          // 헤더 검색용
+          adultYn: "N",
+	      buyFlag: 'Y',
+          type: "",
+          keyword: "",
+          locgov: "",
+          upperLocSearchTxt: "",
+          locSearchTxt: "",
+          currentCategories: [],
+          pointSelect: [
+            { text: "1만 포인트 이하", value: 10000 },
+            { text: "3만 포인트 이하", value: 30000 },
+            { text: "5만 포인트 이하", value: 50000 },
+            { text: "5만 포인트 이상", value: 50001 },
+          ],
+          group: "",
+          price: "",
+          ccategory: "", // category 변수를 공통기능에서 사용 중
+          categoryPath: [],
+          currentCategoryName: "",
+          currentPriceText: "포인트별 조회",
+          intrstLocgovCnt: 0,
+          locgovMbImage: "",
+          locgovPcImage: "",
+          isMobile: $s.isMobile(),
+          itemListPage: 0,
+          totalPage: 0,
+          arrList: [
+            { label: "최근등록순", value: "LATEST" },
+            { label: "등록일순", value: "OLDEST" },
+            { label: "가격높은순", value: "HIGHPRICE" },
+            { label: "가격낮은순", value: "LOWPRICE" },
+          ],
+          sortLabel: "",
+          sortType: "",
+          itemsPerPage: $goods.const.ITEMS_PER_GOODS,
+          exportMode: false,
+		  mobileCheck: $s.isMobile(),
+        },
+        methods: {
+          /*pointFilters(e) {
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        let errorBoolean = true;
+                        $goods.goSearchGoods({ type: 'C', price: data.value, group, category: ccategory });
+                    }
+                },*/
+          jumpToDetails: function (v) {
+            if (v.adultItemYn === "Y" && this.adultYn === "N") {
+              if ($s.isLogin()) {
+                $s.alert("19세 미만의 청소년은 이용할 수 없습니다.");
+              } else {
+                $s.redirect($s.pages.LOGIN + "?target=" + encodeURIComponent($s.requestContext.requestFullUri));
+              }
+              return;
+            }
+            if (this.exportMode) {
+              $s.redirect("/items/details.html?code=" + v.itemUserCode + "&exportMode=" + this.exportMode);
+            } else {
+              $s.redirect("/items/details.html?code=" + v.itemUserCode);
+            }
+          },
+          jumpToDetailsE(e, v) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+              this.jumpToDetails(v);
+            }
+          },
+          keydownDetails(e) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+              if ($(e.target).parents().is(".list_inner")) {
+                e.stopPropagation();
+              }
+            }
+          },
+          getItemList: function (price, isFirst) {
+			// 인천광역시 행정구역 개편 - 중구,동구,서구는 알림창 노출
+			// 중구
+			if(this.locgov == '28110') {
+				$s.alert("2026.7.1.일자 인천시 행정체제 개편에 따라 인천 중구에 기부하는 \n\n경우, 개편 이후 해당 지자체 답례품 구매가 불가 할 수 있으니 참고 하시기 바랍니다. \n\n ※ 기존에 해당 지자체에 기부포인트가 있는 경우, 2026.6.30.까지 사용하시기 바랍니다.", "");
+			}
+
+			// 동구
+			if(this.locgov == '28140') {
+				$s.customAlert(
+					"2026. 7. 1.일자 인천시 행정체제 개편에 따라 동구에 기부하는 경우 개편 이후 동구 지자체 답례품 구매가 불가할 수 있으니 참고하시기 바랍니다. \n\r\n▶ 6. 20.(토) ~ 6. 30.(화) 기간동안은 기부하기만 가능하고 답례품 주문은 7. 20.(월)부터 가능합니다. \n\r\n▶ 기존에 인천 동구에 기부포인트가 있는 경우 6. 19.(금)까지 답례품 주문을 진행하시기 바랍니다."
+				,"locgovPrjId");
+			}
+
+			// 서구
+			if(this.locgov == '28260') {
+				if(vm.mobileCheck) {
+					$s.customAlert("2026.7.1. 인천시 행정체제 개편으로\n 서구가 ‘서해구’와 ‘검단구’로 분구됩니다.\n\r\n《개편 전 발생한 서구 기부포인트 사용 안내》\n▶ 개편 이후 ‘서해구’ 답례품 구매에 한하여 사용가능\n( 검단구 답례품 구매 불가 )\n\r\n※ 기부 전 위 사항을 반드시\n확인하시기 바라며,\n기존 서구 답례품 구매 희망 시\n2026.6.30.까지 구매하여 주시기 바랍니다.", "");
+				} else {
+					$s.customAlert("2026.7.1. 인천시 행정체제 개편으로\n 서구가 ‘서해구’와 ‘검단구’로 분구됩니다.\n\r\n《 개편 전 발생한 서구 기부포인트 사용 안내 》\n▶ 개편 이후 ‘서해구’ 답례품 구매에 한하여 사용\n가능\n( 검단구 답례품 구매 불가 )\n\r\n※ 기부 전 위 사항을 반드시 확인하시기 바라며,\n기존 서구 답례품 구매 희망 시\n2026.6.30.까지 구매하여 주시기 바랍니다.", "");
+				}
+			}
+
+            if (!this.itemListPage) {
+              this.itemListPage = 1;
+            }
+            let param = {
+              page: this.itemListPage,
+              categoryCode: "ALL",
+              itemsPerPage: $goods.const.ITEMS_PER_GOODS,
+              keyword: this.keyword,
+              searchGbn: this.type,
+              group: this.group,
+              category: this.ccategory,
+              locgov: this.locgov,
+              price: price ? price : this.price,
+              sortType: this.sortType,
+            };
+            this.showMoreBtn(false);
+            vm.showLoading(true);
+            vm.goodsCard = [];
+            $s.api.getItemsNew(
+              param,
+              function (response) {
+                vm.showLoading(false);
+                let content = response.content;
+                if (content) {
+                  try {
+                    vm.totalPage = response.totalPages;
+                    let size = content.length;
+                    if (size == 0) {
+                      vm.totalSerchCnt = 0;
+                      vm.adultYn = "N";
+                      // $s.alert('검색결과가 없습니다.');
+                      return;
+                    } else {
+                      if (response.currentPage < response.totalPages) {
+                        vm.showMoreBtn(true);
+                      }
+                    }
+                    // vm.adultYn = response.adultYn;       // 19세 답례품 모두 보여주는 걸로 변경되어 수정
+				    vm.buyFlag = response.adultYn;
+                    vm.adultYn = "Y";
+                    vm.totalSerchCnt = response.totalElements;
+                    for (let i = 0; i < size; i++) {
+                      let itemInfo = content[i];
+                      vm.goodsCard.push(itemInfo);
+                    }
+                  } catch (e) {
+                    let errorBoolean = true;
+                    $s.alert("잠시 후 시도해 주세요.");
+                  }
+                  try {
+                    vm.locgovPcImage = response.locgovPcImage;
+                    vm.locgovMbImage = response.locgovMbImage;
+                  } catch (e) {
+                    vm.locgovPcImage = "";
+                    vm.locgovMbImage = "";
+                  }
+                  if (!isFirst) {
+                    location.href = "#itemArea";
+                  }
+                } else {
+                  vm.totalPage = 0;
+                  vm.totalSerchCnt = 0;
+                  $s.alert("검색결과가 없습니다.");
+                }
+              },
+              function (error) {
+                vm.showLoading(false);
+                //$s.api.handleApiExeption(error);
+                $s.alert(error.response.data.message, function () {
+                  vm.historyBack();
+                  $s.closeAlert();
+                });
+                // modal alert 바깥영역 클릭해도 이전페이지로 이동
+                $("#saleson").on("click", "#op-alert", function () {
+                  vm.historyBack();
+                });
+              }
+            );
+          },
+          historyBack: function () {
+            if (history.length == 1) {
+              $s.redirect("/");
+            } else {
+              history.back();
+            }
+          },
+          paging: function (page, pageTarget) {
+            if (this.itemListPage == page) {
+              return;
+            }
+            this.itemListPage = page;
+            this.getItemList();
+          },
+          searchSelfCategoryGroup: function (group, type) {
+            if (this.locgov) {
+              $goods.goSearchGoods({ type: "L", locgov: this.locgov, group }, this.exportMode);
+            } else {
+              $goods.goSearchGoods({ type: type, group }, this.exportMode);
+            }
+          },
+          searchPrice: function (price, type) {
+            if (this.locgov) {
+              $goods.goSearchGoods({ type: "L", locgov: this.locgov, price }, this.exportMode);
+            } else {
+              //$goods.goSearchGoods({ type: type, price });
+              if (this.exportMode) {
+                $s.redirect(`/goods/index.html?price=${price}&exportMode=true`);
+              } else {
+                $s.redirect(`/goods/index.html?price=${price}`);
+              }
+            }
+          },
+          nextPage: function () {
+            this.itemListPage++;
+            this.getItemList();
+          },
+          showLoading: function (isLoading) {
+            this.$refs.layoutFooter.showLoading(isLoading);
+          },
+          showMoreBtn: function (isShow) {
+            this.moreBtnDisplay = isShow;
+          },
+          initCallFunction: function () {
+            this.getItemList(null, true);
+            $(window).resize(function () {
+              vm.resizeLocgovStyle();
+            });
+          },
+          loadingMounted: function () {
+            this.initCallFunction();
+          },
+          showDrop() {
+            $(".drop_select").toggle();
+          },
+          showDropE(e) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+              this.showDrop();
+            }
+          },
+          loadCategoryPath(params) {
+            return new Promise((resolve, reject) => {
+              $s.api.getCategoryPath(
+                params,
+                function (response) {
+                  resolve(response.list);
+                },
+                function (error) {
+                  $s.api.handleApiExeption(error);
+                  reject(error);
+                }
+              );
+            });
+          },
+          reloadPage() {
+            $goods.goSearchGoods({ type: "C", price: 0, group: this.group, category: this.ccategory }, this.exportMode);
+          },
+          addIntrstLocgov() {
+            //$goodsItem.checkLogin({ loginPage: true });
+            if (!$s.isLogin()) {
+              return;
+            }
+            const params = {
+              cityCode: this.locgov,
+            };
+
+            $s.api.postSubmit(
+              "/api/ngdonation/getIntrstLocgov",
+              params,
+              function (response) {
+                const cnt = response.result.intrstLocgovCnt;
+                if (cnt > 0) {
+                  $s.alert("이미 관심 지자체에 등록된 지자체입니다.");
+                } else {
+                  $s.api.postSubmit(
+                    "/api/ngdonation/setIntrstLocgov",
+                    params,
+                    function (response) {
+                      if (response.status === "OK") {
+                        $s.alert("관심 지자체 등록 되었습니다.");
+                        vm.intrstLocgovCnt = 1;
+                      }
+                    },
+                    function (error) {
+                      $s.alert(error.response.data.message);
+                    }
+                  );
+                }
+              },
+              function (error) {
+                $s.alert(error.response.data.message);
+              }
+            );
+          },
+          getIntrstLocgov: function (cityCode) {
+            const params = {
+              cityCode: cityCode,
+            };
+
+            $s.api.postSubmit("/api/ngdonation/getIntrstLocgov", params, function (response) {
+              vm.intrstLocgovCnt = 0;
+              if (response.result != null) {
+                vm.intrstLocgovCnt = response.result.intrstLocgovCnt;
+              }
+            });
+          },
+          resizeLocgovStyle: function () {
+            if (window.innerWidth > 768) {
+              if (this.locgovPcImage) {
+                return "background-image: url(" + this.locgovPcImage + ")";
+              }
+            } else {
+              if (this.locgovMbImage) {
+                return "background-image: url(" + this.locgovMbImage + ")";
+              }
+            }
+          },
+          selectLclgvPc: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+            this.$refs.layoutHeaderSearchPc.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+            this.closeMapSelect();
+          },
+          selectLclgvMo: function (lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm) {
+            this.$refs.layoutHeaderSearchMobile.searchLocgovMap(lclgvUpperCd, lclgvCd, lclgvUpperNm, lclgvNm);
+            this.closeMapSelect();
+          },
+          showMapSelect: function () {
+            this.$refs.getParentModal.setAttribute("style", "display: block;top: 0;");
+          },
+          closeMapSelect: function () {
+            this.$refs.getParentModal.removeAttribute("style");
+          },
+          showDropSort: function () {
+            $(this.$refs.sort_select).toggle();
+          },
+          selectSort: function (selectedData) {
+            this.sortLabel = selectedData.label;
+            this.sortType = selectedData.value;
+            this.itemListPage = 1;
+            this.getItemList();
+          },
+        },
+        computed: {
+          computedLocgovStyle: function () {
+            // if ($s.isMobile()) {
+            //     if (this.locgovMbImage) {
+            //          return "background-image: url(" + this.locgovMbImage + ")";
+            //     }
+            // } else {
+            //     if (this.locgovPcImage) {
+            //          return "background-image: url(" + this.locgovPcImage + ")";
+            //     }
+            // }
+
+            if (window.innerWidth > 768) {
+              if (this.locgovPcImage) {
+                // return "background-image: url(" + this.locgovPcImage + ")";
+                return "background-image: url(" + this.locgovPcImage + ")";
+              }
+            } else {
+              if (this.locgovMbImage) {
+                return "background-image: url(" + this.locgovMbImage + ")";
+              }
+            }
+          },
+        },
+        mounted: function () {
+          this.$nextTick(async function () {
+            //Saleson.init({loginPage:true});
+            Saleson.init();
+            this.itemListPage = 0;
+            this.type = $s.core.getParameter("type");
+            this.keyword = decodeURIComponent($s.core.getParameter("keyword"));
+            this.locgov = $s.core.getParameter("locgov");
+            this.ccategory = $s.core.getParameter("category");
+            this.price = $s.core.getParameter("price");
+            this.price = this.price ? this.price : "0";
+            this.group = $s.core.getParameter("group");
+            this.sortType = $s.core.getParameter("sortType");
+            this.sortType = this.sortType ? this.sortType : "LATEST";
+            if (this.sortType == "LATEST") {
+              this.sortLabel = "최신등록순";
+            }
+
+            this.exportMode = $s.core.getParameter("exportMode") == "true" ? true : false;
+
+            this.categoryInfo(this);
+            if (this.type === "C") {
+              this.categoryPath = await this.loadCategoryPath({ group: this.group, category: this.ccategory });
+              const data = this.categoryPath.find((v, i, arr) => {
+                if (arr.length <= 1) {
+                  return v.categoryUrl === this.group;
+                } else {
+                  return v.categoryUrl === this.ccategory;
+                }
+              });
+              if (data) {
+                this.currentCategoryName = data.categoryName;
+              }
+              if (this.price && parseInt(this.price) > 0) {
+                const dataPrice = this.pointSelect.find((v, i, arr) => {
+                  return v.value == this.price;
+                });
+                this.currentPriceText = dataPrice.text;
+                if (!data) {
+                  this.currentCategoryName = dataPrice.text;
+                }
+              }
+            } else if (this.type === "L") {
+              this.getIntrstLocgov(this.locgov);
+            }
+          });
+
+          setTimeout(async () => {
+            if ($s.isMobile()) {
+              const data = await this.$refs.layoutHeaderSearchMobile.initData({ type: this.type, sigunguCode: this.locgov, keyword: this.keyword });
+              if (data) {
+                this.upperLocSearchTxt = data.sido;
+                this.locSearchTxt = data.sigungu;
+              }
+            } else {
+              const data = await this.$refs.layoutHeaderSearchPc.initData({ type: this.type, sigunguCode: this.locgov, keyword: this.keyword });
+              if (data) {
+                this.upperLocSearchTxt = data.sido;
+                this.locSearchTxt = data.sigungu;
+              }
+            }
+          }, 300);
+        },
+      });
+    </script>
+  </body>
+</html>

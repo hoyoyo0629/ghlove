@@ -1,0 +1,84 @@
+@charset "utf-8";
+
+/*
+	Copyright(c) 2019 Onlinepowers
+	http://www.onlinepowers.com
+*/
+
+
+/* ============================ 회사소개 ============================ */
+.info_table {
+    margin-top: 3rem;
+    border: 1px solid #e2e2e2;
+}
+.info_table tr {
+    border-bottom: 1px solid #e2e2e2;
+}
+.info_table tr:last-child {
+    border-bottom: 0;
+}
+.info_table th,
+.info_table td {
+    padding: 1.2rem 1.6rem;
+    font-size: 1.4rem;
+    line-height: 1.7rem;
+}
+.info_table th {
+    background: #f7f7f7;
+    font-weight: 500;
+    color: #333;
+}
+.info_table td {
+    color: #959595;
+}
+
+.about_contents .map_area {
+    height: 22rem;
+    border: 1px solid #e2e2e2;
+    border-top: 0;
+    background: rgba(213, 213, 213, 0.2);
+}
+
+.about_contents .about_info {
+    margin-top: 30px;
+}
+.about_contents .about_info .info_tit {
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.9rem;
+    color: #333;
+}
+
+
+
+
+
+/* ============================ 개인정보보호정책 ============================ */
+.privacy_wrap {
+    margin-top: 3rem;
+}
+.privacy_wrap dl {
+    margin-top: 3rem;
+}
+.privacy_wrap dt {
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.8rem;
+    color: #4c4c4c;
+}
+.privacy_wrap dd {
+    margin-bottom: 0.6rem;
+    font-size: 1.2rem;
+    line-height: 1.8rem;
+    color: #666;
+}
+.privacy_wrap dd:last-child {
+    margin-bottom: 0;
+}
+.privacy_wrap .info {
+    margin-top: 0.6rem;
+    font-size: 1.1rem;
+    line-height: 1.7rem;
+    color: #959595;
+}

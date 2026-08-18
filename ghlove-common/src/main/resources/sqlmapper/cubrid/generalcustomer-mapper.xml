@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.user.GeneralCustomerMapper">
+	<sql id="sqlGeneralCustomerListByParamWhere">
+		<!-- 검색조건 : 검색구분 + 값 -->
+		<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
+			<choose>
+				<when test="srchKey == 'LOGIN_ID'">
+					AND U.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+				</when>
+				<when test="srchKey == 'USER_NAME'">
+					AND U.USER_NAME = (SELECT crypto_enc('normal', #{srchValue}, ''))
+				</when>
+				<when test="srchKey == 'ADDRESS'">
+					AND SUBSTRING_INDEX(CONCAT(crypto_dec('normal', UD.ADDRESS, '', 0), ' ', crypto_dec('normal', UD.ADDRESS_DETAIL, '', 0)), ' ', 2) LIKE CONCAT('%', #{srchValue},'%')
+				</when>
+			</choose>
+		</if>
+
+		<choose>
+			<when test="srchStartCreated != null and srchStartCreated != '' and srchEndCreated != null and srchEndCreated != ''">
+				AND U.CREATED_DATE BETWEEN #{srchStartCreated}||'000000' AND #{srchEndCreated}||'595959'
+			</when>
+			<!-- 검색조건 : 가입일 (시작) -->
+			<when test="srchStartCreated != null and srchStartCreated != ''">
+				AND DATE_FORMAT(U.CREATED_DATE,'%Y%m%d') <![CDATA[ >= ]]> #{srchStartCreated}
+			</when>
+			<!-- 검색조건 : 가입일 (종료) -->
+			<when test="srchEndCreated != null and srchEndCreated != ''">
+				AND DATE_FORMAT(U.CREATED_DATE,'%Y%m%d') <![CDATA[ <= ]]> #{srchEndCreated}
+			</when>
+		</choose>
+
+		<!-- 검색조건 : Email 수신동의 -->
+		<if test="srchReceiveEmail != null and srchReceiveEmail != ''">
+			AND IFNULL(UD.RECEIVE_EMAIL, '1') = #{srchReceiveEmail}
+		</if>
+
+		<!-- 검색조건 : 가입구분 -->
+		<if test="srchSbscrbSeCode != null and srchSbscrbSeCode != ''">
+			AND U.SBSCRB_SE_CODE = #{srchSbscrbSeCode}
+		</if>
+	</sql>
+
+	<select id="getGeneralCustomerCountByParam" parameterType="saleson.shop.user.support.GeneralCustomerSearchParam" resultType="Integer">
+		/** generalcustomer-mapper.getGeneralCustomerCountByParam (일반회원관리 목록 총 갯수 조회) */
+		SELECT	COUNT(*)
+		FROM OP_USER U
+		INNER JOIN OP_USER_DETAIL UD ON UD.USER_ID = U.USER_ID AND UD.USE_FLAG = 'Y'
+		WHERE U.STATUS_CODE = 9
+		<include refid="sqlGeneralCustomerListByParamWhere" />
+	</select>
+
+	<select id="getGeneralCustomerListByParam" parameterType="saleson.shop.user.support.GeneralCustomerSearchParam"
+		resultType="saleson.shop.user.domain.GeneralCustomer">
+		/** generalcustomer-mapper.getGeneralCustomerListByParam (일반회원관리 목록 조회) */
+		SELECT
+				A.user_id,
+				crypto_dec('normal', A.login_id, '', 0) AS login_id,
+				crypto_dec('normal', A.user_name, '', 0) AS user_name,
+				crypto_dec('normal', A.email, '', 0) AS email,
+				A.sbscrb_se_code,
+				(SELECT label FROM OP_COMMON_CODE C WHERE C.code_type = 'SBSCRB_SE' AND	 C.use_yn = 'Y' AND	C.language = 'ko' AND	C.id = A.SBSCRB_SE_CODE) AS sbscrb_se_nm,
+				CASE WHEN IFNULL(A.created_date, '') != '' THEN DATE_FORMAT(A.created_date, '%Y-%m-%d') ELSE '' END AS created_date,
+				CASE WHEN IFNULL(A.login_date, '') != '' THEN DATE_FORMAT(A.login_date, '%Y-%m-%d %H:%i:%s') ELSE '' END AS login_date,
+				crypto_dec('normal', A.post, '', 0) AS post,
+				crypto_dec('normal', A.address, '', 0) AS address,
+				crypto_dec('normal', A.address_detail, '', 0) AS address_detail,
+				A.receive_email,
+				crypto_dec('normal', A.phone_number, '', 0) AS phone_number,
+				(SELECT SUM(cntr_amt) FROM G_CNTR WHERE user_id = A.user_id AND sttemnt_pay_de IS NOT NULL AND delete_at = 'N' AND cntr_sttus_code = '200') AS total_cntr_amt,
+				(SELECT SUM(cntr_blce_point) FROM G_CNTR WHERE user_id = A.user_id AND sttemnt_pay_de IS NOT NULL AND delete_at = 'N' AND cntr_sttus_code = '200') AS total_cntr_blce_point
+		FROM (
+				<include refid="CommonMapper.paginationHeader" />
+				SELECT
+						U.user_id,
+						U.login_id,
+						U.user_name,
+						U.email,
+						U.sbscrb_se_code,
+						U.created_date,
+						U.login_date,
+						UD.post,
+						UD.address,
+						UD.address_detail,
+						UD.receive_email,
+						UD.phone_number
+				FROM
+					OP_USER U
+				INNER JOIN
+						OP_USER_DETAIL UD
+					ON UD.user_id = U.user_id
+					AND UD.use_flag = 'Y'
+				WHERE
+					U.status_code = 9
+				<include refid="sqlGeneralCustomerListByParamWhere" />
+				ORDER BY U.created_date DESC
+				<include refid="CommonMapper.paginationFooter" />
+		) A
+	</select>
+
+	<select id="getGeneralCustomerDetails" parameterType="saleson.shop.user.support.GeneralCustomerSearchParam"
+		resultType="saleson.shop.user.domain.GeneralCustomer">
+		/** generalcustomer-mapper.getGeneralCustomerDetails (일반회원관리 상세 조회) */
+		SELECT
+			A.user_id,
+			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			crypto_dec('normal', A.user_name, '', 0) AS user_name,
+			crypto_dec('normal', A.email, '', 0) AS email,
+			A.sbscrb_se_code,
+			A.user_key,
+			A.status_code,
+			A.sbscrb_se_nm,
+			A.created_date,
+			A.login_date,
+			crypto_dec('normal', A.post, '', 0) AS post,
+			crypto_dec('normal', A.address, '', 0) AS address,
+			crypto_dec('normal', A.address_detail, '', 0) AS address_detail,
+			A.receive_email,
+			A.receive_sms,
+			crypto_dec('normal', A.phone_number, '', 0) AS phone_number,
+			crypto_dec('normal', A.gender, '', 0) AS gender,
+			crypto_dec('normal', A.birthday, '', 0) AS birthday,
+			A.total_cntr_amt,
+			A.total_cntr_blce_point
+		FROM (
+				SELECT
+					U.user_id,
+					U.login_id,
+					U.user_name,
+					U.email,
+					U.sbscrb_se_code,
+					U.user_key,
+					U.status_code,
+					C.label AS sbscrb_se_nm,
+					CASE WHEN IFNULL(U.created_date, '') != '' THEN DATE_FORMAT(U.created_date, '%Y-%m-%d') ELSE '' END AS created_date,
+					CASE WHEN IFNULL(U.login_date, '') != '' THEN DATE_FORMAT(U.login_date, '%Y-%m-%d %H:%i:%s') ELSE '' END AS login_date,
+					UD.post,
+					UD.address,
+					UD.address_detail,
+					UD.receive_email,
+					UD.receive_sms,
+					UD.phone_number,
+					UD.gender,
+					UD.birthday,
+					(SELECT SUM(cntr_amt) FROM G_CNTR WHERE user_id = U.user_id AND sttemnt_pay_de IS NOT NULL AND delete_at = 'N' AND cntr_sttus_code = '200') AS total_cntr_amt,
+					(SELECT SUM(cntr_blce_point) FROM G_CNTR WHERE user_id = U.user_id AND sttemnt_pay_de IS NOT NULL AND delete_at = 'N' AND cntr_sttus_code = '200') AS total_cntr_blce_point
+			FROM
+					OP_USER U
+			INNER JOIN
+					OP_USER_DETAIL UD
+				ON	UD.user_id = U.user_id
+				AND	UD.use_flag = 'Y'
+			LEFT OUTER JOIN
+					OP_COMMON_CODE C
+				ON	C.code_type = 'SBSCRB_SE'
+				AND	C.use_yn = 'Y'
+				AND	C.language = 'ko'
+				AND	C.id = U.sbscrb_se_code
+			WHERE
+					U.status_code = 9
+				AND	U.user_id = #{userId}
+			 ) A
+	</select>
+
+	<select id="getGeneralCustomerCumulativeTotal" parameterType="Long" resultType="saleson.shop.user.domain.GeneralCustomerCumulativeTotal">
+		/** generalcustomer-mapper.getGeneralCustomerCumulativeTotal (기부, 포인트 누적합계 정보 조회) */
+		SELECT
+			TOTAL_CNTR_AMT
+		,	TOTAL_CNTR_POINT
+		,	TOTAL_CNTR_USE_POINT
+		,	(TOTAL_CNTR_POINT - TOTAL_CNTR_USE_POINT) AS TOTAL_CNTR_BLCE_POINT
+		FROM
+		(
+			SELECT
+				IFNULL(SUM(CNTR_AMT),0) AS TOTAL_CNTR_AMT,
+				IFNULL(SUM(CNTR_POINT), 0)  AS TOTAL_CNTR_POINT,
+				SUM(CNTR_BLCE_POINT) AS TOTAL_CNTR_BLCE_POINT,
+				(
+					SELECT IFNULL(SUM(A.CNTR_USE_POINT), 0)
+					FROM G_CNTR_USE_POINT A
+					LEFT OUTER JOIN  G_CNTR B ON A.CNTR_SN = B.CNTR_SN AND B.DELETE_AT = 'N'
+					WHERE A.USER_ID = #{userId} AND A.USE_SE_CODE = '1'
+				) AS TOTAL_CNTR_USE_POINT
+			FROM
+					G_CNTR
+			WHERE
+					USER_ID = #{userId}
+				AND	STTEMNT_PAY_DE IS NOT NULL
+				AND	DELETE_AT = 'N'
+				AND	CNTR_STTUS_CODE = '200'
+		) A
+
+	</select>
+
+	<select id="getGeneralCustomerCntrCountByParam" parameterType="saleson.shop.user.support.GeneralCustomerCntrSearchParam" resultType="Integer">
+		/** generalcustomer-mapper.getGeneralCustomerCntrCountByParam (기부내역 목록 갯수 조회) */
+		SELECT
+				COUNT(*)
+		FROM
+				G_CNTR CN
+		INNER JOIN
+				G_LOCGOV L
+			ON	L.LOCGOV_CODE = CN.CNTR_LOCGOV_CODE
+		WHERE
+				CN.USER_ID = #{userId}
+			AND	CN.STTEMNT_PAY_DE IS NOT NULL
+			AND	CN.DELETE_AT = 'N'
+			AND	CN.CNTR_STTUS_CODE = '200'
+	</select>
+
+	<select id="getGeneralCustomerCntrListByParam" parameterType="saleson.shop.user.support.GeneralCustomerCntrSearchParam"
+		resultType="saleson.shop.user.domain.GeneralCustomerCntr">
+		/** generalcustomer-mapper.getGeneralCustomerCntrListByParam (기부내역 목록 조회) */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+				DATE_FORMAT(CN.CNTR_DE,'%Y-%m-%d') AS CNTR_DE,
+				CN.CNTR_LOCGOV_CODE,
+				L.UPPER_LOCGOV_CODE AS CNTR_UPPER_LOCGOV_CODE,
+				L.LOCGOV_NM AS CNTR_LOCGOV_NM,
+				L.UPPER_LOCGOV_NM AS CNTR_UPPER_LOCGOV_NM,
+				CN.CNTR_AMT,
+				CN.CNTR_POINT,
+				DATE_FORMAT(CN.STTEMNT_PAY_DE,'%Y-%m-%d') AS STTEMNT_PAY_DE,
+				CN.ELCTRN_PAY_NO,
+				CN.CNTR_PATH_CODE,
+				C.LABEL AS CNTR_PATH_NM
+		FROM
+				G_CNTR CN
+		INNER JOIN
+				G_LOCGOV L
+			ON	L.LOCGOV_CODE = CN.CNTR_LOCGOV_CODE
+		LEFT OUTER JOIN
+				OP_COMMON_CODE C
+			ON	C.CODE_TYPE = 'CNTR_PATH'
+			AND	C.LANGUAGE = 'ko'
+			AND	C.USE_YN = 'Y'
+			AND	C.ID = CN.CNTR_PATH_CODE
+		WHERE
+				CN.USER_ID = #{userId}
+			AND	CN.STTEMNT_PAY_DE IS NOT NULL
+			AND	CN.DELETE_AT = 'N'
+			AND	CN.CNTR_STTUS_CODE = '200'
+		ORDER BY
+				CN.FRST_REGIST_PNTTM DESC
+		<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getGeneralCustomerPointCountByParam" parameterType="saleson.shop.user.support.GeneralCustomerPointSearchParam" resultType="Integer">
+		/** generalcustomer-mapper.getGeneralCustomerPointCountByParam (포인트 내역 목록 갯수 조회) */
+		SELECT
+				COUNT(*)
+		FROM (
+				SELECT
+						CNTR_DE,
+						CNTR_AMT,
+						CNTR_POINT,
+						CNTR_LOCGOV_CODE,
+						'' AS ORDER_CODE,
+						'' AS CNTR_USE_POINT,
+						(
+							SELECT
+									SUM(CNTR_POINT)
+							FROM
+									G_CNTR A
+							WHERE
+									A.FRST_REGIST_PNTTM <![CDATA[<=]]> GC.FRST_REGIST_PNTTM
+								AND	A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+								AND	A.USER_ID = GC.USER_ID
+								AND	A.STTEMNT_PAY_DE IS NOT NULL
+								AND	A.DELETE_AT = 'N'
+								AND	A.CNTR_STTUS_CODE = '200'
+						) AS CURRENT_CNTR_POINT,
+						(
+							SELECT
+									IFNULL(SUM(CNTR_USE_POINT),0)
+							FROM
+									G_CNTR_USE_POINT A
+							WHERE
+									A.FRST_REGIST_PNTTM <![CDATA[<=]]> GC.FRST_REGIST_PNTTM
+								AND	A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+								AND	A.USER_ID = GC.USER_ID
+						) AS CURRENT_CNTR_USE_POINT,
+						FRST_REGIST_PNTTM,
+						'' AS USE_SN
+				FROM
+						G_CNTR GC
+				WHERE
+						GC.USER_ID = #{userId}
+					AND	GC.STTEMNT_PAY_DE IS NOT NULL
+					AND	GC.DELETE_AT = 'N'
+					AND	GC.CNTR_STTUS_CODE = '200'
+
+				UNION ALL
+
+				SELECT
+						POINT_USE_DE AS CNTR_DE,
+						'' AS CNTR_AMT,
+						'' AS CNTR_POINT,
+						CNTR_LOCGOV_CODE,
+						ORDER_CODE,
+						CNTR_USE_POINT,
+						(
+							SELECT
+									SUM(CNTR_POINT)
+							FROM
+									G_CNTR A
+							WHERE
+									A.FRST_REGIST_PNTTM <![CDATA[<=]]> GC.FRST_REGIST_PNTTM
+								AND	A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+								AND	A.USER_ID = GC.USER_ID
+								AND	A.STTEMNT_PAY_DE IS NOT NULL
+								AND	A.DELETE_AT = 'N'
+								AND	A.CNTR_STTUS_CODE = '200'
+						) AS CURRENT_CNTR_POINT,
+						(
+							SELECT
+									IFNULL(SUM(CNTR_USE_POINT),0)
+							FROM
+									G_CNTR_USE_POINT A
+							WHERE
+									A.FRST_REGIST_PNTTM <![CDATA[<=]]> GC.FRST_REGIST_PNTTM
+								AND	A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+								AND	A.USER_ID = GC.USER_ID
+						) AS CURRENT_CNTR_USE_POINT,
+						FRST_REGIST_PNTTM,
+						USE_SN
+				FROM
+						G_CNTR_USE_POINT GC
+				WHERE
+						GC.USER_ID = #{userId}
+		) A
+	</select>
+
+	<select id="getGeneralCustomerPointListByParam" parameterType="saleson.shop.user.support.GeneralCustomerPointSearchParam"
+		resultType="saleson.shop.user.domain.GeneralCustomerPoint">
+		/** generalcustomer-mapper.getGeneralCustomerPointListByParam (포인트 내역 목록 조회) */
+		<include refid="CommonMapper.paginationHeader" />
+		SELECT
+				POINT_TYPE,
+				DATE_FORMAT(A.CNTR_DE,'%Y-%m-%d') AS CNTR_DE,
+				L.LOCGOV_CODE AS CNTR_LOCGOV_CODE,
+				L.LOCGOV_NM AS CNTR_LOCGOV_NM,
+				L.UPPER_LOCGOV_CODE AS CNTR_UPPER_LOCGOV_CODE,
+				L.UPPER_LOCGOV_NM AS CNTR_UPPER_LOCGOV_NM,
+				A.CNTR_AMT,
+				A.CNTR_POINT,
+				A.CNTR_USE_POINT,
+				(A.CURRENT_CNTR_POINT - A.CURRENT_CNTR_USE_POINT) AS CNTR_BLCE_POINT,
+				A.ORDER_CODE
+		FROM (
+				SELECT
+						'OCC' AS POINT_TYPE,
+						CNTR_DE,
+						CNTR_AMT,
+						CNTR_POINT,
+						CNTR_LOCGOV_CODE,
+						'' AS ORDER_CODE,
+						'' AS CNTR_USE_POINT,
+						(
+							SELECT
+									SUM(CNTR_POINT)
+							FROM
+									G_CNTR A
+							WHERE
+									A.FRST_REGIST_PNTTM <![CDATA[<=]]> GC.FRST_REGIST_PNTTM
+								AND	A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+								AND A.USER_ID = GC.USER_ID
+								AND	A.STTEMNT_PAY_DE IS NOT NULL
+								AND	A.DELETE_AT = 'N'
+								AND	A.CNTR_STTUS_CODE = '200'
+						) AS CURRENT_CNTR_POINT,
+						(
+							SELECT
+									IFNULL(SUM(CNTR_USE_POINT),0)
+							FROM
+									G_CNTR_USE_POINT A
+							WHERE
+									A.FRST_REGIST_PNTTM <![CDATA[<=]]> GC.FRST_REGIST_PNTTM
+								AND	A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+								AND	A.USER_ID = GC.USER_ID
+						) AS CURRENT_CNTR_USE_POINT,
+						FRST_REGIST_PNTTM,
+						'' AS USE_SN
+				FROM
+						G_CNTR GC
+				WHERE
+						GC.USER_ID = #{userId}
+					AND	GC.STTEMNT_PAY_DE IS NOT NULL
+					AND	GC.DELETE_AT = 'N'
+					AND	GC.CNTR_STTUS_CODE = '200'
+
+				UNION ALL
+
+				SELECT
+						'USE' AS POINT_TYPE,
+						POINT_USE_DE AS CNTR_DE,
+						'' AS CNTR_AMT,
+						'' AS CNTR_POINT,
+						CNTR_LOCGOV_CODE,
+						ORDER_CODE,
+						CNTR_USE_POINT,
+						(
+							SELECT
+									SUM(CNTR_POINT)
+							FROM
+									G_CNTR A
+							WHERE
+									A.FRST_REGIST_PNTTM <![CDATA[<=]]> GC.FRST_REGIST_PNTTM
+								AND	A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+								AND	A.USER_ID = GC.USER_ID
+								AND	A.STTEMNT_PAY_DE IS NOT NULL
+								AND	A.DELETE_AT = 'N'
+								AND	A.CNTR_STTUS_CODE = '200'
+						) AS CURRENT_CNTR_POINT,
+						(
+							SELECT
+									IFNULL(SUM(CNTR_USE_POINT),0)
+							FROM
+									G_CNTR_USE_POINT A
+							WHERE
+									A.FRST_REGIST_PNTTM <![CDATA[<=]]> GC.FRST_REGIST_PNTTM
+								AND	A.CNTR_LOCGOV_CODE = GC.CNTR_LOCGOV_CODE
+								AND	A.USER_ID = GC.USER_ID
+						) AS CURRENT_CNTR_USE_POINT,
+						FRST_REGIST_PNTTM,
+						USE_SN
+					FROM
+							G_CNTR_USE_POINT GC
+					WHERE
+							GC.USER_ID = #{userId}
+			) A
+			LEFT OUTER
+			JOIN
+					G_LOCGOV L
+				ON	L.LOCGOV_CODE = A.CNTR_LOCGOV_CODE
+			ORDER BY
+					A.FRST_REGIST_PNTTM DESC, USE_SN DESC
+			<include refid="CommonMapper.paginationFooter" />
+	</select>
+
+	<select id="getPasswordByUserId" parameterType="Long" resultType="String">
+		/** generalcustomer-mapper.getPasswordByUserId (로그인 사용자 비밀번호 조회) */
+		SELECT M.PASSWORD
+		FROM OP_MANAGER M
+		WHERE M.USER_ID = #{userId}
+		LIMIT 1
+	</select>
+
+	<update id="updateSecedeGeneralCustomer" parameterType="Long">
+		/** generalcustomer-mapper.updateSecedeGeneralCustomer (회원 탈퇴) */
+		UPDATE
+				OP_USER
+		SET
+				PASSWORD = NULL,
+				USER_NAME = NULL,
+				EMAIL = NULL,
+				STATUS_CODE = 3,
+				LOGIN_COUNT = NULL,
+				SLEEP_MAIL_SEND_DATE = NULL,
+				LOGIN_DATE = NULL,
+				DENY_DATE = NULL,
+				LEAVE_DATE = <include refid="CommonMapper.datetime" />,
+				LOGIN_FAIL_COUNT = 0,
+				LOGIN_TRY_DATE = NULL,
+				PASSWORD_TYPE = 'N',
+				PASSWORD_EXPIRED_DATE = NULL,
+				UPDATED_DATE = NULL,
+				CREATED_DATE = NULL,
+				LOCGOV_CODE = NULL,
+				MBER_CI = NULL,
+				MBER_DI = NULL,
+				MBER_DN = NULL,
+				SBSCRB_SE_CODE = NULL,
+				LOGIN_PATH_CODE = NULL,
+				USER_KEY = NULL
+		WHERE
+				USER_ID = #{userId}
+	</update>
+
+	<select id="getSecedeGeneralCustomerParent" resultType="Integer">
+		/** generalcustomer-mapper.getSecedeGeneralCustomerParent (회원 탈퇴 시 부모 인증 처리) */
+		SELECT COUNT(*) FROM OP_USER_PARENT
+		WHERE	USER_ID = #{userId}
+	</select>
+
+	<update id="updateSecedeGeneralCustomerParent" parameterType="Long">
+		/** generalcustomer-mapper.updateSecedeGeneralCustomerParent (회원 탈퇴 시 부모 인증 처리) */
+		DELETE FROM OP_USER_PARENT
+		WHERE	USER_ID = #{userId}
+	</update>
+
+	<update id="updateSecedeGeneralCustomerDetail" parameterType="saleson.shop.user.domain.GeneralCustomerSecede">
+		/** generalcustomer-mapper.updateSecedeGeneralCustomerDetail (회원 상세 탈퇴) */
+		UPDATE
+				OP_USER_DETAIL
+		SET
+				GROUP_CODE = NULL,
+				LEVEL_ID = 0,
+				USER_LEVEL_EXPIRATION_DATE = NULL,
+				NEW_POST = NULL,
+				POST = NULL,
+				ADDRESS = NULL,
+				ADDRESS_DETAIL = NULL,
+				TEL_NUMBER = NULL,
+				PHONE_NUMBER = NULL,
+				FAX_NUMBER = NULL,
+				RECEIVE_EMAIL = NULL,
+				RECEIVE_SMS = NULL,
+				RECEIVE_PUSH = NULL,
+				GENDER = NULL,
+				AGE = NULL,
+				POINT = NULL,
+				BUY_COUNT = NULL,
+				BUY_PRICE = NULL,
+				LAST_BUY_DATE = NULL,
+				LEAVE_REASON = #{leaveReason},
+				SITE_FLAG = NULL,
+				USE_FLAG = 'N',
+				BIRTHDAY_TYPE = NULL,
+				BIRTHDAY = NULL,
+				LEAVE_CODE = #{leaveCode},
+				LEAVE_USER_ID = #{leaveUserId}
+		WHERE
+				USER_ID = #{userId}
+	</update>
+
+	<delete id="deleteSecedeGeneralCustomerIntrstLocgov" parameterType="Long">
+		/** generalcustomer-mapper.deleteSecedeGeneralCustomerIntrstLocgov (관심 지자체 삭제) */
+		DELETE FROM G_INTRST_LOCGOV
+		WHERE USER_ID = #{userId}
+	</delete>
+
+	<delete id="deleteSecedeGeneralCustomerIntrstRtnpsnt" parameterType="Long">
+		/** generalcustomer-mapper.deleteSecedeGeneralCustomerIntrstRtnpsnt (관심 답례품 삭제) */
+		DELETE FROM G_INTRST_RTNPSNT
+		WHERE USER_ID = #{userId}
+	</delete>
+
+	<delete id="deleteSecedeManager" parameterType="Long">
+		/** generalcustomer-mapper.deleteSecedeManager (관리자 탈퇴 - 삭제) */
+		DELETE FROM OP_MANAGER
+		WHERE USER_ID = #{userId}
+	</delete>
+
+	<delete id="deleteSecedeUserRole" parameterType="Long">
+		/** generalcustomer-mapper.deleteSecedeUserRole (회원 권한 삭제) */
+		DELETE FROM OP_USER_ROLE
+		WHERE USER_ID = #{userId}
+	</delete>
+
+	<select id="getGeneralCustomerDetailsNotStatusCode" parameterType="saleson.shop.user.support.GeneralCustomerSearchParam"
+		resultType="saleson.shop.user.domain.GeneralCustomer">
+		/** generalcustomer-mapper.getGeneralCustomerDetailsNotStatusCode (일반회원관리 상세 조회 - 상태코드 미적용) */
+		SELECT
+			A.user_id,
+			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			crypto_dec('normal', A.user_name, '', 0) AS user_name,
+			crypto_dec('normal', A.email, '', 0) AS email,
+			A.sbscrb_se_code,
+			A.user_key,
+			A.status_code,
+			A.mber_ci,
+			A.sbscrb_se_nm,
+			A.created_date,
+			A.login_date,
+			crypto_dec('normal', A.post, '', 0) AS post,
+			crypto_dec('normal', A.address, '', 0) AS address,
+			crypto_dec('normal', A.address_detail, '', 0) AS address_detail,
+			A.receive_email,
+			crypto_dec('normal', A.phone_number, '', 0) AS phone_number,
+			crypto_dec('normal', A.gender, '', 0) AS gender,
+			crypto_dec('normal', A.birthday, '', 0) AS birthday,
+			A.total_cntr_amt,
+			A.total_cntr_blce_point
+		FROM (
+				SELECT
+					U.user_id,
+					U.login_id,
+					U.user_name,
+					U.email,
+					U.sbscrb_se_code,
+					U.user_key,
+					U.status_code,
+					U.mber_ci,
+					C.label AS sbscrb_se_nm,
+					CASE WHEN IFNULL(U.created_date, '') != '' THEN DATE_FORMAT(U.created_date, '%Y-%m-%d') ELSE '' END AS created_date,
+					CASE WHEN IFNULL(U.login_date, '') != '' THEN DATE_FORMAT(U.login_date, '%Y-%m-%d %H:%i:%s') ELSE '' END AS login_date,
+					UD.post,
+					UD.address,
+					UD.address_detail,
+					UD.receive_email,
+					UD.phone_number,
+					UD.gender,
+					UD.birthday,
+					(SELECT SUM(cntr_amt) FROM G_CNTR WHERE user_id = U.user_id AND sttemnt_pay_de IS NOT NULL AND delete_at = 'N' AND cntr_sttus_code = '200') AS total_cntr_amt,
+					(SELECT SUM(cntr_blce_point) FROM G_CNTR WHERE user_id = U.user_id AND sttemnt_pay_de IS NOT NULL AND delete_at = 'N' AND cntr_sttus_code = '200') AS total_cntr_blce_point
+			FROM
+					OP_USER U
+			INNER JOIN
+					OP_USER_DETAIL UD
+				ON	UD.user_id = U.user_id
+				AND	UD.use_flag = 'Y'
+			LEFT OUTER JOIN
+					OP_COMMON_CODE C
+				ON	C.code_type = 'SBSCRB_SE'
+				AND	C.use_yn = 'Y'
+				AND	C.language = 'ko'
+				AND	C.id = U.SBSCRB_SE_CODE
+			WHERE
+					U.user_id = #{userId}
+			) A
+	</select>
+
+	<delete id="deleteManagerPasswordLog" parameterType="Long">
+		/** generalcustomer-mapper.deleteManagerPasswordLog (관리자 비밀번호 변경 이력 삭제) */
+		DELETE FROM OP_MANAGER_PASSWORD_LOG
+		WHERE USER_ID = #{userId}
+	</delete>
+
+	<select id="getCntrBlcePointList" parameterType="Long" resultType="saleson.shop.user.domain.SecedeCntr">
+		/** generalcustomer-mapper.getCntrBlcePointList (잔여 포인트 조회) */
+		SELECT
+				CNTR_SN,
+				CNTR_POINT - (SELECT IFNULL(SUM(CNTR_USE_POINT),0) FROM G_CNTR_USE_POINT A WHERE A.CNTR_SN = GC.CNTR_SN) AS CNTR_BLCE_POINT,
+				USER_ID,
+				PSITN_LOCGOV_CODE,
+				CNTR_LOCGOV_CODE
+		FROM
+				G_CNTR GC
+		WHERE
+				USER_ID = #{userId}
+			AND	IFNULL(CNTR_BLCE_POINT, 0) <![CDATA[>]]> 0
+			AND	STTEMNT_PAY_DE IS NOT NULL
+			AND	DELETE_AT = 'N'
+			AND	CNTR_STTUS_CODE = '200'
+	</select>
+
+	<update id="updateCntrBlcePointDel" parameterType="saleson.shop.user.domain.SecedeCntr">
+		/** generalcustomer-mapper.updateCntrBlcePointDel (기부 잔액 포인트 삭제 처리) */
+		UPDATE	G_CNTR
+		SET		CNTR_BLCE_POINT = 0,
+				LAST_UPDUSR_ID = #{loginUserId},
+				LAST_UPDT_PNTTM = <include refid="CommonMapper.datetime" />
+		WHERE	CNTR_SN = #{cntrSn}
+	</update>
+
+	<insert id="insertCntrUsePoint" parameterType="saleson.shop.user.domain.SecedeCntr">
+		/** generalcustomer-mapper.insertCntrUsePoint (기부 사용 포인트 - 탈퇴) */
+		INSERT INTO G_CNTR_USE_POINT (
+			CNTR_SN,
+			USE_SN,
+			POINT_USE_DE,
+			CNTR_USE_POINT,
+			USER_ID,
+			PSITN_LOCGOV_CODE,
+			CNTR_LOCGOV_CODE,
+			USE_SE_CODE,
+			USE_CN,
+			ORDER_CODE,
+			URL_ADRES,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		) VALUES (
+			#{cntrSn},
+			(SELECT IFNULL(MAX(USE_SN), 0) + 1 FROM G_CNTR_USE_POINT WHERE CNTR_SN = #{cntrSn}),
+			<include refid="CommonMapper.date" />,
+			#{cntrBlcePoint},
+			#{userId},
+			#{psitnLocgovCode},
+			#{cntrLocgovCode},
+			#{useSeCode},
+			#{useCn},
+			'0',
+			NULL,
+			#{loginUserId},
+			<include refid="CommonMapper.datetime" />,
+			#{loginUserId},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<select id="selectTotalCntrAmt" parameterType="Long" resultType="Integer">
+		/** generalcustomer-mapper.selectTotalCntrAmt (당해년도 총 기부 금액) */
+		SELECT IFNULL(SUM(CNTR_AMT), 0) AS TOTAL_CNTR_AMT
+		FROM G_CNTR
+		WHERE USER_ID = #{userId}
+		AND	STTEMNT_PAY_DE IS NOT NULL
+		AND	DELETE_AT = 'N'
+		AND	CNTR_STTUS_CODE = '200'
+		AND DATE_FORMAT(STTEMNT_PAY_DE,'%Y') = DATE_FORMAT(NOW(),'%Y')
+	</select>
+
+	<insert id="insertTotalCntrAmt" parameterType="saleson.shop.user.domain.SecedeCntrAmt">
+		/** generalcustomer-mapper.insertTotalCntrAmt (당해년도 총 기부 금액 등록) */
+		INSERT INTO G_MBER_SECSN (
+			SECSN_YEAR,
+			USER_ID,
+			MBER_CI,
+			CNTR_AMT,
+			FRST_REGISTER_ID,
+			FRST_REGIST_PNTTM,
+			LAST_UPDUSR_ID,
+			LAST_UPDT_PNTTM
+		) VALUES (
+			DATE_FORMAT(NOW(),'%Y'),
+			#{userId},
+			#{mberCi},
+			#{cntrAmt},
+			#{loginUserId},
+			<include refid="CommonMapper.datetime" />,
+			#{loginUserId},
+			<include refid="CommonMapper.datetime" />
+		)
+	</insert>
+
+	<select id="userDeliveryList" parameterType="Long" resultType="saleson.shop.userdelivery.domain.UserDelivery">
+		/** generalcustomer-mapper.userDeliveryList (배송지 목록) */
+		SELECT
+			A.user_delivery_id
+	       ,A.user_id
+	       ,A.default_flag
+	       ,A.title
+	       ,crypto_dec('normal', A.user_name , '', 0) AS user_name
+	       ,crypto_dec('normal', A.mobile , '', 0) AS mobile
+	       ,crypto_dec('normal', A.phone , '', 0) AS phone
+	       ,crypto_dec('normal', A.address , '', 0) AS address
+	       ,crypto_dec('normal', A.address_detail , '', 0) AS address_detail
+		FROM
+		(
+			SELECT
+				user_delivery_id
+		       ,user_id
+		       ,default_flag
+		       ,title
+		       ,user_name
+		       ,mobile
+		       ,phone
+		       ,address
+		       ,address_detail
+		  FROM
+		  	OP_USER_DELIVERY
+		 WHERE
+		 	user_id = #{userId}
+		) A
+		ORDER BY A.default_flag DESC, A.user_delivery_id DESC
+	</select>
+
+	<insert id="indvdlinfoReadngHist" parameterType="saleson.shop.user.support.GeneralCustomerSearchParam">
+		INSERT INTO g_indvdlinfo_readng_hist
+		(readng_sn, user_id, readng_dt, trget_user_id)
+		VALUES
+		(#{readngSn}, #{sessionUserId}, <include refid="CommonMapper.datetime" />, #{trgetUserId})
+	</insert>
+
+	<insert id="insertSecedeCustomer" parameterType="Long">
+		/** generalcustomer-mapper.insertSecedeCustomer (탈퇴시 본인인증CI 정보 백업) */
+		INSERT INTO op_user_ci
+		(user_id, mber_ci)
+		VALUES
+		(#{userId}, (SELECT MBER_CI FROM OP_USER WHERE user_id = #{userId}))
+	</insert>
+
+</mapper>

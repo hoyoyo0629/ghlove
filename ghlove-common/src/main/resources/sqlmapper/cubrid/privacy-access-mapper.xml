@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.log.PrivacyAccessLogHistMapper">
+
+   <resultMap id="PrivacyAccessLogHistResult" type="saleson.shop.log.support.PrivacyLogHistParam">
+        <result column="HIST_ID" property="histId"/>
+        <result column="CREATED_AT" property="createdAt"/>
+        <result column="MANAGER_ID" property="managerId"/>
+        <result column="LOGIN_ID" property="loginId"/>
+        <result column="PRIVACY_ACCESS_LOG_ID" property="privacyAccessLogId"/>
+        <result column="REASON" property="reason"/>
+        <result column="REASON_TYPE" property="reasonType"/>
+    </resultMap>
+
+    <insert id="insertPrivacyAccessLogHist" parameterType="saleson.shop.log.support.PrivacyLogHistParam">
+    	/* saleson.shop.log.PrivacyAccessLogHistMapper.insertPrivacyAccessLogHist */
+        INSERT INTO OP_PRIVACY_ACCESS_LOG_HIST (
+	        HIST_ID,
+	        CREATED_AT,
+	        MANAGER_ID,
+	        PRIVACY_ACCESS_LOG_ID,
+	        REASON,
+	        REASON_TYPE
+        ) VALUES (
+	        #{histId},
+	        <include refid="CommonMapper.datetime" />,
+	        #{managerId},
+	        #{privacyAccessLogId},
+	        #{reason},
+	        #{reasonType}
+	        
+        )
+    </insert>
+
+    <select id="getPrivacyAccessLogHistListCountByParam" parameterType="saleson.shop.log.support.PrivacyLogHistParam" resultType="Integer" >
+    	/* saleson.shop.log.PrivacyAccessLogHistMapper.getPrivacyAccessLogHistListCountByParam */
+        SELECT
+			COUNT(*)
+		FROM (
+	        SELECT
+	        	OP.HIST_ID
+	        	, OP.CREATED_AT
+	        	, (SELECT LOGIN_ID FROM OP_MANAGER WHERE USER_ID = MANAGER_ID) AS MANAGER_ID
+	        	, OP.PRIVACY_ACCESS_LOG_ID
+	        	, OP.REASON
+	        FROM OP_PRIVACY_ACCESS_LOG_HIST OP
+	        WHERE
+	        	 OP.PRIVACY_ACCESS_LOG_ID = #{id}
+	        ORDER BY  OP.CREATED_AT DESC
+	    ) A
+    </select>
+
+    <select id="getPrivacyAccessLogHistListByParam" parameterType="saleson.shop.log.support.PrivacyLogHistParam" resultMap="PrivacyAccessLogHistResult" >
+    	/* saleson.shop.log.PrivacyAccessLogHistMapper.getPrivacyAccessLogHistListByParam */
+        SELECT
+			A.HIST_ID
+			, DATE_FORMAT(A.CREATED_AT, '%Y-%m-%d %H:%i:%s') AS CREATED_AT
+			, (CASE
+				WHEN A.LOGIN_TYPE = 'MANAGER' THEN (SELECT CRYPTO_DEC('normal', LOGIN_ID, '', 0) FROM OP_MANAGER WHERE A.MANAGER_ID = USER_ID)
+				WHEN A.LOGIN_TYPE = 'SELLER' THEN (SELECT LOGIN_ID FROM OP_SELLER WHERE A.MANAGER_ID = SELLER_ID)
+				ELSE ''
+			  END) AS LOGIN_ID
+			, A.PRIVACY_ACCESS_LOG_ID
+			, A.REASON
+			, (SELECT LABEL FROM OP_COMMON_CODE WHERE CODE_TYPE = 'EXCELDOWNLOAD_REASON_TYPE' AND A.REASON_TYPE = ID) AS REASON_TYPE
+		FROM (
+	        SELECT
+	        	OP.HIST_ID
+	        	, OP.CREATED_AT
+	        	, OP.MANAGER_ID
+	        	, (SELECT LOGIN_TYPE FROM OP_PRIVACY_ACCESS_LOG WHERE OP.PRIVACY_ACCESS_LOG_ID = ID) AS LOGIN_TYPE
+	        	, OP.PRIVACY_ACCESS_LOG_ID
+	        	, OP.REASON
+	        	, OP.REASON_TYPE
+	        FROM OP_PRIVACY_ACCESS_LOG_HIST OP
+	        WHERE
+	        	 OP.PRIVACY_ACCESS_LOG_ID = #{id}
+	        ORDER BY  OP.CREATED_AT DESC
+	    ) A
+    </select>
+
+    <update id="updatePrivacyAccessLog" parameterType="saleson.shop.log.support.PrivacyLogHistParam">
+    	/* saleson.shop.log.PrivacyAccessLogHistMapper.updatePrivacyAccessLog */
+        UPDATE
+        	OP_PRIVACY_ACCESS_LOG
+        SET
+	        REASON = #{reason}
+	        , REASON_TYPE = #{reasonType}
+        WHERE
+        	ID = #{id}
+    </update>
+</mapper>

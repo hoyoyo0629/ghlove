@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saleson.shop.externalapi.ExternalApiMapper">
+
+	<resultMap id="UserCntrResult" type="saleson.shop.donation.domain.UserCntrInfo">
+		<result property="cntrSn" column="CNTR_SN" />
+		<result property="cntr_de" column="CNTR_DE" />
+		<result property="user_id" column="USER_ID" />
+		<result property="psitn_locgov_code" column="PSITN_LOCGOV_CODE" />
+		<result property="cntr_locgov_code" column="CNTR_LOCGOV_CODE" />
+		<result property="cntr_amt" column="CNTR_AMT" />
+		<result property="cntr_blce_point" column="CNTR_BLCE_POINT" />
+		<result property="elctrn_pay_no" column="ELCTRN_PAY_NO" />
+		<result property="seoul_trget_at" column="SEOUL_TRGET_AT" />
+		<result property="cntr_sttus_code" column="CNTR_STTUS_CODE" />
+		<result property="sttemnt_pay_de" column="STTEMNT_PAY_DE" />
+		<result property="foreign_status_code" column="FOREIGN_STATUS_CODE" />
+		<result property="cntr_point" column="CNTR_POINT" />
+		<result property="user_name" column="USER_NAME" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="rtnpsnt_reqst_code" column="RTNPSNT_REQST_CODE" />
+	</resultMap>
+
+	<!-- 결제 상태 조회 -->
+	<select id="getUserCntrInfo" parameterType="hashmap" resultMap="UserCntrResult">
+		/* saleson.shop.externalapi.ExternalApiMapper.getUserCntrInfo 민간개방 API 결제 상태 조회 */
+		SELECT A.CNTR_SN
+			 , A.CNTR_DE
+			 , A.USER_ID
+			 , A.PSITN_LOCGOV_CODE
+			 , A.CNTR_LOCGOV_CODE
+			 , A.CNTR_AMT
+			 , A.CNTR_BLCE_POINT
+			 , A.ELCTRN_PAY_NO
+			 , A.SEOUL_TRGET_AT
+			 , A.CNTR_STTUS_CODE
+			 , A.STTEMNT_PAY_DE
+			 , A.FOREIGN_STATUS_CODE
+			 , A.CNTR_POINT
+			 , A.RTNPSNT_REQST_CODE
+			 , CRYPTO_DEC('normal', B.USER_NAME,'dba',0) AS USER_NAME
+			 , CRYPTO_DEC('normal', C.BIRTHDAY,'dba',0) AS BIRTHDAY
+		FROM G_CNTR A
+			 LEFT OUTER JOIN OP_USER B
+			 	ON A.USER_ID = B.USER_ID
+			 LEFT OUTER JOIN OP_USER_DETAIL C
+				ON A.USER_ID = C.USER_ID
+		WHERE 1 = 1
+		AND A.ELCTRN_PAY_NO = #{epayno}
+		AND (A.STTEMNT_PAY_DE IS NULL OR TRIM(A.STTEMNT_PAY_DE) = '')
+		AND A.DELETE_AT = 'N'
+		AND A.CNTR_STTUS_CODE <![CDATA[<>]]> '200'
+	</select>
+	
+	
+	<update id="sunapSuccess" parameterType="hashmap">
+	    <![CDATA[
+		/* saleson.shop.externalapi.ExternalApiMapper.sunapSuccess 민간개방 API 수납완료 처리 */
+	    UPDATE G_CNTR GC
+	       SET GC.CNTR_POINT = CASE WHEN GC.RTNPSNT_REQST_CODE = '100' THEN (GC.CNTR_AMT *(SELECT POINT_RATE FROM G_CTBNY_SETUP WHERE LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND STDR_YEAR = DATE_FORMAT(NOW(),'%Y') )/100) WHEN GC.RTNPSNT_REQST_CODE = '300' THEN 0 END
+	         , GC.CNTR_BLCE_POINT = CASE WHEN GC.RTNPSNT_REQST_CODE = '100' THEN (GC.CNTR_AMT *(SELECT POINT_RATE FROM G_CTBNY_SETUP WHERE LOCGOV_CODE = GC.CNTR_LOCGOV_CODE AND STDR_YEAR = DATE_FORMAT(NOW(),'%Y') )/100) WHEN RTNPSNT_REQST_CODE = '300' THEN 0 END
+	         , GC.STTEMNT_PAY_DE = IFNULL(#{sttemntPayDe}, DATE_FORMAT(NOW(),'%Y%m%d'))
+	         , GC.POINT_END_DE = CASE WHEN gc.RTNPSNT_REQST_CODE = '100' THEN DATE_FORMAT(ADDDATE( NOW() , INTERVAL+5 YEAR),'%Y%m%d') WHEN GC.RTNPSNT_REQST_CODE = '300' THEN NULL END
+	         , GC.CNTR_STTUS_CODE = '200'
+	         , GC.LAST_UPDUSR_ID = GC.USER_ID
+	         , GC.DELETE_AT = 'N'
+	         , GC.LAST_UPDT_PNTTM = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+	     WHERE GC.ELCTRN_PAY_NO = #{enapbuNo}
+	    ]]>
+	</update>
+
+
+	<select id="getSmsSendGiveUserInfo" parameterType="hashmap" resultType="saleson.shop.donation.domain.GiveUserSmsInfo">
+    /* saleson.shop.externalapi.ExternalApiMapper.getSmsSendGiveUserInfo */
+	SELECT A.USER_ID
+           , MBER_CI
+           , CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+           , CONCAT(LOC.UPPER_LOCGOV_NM, ' ', LOC.LOCGOV_NM) AS LOCGOV_NM
+           , B.CNTR_AMT
+           , C.RECEIVE_SMS
+           , REPLACE (CRYPTO_DEC('normal',C.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+      FROM G_CNTR B
+     INNER JOIN OP_USER A
+        ON A.USER_ID = B.USER_ID
+     INNER JOIN OP_USER_DETAIL C
+        ON A.USER_ID = C.USER_ID
+     JOIN G_LOCGOV LOC
+     	ON LOC.LOCGOV_CODE = B.CNTR_LOCGOV_CODE
+     WHERE 1=1
+     AND B.ELCTRN_PAY_NO = #{enapbuNo}
+    
+	</select>
+	
+	
+	<select id="getCntrInfoByPayNo" parameterType="hashmap" resultMap="UserCntrResult">
+	    
+		/* saleson.shop.externalapi.ExternalApiMapper.getCntrInfoByPayNo 민간개방 API 기부정보 조회 */
+		
+		SELECT 
+			GC.CNTR_SN 
+			, GC.CNTR_DE 
+			, GC.CNTR_AMT 
+			, GC.CNTR_STTUS_CODE 
+			, GC.STTEMNT_PAY_DE 
+			, GC.ELCTRN_PAY_NO 
+			, GC.SEOUL_TRGET_AT 
+			, GC.PSITN_LOCGOV_CODE 
+			, GC.CNTR_LOCGOV_CODE 
+		FROM G_CNTR GC
+		WHERE GC.ELCTRN_PAY_NO = #{enapbuNo}
+		AND GC.DELETE_AT = 'N'
+	     
+	    
+	</select>
+
+</mapper>

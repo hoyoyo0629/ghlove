@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="/static/favicon.ico">
+	<title>모바일 인증 결과 | 고향사랑e음</title>
+</head>
+<body>
+
+<script type="text/javascript">
+	var Request = function() {
+		this.getParameter = function(name) {
+			var rtnval = '';
+			var nowAddress = unescape(encodeURIComponent(location.href));
+			nowAddress = decodeURIComponent(nowAddress)
+			var parameters = (nowAddress.slice(nowAddress.indexOf('?') + 1,
+					nowAddress.length)).split('&');
+			for (var i = 0; i < parameters.length; i++) {
+				var varName = parameters[i].split('=')[0];
+				if (varName.toUpperCase() == name.toUpperCase()) {
+					rtnval = parameters[i].substring(parameters[i].indexOf('=')+1);
+// 					rtnval = parameters[i].split('=')[1];
+					break;
+				}
+			}
+			return rtnval;
+		}
+	}
+	var request = new Request();
+
+	var result = request.getParameter("result");	// Y: 성공, N: 실패 (영문대문자)
+	var message = request.getParameter("message");
+	var gender = request.getParameter("gender");	// 성별 (M-남, F-여)
+	var userName = decodeURIComponent(request.getParameter("userName"));
+	var birthday =request.getParameter("birthday");
+	var mberDi = decodeURIComponent(request.getParameter("mberDi"));
+	var mberCi = decodeURIComponent(request.getParameter("mberCi"));
+
+	// 2022-11-02 SCI 추가 파라미터
+	var fgnGbn = request.getParameter("fgnGbn");		// 내외국인구분 (1-내국인, 2-외국인)
+	var cellNo = request.getParameter("cellNo");		// 핸드폰번호 (10-11 자리)
+	var cellCorp = request.getParameter("cellCorp");	// 이동통신사 (3자리)
+	var certDate = request.getParameter("certDate");	// 요청시간
+
+	if (result == "success") {	//
+		var param = {
+			gender: gender,
+			userName: userName,
+			birthday: birthday,
+			mberDi: mberDi,
+			mberCi: mberCi,
+			fgnGbn: fgnGbn,
+			cellNo: cellNo,
+			cellCorp: cellCorp,
+			certDate: certDate,
+		}
+
+// 		parent.opener.mobileAuthResponse(param);
+
+// 		console.log("param", param);
+// 		window.postMessage(param, "*")
+		window.opener.postMessage(param, "*")
+// 		window.addEventListener(param, mobileAuthResponse, false);
+
+
+	} else {
+		if (message != '') {
+			alert("인증에 실패 하셨습니다.");
+		}
+	}
+	self.close();
+</script>
+
+</body>
+</html>
+

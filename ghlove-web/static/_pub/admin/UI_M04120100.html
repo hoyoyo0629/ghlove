@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko" class="opmanager">
+
+<head>
+    <meta charset="UTF-8">
+    <title>고향사랑 운영자</title>
+    <meta name="_csrf" content="d5b3758e-5c8b-415e-a30a-3d62a00f6234">
+    <meta name="_csrf_header" content="X-CSRF-TOKEN">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../content/images/common/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../../content/modules/smarteditor2_3_10/css/smart_editor2.css">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/smarteditor2_3_10/css/smart_editor2_in.css">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/smarteditor2_3_10/css/smart_editor2_items.css">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/smarteditor2_3_10/css/smart_editor2_out.css">
+
+
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/ui-lightness/jquery-ui-1.10.3.custom.min.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager.css">
+    <link rel="stylesheet" type="text/css" href="../../content/opmanager/css/opmanager_print.css" media="print">
+    <link rel="stylesheet" type="text/css" href="../../content/modules/jquery/jstree/dist/themes/default/style.min.css">
+
+    <script type="text/javascript">var OP_CONTEXT_PATH = '';</script>
+    <script type="text/javascript">var OP_LANGUAGE = 'ko';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT = '200';</script>
+    <script type="text/javascript">var OP_MANAGER_TIMEOUT_TYPE = 'manager';</script>
+    <!-- /  <script type="text/javascript" src="../../content/modules/jquery/jquery-1.11.0.min.js"></script> -->
+    <script type="text/javascript" src="../../content/modules/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jquery-ui-1.10.4.custom.js"></script>
+    <script type="text/javascript" src="../../content/modules/spin.min.js"></script>
+    <style type="text/css"></style>
+    <script type="text/javascript" src="../../content/modules/op.common.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.link.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../content/modules/op.main.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.validator.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.file.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.shop.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.js"></script>
+    <script type="text/javascript" src="../../content/modules/op.manager.order.js"></script>
+    <script type="text/javascript" src="../../content/modules/css_browser_selector.js"></script>
+    <script type="text/javascript" src="../../content/modules/jquery/jstree/dist/jstree.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 개발 영역 -->
+    <div class="admin_wrap">
+        <!-- 내용 -->
+        <div id="container">
+            <div class="contents">
+                <div class="contents_inner">
+                    <div class="location">
+                        <a href="">시스템관리</a> &gt; <a href="">챗봇상담관리</a>
+                    </div>
+                    <h3><span>챗봇상담관리</span></h3>
+
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">이전질문</td>
+                                    <td>
+                                        <div class="flex_box gap-12 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter nine" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">질문내용</td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="" class="input_txt required _filter nine" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn_all btn_right mb15">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-dark-gray btn-mini">초기화</button>
+                            <button type="button" class="btn btn-dark-gray btn-mini">검색</button>
+                        </div>
+                    </div>
+                    <div class="board_list th-top">
+                        <table class="board_list_table">
+                            <colgroup>
+                                <col style="width:50px;">
+                                <col style="width:200px;">
+                                <col style="width:200px;">
+                                <col style="width:500px;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">No.</th>
+                                    <th scope="col">이전질문</th>
+                                    <th scope="col">질문내용</th>
+                                    <th scope="col">답변내용</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            답례품 구매
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="background:#fff;">
+                                    <td>
+                                        <div>1</div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            처음으로
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            교환/반품 가능한가요?
+                                        </div>
+                                    </td>
+                                    <td class="text-left">
+                                        <div>
+                                            {text: 안녕하세요 고향사랑e음 도움봇입니다. 무엇을 도와드릴까요?}{button:아이디/비밀번호를 분실했습니다.}{button:답례품 구매}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn_all btn_right">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-dark-gray btn-mini">새 질문 만들기</button>
+                        </div>
+                    </div>
+
+                    <h3 class="mt50 fs24"><span>질문 상세정보</span></h3>
+
+                    <div class="board_write">
+                        <table class="board_write_table" summary="">
+                            <colgroup>
+                                <col style="width:220px;">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td class="label">이전질문</td>
+                                    <td>
+                                        <div class="flex_box gap-12 item-center">
+                                            <input id="" name="" title="" class="input_txt required _filter nine" type="text" disabled>
+                                            <button type="button" class="btn btn-default btn-mini"><span>질문선택</span></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">질문내용</td>
+                                    <td>
+                                        <div>
+                                            <input id="" name="" title="" class="input_txt required _filter nine" type="text">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label">답변내용</td>
+                                    <td>
+                                        <div>
+                                            <div class="flex_box gap-08 mb15">
+                                                <button type="button" class="btn btn-default btn-mini"><span>기존답변 사용</span></button>
+                                                <button type="button" class="btn btn-default btn-mini"><span>초기화</span></button>
+                                            </div>
+
+                                            <span class="placeholder_wrap">
+                                                <span class="placeholder">placeholder</span>
+                                                <textarea id="comments" name="comments" cols="30" rows="10" maxlength="140" class="required _filter nine" title=""></textarea>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn_all btn_center">
+                        <div class="flex_box gap-08">
+                            <button type="button" class="btn btn-dark-gray btn-small">저장</button>
+                            <button type="button" class="btn btn-default btn-small">삭제</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- // 개발 영역 -->
+</body>
+
+</html>

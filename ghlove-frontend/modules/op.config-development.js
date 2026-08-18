@@ -1,0 +1,16 @@
+// var API_DOMAIN = 'http://61.72.154.140';
+// var CDN_DOMAIN = 'http://61.72.154.140';
+// var VIRTUAL_DOMAIN = 'http://61.72.154.140';
+// var OZ_DOMAIN = 'http://61.72.154.140';
+var API_DOMAIN = 'http://152.99.104.8';
+var CDN_DOMAIN = 'http://152.99.104.8';
+var VIRTUAL_DOMAIN = 'http://152.99.104.8';
+var OZ_DOMAIN = 'http://152.99.104.8';
+var SERVER_POSITION = 'development';
+var IS_USE_NET_FUNNEL = false;
+var IS_USE_ONEPASS = false;
+var KAKAO_JAVASCRIPT_KEY = 'dd50d625a46ffbfef8c8b7377dbb4eb3';
+var KAKAO_REDIRECT_URL = VIRTUAL_DOMAIN + '/users/login.html';
+var KAKAO_REDIRECT_URL2 = VIRTUAL_DOMAIN + '/users/join.html';
+var KAKAO_SETTLE_ID = '6985c6dc-1bdb-4021-946f-1e096e5f4835';
+//var DUPLICATION_CALL_LIMIT = 5000;			// 중복 호출 가능 최소 시간(milliseconds)

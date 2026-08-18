@@ -1,0 +1,586 @@
+/* 회원 이름,등급 & 지자체별 잔여포인트 */
+.row_con,
+.con_wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+/* 조회 */
+.my_order {
+    font-size: 16px;
+    color: var(--gray2);
+    border: 1px solid var(--main-color2);
+    margin-bottom: calc(var(--margin-padding-8)*5);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    padding: 30px 0px;
+}
+
+.my_order .mypage-top {
+    padding: 10px 80px;
+}
+
+.my_order .mypage-top,
+.my_order .mypage-top .selected-field-line {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.my_order .card_title {
+    padding-right: 30px;
+    font-weight: 500;
+    min-width:90px
+}
+
+.my_order .formbtn-box {
+    margin-left: 10px;
+    gap:10px;
+}
+
+.my_order .formbtn-box button {
+    width: 100px;
+    margin: 0 0 0 4px;
+}
+
+.my_order .mypage-top .selected-item input[type='text'] {
+    min-width: 300px;
+    width: 100%;
+    max-width: 720px;
+}
+
+.my_order .selected-field-line .selected-item .s_txt {
+    margin: 0 8px;
+}
+
+.my_order .selected-field-line .selected-item select {
+    width: 190px;
+    color: var(--gray3);
+    margin-right: 10px;
+}
+
+.btn-box.mid {
+    margin-bottom: 60px;
+}
+
+/* 조회 결과 */
+.s-contents {
+    max-width: 1280px;
+    margin: 0 auto 150px;
+}
+
+.list-search-body {
+    color: var(--gray2);
+}
+
+.list-search-group {
+    margin-bottom: 30px;
+}
+
+.g_info_wrap,
+.a_status_wrap,
+.list-title,
+.list-items>div {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.list-title {
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    border-top: 2px solid var(--gray2);
+    border-bottom: 1px solid var(--gray3);
+}
+
+.list-title .g_info {
+    text-align: left;
+}
+
+.list-items {
+    /* padding: 20px 0; */
+    border-bottom: 1px solid var(--gray4);
+}
+
+.date-col {
+    text-align: center;
+}
+
+.m-layout {
+    align-self: center;
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.m-layout>div {
+    width: 50%;
+    padding: 20px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.review_grade {
+    text-align: center;
+}
+
+list-title .review_grade {
+    align-self: flex-start;
+}
+
+.m-layout>div.w_date {
+    /* white-space: nowrap; */
+    padding: 20px 0;
+}
+
+.g_info {
+    width: 60%;
+    padding-left: 60px;
+}
+
+.g_info_wrap {
+    text-align: left;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.g_info_wrap:nth-child(2) {
+    margin-top: 12px;
+}
+
+.g_info_wrap .g_info__img {
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    overflow: hidden;
+}
+
+.g_info_wrap .g_info__img img {
+    width: 100%;
+    height: 40px;
+    object-fit: cover;
+}
+
+.g_info_wrap .g_info__txt {
+    line-height: 1.35em;
+}
+
+.g_info_wrap .g_info__txt .info_loc {
+
+    font-weight: 500;
+}
+
+.g_info_wrap .g_info__txt .info_title {
+    font-size: 14px;
+    color: var(--gray3);
+    /* margin-bottom: 6px; */
+    font-weight: 500;
+}
+
+.g_info_wrap .g_info__txt {
+    font-size: 13px;
+    color: var(--gray3a);
+    line-height: 20px;
+}
+
+
+.g_info_wrap .g_info__txt .info_total .dvide {
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    background-color: #DBDBDB;
+    margin: 0 10px;
+}
+
+.g_info .qna_title {
+    text-align: left;
+    font-size: 14px;
+    color: var(--gray2);
+    margin-top: 12px;
+}
+
+.g_info .qna_title .lock_img {
+    display: inline-block;
+    transform: translate(1px, -3px);
+}
+
+.a_status {
+    /* width: 10%; */
+}
+
+.a_status .a_status-spteps {
+    width: 100%;
+    text-align: center;
+}
+
+.spteps_status {
+    color: var(--gray1);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.a_status .a_status-spteps.cs .spteps_status {
+    margin-bottom: 0;
+}
+
+.deliveryCom {
+    font-size: 13px;
+    line-height: 1.35em;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-items>div.rev_header {
+    padding: 20px 0;
+}
+
+.list-items>div.rev_body {
+    justify-content: flex-start;
+    background-color: var(--gray5);
+    display: none;
+    position: relative;
+}
+
+.list-items>div.rev_body .list_del {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    z-index: 999;
+}
+
+.rev_body .g_info {
+    width: 100%;
+    text-align: left;
+    padding: 20px 0px 20px 60px;
+    position: relative;
+    font-size: 14px;
+}
+
+.rev_body .g_info .g_info__txt {
+    margin-bottom: 20px;
+}
+
+
+
+.rev_body .g_info__swiper {
+    margin-bottom: 20px;
+}
+
+.rev_body .g_info__swiper .swiper-container {
+    margin: 0;
+}
+
+.rev_body .g_info__swiper .swiper-slide {
+    width: 240px;
+}
+
+.rev_body .g_info__swiper .swiper-slide img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
+
+.rev_body .admin_reply {
+    padding-right: 60px;
+}
+
+.rev_body .admin_reply .reply_area {
+    background-color: #fff;
+    border: 1px solid var(--gray4);
+    padding: 14px 30px;
+}
+
+.rev_body .admin_reply .reply_area .acontents {
+    margin-bottom: 4px;
+    line-height: 1.3em;
+    color: var(--gray3);
+}
+
+.rev_body .admin_reply .reply_area .acontents,
+.rev_body .g_info .g_info__txt .info_total {
+    white-space: pre-wrap;
+}
+
+.rev_body .admin_reply .reply_area .adate img {
+    width: 16px;
+    margin-right: 4px;
+}
+
+.rev_body .admin_reply .reply_area .v-line {
+    margin: 0 6px;
+    transform: translateY(3px);
+    height: 14px;
+}
+
+/* 게시글 없음 */
+.list-none {
+    width: 100%;
+    text-align: center;
+    padding: 80px;
+    border: solid var(--gray4);
+    border-width: 1px 0;
+    color: var(--gray3);
+    font-size: 14px;
+}
+
+/* 웹접근성 답례품후기 241030 */
+.list-search-group {
+    border-top: 2px solid var(--gray2);
+}
+
+.list-search-group .dropdown .dropdown-toggle {
+    position: relative;
+}
+
+.list-search-group .dropdown .dropdown-toggle::after {
+    border: none !important;
+    background-image: url(/static/images/icon/list-dropdown.png);
+    background-size: 16px auto;
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 16px;
+    height: 8px;
+    background-position: center center;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -4px;
+}
+
+.list-search-group .dropdown.show .dropdown-toggle::after {
+    transform: rotate(180deg);
+}
+
+.g_info_wrap .g_info__txt {
+    width: 100%;
+}
+
+.g_info_wrap .g_info__txt .info_title {
+    width: 85%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+/* ////////////// */
+
+@media screen and (max-width:1280px) {
+
+    /* 조회 */
+    .my_order .mypage-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .my_order .card_title {
+        padding-right: 0px;
+        margin-bottom: 6px;
+    }
+
+
+    .my_order .mypage-top .selected-field-line .selected-item,
+    .my_order .mypage-top .selected-field-line,
+    .my_order .mypage-top .selected-field-line .formbtn-box {
+        width: 100%;
+    }
+
+    .my_order .mypage-top .selected-field-line .formbtn-box,
+    .my_order .mypage-top .selected-field-line .selected-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .my_order .mypage-top .selected-field-line .selected-item input {
+        width: 47.4%;
+    }
+
+    .my_order .mypage-top .selected-field-line .selected-item select {
+        width: 100%;
+    }
+
+
+    .my_order .formbtn-box button {
+        margin: 0;
+        width: 24%;
+    }
+
+    /* 조회결과 */
+    .s-contents {
+        width: 95%;
+    }
+}
+
+@media screen and (max-width:1030px) {
+
+    /* 조회 */
+    .my_order .mypage-top {
+        padding: 0px 40px;
+    }
+
+    /* 조회결과 */
+    .s-contents {
+        width: 95%;
+        padding: 60px 40px;
+        margin-bottom: 100px;
+    }
+
+    /* .honor-list-wrap {
+        border-top: 2px solid var(--gray2);
+    } */
+
+    .list-title {
+        display: none;
+    }
+
+    .list-items {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .w_date,
+    .g_info,
+    .a_status {
+        width: 100%;
+    }
+
+    .w_date .s-txt {
+        margin-left: 6px;
+    }
+
+    .g_info {
+        /* padding: 0px 0 7px; */
+        width: 50%;
+    }
+
+
+
+
+    .deliveryCom {
+        flex-direction: row;
+        padding-left: 10px;
+    }
+
+
+}
+
+@media screen and (max-width:768px) {
+
+    /* 조회 */
+    .my_order .mypage-top {
+        padding: 0px 20px;
+    }
+
+    .my_order .mypage-top,
+    .my_order .mypage-top .selected-field-line {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .my_order .mypage-top .selected-field-line .selected-item,
+    .my_order .mypage-top .selected-field-line,
+    .my_order .mypage-top .selected-field-line .formbtn-box {
+        width: 100%;
+    }
+
+    .my_order .mypage-top .selected-field-line .formbtn-box {
+        margin-left: 0;
+    }
+
+    .my_order .mypage-top .selected-field-line .selected-item {
+        margin-bottom: 10px;
+    }
+
+    .my_order .mypage-top .selected-field-line .selected-item select {
+        width: 100%;
+    }
+
+    .my_order .mypage-top .selected-field-line .formbtn-box {
+        justify-content: space-between;
+    }
+
+    .s-contents {
+        width: 100%;
+        border-top: 20px solid var(--gray5);
+    }
+
+    /* 리스트 */
+    .list-items>div.rev_header {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .m-layout,
+    .review_grade,
+    .g_info,
+    .date-col {
+        width: 100%;
+        text-align: left;
+    }
+
+    .g_info {
+        padding: 10px 0;
+    }
+
+    .m-layout>div {
+        width: unset;
+        padding: 0;
+    }
+
+    .m-layout>div.w_date {
+        padding: 0;
+    }
+
+    .w_date .s-txt {
+        margin-left: 0;
+    }
+
+    .list-items>div.rev_body {
+        background-color: #fff;
+        border-top: 1px solid var(--gray4);
+
+    }
+
+    .rev_body .review_grade {
+        display: none
+    }
+
+    .rev_body .g_info {
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .g_info_wrap:nth-child(2) {
+        margin-top: 20px;
+    }
+}
+
+@media screen and (max-width:460px) {
+
+    .my_order .formbtn-box button {
+        min-width: unset;
+        width: 24%;
+    }
+
+    .s-contents {
+        padding: 50px 20px;
+    }
+
+    /* 조회결과 */
+    .a_status .a_status-btn,
+    .a_status .a_status-btn button.orderBtn {
+        width: 100%;
+    }
+
+    /* 웹접근성 241030 */
+    .list-search-group .dropdown .dropdown-toggle::after {
+        top: 40px;
+    }
+    /* ////////// */
+}
