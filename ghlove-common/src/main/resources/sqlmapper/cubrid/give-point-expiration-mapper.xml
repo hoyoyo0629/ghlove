@@ -77,9 +77,9 @@
 			A.USER_ID,
 			A.POINT,
 			A.POINT_END_DE,
-			crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME,
-			crypto_dec('normal', A.EMAIL, '', 0) AS EMAIL,
-			crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID,
+			A.USER_NAME AS USER_NAME,
+			A.EMAIL AS EMAIL,
+			A.LOGIN_ID AS LOGIN_ID,
 			A.STATUS_CODE
 		FROM
 		(

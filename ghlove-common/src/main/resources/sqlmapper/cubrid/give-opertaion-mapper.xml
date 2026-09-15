@@ -188,8 +188,8 @@
 	        ,A.bsns_nm
 	        ,A.bsns_cn
 	        ,A.file_cnt
-	        ,crypto_dec('normal', A.login_id, '', 0) AS login_id
-	        ,crypto_dec('normal', A.user_name, '', 0) AS user_name
+	        ,A.login_id AS login_id
+	        ,A.user_name AS user_name
 	        ,A.user_id
 	        ,A.expndtr_de 
 		 FROM 
@@ -364,8 +364,8 @@
            ,A.expndtr_amt
            ,A.bsns_nm
            ,A.bsns_cn
-           ,crypto_dec('normal', A.login_id  , '', 0) AS login_id
-           ,crypto_dec('normal', A.user_name  , '', 0) AS user_name
+           ,A.login_id AS login_id
+           ,A.user_name AS user_name
            ,A.frst_register_id
            ,A.expndtr_de
            ,A.rm

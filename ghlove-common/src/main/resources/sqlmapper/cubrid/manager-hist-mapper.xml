@@ -71,7 +71,7 @@
         			M.USER_ID = #{userId}
         		</when>
         		<when test="loginId != null and loginId != ''">
-        			M.LOGIN_ID = crypto_enc('normal', #{loginId},'')
+        			M.LOGIN_ID = #{loginId}
         		</when>
         		<when test="userIdList != null and userIdList.size() gt 0">
         			M.USER_ID IN (
@@ -89,6 +89,6 @@
     	SELECT
     		USER_ID
     	FROM OP_MANAGER
-    	WHERE LOGIN_ID = crypto_enc('normal', #{value},'')
+    	WHERE LOGIN_ID = #{value}
     </select>
 </mapper>

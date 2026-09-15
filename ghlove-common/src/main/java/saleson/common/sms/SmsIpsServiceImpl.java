@@ -111,6 +111,11 @@ public class SmsIpsServiceImpl implements SmsIpsService{
 
 	@Override
 	public void giveSendSms(List<GiveUserSmsInfo> infoList, SmsType type) {
+		// LOCAL DEV ONLY: 이 테이블 적재분은 국민비서 연계로 실제 문자가 나갈 수 있어 로컬 테스트 기부에서는 적재하지 않는다.
+		if (com.onlinepowers.framework.common.ServiceType.LOCAL) {
+			log.warn("[LOCAL DEV] skip 국민비서 SMS insert: {}", type);
+			return;
+		}
 
 		if (infoList == null || infoList.isEmpty()) {
 			return;

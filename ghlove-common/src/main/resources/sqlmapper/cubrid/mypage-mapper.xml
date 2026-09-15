@@ -197,8 +197,8 @@
 			SELECT
 				GC.cntr_sn
 				, CNTR_DE
-		        , CRYPTO_DEC('normal', OU.USER_NAME, '', 0) AS USER_NAME
-		        , CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) AS LOGIN_ID
+		        , OU.USER_NAME AS USER_NAME
+		        , OU.LOGIN_ID AS LOGIN_ID
 		        , CNTR_AMT
 		        , CNTR_POINT
 		        , '' AS CNTR_USE_POINT
@@ -219,8 +219,8 @@
 			SELECT
 			     GC.cntr_sn
 				, POINT_USE_DE AS CNTR_DE
-				, CRYPTO_DEC('normal', OU.USER_NAME, '', 0) AS USER_NAME
-		        , CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) AS LOGIN_ID
+				, OU.USER_NAME AS USER_NAME
+		        , OU.LOGIN_ID AS LOGIN_ID
 				, '' AS CNTR_AMT
 				, '' AS CNTR_POINT
 				, CNTR_USE_POINT

@@ -55,7 +55,7 @@ saleson:
     #jdbc-url: jdbc:cubrid:192.168.84.58:34000:ghlove2:::?charset=UTF-8
     ##local##
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    jdbc-url: jdbc:log4jdbc:cubrid:192.168.84.58:34000:ghlove2:::?charset=UTF-8
+    jdbc-url: jdbc:log4jdbc:cubrid:10.0.120.51:30000:ghlove2:::?charset=UTF-8
     username: dba
     password: rhgidtkfkd!1234A
     ##local##
@@ -129,7 +129,7 @@ email:
     driver-class-name: cubrid.jdbc.driver.CUBRIDDriver
     jdbc-url: jdbc:cubrid:172.30.1.31:34000:ems:::?charset=UTF-8
     username: dba
-    password: rhgidtkfkd!1234A
+    password: 
     connection-test-query: SELECT 1
     minimum-idle: 10
     maximum-pool-size: 10
@@ -141,7 +141,7 @@ slave:
     #jdbc-url: jdbc:cubrid:172.30.1.31:47000:ghlove2:::?charset=UTF-8
     #LOCAL#
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    jdbc-url: jdbc:log4jdbc:cubrid:192.168.84.58:34000:ghlove2:::?charset=UTF-8
+    jdbc-url: jdbc:log4jdbc:cubrid:10.0.120.51:30000:ghlove2:::?charset=UTF-8
     username: dba
     password: rhgidtkfkd!1234A
     #LOCAL#
@@ -161,7 +161,7 @@ analysis:
 #    jdbc-url: jdbc:cubrid:172.30.1.31:47000:ghlove_analysis:::?charset=UTF-8
     #LOCAL#
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    jdbc-url: jdbc:log4jdbc:cubrid:192.168.84.58:34000:ghlove2:::?charset=UTF-8
+    jdbc-url: jdbc:log4jdbc:cubrid:10.0.120.51:30000:ghlove2:::?charset=UTF-8
     username: dba
     password: rhgidtkfkd!1234A
     #LOCAL#
@@ -184,7 +184,7 @@ nhapi:
     connection-test-query: SELECT 1
     minimum-idle: 10
     maximum-pool-size: 10
-    
+
 # Log DataSource
 log:
   datasource:
@@ -572,7 +572,7 @@ logging:
       sqlonly: OFF
       audit: OFF
       resultset: OFF
-      sqltiming: DEBUG
+      sqltiming: OFF
       resultsettable: DEBUG
     org.springframework.web: INFO
     org.hibernate: ERROR
@@ -660,7 +660,11 @@ totalsearch-server:
   ksf-url: 192.168.100.248:7614
   
 ems:
-  host: http://192.168.100.250:8380/api/sendMail.do
+  # LOCAL DEV ONLY: the real EMS host (192.168.100.250:8380) is internal-network only, so every
+  # mail send (e.g. the login auth-code email) hung for the full 10s connect timeout before
+  # failing. Nothing listens on this port, so the connection is refused immediately instead.
+  #host: http://192.168.100.250:8380/api/sendMail.do
+  host: http://127.0.0.1:1/api/sendMail.do
   send:
     username: 고향사랑e음
     email: webmatser@ilovegohyang.go.kr 

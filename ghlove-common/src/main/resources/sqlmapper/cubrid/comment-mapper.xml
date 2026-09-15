@@ -35,7 +35,7 @@
 		,A.comments 
 		,A.is_delete 
 		,A.created_date 
-		,crypto_dec('normal',A.user_name,'',0) as user_name
+		,A.user_name as user_name
 		,A.locgov_nm
 		,A.comment_depth
 	 from (

@@ -68,7 +68,7 @@
 			,A.SUBJECT
 			,A.URL
 			,A.CATEGORY_TEAM
-			,crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME
+			,A.USER_NAME AS USER_NAME
 			,A.PASSWORD
 			,A.EMAIL
 			,A.CONTENT
@@ -145,7 +145,7 @@
 		,A.subject
 		,A.url
 		,A.category_team
-		,crypto_dec('normal', user_name, '', 0) AS USER_NAME
+		,user_name AS USER_NAME
 		,A.password
 		,A.email
 		,A.content
@@ -188,7 +188,7 @@
 
 	<insert id="insertDataboard" parameterType="saleson.shop.databoard.domain.Databoard">
 		INSERT INTO OP_DATA_BOARD (DATA_ID, SUBJECT, URL, CATEGORY_TEAM, USER_NAME, PASSWORD, EMAIL, CONTENT, HITS, BOARD_CODE, SUB_CATEGORY, CREATED_DATE, TARGET_OPTION, REL_OPTION, NOTICE_FLAG, VISIBLE_TYPE, SELLER_SELECT_FLAG, USE_YN)
-		VALUES (#{dataId}, #{subject}, #{url}, #{categoryTeam}, crypto_enc('normal', #{userName},''), #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{useYn})
+		VALUES (#{dataId}, #{subject}, #{url}, #{categoryTeam}, #{userName}, #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{useYn})
 	</insert>
 
 
@@ -196,7 +196,7 @@
 		UPDATE OP_DATA_BOARD SET
 			SUBJECT = #{subject},
 			URL = #{url},
-			USER_NAME = crypto_enc('normal', #{userName},''),
+			USER_NAME = #{userName},
 			CONTENT = #{content},
 			TARGET_OPTION = #{targetOption},
 			REL_OPTION = #{relOption},
@@ -267,7 +267,7 @@
 		   ,A.SUB_CATEGORY
 		   ,A.NOTICE_FLAG
 		   <if test='conditionType != "main"'>
-			   ,crypto_dec('normal',USER_NAME, '', 0) AS USER_NAME
+			   ,USER_NAME AS USER_NAME
 			   ,A.PASSWORD
 			   ,A.EMAIL
 			   ,A.CONTENT
@@ -354,7 +354,7 @@
 	<select id="getFrontDataboardFileList" parameterType="Integer" resultType="saleson.shop.databoard.domain.DataboardFile">
 		/** databoard-mapper.getFrontDataboardFileList (자료실 파일 목록 조회) */
 		SELECT
-				crypto_enc('normal', DATA_FILE_ID,'') AS DATA_FILE_ID,
+				DATA_FILE_ID AS DATA_FILE_ID,
 				DATA_ID,
 				FILE_NAME,
 				FILE_TY,
@@ -380,7 +380,7 @@
 		FROM
 				OP_DATA_BOARD_FILE
 		WHERE
-				crypto_enc('normal', DATA_FILE_ID,'') = #{dataFileId}
+				DATA_FILE_ID = #{dataFileId}
 	</select>
 
 	<insert id="insertDataboardFile" parameterType="saleson.shop.databoard.domain.DataboardFile">
@@ -405,6 +405,6 @@
 
 	<delete id="deleteDataboardFile" parameterType="String" >
 		DELETE FROM OP_DATA_BOARD_FILE
-		WHERE crypto_enc('normal', DATA_FILE_ID,'') = #{dataFileId}
+		WHERE DATA_FILE_ID = #{dataFileId}
 	</delete>
 </mapper>

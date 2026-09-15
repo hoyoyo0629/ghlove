@@ -10,7 +10,7 @@
 		<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
 			<choose>
 				<when test="srchKey == 'LOGIN_ID'">
-					AND U.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					AND U.LOGIN_ID = #{srchValue}
 				</when>
 				<when test="srchKey == 'LEAVE_REASON'">
 					AND CONCAT(IFNULL(C.LABEL, ''),' / ',IFNULL(UD.LEAVE_REASON, '')) LIKE CONCAT('%', #{srchValue},'%')
@@ -70,13 +70,13 @@
 		/** secedeuser-mapper.getSecedeUserListByParam (회원탈퇴관리 목록 조회) */
 		SELECT
 				A.USER_ID,
-				crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID,
+				A.LOGIN_ID AS LOGIN_ID,
 				DATE_FORMAT(A.LEAVE_DATE,'%Y-%m-%d') AS LEAVE_DATE,
 				A.LEAVE_REASON,
 				A.LEAVE_CODE,
 				A.LEAVE_USER_ID,
 				A.LEAVE_CODE_LABEL,
-				crypto_dec('normal', A.LEAVE_USER_NAME, '', 0) AS LEAVE_USER_NAME,
+				A.LEAVE_USER_NAME AS LEAVE_USER_NAME,
 				(SELECT R.ROLE_NAME
 				 FROM OP_USER_ROLE UR
 				 INNER JOIN OP_ROLE R
@@ -123,13 +123,13 @@
 		/** secedeuser-mapper.getSecedeUserDetails (회원탈퇴상세조회) */
 		SELECT
 			A.USER_ID,
-			crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID,
+			A.LOGIN_ID AS LOGIN_ID,
 			A.LEAVE_DATE,
 			A.LEAVE_REASON,
 			A.LEAVE_CODE,
 			A.LEAVE_USER_ID,
 			A.LEAVE_CODE_LABEL,
-			crypto_dec('normal',A.LEAVE_USER_NAME, '', 0) AS LEAVE_USER_NAME,
+			A.LEAVE_USER_NAME AS LEAVE_USER_NAME,
 			A.ROLE_NAME
 		FROM
 		(

@@ -47,7 +47,7 @@
 
 	<insert id="insertSellerUser" parameterType="com.onlinepowers.framework.security.userdetails.User">
 		INSERT INTO OP_SELLER_USER (USER_ID, LOGIN_ID, PASSWORD, PHONE_NUMBER, USER_NAME, EMAIL, LOGIN_COUNT, LOGIN_DATE, UPDATED_DATE, DENY_DATE, LEAVE_DATE, STATUS_CODE, CREATED_DATE, PASSWORD_EXPIRED_DATE, LOCGOV_CODE, RECEIVE_SMS)
-		VALUES (#{userId}, #{loginId}, #{password}, crypto_enc('normal', #{phoneNumber}, ''), crypto_enc('normal', #{userName}, ''), crypto_enc('normal', #{email}, ''), 0, null, <include refid="CommonMapper.datetime" />, null, null, #{statusCode}, <include refid="CommonMapper.datetime" />, #{passwordExpiredDate}, (SELECT SUBSTR(#{loginId}, 0, 5)), #{dormancyMailSent})
+		VALUES (#{userId}, #{loginId}, #{password}, #{phoneNumber}, #{userName}, #{email}, 0, null, <include refid="CommonMapper.datetime" />, null, null, #{statusCode}, <include refid="CommonMapper.datetime" />, #{passwordExpiredDate}, (SELECT SUBSTR(#{loginId}, 0, 5)), #{dormancyMailSent})
 	</insert>
 
 	<update id="updateSellerUser" parameterType="com.onlinepowers.framework.security.userdetails.User">
@@ -57,12 +57,12 @@
 				PASSWORD = #{password},
 			</if>
 			<if test="userName != null and userName != ''">
-				USER_NAME = (SELECT CRYPTO_ENC('normal', #{userName}, '')),
+				USER_NAME = #{userName},
 			</if>
 			<if test="phoneNumber != null">
-				PHONE_NUMBER = (SELECT CRYPTO_ENC('normal', #{phoneNumber}, '')),
+				PHONE_NUMBER = #{phoneNumber},
 			</if>
-			EMAIL = (SELECT CRYPTO_ENC('normal', #{email}, '')),
+			EMAIL = #{email},
 			UPDATED_DATE = <include refid="CommonMapper.datetime" />
 		</set>
 		WHERE USER_ID = #{userId}
@@ -111,9 +111,9 @@
 	<select id="getSellerUserList" parameterType="saleson.shop.user.support.UserSearchParam"
 	        resultMap="SellerUserResult">
 		SELECT T_A.*
-			, CRYPTO_DEC('normal', T_A.USER_NAME_ENC, '', 0) AS USER_NAME
-			, CRYPTO_DEC('normal', T_A.EMAIL_ENC, '', 0) AS EMAIL
-			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+			, T_A.USER_NAME_ENC AS USER_NAME
+			, T_A.EMAIL_ENC AS EMAIL
+			, T_A.PHONE_NUMBER_ENC AS PHONE_NUMBER
 		FROM (
 			SELECT
 				SU.USER_ID,
@@ -210,9 +210,9 @@
 
 	<select id="getSellerUserByLoginId" parameterType="String" resultMap="SellerUserResult">
 		SELECT T_A.*
-			, CRYPTO_DEC('normal', T_A.USER_NAME_ENC, '', 0) AS USER_NAME
-			, CRYPTO_DEC('normal', T_A.EMAIL_ENC, '', 0) AS EMAIL
-			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+			, T_A.USER_NAME_ENC AS USER_NAME
+			, T_A.EMAIL_ENC AS EMAIL
+			, T_A.PHONE_NUMBER_ENC AS PHONE_NUMBER
 		FROM (
 			SELECT
 				SU.USER_ID,
@@ -307,9 +307,9 @@
 			, S.STATUS_CODE
 			, SU.LOGIN_ID
 			, SU.PASSWORD
-			<!-- , CRYPTO_DEC('normal', SU.EMAIL, '', 0) AS EMAIL -->
-			, CRYPTO_DEC('normal', S.EMAIL, '', 0) AS EMAIL		<!-- srhan. 20251029. 로그인시 이메일 체크와 발송 주소 통일 -->
-			, CRYPTO_DEC('normal', S.user_name , '', 0) AS USER_NAME
+			<!-- , SU.EMAIL AS EMAIL -->
+			, S.EMAIL AS EMAIL		<!-- srhan. 20251029. 로그인시 이메일 체크와 발송 주소 통일 -->
+			, S.user_name AS USER_NAME
 			FROM OP_SELLER_USER SU
 			, OP_SELLER S
 			, OP_USER_ROLE UR
@@ -318,7 +318,7 @@
 			<!-- AND S.STATUS_CODE IN ('2', '3') -->
 			AND S.STATUS_CODE = '2'
 			AND SU.LOGIN_ID = #{loginId}
-			AND SU.PASSWORD = CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{loginId}, #{password}), '')
+			AND SU.PASSWORD = CONCAT('TU9JUzIwMjM=', #{loginId}, #{password})
 			<!-- AND SU.LOGIN_FAIL_COUNT <![CDATA[ < ]]>  (
 															SELECT
 																	`VALUE`
@@ -350,7 +350,7 @@
 		/** seller-user-mapper.getPkiSellerFormValid (PKI 폼 유효성 조회) */
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', IFNULL(T_A.PHONE_NUMBER_ENC, '') , '', 0) AS PHONE_NUMBER
+			, IFNULL(T_A.PHONE_NUMBER_ENC, '') AS PHONE_NUMBER
 		FROM (
 			SELECT
 					SU.USER_ID,
@@ -367,9 +367,9 @@
 				AND S.STATUS_CODE = '2'
 				AND SU.LOGIN_ID = S.LOGIN_ID
 				AND SU.LOGIN_ID = #{loginId}
-				<!-- AND SU.LOGIN_ID = crypto_enc('normal', #{loginId}, '') -->
+				<!-- AND SU.LOGIN_ID = #{loginId} -->
 				AND S.BUSINESS_NUMBER = #{businessNumber}
-				AND S.PHONE_NUMBER = (SELECT CRYPTO_ENC('normal', #{phoneNumber}, ''))
+				AND S.PHONE_NUMBER = #{phoneNumber}
 		) T_A
 	</select>
 
@@ -389,16 +389,16 @@
 				</when>
 				<otherwise>
 					<if test='mberDn != null and mberDn != ""'>
-						MBER_DN = (SELECT CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{mberDn}), '')),
+						MBER_DN = (SELECT CONCAT('TU9JUzIwMjM=', #{mberDn})),
 					</if>
 					<if test='mberFinDn != null and mberFinDn != ""'>
-						MBER_FIN_DN = (SELECT CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{mberFinDn}), '')),
+						MBER_FIN_DN = (SELECT CONCAT('TU9JUzIwMjM=', #{mberFinDn})),
 					</if>
 
 					<if test='mberCi != null and mberCi != ""'>
 						MBER_CI = (
 									CASE WHEN MBER_CI = '' OR MBER_CI IS NULL
-											THEN (SELECT CRYPTO_ENC('normal', #{mberCi}, ''))
+											THEN #{mberCi}
 										ELSE MBER_CI
 									END
 									),
@@ -432,12 +432,12 @@
 				AND SU.STATUS_CODE = '9'
 				<!-- AND S.STATUS_CODE IN ('2', '3') -->
 				AND S.STATUS_CODE = '2'
-				<!-- AND SU.MBER_DN = CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{loginId}, #{mberDn}), '') -->
+				<!-- AND SU.MBER_DN = CONCAT('TU9JUzIwMjM=', #{loginId}, #{mberDn}) -->
 				<if test="mberDn != null and mberDn != ''">
-					AND SU.MBER_DN = (SELECT CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{mberDn}), ''))
+					AND SU.MBER_DN = (SELECT CONCAT('TU9JUzIwMjM=', #{mberDn}))
 				</if>
 				<if test="mberFinDn != null and mberFinDn != ''">
-					AND SU.MBER_FIN_DN = (SELECT CRYPTO_ENC('hash.5', CONCAT('TU9JUzIwMjM=', #{mberFinDn}), ''))
+					AND SU.MBER_FIN_DN = (SELECT CONCAT('TU9JUzIwMjM=', #{mberFinDn}))
 				</if>
 				<if test="loginId != null and loginId != ''">
 					AND S.LOGIN_ID = #{loginId}
@@ -473,7 +473,7 @@
 
 		UPDATE OP_SELLER_USER SU
 			, OP_SELLER S
-			SET SU.MBER_CI = (SELECT CRYPTO_ENC('normal', #{mberCi}, ''))
+			SET SU.MBER_CI = #{mberCi}
 		WHERE 	S.LOGIN_ID = #{loginId}
 			AND SU.LOGIN_ID = S.LOGIN_ID
 			AND SU.USER_ID = #{userId}
@@ -493,8 +493,8 @@
 	<select id="getSellerUserByLoginIdForSms" parameterType="string" resultType="saleson.shop.user.domain.SellerUser">
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
-			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+			, T_A.MBER_CI_ENC AS MBER_CI
+			, T_A.PHONE_NUMBER_ENC AS PHONE_NUMBER
 		FROM (
 			SELECT
 				S.COMPANY_NAME AS USER_NAME

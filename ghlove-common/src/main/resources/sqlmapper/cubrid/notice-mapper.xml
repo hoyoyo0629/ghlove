@@ -97,7 +97,7 @@
 				A.subject,
 				A.url,
 				A.category_team,
-				crypto_dec('normal', A.user_name, '', 0) as user_name,
+				A.user_name as user_name,
 				A.password,
 				A.email,
 				A.content,
@@ -197,7 +197,7 @@
 			A.subject,
 			A.url,
 			A.category_team,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
+			A.user_name AS user_name,
 			A.password,
 			A.email,
 			A.content,
@@ -244,7 +244,7 @@
 			A.subject,
 			A.url,
 			A.category_team,
-			crypto_dec('normal', A.user_name, '', 0) user_name,
+			A.user_name user_name,
 			A.password,
 			A.email,
 			A.content,
@@ -287,7 +287,7 @@
 	<insert id="insertNotice" parameterType="saleson.shop.notice.domain.Notice">
 		/* saleson.shop.notice.NoticeMapper.insertNotice */
 		INSERT INTO OP_NOTICE (NOTICE_ID, SUBJECT, URL, CATEGORY_TEAM, USER_NAME, PASSWORD, EMAIL, CONTENT, HITS, BOARD_CODE, SUB_CATEGORY, CREATED_DATE, TARGET_OPTION, REL_OPTION, NOTICE_FLAG, VISIBLE_TYPE, SELLER_SELECT_FLAG, LOCGOV_CODE, USE_YN)
-		VALUES (#{noticeId}, #{subject}, #{url}, #{categoryTeam}, crypto_enc('normal', #{userName},''), #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{locgovCode}, #{useYn})
+		VALUES (#{noticeId}, #{subject}, #{url}, #{categoryTeam}, #{userName}, #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{locgovCode}, #{useYn})
 	</insert>
 
 
@@ -302,7 +302,7 @@
 		UPDATE OP_NOTICE SET
 			SUBJECT = #{subject},
 			URL = #{url},
-			USER_NAME = crypto_enc('normal', #{userName},''),
+			USER_NAME = #{userName},
 			CONTENT = #{content},
 			TARGET_OPTION = #{targetOption},
 			REL_OPTION = #{relOption},
@@ -382,7 +382,7 @@
 				A.sub_category,
 				A.notice_flag,
 				<if test='conditionType != "main"'>
-					crypto_dec('normal', A.user_name, '', 0) user_name,
+					A.user_name user_name,
 					A.password,
 					A.email,
 					A.content,
@@ -541,7 +541,7 @@
 			A.subject,
 			A.url,
 			A.category_team,
-			crypto_dec('normal', A.user_name, '', 0) as user_name,
+			A.user_name as user_name,
 			A.password,
 			A.email,
 			A.content,
@@ -636,7 +636,7 @@
 	<insert id="insertLocgovNotice" parameterType="saleson.shop.notice.domain.Notice">
 		/* saleson.shop.notice.NoticeMapper.insertLocgovNotice */
 		INSERT INTO OP_NOTICE (NOTICE_ID, SUBJECT, URL, CATEGORY_TEAM, USER_NAME, PASSWORD, EMAIL, CONTENT, HITS, BOARD_CODE, SUB_CATEGORY, CREATED_DATE, TARGET_OPTION, REL_OPTION, NOTICE_FLAG, VISIBLE_TYPE, SELLER_SELECT_FLAG, LOCGOV_CODE, USE_YN)
-		VALUES (#{noticeId}, #{subject}, #{url}, #{categoryTeam}, crypto_enc('normal', #{userName},''), #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{locgovCode}, #{useYn})
+		VALUES (#{noticeId}, #{subject}, #{url}, #{categoryTeam}, #{userName}, #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{locgovCode}, #{useYn})
 	</insert>
 
 	<delete id="locgovNoticeDelete" parameterType="Integer" >
@@ -658,7 +658,7 @@
 			A.subject,
 			A.url,
 			A.category_team,
-			crypto_dec('normal', A.user_name, '', 0) as user_name,
+			A.user_name as user_name,
 			A.password,
 			A.email,
 			A.content,

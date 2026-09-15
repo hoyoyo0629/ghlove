@@ -4,6 +4,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="page" 	tagdir="/WEB-INF/tags/page"%>
 <%@ taglib prefix="op" 		uri="/WEB-INF/tlds/functions" %>
+<%-- LOCAL DEV ONLY: the login auth-code email never arrives locally, and the server already
+     fixes the code to "250324" for localhost logins. Exposed to JS below so the login can
+     auto-continue past the "check your email" step. Must be EL, not a scriptlet: the script
+     lives inside <page:javascript>, whose body-content is scriptless. --%>
+<c:set var="isLocalDev" value="${pageContext.request.serverName eq 'localhost'}" />
 <style type="text/css">
 	.disabled-div {
 		pointer-events: none;		/* 마우스 이벤트 비활성화 */
@@ -333,6 +338,9 @@
 	 *	함 수 명 : idLogin
 	 *	기	능  : 아이디 로그인 실행
 	 */
+	// LOCAL DEV ONLY: see isLocalDev above.
+	var IS_LOCAL_DEV = ${isLocalDev};
+
 	function idLogin() {
 		if(!Common.login()){
 			alert('시스템 점검중입니다.');
@@ -725,8 +733,24 @@
 					// email 입력 란, focus in
 					$('#op_email').focus();
 				}else if(response.data == 'FAIL') {
+					// LOCAL DEV ONLY: unlike the opmanager handler, the seller handler returns FAIL
+					// when the EMS mail send fails - which it always does locally. The fixed code
+					// "250324" is already stored before the send, so carry on and log in anyway.
+					if (IS_LOCAL_DEV) {
+						$('#op_auth_num').val('250324');
+						authCheck();
+						return;
+					}
 
 				}else if(response.data.startsWith('SUCC')){
+					// LOCAL DEV ONLY: no mail gateway locally, so the auth-code email never
+					// arrives. The server already fixes the code to "250324" for localhost
+					// logins, so skip the "check your email" step entirely and log straight in.
+					if (IS_LOCAL_DEV) {
+						$('#op_auth_num').val('250324');
+						authCheck();
+						return;
+					}
 
 					//idLoginResult(response.data);		// AS-IS 로그인 성공 후 main 페이지 이동
 					// 이메일로 발송된 인증번호를 입력하는 UI 보이기

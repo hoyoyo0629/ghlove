@@ -14,6 +14,8 @@ var $s = (Saleson = {
     domain: SERVER_POSITION,
     isUseNetFunnel: IS_USE_NET_FUNNEL,
     isUseOnepass: IS_USE_ONEPASS,
+    // 설정에 없으면 무조건 false — 운영 빌드에 우회가 켜지는 일이 없도록.
+    isSkipExternalAuth: typeof IS_SKIP_EXTERNAL_AUTH !== "undefined" && IS_SKIP_EXTERNAL_AUTH === true,
     ozDomain: OZ_DOMAIN,
 
     // SNS
@@ -4627,6 +4629,58 @@ $s.api = {
           $s.api.handleApiExeption(error, failureHandler);
         //}
       });
+  },
+  // 외부 인증망(SCI 휴대폰 / 금융인증서)이 없는 환경에서 본인인증을 통과시키는 우회.
+  // 실제 인증 팝업이 window.postMessage 로 돌려주는 것과 같은 형태의 결과를 흘려보내서
+  // 이후 단계(checkMobileAuth -> 정보입력 등)는 실제 흐름 그대로 타게 한다.
+  //
+  // options.fresh = true  : 새 CI 발급 (회원가입 — CI 가 겹치면 기가입자로 튕겨냄)
+  //           그 외        : 직전에 발급한 CI 재사용 (정보수정/아이디찾기 등 재인증 —
+  //                          같은 브라우저에서 가입한 계정과 CI 가 맞아야 본인으로 인식됨)
+  skipExternalAuth: function (methodName, options) {
+    var STORAGE_KEY = "localTestMberCi";
+    var fresh = !!(options && options.fresh);
+
+    var pad = function (prefix, uniq, length) {
+      var value = prefix + uniq;
+      while (value.length < length) {
+        value += "0";
+      }
+      return value.substring(0, length);
+    };
+
+    var uniq = null;
+    if (!fresh) {
+      try {
+        uniq = localStorage.getItem(STORAGE_KEY);
+      } catch (e) {}
+    }
+    if (!uniq) {
+      uniq = String(Date.now());
+      try {
+        localStorage.setItem(STORAGE_KEY, uniq);
+      } catch (e) {}
+    }
+
+    var payload = {
+      userName: "테스트회원",
+      birthday: "19900101",
+      gender: "M",
+      cellNo: "01012345678",
+      mberCi: pad("LOCALTESTCI", uniq, 88),
+      mberDi: pad("LOCALTESTDI", uniq, 64),
+    };
+
+    alert(
+      "[로컬 인증 우회] " + methodName + "\n\n" +
+        "외부 인증 연동 없이 아래 정보로 인증 성공 처리합니다.\n\n" +
+        "이름: " + payload.userName + "\n" +
+        "생년월일: " + payload.birthday + "\n" +
+        "휴대폰: " + payload.cellNo + "\n" +
+        "CI: " + payload.mberCi.substring(0, 22) + "..."
+    );
+
+    window.postMessage(payload, "*");
   },
   mobileAuth: function (callback, failureHandler) {
     $s.axios

@@ -8,7 +8,7 @@
 			<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
 				<choose>
 					<when test="srchKey == 'LOGIN_ID'">
-						AND U.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+						AND U.LOGIN_ID = #{srchValue}
 					</when>
 					<when test="srchKey == 'USER_NAME'">
 						AND US.USER_NAME = #{srchValue}
@@ -46,10 +46,10 @@
 		SELECT
 				A.USER_ID
 				,CASE WHEN IFNULL(A.LOGIN_DATE, '') != '' THEN DATE_FORMAT(A.LOGIN_DATE,'%Y-%m-%d') ELSE '' END AS LOGIN_DATE
-				,crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID
-				,crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME
-				,crypto_dec('normal', A.ADDRESS, '', 0) AS ADDRESS
-				,crypto_dec('normal', A.ADDRESS_DETAIL, '', 0) AS ADDRESS_DETAIL
+				,A.LOGIN_ID AS LOGIN_ID
+				,A.USER_NAME AS USER_NAME
+				,A.ADDRESS AS ADDRESS
+				,A.ADDRESS_DETAIL AS ADDRESS_DETAIL
 				,(SELECT SUM(CNTR_AMT) FROM G_CNTR WHERE USER_ID = A.USER_ID AND STTEMNT_PAY_DE IS NOT NULL AND DELETE_AT = 'N' AND CNTR_STTUS_CODE = '200') AS TOTAL_CNTR_AMT
 				,(SELECT SUM(CNTR_BLCE_POINT) FROM G_CNTR WHERE USER_ID = A.USER_ID AND STTEMNT_PAY_DE IS NOT NULL AND DELETE_AT = 'N' AND CNTR_STTUS_CODE = '200') AS TOTAL_CNTR_BLCE_POINT
 		FROM (

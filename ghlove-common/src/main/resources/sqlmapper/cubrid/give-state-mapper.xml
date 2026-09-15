@@ -180,7 +180,7 @@
 	    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
 	    </if>
 	    <if test="shUserName != null and shUserName != ''">
-        AND OU.USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+        AND OU.USER_NAME = #{shUserName}
         </if>
 	</select>
 
@@ -222,7 +222,7 @@
 		    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
 		    </if>
 		    <if test="shUserName != null and shUserName != ''">
-	        AND OU.USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+	        AND OU.USER_NAME = #{shUserName}
 	        </if>
         )
 	</select>
@@ -235,8 +235,8 @@
 					A.CNTR_SN
 		    	, 	A.CNTR_DE
 		        , 	A.STTEMNT_PAY_DE
-		        , 	crypto_dec('normal', A.USER_NAME, '', 0) USER_NAME
-		        , 	crypto_dec('normal', A.LOGIN_ID, '', 0) LOGIN_ID
+		        , 	A.USER_NAME USER_NAME
+		        , 	A.LOGIN_ID LOGIN_ID
 		        , 	A.CNTR_AMT
 		        , 	A.CNTR_POINT
 		        , 	A.CNTR_PATH_CODE
@@ -300,7 +300,7 @@
 				    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
 				    </if>
 		            <if test="shUserName != null and shUserName != ''">
-		            	AND USER_NAME = crypto_enc('normal', #{shUserName},'')
+		            	AND USER_NAME = #{shUserName}
 		            </if>
 			) A
             ORDER BY A.CNTR_DE DESC, A.frst_regist_pnttm DESC
@@ -352,10 +352,10 @@
             <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
  			<choose>
 				<when test='shKeyword == "USER_NAME"'>
-					AND USER_NAME = (SELECT crypto_enc('normal', #{shText},''))
+					AND USER_NAME = #{shText}
 				</when>
 				<when test='shKeyword == "LOGIN_ID"'>
-					AND OU.LOGIN_ID = (SELECT crypto_enc('normal', #{shText},''))
+					AND OU.LOGIN_ID = #{shText}
 				</when>
 				<when test='shKeyword == "ELCTRN_PAY_NO"'>
 					AND GC.elctrn_pay_no = #{shText}
@@ -379,9 +379,9 @@
 		, IFNULL((SELECT LABEL FROM OP_COMMON_CODE WHERE CODE_TYPE = 'NTS_CODE' AND ID = A.NTS_CODE), '') AS NTS_STTUS_MSSAGE
 		,(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=A.psitn_locgov_code) as psitn_locgov_code
 		,(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=A.cntr_locgov_code) as cntr_locgov_code
-		, (crypto_dec('normal', A.user_name, '', 0)) user_name
-		, (crypto_dec('normal', A.login_id, '', 0)) login_id
-		, (crypto_dec('normal', rcepter_nm, '', 0)) rcepter_nm
+		, (A.user_name) user_name
+		, (A.login_id) login_id
+		, (rcepter_nm) rcepter_nm
 		,(select label from op_common_code where id = cntr_path_code and code_type = 'CNTR_PATH' and use_yn = 'Y') as cntr_path_code
 		,(select label from op_common_code where id = cntr_sttus_code and code_type = 'CNTR_STTUS' and use_yn = 'Y') as cntr_sttus_code
 		,(select detail from op_common_code where id = rtnpsnt_reqst_code and code_type = 'RTNPSNT_REQST' and use_yn = 'Y') as rtnpsnt_reqst_code
@@ -432,7 +432,7 @@
 		    AND CNTR_PATH_CODE IN ('200', '300') <!-- 200:오프라인(농협), 300:오프라인(복지센터) -->
 		    </if>
             <if test="shUserName != null and shUserName != ''">
-            AND USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+            AND USER_NAME = #{shUserName}
             </if>
             <if test="shDeleteAt != null and shDeleteAt != ''">
             AND delete_at = #{shDeleteAt}
@@ -440,10 +440,10 @@
             <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
  			<choose>
 				<when test='shKeyword == "USER_NAME"'>
-					AND USER_NAME = (SELECT crypto_enc('normal', #{shText},''))
+					AND USER_NAME = #{shText}
 				</when>
 				<when test='shKeyword == "LOGIN_ID"'>
-					AND OU.LOGIN_ID = (SELECT crypto_enc('normal', #{shText},''))
+					AND OU.LOGIN_ID = #{shText}
 				</when>
 				<when test='shKeyword == "ELCTRN_PAY_NO"'>
 					AND GC.elctrn_pay_no = #{shText}
@@ -517,10 +517,10 @@
             AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
             </if>
             <if test="shUserName != null and shUserName != ''">
-            AND USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+            AND USER_NAME = #{shUserName}
             </if>
             <if test="shLoginId != null and shLoginId != ''">
-            AND OU.login_id = (SELECT crypto_enc('normal', #{shLoginId},''))
+            AND OU.login_id = #{shLoginId}
             </if>
             <if test="shLocgovCode != null and shLocgovCode != ''">
             AND CNTR_LOCGOV_CODE = #{shLocgovCode}
@@ -554,8 +554,8 @@
 	    			A.cntr_sn
 				, 	A.cntr_de
 				, 	A.user_id
-				, 	crypto_dec('normal', A.USER_NAME, '', 0) USER_NAME
-		        , 	crypto_dec('normal', A.LOGIN_ID, '', 0) LOGIN_ID
+				, 	A.USER_NAME USER_NAME
+		        , 	A.LOGIN_ID LOGIN_ID
 				, 	A.psitn_locgov_code
 				, 	A.cntr_locgov_code
 				,	(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=A.psitn_locgov_code) as psitn_locgov_code_name
@@ -576,7 +576,7 @@
 				, 	A.rcept_bank_code
 				, 	(SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = A.RCEPT_BANK_CODE AND CODE_TYPE = 'OFF_BANK_LIST' AND USE_YN = 'Y') AS RCEPT_BANK_CODE_NM
 				, 	A.rcept_bank_nm
-				, 	crypto_dec('normal', A.rcepter_nm, '', 0) rcepter_nm
+				, 	A.rcepter_nm rcepter_nm
 				, 	A.rtnpsnt_reqst_code
 				, 	A.rtnpsnt_reqst_at
 				, 	A.info_agre_at
@@ -631,10 +631,10 @@
 		            	AND CNTR_DE BETWEEN #{shCntrDeStart} AND #{shCntrDeEnd}
 		            </if>
 		            <if test="shUserName != null and shUserName != ''">
-		            	AND USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+		            	AND USER_NAME = #{shUserName}
 		            </if>
 		            <if test="shLoginId != null and shLoginId != ''">
-		            	AND OU.login_id = (SELECT crypto_enc('normal', #{shLoginId},''))
+		            	AND OU.login_id = #{shLoginId}
 		            </if>
 		            <if test="shLocgovCode != null and shLocgovCode != ''">
 		            	AND CNTR_LOCGOV_CODE = #{shLocgovCode}
@@ -673,8 +673,8 @@
 				, 	a.point_use_de
 				, 	a.cntr_use_point
 				, 	a.user_id
-				, 	crypto_dec('normal', a.USER_NAME, '', 0) USER_NAME
-		        , 	crypto_dec('normal', a.LOGIN_ID, '', 0) LOGIN_ID
+				, 	a.USER_NAME USER_NAME
+		        , 	a.LOGIN_ID LOGIN_ID
 				, 	a.psitn_locgov_code
 				, 	a.cntr_locgov_code
 				,	(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code=a.psitn_locgov_code) as psitn_locgov_code_name
@@ -721,8 +721,8 @@
 		SELECT
 				a.cntr_sn
 			, 	a.user_id
-			, 	crypto_dec('normal', a.USER_NAME, '', 0) USER_NAME
-			, 	crypto_dec('normal', a.LOGIN_ID, '', 0) LOGIN_ID
+			, 	a.USER_NAME USER_NAME
+			, 	a.LOGIN_ID LOGIN_ID
 			, 	a.elctrn_pay_no
 			, 	a.sttemnt_pay_de
 			, 	a.cntr_de
@@ -862,8 +862,8 @@
  		/* saleson.shop.give.givestate.GiveStateMapper.getGiveReqmngList */
  		SELECT
 				a.REQ_ID
-			,	crypto_dec('normal',a.LOGIN_ID, '', 0) LOGIN_ID
-			,	crypto_dec('normal',a.USER_NAME, '', 0) USER_NAME
+			,	a.LOGIN_ID LOGIN_ID
+			,	a.USER_NAME USER_NAME
 			,	(SELECT USER_ID from op_user  where LOGIN_ID = a.LOGIN_ID) AS USER_ID
 			,	a.LOCGOV_CODE
 			,	(select concat(upper_locgov_nm, ' ', locgov_nm) from g_locgov where locgov_code = a.LOCGOV_CODE) as LOCGOV_CODE_NAME
@@ -872,9 +872,9 @@
 			,	a.CNTR_REQMNG_CODE
 			,	(select label from op_common_code where id = a.CNTR_REQMNG_CODE and code_type = 'CNTR_REQMNG' and use_yn = 'Y') as CNTR_REQMNG_CODE_NAME
 			,	a.DISCRIPTION
-			,	(SELECT crypto_dec('normal',LOGIN_ID, '', 0) FROM op_manager WHERE USER_ID = a.FRST_REGISTER_ID) AS FRST_REGISTER_ID
+			,	(SELECT LOGIN_ID FROM op_manager WHERE USER_ID = a.FRST_REGISTER_ID) AS FRST_REGISTER_ID
 			,	a.FRST_REGIST_PNTTM
-			,	(SELECT crypto_dec('normal',LOGIN_ID, '', 0) FROM op_manager WHERE USER_ID = a.LAST_UPDUSR_ID) AS LAST_UPDUSR_ID
+			,	(SELECT LOGIN_ID FROM op_manager WHERE USER_ID = a.LAST_UPDUSR_ID) AS LAST_UPDUSR_ID
 			,	a.LAST_UPDT_PNTTM
 			,	a.APPR_DT
 			,	a.CANCLE_DT
@@ -944,8 +944,8 @@
 			RELATED_DOC_DE
 			)VALUES(
 				#{reqId},
-				crypto_enc('normal', #{loginId}, ''),
-				crypto_enc('normal',#{userName},''),
+				#{loginId},
+				#{userName},
 				#{locgovCode},
 				#{sttemntPayDe},
 				#{cntrAmt},
@@ -990,12 +990,12 @@
 		/* saleson.shop.give.givestate.GiveStateMapper.giveReqmngSmsUserInfo */
  		SELECT
  				a.USER_ID
-			,	CRYPTO_DEC('normal', a.USER_NAME, '', 0) AS USER_NAME
+			,	a.USER_NAME AS USER_NAME
 			,	a.LOCGOV_NM
 			,	a.MBER_CI
 			,	a.CNTR_AMT
 			,	a.RECEIVE_SMS
-			,	REPLACE (CRYPTO_DEC('normal',a.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+			,	REPLACE (a.PHONE_NUMBER,'-','') AS PHONE_NUMBER
  		FROM
  		(
  			SELECT
@@ -1018,12 +1018,12 @@
  		/* saleson.shop.give.givestate.GiveStateMapper.giveReqmngSmsUserInfoByReqId */
  		SELECT
  				a.USER_ID
-			,	CRYPTO_DEC('normal', a.USER_NAME, '', 0) AS USER_NAME
+			,	a.USER_NAME AS USER_NAME
 			,	a.LOCGOV_NM
 			,	a.MBER_CI
 			,	a.CNTR_AMT
 			,	a.RECEIVE_SMS
-			,	REPLACE (CRYPTO_DEC('normal',a.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+			,	REPLACE (a.PHONE_NUMBER,'-','') AS PHONE_NUMBER
 		FROM
 		(
 			SELECT

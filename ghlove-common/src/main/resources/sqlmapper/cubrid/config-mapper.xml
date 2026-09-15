@@ -116,17 +116,17 @@
 			BOSS_NAME,
 			CATEGORY_TYPE,
 			BUSINESS_TYPE,
-			<!-- CRYPTO_DEC('normal', TEL_NUMBER, '', 0) AS  --> TEL_NUMBER,
-			<!-- CRYPTO_DEC('normal', FAX_NUMBER, '', 0) AS --> FAX_NUMBER,
-			<!-- CRYPTO_DEC('normal', TEL_NUMBER, '', 0) AS --> TEL_NUMBER,
-			<!-- CRYPTO_DEC('normal', FAX_NUMBER, '', 0) AS --> FAX_NUMBER,
-			<!-- CRYPTO_DEC('normal', POST, '', 0) AS POST, -->
+			<!-- TEL_NUMBER AS  --> TEL_NUMBER,
+			<!-- FAX_NUMBER AS --> FAX_NUMBER,
+			<!-- TEL_NUMBER AS --> TEL_NUMBER,
+			<!-- FAX_NUMBER AS --> FAX_NUMBER,
+			<!-- POST AS POST, -->
 			POST,
 			DODOBUHYUN,
-			<!-- CRYPTO_DEC('normal', ADDRESS, '', 0) AS --> ADDRESS,
-			<!-- CRYPTO_DEC('normal', ADDRESS_DETAIL, '', 0) AS --> ADDRESS_DETAIL,
-			<!-- CRYPTO_DEC('normal', USERNAME, '', 0) AS --> USERNAME,
-			<!-- CRYPTO_DEC('normal', EMAIL, '', 0) AS --> EMAIL,
+			<!-- ADDRESS AS --> ADDRESS,
+			<!-- ADDRESS_DETAIL AS --> ADDRESS_DETAIL,
+			<!-- USERNAME AS --> USERNAME,
+			<!-- EMAIL AS --> EMAIL,
 			COMPANY_NUMBER,
 			MAIL_ORDER_NUMBER,
 			SOURCE_OPEN,
@@ -135,13 +135,13 @@
 			DENIED_ID,
 			PAYMENT_ID,
 			PAYMENT_CARD,
-			<!-- CRYPTO_DEC('normal', PAYMENT_BANK, '', 0) AS --> PAYMENT_BANK,
-			<!-- CRYPTO_DEC('normal', PAYMENT_VBANK, '', 0) AS --> PAYMENT_VBANK,
+			<!-- PAYMENT_BANK AS --> PAYMENT_BANK,
+			<!-- PAYMENT_VBANK AS --> PAYMENT_VBANK,
 			PAYMENT_ESCROW,
 			PAYMENT_CONV,
 			PAYMENT_DLV,
 			PAYMENT_REALTIME,
-			<!-- CRYPTO_DEC('normal', PAYMENT_HP, '', 0) AS --> PAYMENT_HP,
+			<!-- PAYMENT_HP AS --> PAYMENT_HP,
 			MINIMUM_PAYMENT_AMOUNT,
 			PAYMENT_CONV_LIMIT,
 			CREATED_DATE,
@@ -151,10 +151,10 @@
 			DELIVERY_INFO,
 			TAG_OVERTURE,
 			TAG_ADWORDS,
-			<!-- CRYPTO_DEC('normal', COUNSEL_TEL_NUMBER, '', 0) AS --> COUNSEL_TEL_NUMBER,
-			<!-- CRYPTO_DEC('normal', ADMIN_TEL_NUMBER, '', 0) AS --> ADMIN_TEL_NUMBER,
-			<!-- CRYPTO_DEC('normal', ADMIN_NAME, '', 0) AS --> ADMIN_NAME,
-			<!-- CRYPTO_DEC('normal', ADMIN_EMAIL, '', 0) AS --> ADMIN_EMAIL,
+			<!-- COUNSEL_TEL_NUMBER AS --> COUNSEL_TEL_NUMBER,
+			<!-- ADMIN_TEL_NUMBER AS --> ADMIN_TEL_NUMBER,
+			<!-- ADMIN_NAME AS --> ADMIN_NAME,
+			<!-- ADMIN_EMAIL AS --> ADMIN_EMAIL,
 			SEO_TITLE,
 			SEO_KEYWORDS,
 			SEO_DESCRIPTION,
@@ -257,32 +257,32 @@
 				DODOBUHYUN = #{dodobuhyun} ,
 			</if>
 			<if test="post != null and post !=''">
-				<!-- POST = crypto_enc('normal', #{post}, '') , -->
+				<!-- POST = #{post} , -->
 				POST = #{post},
 			</if>
 			<if test="address != null and address !=''">
-				ADDRESS = <!-- CRYPTO_ENC('normal', #{address}, '') , --> #{address},
+				ADDRESS = <!-- #{address} , --> #{address},
 			</if>
 			<if test="addressDetail != null">
-				ADDRESS_DETAIL = <!-- CRYPTO_ENC('normal', #{addressDetail}, '') , --> #{addressDetail},
+				ADDRESS_DETAIL = <!-- #{addressDetail} , --> #{addressDetail},
 			</if>
 			<if test="telNumber != null">
-				TEL_NUMBER = <!-- CRYPTO_ENC('normal', #{telNumber}, '') , --> #{telNumber},
+				TEL_NUMBER = <!-- #{telNumber} , --> #{telNumber},
 			</if>
 			<if test="faxNumber != null">
-				FAX_NUMBER = <!-- CRYPTO_ENC('normal', #{faxNumber}, '') , --> #{faxNumber},
+				FAX_NUMBER = <!-- #{faxNumber} , --> #{faxNumber},
 			</if>
 			<if test="counselTelNumber != null">
-				COUNSEL_TEL_NUMBER = <!-- CRYPTO_ENC('normal', #{counselTelNumber}, '') , --> #{counselTelNumber},
+				COUNSEL_TEL_NUMBER = <!-- #{counselTelNumber} , --> #{counselTelNumber},
 			</if>
 			<if test="adminTelNumber != null">
-				ADMIN_TEL_NUMBER = <!-- CRYPTO_ENC('normal', #{adminTelNumber}, '') , --> #{adminTelNumber},
+				ADMIN_TEL_NUMBER = <!-- #{adminTelNumber} , --> #{adminTelNumber},
 			</if>
 			<if test="adminName != null">
-				ADMIN_NAME = <!-- CRYPTO_ENC('normal', #{adminName}, '') , --> #{adminName},
+				ADMIN_NAME = <!-- #{adminName} , --> #{adminName},
 			</if>
 			<if test="adminEmail != null">
-				ADMIN_EMAIL = <!-- CRYPTO_ENC('normal', #{adminEmail}, '') , --> #{adminEmail},
+				ADMIN_EMAIL = <!-- #{adminEmail} , --> #{adminEmail},
 			</if>
 
 			<if test="seoTitle != null and seoTitle != ''">
@@ -314,7 +314,7 @@
 				SOURCE_FLAG = #{sourceFlag},
 			</if>
 			<if test="email != null">
-				EMAIL = CRYPTO_ENC('normal', #{email}, ''),
+				EMAIL = #{email},
 			</if>
 			<if test="banWord != null">
 				BAN_WORD = #{banWord},
@@ -380,11 +380,11 @@
 		UPDATE OP_CONFIG SET
 			PAYMENT_ID = #{paymentId} ,
 			PAYMENT_CARD = #{paymentCard} ,
-			PAYMENT_BANK = <!-- crypto_enc('normal', #{paymentBank}, '') , --> #{paymentBank},
-			PAYMENT_VBANK = <!-- crypto_enc('normal', #{paymentVbank}, '') , --> #{paymentVbank},
+			PAYMENT_BANK = <!-- #{paymentBank} , --> #{paymentBank},
+			PAYMENT_VBANK = <!-- #{paymentVbank} , --> #{paymentVbank},
 			PAYMENT_ESCROW = #{paymentEscrow},
 			PAYMENT_DLV = #{paymentDlv} ,
-			PAYMENT_HP = <!-- crypto_enc('normal', #{paymentHp}, '') , -->  #{paymentHp},
+			PAYMENT_HP = <!-- #{paymentHp} , -->  #{paymentHp},
 			PAYMENT_REALTIME = #{paymentRealtime} ,
 			MINIMUM_PAYMENT_AMOUNT = #{minimumPaymentAmount},
 			CONFIRM_PURCHASE_REQUEST_DATE = #{confirmPurchaseRequestDate},

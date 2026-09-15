@@ -1,0 +1,326 @@
+
+Time: 09/08/26 10:28:43.550 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\connection\wintcp.c, line 205 ERROR CODE = -616, Tran = -1, EID = 1
+Cannot determine machine name using Winsock interface. Winsock error: 11001.
+
+Time: 09/08/26 10:28:43.550 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\connection\connection_cl.c, line 756 ERROR CODE = -353, Tran = -1, EID = 2
+Cannot make connection to master server on host "localhost:33000".
+
+Time: 09/08/26 10:28:43.550 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1785 ERROR CODE = -677, Tran = -1, EID = 3
+Failed to connect to database server, 'ghlove2', on the following host(s): localhost:33000
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:29:15.789 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 2472) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:42:08.731 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 35504) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+Time: 09/08/26 10:42:08.750 - ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\query\execute_statement.c, line 13025 ERROR CODE = -225, Tran = 2, EID = 2
+Missing value for attribute "allow_ip_id" with the NOT NULL constraint.
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:42:08.810 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 28540) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:42:22.730 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 12800) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+Time: 09/08/26 10:42:22.753 - ERROR *** file Unknown from server, line -1 ERROR CODE = -427, Tran = 2, EID = 2
+Data overflow on data type "character varying".
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:42:22.813 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 32836) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:42:34.397 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 31996) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:42:50.850 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 19656) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:42:50.970 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 5452) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:45:55.973 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 17936) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:46:01.735 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 16180) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:46:01.829 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 21632) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:47:01.797 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 24896) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:50:22.756 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 20648) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:50:22.850 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 36720) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:50:34.774 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 41848) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:51:56.609 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 41208) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:51:56.696 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 24440) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:52:02.995 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 30232) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:52:37.215 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 32364) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+Time: 09/08/26 10:52:37.238 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 2
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('PHONE', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.240 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 3
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('PHONE', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.241 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 4
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('PHONE', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.242 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 5
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('PHONE', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.242 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 6
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('PHONE', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.243 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 7
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('PHONE', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.243 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 8
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('EMAIL', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.244 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 9
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('EMAIL', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.244 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 10
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('EMAIL', 'ko', ...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.245 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 11
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('WDR', 'ko', '1...'
+Syntax error: unexpected 'LANGUAGE'
+
+Time: 09/08/26 10:52:37.245 - SYNTAX ERROR *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\compat\db_vdb.c, line 942 ERROR CODE = -492, Tran = 5, EID = 12
+In line 1, column 40 before ', ID, LABEL, DETAIL, ORDERING, USE_YN) VALUES ('WDR', 'ko', '2...'
+Syntax error: unexpected 'LANGUAGE'
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:53:01.471 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 22048) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:53:01.708 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 28524) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:59:05.525 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 38572) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:59:05.631 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 9360) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:59:13.952 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 32136) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:59:25.907 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 19916) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 10:59:26.069 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 40804) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:00:40.998 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 10352) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:00:52.258 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 2460) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:00:52.351 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 31372) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:00:59.675 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 24432) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:00:59.769 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 3064) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:01:11.591 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 25576) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:01:11.699 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 34376) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:04:50.619 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 9172) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:05:04.910 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 33836) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:05:15.418 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 27300) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:05:15.495 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 26376) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:05:28.531 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 22664) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:05:28.620 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 27084) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:05:36.393 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 36684) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:05:36.506 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 29644) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:12:24.155 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 11868) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:12:24.255 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 17684) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+
+
+Time: 09/08/26 11:16:01.111 - NOTIFICATION *** file C:\home\jenkins\workspace\cubrid_release_10.2\src\transaction\boot_cl.c, line 1130  CODE = -971, Tran = -1, EID = 1
+Program 'C:\CUBRID\bin\csql.exe' (pid 23028) connected to database server 'ghlove2' on the host 'localhost' (port 1523).
+
+*** The previous error message is the last one. ***
+

@@ -119,7 +119,13 @@ public class AuthController {
 
 			requestToken = authService.getSmsAuthNumber(user.getLoginId(), user.getPhoneNumber(), true);
 
-			return JsonViewUtils.success(requestToken);
+			// LOCAL DEV ONLY: no SMS gateway locally, so surface the generated code to the screen
+			// instead of a real text message. In a real environment this is always null.
+			java.util.Map<String, Object> data = new java.util.HashMap<>();
+			data.put("requestToken", requestToken);
+			data.put("localDevCode", authService.getLocalDevAuthCode(requestToken));
+
+			return JsonViewUtils.success(data);
 
 		} catch (BusinessException e) {
 			return JsonViewUtils.exception("인증번호 발송에 실패하였습니다.");

@@ -161,7 +161,7 @@
 						AND A.cntr_locgov_code = #{shLocgovCode}
 					</if>
 				    <if test="shUserName != null and shUserName != ''">
-			        	AND B.USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+			        	AND B.USER_NAME = #{shUserName}
 			        </if>
 		      )),0) AS CNTR_USE_POINT
 	    FROM G_CNTR GC, OP_USER OU
@@ -177,7 +177,7 @@
 	    AND year(GC.CNTR_DE) = #{shCntrYear}
 	    </if>
 	    <if test="shUserName != null and shUserName != ''">
-        AND OU.USER_NAME = (SELECT crypto_enc('normal', #{shUserName},''))
+        AND OU.USER_NAME = #{shUserName}
         </if>
 		) A
 	</select>
@@ -196,7 +196,7 @@
             	AND a.cntr_locgov_code = #{shLocgovCode}
             </if>
             <if test="shUserName != null and shUserName != ''">
-            	AND b.user_name = (SELECT crypto_enc('normal', #{shUserName},''))
+            	AND b.user_name = #{shUserName}
             </if>
 	</select>
 
@@ -218,8 +218,8 @@
 			    SELECT
 							a.sttemnt_pay_de
 						,	a.elctrn_pay_no
-						,	crypto_dec('normal', a.login_id, '', 0) AS login_id
-						,	CASE WHEN user_name IS NULL THEN '탈퇴회원' ELSE crypto_dec('normal', a.user_name, '', 0) END AS user_name
+						,	a.login_id AS login_id
+						,	CASE WHEN user_name IS NULL THEN '탈퇴회원' ELSE a.user_name END AS user_name
 						,	a.cntr_amt
 						,	a.cntr_point
 						,	(SELECT IFNULL(sum(cntr_use_point), 0) FROM g_cntr_use_point c WHERE c.cntr_sn = a.cntr_sn AND c.use_se_code ='1') as cntr_use_point 
@@ -244,7 +244,7 @@
 			            	AND a.cntr_locgov_code = #{shLocgovCode}
 			            </if>
 			            <if test="shUserName != null and shUserName != ''">
-			            	AND b.user_name = (SELECT crypto_enc('normal', #{shUserName},''))
+			            	AND b.user_name = #{shUserName}
 			            </if>
 				) a
 			) a

@@ -172,10 +172,10 @@
 		/* saleson.shop.user.UserMapper.getUserByLoginId */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.status_code,
 			A.login_count,
 			A.sleep_mail_send_date,
@@ -304,18 +304,18 @@
 			, A.level_id
 			, A.user_level_expiration_date
 			, A.new_post
-			, crypto_dec('normal', A.post, '', 0) AS post
-			, crypto_dec('normal', A.address, '', 0) AS address
-			, crypto_dec('normal', A.address_detail, '', 0) AS address_detail
+			, A.post AS post
+			, A.address AS address
+			, A.address_detail AS address_detail
 			, A.tel_number
-			, crypto_dec('normal', A.phone_number, '', 0) AS phone_number
+			, A.phone_number AS phone_number
 			, A.fax_number
 			, A.receive_email
 			, A.receive_sms
 			, A.receive_push
 			, A.receive_pbanc
 			, A.receive_kakao
-			, CRYPTO_DEC('normal', A.gender, '', 0) AS gender
+			, A.gender AS gender
 			, A.age
 			, A.point
 			, A.buy_count
@@ -325,7 +325,7 @@
 			, A.site_flag
 			, A.use_flag
 			, A.birthday_type
-			, CRYPTO_DEC('normal', A.birthday, '', 0) AS birthday
+			, A.birthday AS birthday
 			, A.leave_code
 			, A.leave_user_id
 			, A.mber_ci
@@ -448,7 +448,7 @@
 	<insert id="insertChargerManager" parameterType="saleson.shop.offgive.domain.Manager">
 		/* saleson.shop.user.UserMapper.insinsertChargerManagerertManager */
 		INSERT INTO OP_MANAGER (USER_ID, LOGIN_ID, PASSWORD, PHONE_NUMBER, USER_NAME, EMAIL, LOGIN_COUNT, UPDATED_DATE, STATUS_CODE, CREATED_DATE, PASSWORD_EXPIRED_DATE, BANK_CODE, OFCPS_NM, INFO_UPDT_DE, PSITN_NM, EMP_ID)
-		VALUES (#{userId}, crypto_enc('normal',#{loginId},''), #{password}, crypto_enc('normal',#{phoneNumber},''), crypto_enc('normal',#{userName},''), crypto_enc('normal',#{email},''), 0, <include refid="CommonMapper.datetime" />, #{statusCode}, <include refid="CommonMapper.datetime" />, #{passwordExpiredDate}, #{bankCode}, #{ofcpsNm}, <include refid="CommonMapper.date" />, #{psitnNm}, #{empId})
+		VALUES (#{userId}, #{loginId}, #{password}, #{phoneNumber}, #{userName}, #{email}, 0, <include refid="CommonMapper.datetime" />, #{statusCode}, <include refid="CommonMapper.datetime" />, #{passwordExpiredDate}, #{bankCode}, #{ofcpsNm}, <include refid="CommonMapper.date" />, #{psitnNm}, #{empId})
 	</insert>
 
 	<delete id="deleteManagerByUserId" parameterType="long">
@@ -654,7 +654,7 @@
 	<insert id="insertUser" parameterType="com.onlinepowers.framework.security.userdetails.User">
 		/* saleson.shop.user.UserMapper.insertUser */
 		INSERT INTO OP_USER (USER_ID, LOGIN_ID, PASSWORD, USER_NAME, EMAIL, LOGIN_COUNT, LOGIN_DATE, UPDATED_DATE, DENY_DATE, LEAVE_DATE, STATUS_CODE, CREATED_DATE, PASSWORD_EXPIRED_DATE)
-		VALUES (#{userId}, crypto_enc('normal',#{loginId},''), #{password}, crypto_enc('normal',#{userName},''), crypto_enc('normal',#{email},''), 0, #{loginDate}, <include refid="CommonMapper.datetime" />, #{denyDate}, #{leaveDate}, 9, <include refid="CommonMapper.datetime" />, #{passwordExpiredDate})
+		VALUES (#{userId}, #{loginId}, #{password}, #{userName}, #{email}, 0, #{loginDate}, <include refid="CommonMapper.datetime" />, #{denyDate}, #{leaveDate}, 9, <include refid="CommonMapper.datetime" />, #{passwordExpiredDate})
 
 		<!-- <selectKey keyProperty="userId" resultType="Integer" order="AFTER">
 			SELECT MAX(USER_ID) AS userId FROM OP_USER
@@ -664,7 +664,7 @@
 	<insert id="insertUserDetail" parameterType="saleson.shop.user.domain.UserDetail">
 		/* saleson.shop.user.UserMapper.insertUserDetail */
 		INSERT INTO OP_USER_DETAIL (USER_ID, POST, ADDRESS, ADDRESS_DETAIL, TEL_NUMBER, PHONE_NUMBER, FAX_NUMBER, RECEIVE_EMAIL, RECEIVE_PBANC, AGE, GENDER, BUY_COUNT, BUY_PRICE, LEAVE_REASON, SITE_FLAG, LEVEL_ID, USE_FLAG, BIRTHDAY,RECEIVE_SMS, RECEIVE_KAKAO)
-		VALUES (#{userId}, crypto_enc('normal',#{post},''), crypto_enc('normal',#{address},''), crypto_enc('normal',#{addressDetail},''), #{telNumber}, crypto_enc('normal',#{phoneNumber},''), #{faxNumber}, #{receiveEmail}, #{receivePbanc}, #{age}, null, #{buyCount}, #{buyPrice}, #{leaveReason}, #{siteFlag}, #{levelId}, #{useFlag}, crypto_enc('normal',#{birthdayFull},''), #{receiveSms}, #{receiveKakao})
+		VALUES (#{userId}, #{post}, #{address}, #{addressDetail}, #{telNumber}, #{phoneNumber}, #{faxNumber}, #{receiveEmail}, #{receivePbanc}, #{age}, null, #{buyCount}, #{buyPrice}, #{leaveReason}, #{siteFlag}, #{levelId}, #{useFlag}, #{birthdayFull}, #{receiveSms}, #{receiveKakao})
 	</insert>
 
 	<insert id="insertUserBirthday" parameterType="saleson.shop.user.domain.UserDetail">
@@ -765,10 +765,10 @@
 		/* saleson.shop.user.UserMapper.getUserByUserId */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.status_code,
 			A.login_count,
 			A.sleep_mail_send_date,
@@ -792,18 +792,18 @@
 			A.level_id,
 			A.user_level_expiration_date,
 			A.new_post,
-			crypto_dec('normal', A.post, '', 0) post,
-			crypto_dec('normal', A.address, '', 0) address,
-			crypto_dec('normal', A.address_detail, '', 0) address_detail,
+			A.post post,
+			A.address address,
+			A.address_detail address_detail,
 			A.tel_number,
-			crypto_dec('normal', A.phone_number, '', 0) phone_number,
+			A.phone_number phone_number,
 			A.fax_number,
 			A.receive_email,
 			A.receive_sms,
 			A.receive_push,
 			A.receive_pbanc,
 			A.receive_kakao,
-			crypto_dec('normal', A.gender, '', 0) gender,
+			A.gender gender,
 			A.age,
 			A.point,
 			A.buy_count,
@@ -813,7 +813,7 @@
 			A.site_flag,
 			A.use_flag,
 			A.birthday_type,
-			crypto_dec('normal', A.birthday, '', 0) birthday,
+			A.birthday birthday,
 			A.leave_code,
 			A.leave_user_id,
 			A.authority,
@@ -959,7 +959,7 @@
 		/* saleson.shop.user.UserMapper.getUserCountByUserInfo */
 		SELECT count(*)
 		FROM OP_USER
-		WHERE LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+		WHERE LOGIN_ID = #{loginId}
 	</select>
 
 	<select id="getUserCountByManagerId" parameterType="String" resultType="Integer">
@@ -1488,33 +1488,33 @@
 		/* saleson.shop.user.UserMapper.getUserListForSleepTarget */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.user_name,'',0) user_name,
-			crypto_dec('normal', A.email,'',0) email,
+			A.user_name user_name,
+			A.email email,
 			A.new_post,
-			crypto_dec('normal', A.post,'',0) post,
-			crypto_dec('normal', A.address,'',0) address,
-			crypto_dec('normal', A.address_detail,'',0) address_detail,
+			A.post post,
+			A.address address,
+			A.address_detail address_detail,
 			A.tel_number,
-			crypto_dec('normal', A.phone_number,'',0) phone_number,
+			A.phone_number phone_number,
 			A.fax_number,
 			A.birthday_type,
-			crypto_dec('normal', A.birthday,'',0) birthday,
+			A.birthday birthday,
 			A.login_date
 		FROM
 			(
 				SELECT
 					U.user_id,
-					crypto_dec('normal', U.user_name,'',0) user_name,
-					crypto_dec('normal', U.email,'',0) email,
+					U.user_name user_name,
+					U.email email,
 					UD.new_post,
-					crypto_dec('normal', UD.post,'',0) post,
-					crypto_dec('normal', UD.address,'',0) address,
-					crypto_dec('normal', UD.address_detail,'',0) address_detail,
+					UD.post post,
+					UD.address address,
+					UD.address_detail address_detail,
 					UD.tel_number,
-					crypto_dec('normal', UD.phone_number,'',0) phone_number,
+					UD.phone_number phone_number,
 					UD.fax_number,
 					UD.birthday_type,
-					crypto_dec('normal', UD.birthday,'',0) birthday,
+					UD.birthday birthday,
 					IFNULL(U.login_date, U.created_date) login_date
 				FROM
 						OP_USER U
@@ -1553,8 +1553,8 @@
 		/* saleson.shop.user.UserMapper.wakeupUser */
 		UPDATE OP_USER
 		SET
-			USER_NAME = crypto_enc('normal', #{userName},''),
-			EMAIL = crypto_enc('normal', #{email},''),
+			USER_NAME = #{userName},
+			EMAIL = #{email},
 			STATUS_CODE = '9'
 		WHERE
 			USER_ID = #{userId}
@@ -1564,11 +1564,11 @@
 		/* saleson.shop.user.UserMapper.wakeupUserDetail */
 		UPDATE OP_USER_DETAIL
 		SET
-			POST = crypto_enc('normal', #{userDetail.post},''),
-			ADDRESS = crypto_enc('normal', #{userDetail.address},''),
-			ADDRESS_DETAIL = crypto_enc('normal', #{userDetail.addressDetail},''),
-			PHONE_NUMBER = crypto_enc('normal', #{userDetail.phoneNumber},''),
-			BIRTHDAY = crypto_enc('normal', #{userDetail.birthday},'')
+			POST = #{userDetail.post},
+			ADDRESS = #{userDetail.address},
+			ADDRESS_DETAIL = #{userDetail.addressDetail},
+			PHONE_NUMBER = #{userDetail.phoneNumber},
+			BIRTHDAY = #{userDetail.birthday}
 		WHERE
 			USER_ID = #{userId}
 	</update>
@@ -1943,7 +1943,7 @@
 
 	<select id="getCryptoDecByLoginId" parameterType="String" resultType="String">
 		/* saleson.shop.user.UserMapper.getCryptoDecByLoginId */
-		select password from op_user where login_id = (SELECT crypto_enc('normal', #{loginId},''))
+		select password from op_user where login_id = #{loginId}
 	</select>
 
 	<select id="getIntrstLocgovList" parameterType="long" resultType="saleson.shop.user.domain.LocGovInfo">
@@ -1961,14 +1961,14 @@
 			A.locgov_code ,
 			A.upper_locgov_nm,
 		    A.locgov_nm,
-			crypto_dec('normal', A.user_name,'',0) AS user_name,
-			crypto_dec('normal', A.login_id,'',0) AS login_id ,
-			crypto_dec('normal', A.phone_number,'',0) AS phone_number,
-			crypto_dec('normal', A.email,'',0) AS email,
-			crypto_dec('normal', A.post,'',0) AS post,
-			crypto_dec('normal', A.address,'',0) AS address,
-			crypto_dec('normal', A.address_detail,'',0) AS address_detail,
-			crypto_dec('normal', A.birthday,'',0) AS birthday,
+			A.user_name AS user_name,
+			A.login_id AS login_id ,
+			A.phone_number AS phone_number,
+			A.email AS email,
+			A.post AS post,
+			A.address AS address,
+			A.address_detail AS address_detail,
+			A.birthday AS birthday,
 			A.receive_email ,
 			A.receive_sms,
 			A.receive_pbanc,
@@ -2019,10 +2019,10 @@
 		UPDATE OP_USER
 		<set>
 			<if test="email != null and email != ''">
-				EMAIL = crypto_enc('normal', #{email},'') ,
+				EMAIL = #{email} ,
 			</if>
 			<if test="userName != null and userName != ''">
-				USER_NAME = crypto_enc('normal', #{userName},'') ,
+				USER_NAME = #{userName} ,
 			</if>
 			UPDATED_DATE = <include refid="CommonMapper.datetime"/>
 		</set>
@@ -2047,20 +2047,20 @@
 		UPDATE OP_USER_DETAIL
 			<set>
 				<if test="post != null">
-					POST = crypto_enc('normal', #{post},''),
+					POST = #{post},
 				</if>
 				<if test="address != null">
-					ADDRESS = crypto_enc('normal', #{address},''),
+					ADDRESS = #{address},
 				</if>
 				<if test="addressDetail != null">
-					ADDRESS_DETAIL = crypto_enc('normal', #{addressDetail},''),
+					ADDRESS_DETAIL = #{addressDetail},
 				</if>
 				<if test="birthday != null">
-					birthday = crypto_enc('normal', #{birthday},''),
+					birthday = #{birthday},
 				</if>
 
 				<if test="phoneNumber != null">
-					PHONE_NUMBER = crypto_enc('normal', #{phoneNumber},''),
+					PHONE_NUMBER = #{phoneNumber},
 				</if>
 				<if test="receiveEmail != null">
 					RECEIVE_EMAIL = #{receiveEmail},
@@ -2072,7 +2072,7 @@
 					RECEIVE_PBANC = #{receivePbanc},
 				</if>
 				<if test="birthdayFull != null and birthdayFull != ''">
-					BIRTHDAY = crypto_enc('normal', #{birthdayFull},''),
+					BIRTHDAY = #{birthdayFull},
 				</if>
 				<if test="receiveKakao != null and receiveKakao != ''">
 					RECEIVE_KAKAO = #{receiveKakao},
@@ -2094,7 +2094,7 @@
 	<select id="getLoginIdByMobileAuth" parameterType="saleson.shop.user.support.AuthInfo" resultType="String">
 		/* saleson.shop.user.UserMapper.getLoginIdByMobileAuth */
 		SELECT
-			crypto_dec('normal', A.login_id,'',0) login_id
+			A.login_id login_id
 		FROM (
 				SELECT
 					login_id
@@ -2104,10 +2104,10 @@
 					and user_id = #{userId}
 				</if>
 				<if test="userName !=null and userName !=''">
-					and user_name = (SELECT crypto_enc('normal', #{userName},''))
+					and user_name = #{userName}
 				</if>
 				<if test="loginId !=null and loginId !=''">
-					and login_id = (SELECT crypto_enc('normal', #{loginId},''))
+					and login_id = #{loginId}
 				</if>
 			) A
 	</select>
@@ -2116,7 +2116,7 @@
 		/* saleson.shop.user.UserMapper.getUserByNoLoginUser */
 		SELECT
 			A.USER_ID ,
-			crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID,
+			A.LOGIN_ID AS LOGIN_ID,
 			A.PASSWORD
 		FROM
 			(
@@ -2126,13 +2126,13 @@
 					U.PASSWORD
 				FROM OP_USER U
 				WHERE
-				    U.LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+				    U.LOGIN_ID = #{loginId}
 				    AND U.STATUS_CODE = '9'
 					<if test="mberCi !=null and mberCi !=''">
 						AND U.MBER_CI = #{mberCi}
 					</if>
 					<if test="userName !=null and userName !=''">
-						AND U.USER_NAME = (SELECT crypto_enc('normal', #{userName},''))
+						AND U.USER_NAME = #{userName}
 					</if>
 			) A
 	</select>
@@ -2167,10 +2167,10 @@
 	<select id="getUserInfoByCi" parameterType="saleson.shop.user.support.AuthInfo" resultType="saleson.shop.user.domain.UserInfoByCI">
 		/* saleson.shop.user.UserMapper.getUserInfoByCi */
 		SELECT
-			crypto_dec('normal', A.login_id,'',0) AS login_id,
+			A.login_id AS login_id,
 			A.userKeyYN,
 			A.mber_ci,
-			crypto_dec('normal', A.user_name,'',0) user_name
+			A.user_name user_name
 		FROM
 			(
 				SELECT
@@ -2187,10 +2187,10 @@
 					AND a.status_code = '9'
 					AND a.mber_ci = #{mberCi}
 				<if test="loginId != null and loginId != ''">
-					AND a.login_id = (SELECT crypto_enc('normal', #{loginId},''))
+					AND a.login_id = #{loginId}
 				</if>
 				<if test="userName !=null and userName !=''">
-					AND a.user_name = (SELECT crypto_enc('normal', #{userName},''))
+					AND a.user_name = #{userName}
 				</if>
 			) A
 	</select>
@@ -2200,19 +2200,19 @@
 		UPDATE OP_MANAGER
 		SET
 			<if test="email != null and email != ''">
-				email = crypto_enc('normal', #{email},'') ,
+				email = #{email} ,
 			</if>
 			<if test="phoneNumber != null">
-				phone_number = crypto_enc('normal', #{phoneNumber},''),
+				phone_number = #{phoneNumber},
 			</if>
 			updated_date = <include refid="CommonMapper.datetime"/>
-		WHERE login_id = crypto_enc('normal', #{loginId},'')
+		WHERE login_id = #{loginId}
 	</update>
 
 	<update id="modifyMobileAuthDetail" parameterType="saleson.shop.user.support.AuthInfo">
 		/* saleson.shop.user.UserMapper.modifyMobileAuthDetail */
 		UPDATE OP_USER_DETAIL
-		SET birthday = crypto_enc('normal', #{birthday},''),
+		SET birthday = #{birthday},
 			gender = null
 		WHERE USER_ID = #{userId}
 	</update>
@@ -2224,7 +2224,7 @@
 			A.mber_dn,
 			A.mber_ci,
 			A.mber_fin_dn,
-			REPLACE(crypto_dec('normal', IFNULL(A.phone_number, '') , '', 0), '-') AS phone_number
+			REPLACE(IFNULL(A.phone_number, ''), '-') AS phone_number
 		FROM
 			(
 			SELECT
@@ -2239,10 +2239,10 @@
 					OP_USER_DETAIL UD
 				ON 	UD.user_id = U.user_id
 				AND	UD.use_flag = 'Y'
-				AND	UD.birthday = crypto_enc('normal', #{birthday}, '')
+				AND	UD.birthday = #{birthday}
 			WHERE
 					U.status_code IN (9, 4)
-				AND U.login_id = (SELECT crypto_enc('normal', #{loginId}, ''))
+				AND U.login_id = #{loginId}
 			LIMIT 1
 			) A
 	</select>
@@ -2254,8 +2254,8 @@
 			A.mber_dn,
 			A.mber_ci,
 			A.mber_fin_dn,
-			REPLACE(crypto_dec('normal', IFNULL(A.phone_number, '') , '', 0), '-') AS phone_number,
-			REPLACE(crypto_dec('normal', IFNULL(A.tel_number, '') , '', 0), '-') AS tel_number
+			REPLACE(IFNULL(A.phone_number, ''), '-') AS phone_number,
+			REPLACE(IFNULL(A.tel_number, ''), '-') AS tel_number
 		FROM
 			(
 			SELECT
@@ -2271,10 +2271,10 @@
 					OP_MANAGER OM
 				ON 	OM.user_id = U.user_id
 				AND	OM.status_code IN (9, 4)
-				AND	OM.emp_id = crypto_enc('normal', #{offEmpId}, '')
+				AND	OM.emp_id = #{offEmpId}
 			WHERE
 					U.status_code IN (9, 4)
-				AND U.login_id = (SELECT crypto_enc('normal', #{loginId}, ''))
+				AND U.login_id = #{loginId}
 				AND U.USER_ID = UD.USER_ID
 			LIMIT 1
 			) A
@@ -2285,7 +2285,7 @@
 		UPDATE
 				OP_USER
 		SET
-				MBER_DN = crypto_enc('normal', #{mberDn}, ''),
+				MBER_DN = #{mberDn},
 				UPDATED_DATE = <include refid="CommonMapper.datetime" />
 		WHERE
 				USER_ID = #{userId}
@@ -2296,7 +2296,7 @@
 		UPDATE
 				OP_USER
 		SET
-				MBER_FIN_DN = crypto_enc('normal', #{mberFinDn}, ''),
+				MBER_FIN_DN = #{mberFinDn},
 				UPDATED_DATE = <include refid="CommonMapper.datetime" />
 		WHERE
 				USER_ID = #{userId}
@@ -2328,7 +2328,7 @@
 		/* saleson.shop.user.UserMapper.getUserForSignRegister */
 		SELECT
 			A.USER_ID,
-			REPLACE(CRYPTO_DEC('normal', A.PHONE_NUMBER , '', 0),'-') AS PHONE_NUMBER,
+			REPLACE(A.PHONE_NUMBER,'-') AS PHONE_NUMBER,
 			A.MBER_DN
 		FROM
 			(
@@ -2341,9 +2341,9 @@
 				INNER JOIN
 					OP_USER_DETAIL UD ON U.USER_ID = UD.USER_ID
 				WHERE
-				    U.LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+				    U.LOGIN_ID = #{loginId}
 				    AND U.STATUS_CODE = '9'
-					AND UD.BIRTHDAY = (SELECT crypto_enc('normal', #{birthday},''))
+					AND UD.BIRTHDAY = #{birthday}
 			) A
 	</select>
 
@@ -2352,10 +2352,10 @@
 		UPDATE OP_USER
 		SET
 		<if test="mberDn != null and mberDn != ''">
-			mber_dn = crypto_enc('normal', #{mberDn},''),
+			mber_dn = #{mberDn},
 		</if>
 		<if test="mberFinDn != null and mberFinDn != ''">
-			mber_fin_dn = crypto_enc('normal', #{mberFinDn},''),
+			mber_fin_dn = #{mberFinDn},
 		</if>
 		UPDATED_DATE = <include refid="CommonMapper.datetime" />
 		WHERE user_id = #{userId}
@@ -2371,7 +2371,7 @@
 	<select id="checkSignForUser" parameterType="saleson.shop.user.support.SignInfo" resultType="saleson.shop.user.domain.UserInfoBySign">
 		/* saleson.shop.user.UserMapper.checkSignForUser */
 		SELECT
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.userKeyYN
 		FROM
 			(
@@ -2383,16 +2383,16 @@
 				WHERE
 					1 = 1
 				<if test="mberDn != null and mberDn != ''">
-					AND U.mber_dn = (SELECT crypto_enc('normal', #{mberDn},''))
+					AND U.mber_dn = #{mberDn}
 				</if>
 				<if test="mberFinDn != null and mberFinDn != ''">
-					AND U.mber_fin_dn = (SELECT crypto_enc('normal', #{mberFinDn},''))
+					AND U.mber_fin_dn = #{mberFinDn}
 				</if>
 				<if test="loginId != null and loginId != ''">
-					AND U.login_id = (SELECT crypto_enc('normal', #{loginId},''))
+					AND U.login_id = #{loginId}
 				</if>
 				<if test="userName !=null and userName !=''">
-					AND U.user_name = (SELECT crypto_enc('normal', #{userName},''))
+					AND U.user_name = #{userName}
 				</if>
 					AND U.status_code = '9'
 			) A
@@ -2402,7 +2402,7 @@
 		/* saleson.shop.user.UserMapper.getUserBySign */
 		SELECT
 			A.user_id ,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password
 		FROM
 			(
@@ -2413,11 +2413,11 @@
 				FROM
 					OP_USER U
 				WHERE
-					U.login_id = (SELECT crypto_enc('normal', #{loginId},''))
-					AND U.mber_dn = (SELECT crypto_enc('normal', #{mberDn},''))
+					U.login_id = #{loginId}
+					AND U.mber_dn = #{mberDn}
 					AND U.status_code = '9'
 					<if test="userName !=null and userName !=''">
-						AND U.user_name = (SELECT crypto_enc('normal', #{userName},''))
+						AND U.user_name = #{userName}
 					</if>
 			) A
 	</select>
@@ -2426,10 +2426,10 @@
 		/** user-mapper.getUserByMberDn (회원 DN 정보로 회원 정보 조회 - 단건) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.status_code,
 			A.login_count,
 			A.sleep_mail_send_date,
@@ -2481,7 +2481,7 @@
 				FROM
 						OP_USER U
 				WHERE
-						U.mber_dn = (SELECT crypto_enc('normal', #{mberDn}, ''))
+						U.mber_dn = #{mberDn}
 			) A
 	</select>
 
@@ -2489,10 +2489,10 @@
 		/** user-mapper.getUserByMberFinDn (회원 FIN(DN) 정보로 회원 정보 조회 - 단건) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.status_code,
 			A.login_count,
 			A.sleep_mail_send_date,
@@ -2544,7 +2544,7 @@
 				FROM
 						OP_USER U
 				WHERE
-						U.mber_fin_dn = (SELECT crypto_enc('normal', #{mberFinDn}, ''))
+						U.mber_fin_dn = #{mberFinDn}
 			) A
 	</select>
 
@@ -2552,10 +2552,10 @@
 		/** user-mapper.getUserByMberCi (회원 CI 정보로 회원 정보 조회 - 단건) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.status_code,
 			A.login_count,
 			A.sleep_mail_send_date,
@@ -2605,7 +2605,7 @@
 				FROM
 						OP_USER U
 				WHERE
-						U.mber_ci = (SELECT crypto_enc('normal', #{mberCi}, ''))
+						U.mber_ci = #{mberCi}
 			) A
 	</select>
 
@@ -2613,10 +2613,10 @@
 		/** user-mapper.getUserListByMberDn (회원 DN 정보로 회원 정보 조회) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.LOGIN_ID, '', 0) AS login_id,
+			A.LOGIN_ID AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.status_code,
 			A.login_count,
 			A.sleep_mail_send_date,
@@ -2641,10 +2641,10 @@
 			(
 				SELECT
 						U.user_id,
-						crypto_dec('normal', U.LOGIN_ID, '', 0) AS login_id,
+						U.LOGIN_ID AS login_id,
 						U.password,
-						crypto_dec('normal', U.user_name, '', 0) AS user_name,
-						crypto_dec('normal', U.email, '', 0) AS email,
+						U.user_name AS user_name,
+						U.email AS email,
 						U.status_code,
 						U.login_count,
 						U.sleep_mail_send_date,
@@ -2668,7 +2668,7 @@
 				FROM
 						OP_USER U
 				WHERE
-						U.mber_dn = (SELECT crypto_enc('normal', #{mberDn}, ''))
+						U.mber_dn = #{mberDn}
 			) A
 	</select>
 
@@ -2676,10 +2676,10 @@
 		/** user-mapper.getUserListByMberFinDn (회원 FIN(DN)  정보로 회원 정보 조회) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.status_code,
 			A.login_count,
 			A.sleep_mail_send_date,
@@ -2704,10 +2704,10 @@
 			(
 				SELECT
 						U.user_id,
-						crypto_dec('normal', U.login_id, '', 0) AS login_id,
+						U.login_id AS login_id,
 						U.password,
-						crypto_dec('normal', U.user_name, '', 0) AS user_name,
-						crypto_dec('normal', U.email, '', 0) AS email,
+						U.user_name AS user_name,
+						U.email AS email,
 						U.status_code,
 						U.login_count,
 						U.sleep_mail_send_date,
@@ -2731,7 +2731,7 @@
 				FROM
 						OP_USER U
 				WHERE
-						U.mber_fin_dn = (SELECT crypto_enc('normal', #{mberFinDn}, ''))
+						U.mber_fin_dn = #{mberFinDn}
 			) A
 	</select>
 
@@ -2746,9 +2746,9 @@
 		/** user-mapper.getLoginCiInfo (회원 Ci, 이름 정보로 회원 정보 조회) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
+			A.user_name AS user_name,
 			A.mber_ci,
 			A.mber_di,
 			A.mber_dn,
@@ -2772,7 +2772,7 @@
 							AND mber_ci = #{mberCi}
 						</if>
 						<if test="userName != null and userName != ''">
-							AND user_name = (SELECT crypto_enc('normal', #{userName},''))
+							AND user_name = #{userName}
 						</if>
 			) A
 	</select>
@@ -2785,13 +2785,13 @@
 			PASSWORD_TYPE = #{passwordType}
 			, LOGIN_DATE = <include refid="CommonMapper.datetime" />
 		WHERE
-			LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+			LOGIN_ID = #{loginId}
 	</update>
 
 	<select id="getLoginId" parameterType="String" resultType="String">
 		/* saleson.shop.user.UserMapper.getLoginId */
 		SELECT
-			crypto_dec('normal', A.login_id,'',0) AS loginId
+			A.login_id AS loginId
 		FROM
 			(
 				SELECT
@@ -2803,13 +2803,13 @@
 							AND mber_ci = #{mberValue}
 						</if>
 						<if test="mberType == 'DN'">
-							AND mber_dn = (SELECT crypto_enc('normal', #{mberValue}, ''))
+							AND mber_dn = #{mberValue}
 						</if>
 						<if test="mberType == 'FINDN'">
-							AND mber_fin_dn = (SELECT crypto_enc('normal', #{mberValue}, ''))
+							AND mber_fin_dn = #{mberValue}
 						</if>
 						<if test="mberType == 'DI'">
-							AND mber_di = (SELECT crypto_enc('normal', #{mberValue}, ''))
+							AND mber_di = #{mberValue}
 						</if>
 			) A
 	</select>
@@ -2826,11 +2826,11 @@
 			, CREATED_AT
 		) VALUES (
 			#{userId}
-			, crypto_enc('normal', #{userName}, '')
+			, #{userName}
 			, null
-			, crypto_enc('normal', #{national_info}, '')
-			, crypto_enc('normal', #{dn}, '')
-			, crypto_enc('normal', #{cellNo}, '')
+			, #{national_info}
+			, #{dn}
+			, #{cellNo}
 			, <include refid="CommonMapper.datetime" />
 		)
 	</insert>
@@ -2875,7 +2875,7 @@
 	<select id="getUserBirthday" parameterType="String" resultMap="UserDetailResult">
 		SELECT
 			A.USER_ID,
-			CRYPTO_DEC('normal', A.BIRTHDAY, '', 0) AS BIRTHDAY,
+			A.BIRTHDAY AS BIRTHDAY,
 			(
 				CASE
 					WHEN A.ROLECNT > 0 THEN 'Y'
@@ -2890,7 +2890,7 @@
 				FROM
 					OP_USER OU
 				WHERE
-					OU.LOGIN_ID = CRYPTO_ENC('normal', #{loginId}, '')
+					OU.LOGIN_ID = #{loginId}
 				) A
 	</select>
 
@@ -2904,7 +2904,7 @@
 
 	<select id="getOpUserBirthdayDecListParam" parameterType="string" resultType="hashMap">
 		/* saleson.shop.user.UserMapper.getOpUserBirthdayDecListParam */
-		SELECT A.USER_ID, CRYPTO_DEC('normal',B.BIRTHDAY,'',0) AS BIRTHDAY, NVL(A.CREATED_DATE, '') AS CREATED_DATE
+		SELECT A.USER_ID, B.BIRTHDAY AS BIRTHDAY, NVL(A.CREATED_DATE, '') AS CREATED_DATE
 		FROM OP_USER A
 		INNER JOIN OP_USER_DETAIL B ON A.USER_ID =  B.USER_ID
 		LEFT JOIN OP_USER_BIRTHDAY C ON A.USER_ID = C.USER_ID
@@ -2925,11 +2925,11 @@
 		/** saleson.shop.user.UserMapper.getManagerByLoginId (관리자 조회 - 로그인 아이디 기준) */
 		SELECT
 			A.USER_ID
-			,crypto_dec('normal', LOGIN_ID, '', 0) AS LOGIN_ID
+			,LOGIN_ID AS LOGIN_ID
 			,A.PASSWORD
-			,crypto_dec('normal', USER_NAME, '', 0) AS USER_NAME
-			,crypto_dec('normal', EMAIL, '', 0)  AS EMAIL
-			,crypto_dec('normal', PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+			,USER_NAME AS USER_NAME
+			,EMAIL  AS EMAIL
+			,PHONE_NUMBER AS PHONE_NUMBER
 			,A.STATUS_CODE
 		    ,A.LOGIN_COUNT
 			,A.LOGIN_DATE
@@ -2968,7 +2968,7 @@
 					M.LOCGOV_CODE,
 					M.BANK_CODE
 			FROM OP_MANAGER M
-			WHERE M.LOGIN_ID = (SELECT crypto_enc('normal', #{value}, ''))
+			WHERE M.LOGIN_ID = #{value}
 		) A
 	</select>
 

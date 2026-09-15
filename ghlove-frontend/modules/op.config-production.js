@@ -5,6 +5,7 @@ var OZ_DOMAIN = 'https://ilovegohyang.go.kr';
 var SERVER_POSITION = 'production';
 var IS_USE_NET_FUNNEL = true;
 var IS_USE_ONEPASS = false;
+var IS_SKIP_EXTERNAL_AUTH = false;
 var KAKAO_JAVASCRIPT_KEY = 'dd50d625a46ffbfef8c8b7377dbb4eb3';
 var KAKAO_REDIRECT_URL = VIRTUAL_DOMAIN + '/users/login.html';
 var KAKAO_REDIRECT_URL2 = VIRTUAL_DOMAIN + '/users/join.html';

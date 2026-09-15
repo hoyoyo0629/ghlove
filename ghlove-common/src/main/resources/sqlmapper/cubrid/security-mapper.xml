@@ -3,6 +3,12 @@
     PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
     "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
 
+<!--
+	LOCAL DEV ONLY: crypto_enc/crypto_dec calls below (login_id/user_name/email/phone_number)
+	are temporarily bypassed with plain-text columns because the pdbJava.dll native library
+	that backs those CUBRID Java stored functions is not available in this environment.
+	DO NOT COMMIT/DEPLOY this bypass to any shared or production environment.
+-->
 <mapper namespace="com.onlinepowers.framework.security.mapper.SecurityMapper">
 	<resultMap id="userResultMap" type="com.onlinepowers.framework.security.userdetails.User">
 		<id property="userId" column="USER_ID" />
@@ -44,10 +50,10 @@
 		<![CDATA[
 			SELECT 
 				A.user_id,
-				CRYPTO_DEC('normal', A.login_id, '', 0) AS login_id,
+				A.login_id AS login_id,
 				A.password,
-				crypto_dec('normal', A.user_name, '', 0) AS user_name,
-				crypto_dec('normal', A.email, '', 0) AS email,
+				A.user_name AS user_name,
+				A.email AS email,
 				A.status_code,
 				A.login_count,
 				A.sleep_mail_send_date,
@@ -97,7 +103,7 @@
 					FROM 
 						OP_USER U
 					WHERE 
-						U.login_id = (SELECT crypto_enc('normal', #{loginId},'')) AND U.status_code IN ('9', '4')
+						U.login_id = #{loginId} AND U.status_code IN ('9', '4')
 				) A
 		]]>
 	</select>
@@ -127,11 +133,11 @@
 		<![CDATA[
 			SELECT
 				A.user_id,
-				crypto_dec('normal', A.login_id, '', 0) AS login_id,
+				A.login_id AS login_id,
 				A.password,
-				crypto_dec('normal', A.user_name, '', 0) AS user_name,
-				crypto_dec('normal', A.email, '', 0) AS email,
-				crypto_dec('normal', A.phone_number, '', 0) AS phone_number,
+				A.user_name AS user_name,
+				A.email AS email,
+				A.phone_number AS phone_number,
 				A.status_code,
 				A.login_count,
 				A.login_date,
@@ -172,7 +178,7 @@
 				FROM 
 					OP_MANAGER M
 				WHERE 
-					M.login_id = (SELECT crypto_enc('normal', #{loginId}, '')) AND M.status_code = '9'
+					M.login_id = #{loginId} AND M.status_code = '9'
 				) A
 		]]>
 	</select>
@@ -192,9 +198,9 @@
 				SU.USER_ID,
 				SU.LOGIN_ID,
 				SU.PASSWORD,
-				CRYPTO_DEC('normal', SU.USER_NAME, '', 0) AS USER_NAME,
-				CRYPTO_DEC('normal', SU.EMAIL, '', 0) AS EMAIL,
-				CRYPTO_DEC('normal', SU.PHONE_NUMBER, '', 0) AS PHONE_NUMBER,
+				SU.USER_NAME AS USER_NAME,
+				SU.EMAIL AS EMAIL,
+				SU.PHONE_NUMBER AS PHONE_NUMBER,
 				SU.STATUS_CODE,
 				SU.LOGIN_COUNT,
 				SU.LOGIN_DATE,
@@ -262,14 +268,14 @@
 		UPDATE OP_USER SET
 			LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1,
 			LOGIN_TRY_DATE = <include refid="CommonMapper.datetime" />
-		WHERE LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+		WHERE LOGIN_ID = #{loginId}
 	</update>
 
 	<update id="updateClearLoginFailCountForUser" parameterType="String">
 		UPDATE OP_USER SET
 			LOGIN_FAIL_COUNT = 0,
 			LOGIN_TRY_DATE = <include refid="CommonMapper.datetime" />
-		WHERE LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+		WHERE LOGIN_ID = #{loginId}
 	</update>
 
 	<!--ISMS MANAGER LOCK-->
@@ -277,14 +283,14 @@
 		UPDATE OP_MANAGER SET
 			LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1,
 			LOGIN_TRY_DATE = <include refid="CommonMapper.datetime" />
-		WHERE LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+		WHERE LOGIN_ID = #{loginId}
 	</update>
 
 	<update id="updateClearLoginFailCountForManager" parameterType="String">
 		UPDATE OP_MANAGER SET
 			LOGIN_FAIL_COUNT = 0,
 			LOGIN_TRY_DATE = <include refid="CommonMapper.datetime" />
-		WHERE LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+		WHERE LOGIN_ID = #{loginId}
 	</update>
 
 	<!--ISMS SELLER_USER LOCK-->
@@ -292,13 +298,13 @@
 		UPDATE OP_SELLER_USER SET
 			LOGIN_FAIL_COUNT = LOGIN_FAIL_COUNT + 1,
 			LOGIN_TRY_DATE = <include refid="CommonMapper.datetime" />
-		WHERE LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+		WHERE LOGIN_ID = #{loginId}
 	</update>
 
 	<update id="updateClearLoginFailCountForSellerUser" parameterType="String">
 		UPDATE OP_SELLER_USER SET
 			LOGIN_FAIL_COUNT = 0,
 			LOGIN_TRY_DATE = <include refid="CommonMapper.datetime" />
-		WHERE LOGIN_ID = (SELECT crypto_enc('normal', #{loginId},''))
+		WHERE LOGIN_ID = #{loginId}
 	</update>
 </mapper>

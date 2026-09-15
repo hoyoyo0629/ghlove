@@ -244,7 +244,7 @@
 		SELECT
 			VISIT_DATE AS visitDate,
 			VISIT_TIME AS visitTime,
-			CRYPTO_DEC('normal', REMOTE_ADDR, '', 0) AS remoteAddr,
+			REMOTE_ADDR AS remoteAddr,
 			REFERER AS referer,
 			AGENT AS agent,
 			`DOMAIN` AS domain,
@@ -282,7 +282,7 @@
 	<insert id="insertVisit" parameterType="Visit">
 		/* saleson.shop.stats.StatsMapper.insertVisit */
 		INSERT INTO OP_VISIT (VISIT_DATE, VISIT_TIME, `LANGUAGE`, REMOTE_ADDR, REFERER, AGENT, `DOMAIN`, DOMAIN_NAME, BROWSER, OS, WEEKDAY)
-		VALUES (#{visitDate}, #{visitTime}, 'ko', CRYPTO_ENC('normal', #{remoteAddr}, ''), #{referer}, #{agent}, #{domain}, #{domainName}, #{browser}, #{os}, #{weekday})
+		VALUES (#{visitDate}, #{visitTime}, 'ko', #{remoteAddr}, #{referer}, #{agent}, #{domain}, #{domainName}, #{browser}, #{os}, #{weekday})
 	</insert>
 
 	<insert id="updateVisitCount" parameterType="Visit">

@@ -249,7 +249,7 @@
 		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingDetailListByParam */
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.BUYER_NAME_ENC, '', 0) AS BUYER_NAME
+			, T_A.BUYER_NAME_ENC AS BUYER_NAME
 		FROM (
 			SELECT *
 				, (
@@ -1329,7 +1329,7 @@
 								AND OI.ORDER_CODE = #{query}
 							</when>
 							<when test="where == 'USER_NAME'">
-								AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								AND U.USER_NAME = #{query}
 							</when>
 							<when test="where == 'ITEM_CODE'">
 								AND OI.ITEM_USER_CODE = #{query}
@@ -1421,7 +1421,7 @@
 
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.BUYER_NAME_ENC, '', 0) AS BUYER_NAME
+			, T_A.BUYER_NAME_ENC AS BUYER_NAME
 			FROM (
 				SELECT T.*
 				FROM (
@@ -1501,7 +1501,7 @@
 										AND OI.ORDER_CODE = #{query}
 									</when>
 									<when test="where == 'USER_NAME'">
-										AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+										AND U.USER_NAME = #{query}
 									</when>
 									<when test="where == 'ITEM_CODE'">
 										AND OI.ITEM_USER_CODE = #{query}
@@ -1915,7 +1915,7 @@
 
 							<choose>
 								<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-									AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+									AND S.REPRESENTATIVE_NAME = #{query}
 								</when>
 								<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 									AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -1978,7 +1978,7 @@
 
 						<choose>
 							<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-								AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								AND S.REPRESENTATIVE_NAME = #{query}
 							</when>
 							<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 								AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -2036,7 +2036,7 @@
 
 						<choose>
 							<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-								AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								AND S.REPRESENTATIVE_NAME = #{query}
 							</when>
 							<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 								AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -2146,7 +2146,7 @@
 
 							<choose>
 								<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-									AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+									AND S.REPRESENTATIVE_NAME = #{query}
 								</when>
 								<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 									AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -2212,7 +2212,7 @@
 
 						<choose>
 							<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-								AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								AND S.REPRESENTATIVE_NAME = #{query}
 							</when>
 							<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 								AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -2272,7 +2272,7 @@
 
 						<choose>
 							<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-								AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								AND S.REPRESENTATIVE_NAME = #{query}
 							</when>
 							<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 								AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -3799,7 +3799,7 @@
 			</choose>
 			<choose>
 				<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-					AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+					AND S.REPRESENTATIVE_NAME = #{query}
 				</when>
 				<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 					AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -3875,7 +3875,7 @@
 			</choose>
 			<choose>
 				<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-					AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+					AND S.REPRESENTATIVE_NAME = #{query}
 				</when>
 				<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 					AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -3933,7 +3933,7 @@
 								AND RD.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
 							</when>
 							<when test="where == 'USER_NAME'">
-								AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								AND U.USER_NAME = #{query}
 							</when>
 							<when test="where == 'ITEM_CODE'">
 								AND RD.ITEM_USER_CODE LIKE CONCAT('%', #{query} , '%')
@@ -3962,7 +3962,7 @@
 
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.BUYER_NAME_ENC, '', 0) AS BUYER_NAME
+			, T_A.BUYER_NAME_ENC AS BUYER_NAME
 		FROM (
 			<!-- 배송, 추가금액 테이블 고려하지 않음 -->
 			<include refid="CommonMapper.paginationHeader" />
@@ -4002,7 +4002,7 @@
 									AND RD.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
 								</when>
 								<when test="where == 'USER_NAME'">
-									AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+									AND U.USER_NAME = #{query}
 								</when>
 								<when test="where == 'ITEM_CODE'">
 									AND RD.ITEM_USER_CODE LIKE CONCAT('%', #{query} , '%')
@@ -4124,7 +4124,7 @@
 			</choose>
 			<choose>
 				<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-					AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+					AND S.REPRESENTATIVE_NAME = #{query}
 				</when>
 				<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 					AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -4222,7 +4222,7 @@
 				</choose>
 				<choose>
 					<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-						AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+						AND S.REPRESENTATIVE_NAME = #{query}
 					</when>
 					<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 						AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -4255,7 +4255,7 @@
 		/* saleson.shop.remittance.RemittanceMapper.getRemittanceFinishingDetailListByParamNew */
 		SELECT *
 			, (
-				SELECT CRYPTO_DEC('normal', USER_NAME, '', 0)
+				SELECT USER_NAME
 					FROM (
 						SELECT U.USER_NAME
 						FROM OP_USER U WHERE U.USER_ID = (
@@ -4419,8 +4419,8 @@
 		/* saleson.shop.remittance.RemittanceMapper.getSellerByRemittanceInfo */
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
-			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+			, T_A.MBER_CI_ENC AS MBER_CI
+			, T_A.PHONE_NUMBER_ENC AS PHONE_NUMBER
 		FROM (
 			SELECT
 				S.COMPANY_NAME AS USER_NAME
@@ -4444,8 +4444,8 @@
 		/* saleson.shop.remittance.RemittanceMapper.getRemittanceExpectedMsgSellerList */
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
-			, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+			, T_A.MBER_CI_ENC AS MBER_CI
+			, T_A.PHONE_NUMBER_ENC AS PHONE_NUMBER
 		FROM (
 			SELECT
 				S.COMPANY_NAME AS USER_NAME

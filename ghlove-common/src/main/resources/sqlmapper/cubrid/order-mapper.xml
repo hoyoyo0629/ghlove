@@ -1201,7 +1201,7 @@
 		O.BUYER_NAME,
 		(
 			CASE WHEN O.USER_ID > 0 THEN
-				(SELECT crypto_dec('normal', USER_NAME, '', 0) FROM OP_USER WHERE USER_ID = O.USER_ID)
+				(SELECT USER_NAME FROM OP_USER WHERE USER_ID = O.USER_ID)
 			ELSE
 				''
 			END
@@ -1608,7 +1608,7 @@
 			O.BUYER_NAME,
 			(
 				CASE WHEN O.USER_ID > 0 THEN
-					(SELECT crypto_dec('normal', USER_NAME, '', 0) FROM OP_USER WHERE USER_ID = O.USER_ID)
+					(SELECT USER_NAME FROM OP_USER WHERE USER_ID = O.USER_ID)
 				ELSE
 					''
 				END
@@ -1760,8 +1760,8 @@
 		  		END
 		  	) AS IS_SHIPPING_VIEW,
 			S.SELLER_NAME,
-			CRYPTO_DEC('normal', S.TELEPHONE_NUMBER, '', 0) AS TELEPHONE_NUMBER,
-			CRYPTO_DEC('normal', S.PHONE_NUMBER, '', 0) AS PHONE_NUMBER,
+			S.TELEPHONE_NUMBER AS TELEPHONE_NUMBER,
+			S.PHONE_NUMBER AS PHONE_NUMBER,
 			O.CREATED_DATE AS ORDER_DATE,
 			OSI.CREATED_DATE AS ORDER_INFO_CREATED_DATE,
 			OSI.UPDATED_DATE AS ORDER_INFO_UPDATED_DATE,
@@ -1984,7 +1984,7 @@
 		/* saleson.shop.order.OrderMapper.getOrderByParam */
 	SELECT
 		T_A.*
-		, (SELECT CRYPTO_DEC('normal', T_A.USER_NAME_ENC, '', 0)) AS USER_NAME
+		, (SELECT T_A.USER_NAME_ENC) AS USER_NAME
 	FROM (
 		SELECT
 			(
@@ -2170,7 +2170,7 @@
 		  	) AS IS_SHIPPING_VIEW,
 			S.COMPANY_NAME,
 			S.SELLER_NAME,
-			CRYPTO_DEC('normal', S.TELEPHONE_NUMBER, '', 0) AS TELEPHONE_NUMBER,
+			S.TELEPHONE_NUMBER AS TELEPHONE_NUMBER,
 			OSI.CREATED_DATE AS ORDER_INFO_CREATED_DATE,
 			OSI.UPDATED_DATE AS ORDER_INFO_UPDATED_DATE,
 			<!-- ITEM.MOBILE_ITEM_YN, -->
@@ -2371,12 +2371,12 @@
 
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.USER_NAME_ENC, '', 0) AS USER_NAME
-			, CRYPTO_DEC('normal', T_A.EMAIL_ENC, '', 0) AS EMAIL
-			, CRYPTO_DEC('normal', T_A.MOBILE_ENC, '', 0) AS MOBILE
-			, CRYPTO_DEC('normal', T_A.PHONE_ENC, '', 0) AS PHONE
-			, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-			, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+			, T_A.USER_NAME_ENC AS USER_NAME
+			, T_A.EMAIL_ENC AS EMAIL
+			, T_A.MOBILE_ENC AS MOBILE
+			, T_A.PHONE_ENC AS PHONE
+			, T_A.ADDRESS_ENC AS ADDRESS
+			, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 		FROM (
 			SELECT
 				USER_ID,
@@ -2434,8 +2434,8 @@
 		/* saleson.shop.order.OrderMapper.getOrderPaymentBuyTempList */
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.BANK_VIRTUAL_NO_ENC, '', 0) AS BANK_VIRTUAL_NO
-			, CRYPTO_DEC('normal', T_A.BANK_IN_NAME_ENC, '', 0) AS BANK_IN_NAME
+			, T_A.BANK_VIRTUAL_NO_ENC AS BANK_VIRTUAL_NO
+			, T_A.BANK_IN_NAME_ENC AS BANK_IN_NAME
 		FROM (
 			SELECT
 				ORDER_CODE,
@@ -3193,11 +3193,11 @@
 		/* saleson.shop.order.OrderMapper.getOrderShippingBuyTempList */
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.RECEIVE_NAME_ENC, '', 0) AS RECEIVE_NAME
-			, CRYPTO_DEC('normal', T_A.RECEIVE_MOBILE_ENC, '', 0) AS RECEIVE_MOBILE
-			, CRYPTO_DEC('normal', T_A.RECEIVE_PHONE_ENC, '', 0) AS RECEIVE_PHONE
-			, CRYPTO_DEC('normal', T_A.RECEIVE_ADDRESS_ENC, '', 0) AS RECEIVE_ADDRESS
-			, CRYPTO_DEC('normal', T_A.RECEIVE_ADDRESS_DETAIL_ENC, '', 0) AS RECEIVE_ADDRESS_DETAIL
+			, T_A.RECEIVE_NAME_ENC AS RECEIVE_NAME
+			, T_A.RECEIVE_MOBILE_ENC AS RECEIVE_MOBILE
+			, T_A.RECEIVE_PHONE_ENC AS RECEIVE_PHONE
+			, T_A.RECEIVE_ADDRESS_ENC AS RECEIVE_ADDRESS
+			, T_A.RECEIVE_ADDRESS_DETAIL_ENC AS RECEIVE_ADDRESS_DETAIL
 		FROM (
 			SELECT
 				OSBT.SHIPPING_INDEX,
@@ -3807,11 +3807,11 @@
 			#{receiveSido},
 			#{receiveSigungu},
 			#{receiveEupmyeondong},
-			CRYPTO_ENC('normal', #{receiveAddress}, ''),
-			CRYPTO_ENC('normal', #{receiveAddressDetail}, ''),
-			CRYPTO_ENC('normal', #{receiveName}, ''),
-			CRYPTO_ENC('normal', #{receivePhone}, ''),
-			CRYPTO_ENC('normal', #{receiveMobile}, ''),
+			#{receiveAddress},
+			#{receiveAddressDetail},
+			#{receiveName},
+			#{receivePhone},
+			#{receiveMobile},
 			#{memo},
 			<include refid="CommonMapper.datetime" />
 		)
@@ -4283,22 +4283,22 @@
 			#{userId},
 			#{sessionId},
 			#{orderCode},
-			CRYPTO_ENC('normal', #{buyer.userName}, ''),
-			CRYPTO_ENC('normal', #{buyer.email}, ''),
-			CRYPTO_ENC('normal', #{buyer.mobile}, ''),
-			CRYPTO_ENC('normal', #{buyer.phone}, ''),
-			<!-- CRYPTO_ENC('normal', #{buyer.zipcode}, ''),
-			CRYPTO_ENC('normal', #{buyer.newZipcode}, ''),
-			CRYPTO_ENC('normal', #{buyer.sido}, ''),
-			CRYPTO_ENC('normal', #{buyer.sigungu}, ''),
-			CRYPTO_ENC('normal', #{buyer.eupmyeondong}, ''), -->
+			#{buyer.userName},
+			#{buyer.email},
+			#{buyer.mobile},
+			#{buyer.phone},
+			<!-- #{buyer.zipcode},
+			#{buyer.newZipcode},
+			#{buyer.sido},
+			#{buyer.sigungu},
+			#{buyer.eupmyeondong}, -->
 			#{buyer.zipcode},
 			#{buyer.newZipcode},
 			#{buyer.sido},
 			#{buyer.sigungu},
 			#{buyer.eupmyeondong},
-			CRYPTO_ENC('normal', #{buyer.address}, ''),
-			CRYPTO_ENC('normal', #{buyer.addressDetail}, ''),
+			#{buyer.address},
+			#{buyer.addressDetail},
 			#{orderPrice.totalPointDiscountAmount},
 			#{orderPrice.totalShippingCouponUseCount},
 			#{orderPrice.totalShippingCouponDiscountAmount},
@@ -4338,8 +4338,8 @@
 			#{serviceType},
 			#{amount},
 			#{taxFreeAmount},
-			CRYPTO_ENC('normal', #{bankVirtualNo}, ''),
-			CRYPTO_ENC('normal', #{bankInName}, ''),
+			#{bankVirtualNo},
+			#{bankInName},
 			#{bankExpirationDate},
 			#{mid},
 			#{key},
@@ -4373,21 +4373,21 @@
 			#{sessionId},
 			#{orderCode},
 			#{shippingIndex},
-			CRYPTO_ENC('normal', #{receiveName}, ''),
-			CRYPTO_ENC('normal', #{receiveMobile}, ''),
-			CRYPTO_ENC('normal', #{receivePhone}, ''),
-			<!-- CRYPTO_ENC('normal', #{receiveZipcode}, ''),
-			CRYPTO_ENC('normal', #{receiveNewZipcode}, ''),
-			CRYPTO_ENC('normal', #{receiveSido}, ''),
-			CRYPTO_ENC('normal', #{receiveSigungu}, ''),
-			CRYPTO_ENC('normal', #{receiveEupmyeondong}, ''), -->
+			#{receiveName},
+			#{receiveMobile},
+			#{receivePhone},
+			<!-- #{receiveZipcode},
+			#{receiveNewZipcode},
+			#{receiveSido},
+			#{receiveSigungu},
+			#{receiveEupmyeondong}, -->
 			#{receiveZipcode},
 			#{receiveNewZipcode},
 			#{receiveSido},
 			#{receiveSigungu},
 			#{receiveEupmyeondong},
-			CRYPTO_ENC('normal', #{receiveAddress}, ''),
-			CRYPTO_ENC('normal', #{receiveAddressDetail}, ''),
+			#{receiveAddress},
+			#{receiveAddressDetail},
 			#{content},
             #{createdDate}
 		)
@@ -5840,9 +5840,9 @@
 	<select id="getAllOrderListByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultMap="OrderListResult">
 	/* saleson.shop.order.OrderMapper.getAllOrderListByParamForManager */
 	SELECT OI.*
-		, IFNULL(CRYPTO_DEC('normal', USER_NAME_ENC, '', 0),'') AS USER_NAME
+		, IFNULL(USER_NAME_ENC,'') AS USER_NAME
 		<if test='conditionType == "OPMANAGER"'>
-<!-- 		, IFNULL(CRYPTO_DEC('normal', BIRTHDAY_ENC, '', 0), '') AS BIRTHDAY -->
+<!-- 		, IFNULL(BIRTHDAY_ENC, '') AS BIRTHDAY -->
 		</if>
 		FROM (
 		<include refid="CommonMapper.paginationHeader" />
@@ -6337,7 +6337,7 @@
 			, #{itemSequence}
 			, #{managerId}
 			, #{managerLclgvCd}
-			, (SELECT CRYPTO_ENC('normal', #{managerNm}, ''))
+			, #{managerNm}
 			, #{pbadmsWlfrCntrId}
 			, #{userId}
 		)
@@ -6348,10 +6348,10 @@
 		/** (회원 CI 정보로 회원 정보 조회 - 단건) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.password,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.status_code,
 			A.login_count,
 			A.sleep_mail_send_date,
@@ -6897,11 +6897,11 @@
 			#{orderPrice.orderPayAmountTotal},
 			#{orderPrice.payAmount},
 			#{userId},
-			CRYPTO_ENC('normal', #{loginId}, ''),
-			CRYPTO_ENC('normal', #{userName}, ''),
-			CRYPTO_ENC('normal', #{phone}, ''),
-			CRYPTO_ENC('normal', #{mobile}, ''),
-			CRYPTO_ENC('normal', #{email}, ''),
+			#{loginId},
+			#{userName},
+			#{phone},
+			#{mobile},
+			#{email},
 			<!-- #{zipcode},
 			#{newZipcode},
 			#{sido},

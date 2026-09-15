@@ -99,6 +99,12 @@ module.exports = {
         },
         mobileAuth: function () {
 
+            // 재인증이므로 가입 때 쓴 CI 를 그대로 재사용해야 본인으로 인식된다.
+            if ($s.config.isSkipExternalAuth) {
+                $s.api.skipExternalAuth("휴대폰 인증");
+                return;
+            }
+
             $s.api.mobileAuth(function (response) {
 
                 var PCC_window = window.open('', 'PCCV3Window', 'width=400, height=630, resizable=1, scrollbars=no, status=0, titlebar=0, toolbar=0, left=300, top=200');
@@ -158,6 +164,11 @@ module.exports = {
             //magicline.uiapi.MakeSignData( "LOGIN", null, mlCallBack);
         },
         doCertInit: function () {
+            if ($s.config.isSkipExternalAuth) {
+                $s.api.skipExternalAuth("금융인증서");
+                return;
+            }
+
             fCert.initSign(vm.findType);
         },
         goSignRegist: function () {

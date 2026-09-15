@@ -68,7 +68,7 @@
 				A.subject,
 				A.url,
 				A.category_team,
-				crypto_dec('normal', A.user_name, '', 0) user_name,
+				A.user_name user_name,
 				A.password,
 				A.email,
 				A.content,
@@ -145,7 +145,7 @@
 			A.subject,
 			A.url,
 			A.category_team,
-			crypto_dec('normal', A.user_name, '', 0) user_name,
+			A.user_name user_name,
 			A.password,
 			A.email,
 			A.content,
@@ -188,7 +188,7 @@
 
 	<insert id="insertDataboard" parameterType="saleson.shop.databoard.domain.Databoard">
 		INSERT INTO op_community_databoard (DATA_ID, SUBJECT, URL, CATEGORY_TEAM, USER_NAME, PASSWORD, EMAIL, CONTENT, HITS, BOARD_CODE, SUB_CATEGORY, CREATED_DATE, TARGET_OPTION, REL_OPTION, NOTICE_FLAG, VISIBLE_TYPE, SELLER_SELECT_FLAG, USE_YN)
-		VALUES (#{dataId}, #{subject}, #{url}, #{categoryTeam}, crypto_enc('normal', #{userName},''), #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{useYn})
+		VALUES (#{dataId}, #{subject}, #{url}, #{categoryTeam}, #{userName}, #{password}, #{email}, #{content}, #{hits}, #{boardCode}, #{subCategory},  <include refid="CommonMapper.datetime"/>, #{targetOption}, #{relOption}, #{noticeFlag}, #{visibleType}, #{sellerSelectFlag}, #{useYn})
 	</insert>
 
 
@@ -196,7 +196,7 @@
 		UPDATE op_community_databoard SET
 			SUBJECT = #{subject},
 			URL = #{url},
-			USER_NAME = crypto_enc('normal', #{userName},''),
+			USER_NAME = #{userName},
 			CONTENT = #{content},
 			TARGET_OPTION = #{targetOption},
 			REL_OPTION = #{relOption},
@@ -268,7 +268,7 @@
 			    A.sub_category,
 			    A.notice_flag,
 				<if test='conditionType != "main"'>
-				    crypto_dec('normal', A.user_name, '', 0) user_name,
+				    A.user_name user_name,
 				    A.password,
 				    A.email,
 				    A.content,

@@ -943,7 +943,7 @@
 		<include refid="CommonMapper.paginationHeader" />
 		SELECT
 			T_A.*
-			, CRYPTO_DEC('normal', T_A.USER_NAME, '', 0) AS NAME
+			, T_A.USER_NAME AS NAME
 		FROM (
 			SELECT
 				CCNM.CARD_NEWS_ID

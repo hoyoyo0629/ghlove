@@ -22,7 +22,7 @@
 			<if test='(where != null and where != "") and (query != null and query != "")'>
 				<if test='where == "REMOTE_ADDR"'>
 					<!-- AND REMOTE_ADDR LIKE CONCAT('%', #{query}, '%') -->
-					AND REMOTE_ADDR = (SELECT crypto_enc('normal', #{query}, ''))
+					AND REMOTE_ADDR = #{query}
 				</if>
 			</if>
 			<if test='accessType != null and accessType != ""'>
@@ -72,7 +72,7 @@
 		) VALUES (
 			#{allowIpId},
 			#{accessType},
-			crypto_enc('normal', #{remoteAddr}, '')),
+			#{remoteAddr}),
 			#{displayFlag},
 			#{createdUser},
 			<include refid="CommonMapper.datetime"/>

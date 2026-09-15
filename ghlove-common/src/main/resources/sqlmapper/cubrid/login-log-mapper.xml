@@ -27,9 +27,9 @@
 			LOGIN_DATE
 		) VALUES (
 			#{loginType},
-			crypto_enc('normal', #{loginId}, ''),
+			#{loginId},
 			#{successFlag},
-			crypto_enc('normal', #{remoteAddr}, ''),
+			#{remoteAddr},
 			#{memo},
 			<include refid="CommonMapper.datetime" />
 		)
@@ -45,9 +45,9 @@
 			LOGIN_DATE
 		) VALUES (
 			#{loginType},
-			crypto_enc('normal', #{loginId},''),
+			#{loginId},
 			#{successFlag},
-			crypto_enc('normal', #{remoteAddr},''),
+			#{remoteAddr},
 			#{memo},
 			<include refid="CommonMapper.datetime"/>
 		)
@@ -59,10 +59,10 @@
 			<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
 				<choose>
 					<when test="srchKey == 'LOGIN_ID'">
-						AND LL.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+						AND LL.LOGIN_ID = #{srchValue}
 					</when>
 					<when test="srchKey == 'REMOTE_ADDR'">
-						AND LL.REMOTE_ADDR = (SELECT crypto_enc('normal', #{srchValue}, ''))
+						AND LL.REMOTE_ADDR = #{srchValue}
 					</when>
 				</choose>
 			</if>
@@ -102,10 +102,10 @@
 			<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
 				<choose>
 					<when test="srchKey == 'LOGIN_ID'">
-						AND LL.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+						AND LL.LOGIN_ID = #{srchValue}
 					</when>
 					<when test="srchKey == 'REMOTE_ADDR'">
-						AND LL.REMOTE_ADDR = (SELECT crypto_enc('normal', #{srchValue}, ''))
+						AND LL.REMOTE_ADDR = #{srchValue}
 					</when>
 				</choose>
 			</if>
@@ -170,9 +170,9 @@
 		SELECT
 			B.login_log_id,
 			B.login_type,
-			crypto_dec('normal', B.login_id, '', 0) AS login_id,
+			B.login_id AS login_id,
 			B.success_flag,
-			crypto_dec('normal', B.remote_addr, '', 0) AS remote_addr,
+			B.remote_addr AS remote_addr,
 			B.memo,
 			B.login_date,
 			B.authority,
@@ -244,8 +244,8 @@
 				) A
 		)
 		SELECT
-			crypto_dec('normal', B.login_id, '', 0) AS login_id,
-			crypto_dec('normal', B.remote_addr, '', 0) AS remote_addr,
+			B.login_id AS login_id,
+			B.remote_addr AS remote_addr,
 			B.login_type,
 			B.authority,
 			B.role_name,
@@ -287,9 +287,9 @@
 		SELECT
 			A.login_log_id,
 			A.login_type,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
+			A.login_id AS login_id,
 			A.success_flag,
-			crypto_dec('normal', A.remote_addr, '', 0) AS remote_addr,
+			A.remote_addr AS remote_addr,
 			A.memo,
 			A.login_date
 		FROM (
@@ -338,8 +338,8 @@
 				) A
 			)
 			SELECT
-				crypto_dec('normal', B.login_id, '', 0) AS login_id,
-				crypto_dec('normal', B.remote_addr, '', 0) AS remote_addr,
+				B.login_id AS login_id,
+				B.remote_addr AS remote_addr,
 				B.login_type,
 				B.login_date,
 				B.next_login_date

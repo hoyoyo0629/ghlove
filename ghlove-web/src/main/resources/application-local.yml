@@ -30,7 +30,7 @@ logging:
   level:
     saleson: DEBUG
     jdbc:
-      sqltiming: DEBUG
+      sqltiming: OFF
       resultsettable: DEBUG
 
       
@@ -46,7 +46,11 @@ magicline:
   conf-path: ${saleson.root}/magicline/config/
   
 ems:
-  host: http://192.168.84.11:8682/api/sendMail.do
+  # LOCAL DEV ONLY: the real EMS host is internal-network only, so every mail send (e.g. the
+  # login auth-code email) hung for the full 10s connect timeout. Nothing listens on this
+  # port, so the connection is refused immediately instead.
+  #host: http://192.168.84.11:8682/api/sendMail.do
+  host: http://127.0.0.1:1/api/sendMail.do
   send:
     username: 고향사랑e음
     email: webmatser@ilovegohyang.go.kr

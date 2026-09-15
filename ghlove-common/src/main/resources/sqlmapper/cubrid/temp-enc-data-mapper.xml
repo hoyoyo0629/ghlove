@@ -15,7 +15,7 @@
 			VALUE
 			(
 				#{dataId}
-				, CRYPTO_ENC('normal', #{encData}, '')
+				, #{encData}
 			)
 	
 	</insert>
@@ -48,7 +48,7 @@
 			/* saleson.shop.disposable.TempEncDataMapper.selectTempData  임시 암호화 정보 조회 */
 			SELECT
 				DATA_ID
-				, CRYPTO_DEC('normal', ENC_DATA, '', 0) AS ENC_DATA
+				, ENC_DATA AS ENC_DATA
 				, REG_DT
 			FROM G_TEMP_ENC_DATA
 			WHERE 1=1

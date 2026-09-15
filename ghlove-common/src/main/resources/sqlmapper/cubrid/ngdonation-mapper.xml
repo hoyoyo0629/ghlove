@@ -109,8 +109,8 @@
          , GLG.LOCGOV_NM
          , GLG.UPPER_LOCGOV_CODE
          , GLG.LOCGOV_INTRCN_CN
-         , crypto_dec('normal', GLG.CHARGER_CTTPC,'dba',0) AS CHARGER_CTTPC
-         , crypto_dec('normal', GLG.CHARGER_NM,'dba',0) AS CHARGER_NM
+         , GLG.CHARGER_CTTPC AS CHARGER_CTTPC
+         , GLG.CHARGER_NM AS CHARGER_NM
          , GLG.CHARGER_PSITN_DEPT
          , GLG.LOCGOV_HMPG
          , GLG.LOCGOV_POPLTN_CO
@@ -292,10 +292,10 @@
     SELECT
          a.user_id
       ,	IF(a.mber_ci IS NOT NULL AND a.mber_ci !='', 'Y', 'N') 		AS mber_ci_yn
-      ,	crypto_dec('normal', b.address,'dba',0) 						AS address
-      , 	crypto_dec('normal', b.address_detail,'dba',0) 				AS address_detail
-      , 	crypto_dec('normal', b.phone_number,'dba',0) 				AS phone_number
-      , 	crypto_dec('normal', b.birthday,'dba',0) 						AS birthday
+      ,	b.address 						AS address
+      , 	b.address_detail 				AS address_detail
+      , 	b.phone_number 				AS phone_number
+      , 	b.birthday 						AS birthday
       ,	b.birthday_type
       ,	a.login_path_code
       , a.mber_ci
@@ -669,9 +669,9 @@
            ,GL.LOCGOV_NM
          ,#{userId} AS USER_ID
          ,(SELECT MBER_CI FROM OP_USER WHERE USER_ID = #{userId}) AS MBER_CI
-         ,(SELECT CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME FROM OP_USER WHERE USER_ID = #{userId}) AS USER_NAME
+         ,(SELECT USER_NAME AS USER_NAME FROM OP_USER WHERE USER_ID = #{userId}) AS USER_NAME
          ,(SELECT RECEIVE_SMS FROM OP_USER_DETAIL WHERE USER_ID = #{userId}) AS RECEIVE_SMS
-         ,(SELECT REPLACE (CRYPTO_DEC('normal',PHONE_NUMBER, '', 0),'-','') FROM OP_USER_DETAIL WHERE USER_ID = #{userId}) AS PHONE_NUMBER
+         ,(SELECT REPLACE (PHONE_NUMBER,'-','') FROM OP_USER_DETAIL WHERE USER_ID = #{userId}) AS PHONE_NUMBER
          ,NVL(( SELECT ( CASE WHEN SUM(CNTR_AMT) <![CDATA[>=]]> STDR_3LEVEL_AMT THEN '300'
                          WHEN SUM(CNTR_AMT) <![CDATA[>=]]> STDR_2LEVEL_AMT THEN '200'
                         WHEN SUM(CNTR_AMT) <![CDATA[>=]]> STDR_1LEVEL_AMT THEN '100'
@@ -779,11 +779,11 @@
     /* saleson.shop.donation.NgDonationMapper.getSmsSendGiveUserInfo */
 <!--     SELECT A.USER_ID
            ,MBER_CI
-           ,CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+           ,USER_NAME AS USER_NAME
            ,(SELECT CONCAT(UPPER_LOCGOV_NM, ' ', LOCGOV_NM) FROM G_LOCGOV WHERE LOCGOV_CODE = B.CNTR_LOCGOV_CODE) as LOCGOV_NM
            ,B.CNTR_AMT
            ,C.RECEIVE_SMS
-           ,REPLACE (CRYPTO_DEC('normal',C.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+           ,REPLACE (C.PHONE_NUMBER,'-','') AS PHONE_NUMBER
       FROM OP_USER A
      INNER JOIN (SELECT USER_ID
                ,SUM(CNTR_AMT) AS CNTR_AMT
@@ -803,11 +803,11 @@
 	<!-- 수납완료처리한 기부정보의 지자체와 해당 지자체로 기부한 총 기부금액을 조회하도록 수정 -->
     SELECT A.USER_ID
            ,MBER_CI
-           ,CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+           ,USER_NAME AS USER_NAME
            ,(SELECT CONCAT(UPPER_LOCGOV_NM, ' ', LOCGOV_NM) FROM G_LOCGOV WHERE LOCGOV_CODE = B.CNTR_LOCGOV_CODE) AS LOCGOV_NM
            ,B.CNTR_AMT
            ,C.RECEIVE_SMS
-           ,REPLACE (CRYPTO_DEC('normal',C.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+           ,REPLACE (C.PHONE_NUMBER,'-','') AS PHONE_NUMBER
       FROM OP_USER A
      INNER JOIN (SELECT USER_ID
 				   ,SUM(CNTR_AMT) OVER (PARTITION BY CNTR_LOCGOV_CODE) AS CNTR_AMT
@@ -846,7 +846,7 @@
                 AND a.user_id = #{srchTxt}
               </when>
               <when test="'USERNAME'.equals(srchType)">
-                AND b.user_name LIKE CONCAT('%', (SELECT crypto_enc('normal', #{srchTxt},'')), '%')
+                AND b.user_name LIKE CONCAT('%', #{srchTxt}, '%')
               </when>
         </choose>
       </if>
@@ -857,8 +857,8 @@
     /* saleson.shop.donation.NgDonationMapper.selectRelayLogList */
     SELECT
         a.user_id
-      ,	CRYPTO_DEC('normal', b.login_id	, '', 0) AS login_id
-      ,	CRYPTO_DEC('normal', b.user_name, '', 0) AS user_name
+      ,	b.login_id AS login_id
+      ,	b.user_name AS user_name
       ,	a.relay_type
       ,	f.label AS relay_type_name
       ,	a.cntr_locgov_code
@@ -881,13 +881,13 @@
       <if test="srchTxt != null and srchTxt != ''">
             <choose>
               <when test="'LOGIN_ID'.equals(srchType)">
-                AND b.login_id = (SELECT crypto_enc('normal', #{srchTxt},''))
+                AND b.login_id = #{srchTxt}
               </when>
               <when test="'USER_NAME'.equals(srchType)">
-                AND b.user_name = (SELECT crypto_enc('normal', #{srchTxt},''))
+                AND b.user_name = #{srchTxt}
               </when>
               <otherwise>
-                AND (b.login_id = (SELECT crypto_enc('normal', #{srchTxt},'')) OR b.user_name = (SELECT crypto_enc('normal', #{srchTxt},'')))
+                AND (b.login_id = #{srchTxt} OR b.user_name = #{srchTxt})
               </otherwise>
         </choose>
       </if>
@@ -945,7 +945,7 @@
 	 	</choose>
 	 </if>
 	 <if test = 'srchpyrNm != null and srchpyrNm != ""'>
-	 	AND buga.pyr_nm = crypto_enc('normal',#{srchpyrNm},'')
+	 	AND buga.pyr_nm = #{srchpyrNm}
 	 </if>
   </select>
 
@@ -969,7 +969,7 @@
 		, buga.frst_pid_ymd
 		, buga.pyr_se_cd
 		, buga.pyr_no
-		, crypto_dec('normal', buga.pyr_nm, '', 0) as pyr_nm
+		, buga.pyr_nm as pyr_nm
 		, buga.rprs_pyr_no
 		, buga.rprs_pyr_nm
 		, buga.pyr_stt_cd
@@ -980,7 +980,7 @@
 		, buga.bsno
 		, buga.stdg_cd
 		, buga.dong_cd
-		, crypto_dec('normal', buga.road_nm_daddr, '', 0) as road_nm_daddr
+		, buga.road_nm_daddr as road_nm_daddr
 		, buga.gl_nm
 		, buga.mng_item_cn1
 		, buga.buga_status_cd
@@ -1014,7 +1014,7 @@
 	 	</choose>
 	 </if>
 	 <if test = 'srchpyrNm != null and srchpyrNm != ""'>
-	 	AND buga.pyr_nm = crypto_enc('normal',#{srchpyrNm},'')
+	 	AND buga.pyr_nm = #{srchpyrNm}
 	 </if>
 	 ORDER BY buga.frst_regist_pnttm DESC
     <include refid="CommonMapper.paginationFooter" />
@@ -1173,12 +1173,12 @@
          <if test='(shKeyword != null and shKeyword != "") and (shText != null and shText != "")'>
          <choose>
           <when test='shKeyword == "USER_NAME"'>
-            AND ou.USER_NAME = (SELECT crypto_enc('normal', #{shText},''))
+            AND ou.USER_NAME = #{shText}
           </when>
 
 
           <when test='shKeyword == "LOGIN_ID"'>
-            AND ou.LOGIN_ID = (SELECT crypto_enc('normal', #{shText},''))
+            AND ou.LOGIN_ID = #{shText}
           </when>
         </choose>
             </if>
@@ -1256,7 +1256,7 @@
    <update id="updateKakaoBirthdayInfo" parameterType="saleson.shop.user.domain.UserDetail">
      /* saleson.shop.donation.NgDonationMapper.updateKakaoBirthdayInfo */
     UPDATE OP_USER_DETAIL
-      SET BIRTHDAY = CRYPTO_ENC('normal', #{birthday}, '')
+      SET BIRTHDAY = #{birthday}
       , BIRTHDAY_TYPE = '1'
     WHERE USER_ID = #{userId}
    </update>
@@ -1590,8 +1590,8 @@
 			,GC.CNTR_LOCGOV_CODE AS CNTR_LOCGOV_CODE
 			,GC.USER_ID AS USER_ID
 			,GC.CNTR_AMT AS CNTR_AMT
-			,CRYPTO_DEC('normal', OU.LOGIN_ID	, '', 0) AS LOGIN_ID
-      		,CRYPTO_DEC('normal', OU.USER_NAME, '', 0) AS USER_NAME
+			,OU.LOGIN_ID AS LOGIN_ID
+      		,OU.USER_NAME AS USER_NAME
 		FROM
 			G_CNTR GC
 		INNER JOIN OP_USER OU ON
@@ -1630,8 +1630,8 @@
 			,GC.CNTR_LOCGOV_CODE AS CNTR_LOCGOV_CODE
 			,GC.USER_ID AS USER_ID
 			,GC.CNTR_AMT AS CNTR_AMT
-			,CRYPTO_DEC('normal', OU.LOGIN_ID	, '', 0) AS LOGIN_ID
-      		,CRYPTO_DEC('normal', OU.USER_NAME, '', 0) AS USER_NAME
+			,OU.LOGIN_ID AS LOGIN_ID
+      		,OU.USER_NAME AS USER_NAME
 		FROM
 			G_CNTR GC
 		INNER JOIN OP_USER OU ON

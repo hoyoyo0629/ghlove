@@ -36,7 +36,7 @@
 				, A.detail as page_gbn
 				, A.menu_sj
 				, A.frst_register_id
-				, (SELECT crypto_dec('normal', MGR.user_name, '', 0) FROM op_manager MGR WHERE user_id = A.frst_register_id) AS user_name
+				, (SELECT MGR.user_name FROM op_manager MGR WHERE user_id = A.frst_register_id) AS user_name
 				, A.inqire_co
 				, A.frst_regist_pnttm
 			FROM

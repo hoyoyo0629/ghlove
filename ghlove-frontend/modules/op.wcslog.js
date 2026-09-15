@@ -2,7 +2,9 @@ var nfl = '';
 if(location.pathname.indexOf("step2.html") < 0){
    // nfl += '<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>';
 }
+// wcslog.js 로드(3행)가 주석 처리돼 wcs 가 없으면 아래 호출이 ReferenceError 를 내므로, 로드된 경우에만 실행한다.
 nfl +='<script type="text/javascript">\n'
+    +'if (typeof wcs !== "undefined") {\n'
     +'if (!wcs_add) var wcs_add={};\n'
     +'wcs_add["wa"] = "s_f9843f39efb";\n';
 if(location.pathname.indexOf("step2.html") > 0){
@@ -27,7 +29,7 @@ if(location.pathname.indexOf("step2.html") > 0){
         +'wcs.inflow();\n'
         +'wcs_do();\n';
 }
-nfl+='</script>';
+nfl+='\n}\n</script>';
 if(location.pathname.indexOf("step2.html") > 0){
     $("body").append(nfl);
 } else {

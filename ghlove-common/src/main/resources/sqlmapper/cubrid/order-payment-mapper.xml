@@ -239,7 +239,7 @@
 			OI.PAY_DATE = (CASE WHEN IFNULL(T.ORDER_STATUS, '10') = '10' THEN <include refid="CommonMapper.datetime" /> ELSE OI.PAY_DATE END),
 			OI.SALES_DATE = (CASE WHEN OI.REVENUE_SALES_STATUS = '10' THEN (CASE WHEN IFNULL(T.ORDER_STATUS, '10') = '10' THEN <include refid="CommonMapper.datetime" /> ELSE OI.PAY_DATE END) ELSE OI.SALES_DATE END),
 			<!-- OI.UPDATED_ADMIN_USER_NAME = #{adminUserName} -->
-			OI.UPDATED_ADMIN_USER_NAME = CRYPTO_ENC('normal', #{adminUserName}, '')
+			OI.UPDATED_ADMIN_USER_NAME = #{adminUserName}
 		WHERE
 			OI.ORDER_CODE = #{orderCode}
 			AND OI.ORDER_SEQUENCE = #{orderSequence}

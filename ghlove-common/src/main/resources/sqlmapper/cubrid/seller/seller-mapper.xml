@@ -590,15 +590,15 @@
 	<select id="getUserIdByItemId" parameterType="Integer" resultMap="SellerResult">
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
-		, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		, T_A.MBER_CI_ENC AS MBER_CI
+		, T_A.PHONE_NUMBER_ENC AS PHONE_NUMBER
 		FROM (
 			SELECT U.USER_ID
 				, S.COMPANY_NAME
-				<!-- , CRYPTO_DEC('normal', U.MBER_CI, '', 0) AS MBER_CI -->
+				<!-- , U.MBER_CI AS MBER_CI -->
 				, U.MBER_CI AS MBER_CI_ENC
 				, U.RECEIVE_SMS
-				<!-- , CRYPTO_DEC('normal', S.PHONE_NUMBER, '', 0) AS PHONE_NUMBER -->
+				<!-- , S.PHONE_NUMBER AS PHONE_NUMBER -->
 				, S.PHONE_NUMBER AS PHONE_NUMBER_ENC
 			FROM OP_SELLER S
 			INNER JOIN OP_SELLER_USER U ON S.LOGIN_ID = U.LOGIN_ID

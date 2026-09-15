@@ -9,6 +9,7 @@ var OZ_DOMAIN = 'http://152.99.104.8';
 var SERVER_POSITION = 'development';
 var IS_USE_NET_FUNNEL = false;
 var IS_USE_ONEPASS = false;
+var IS_SKIP_EXTERNAL_AUTH = false;
 var KAKAO_JAVASCRIPT_KEY = 'dd50d625a46ffbfef8c8b7377dbb4eb3';
 var KAKAO_REDIRECT_URL = VIRTUAL_DOMAIN + '/users/login.html';
 var KAKAO_REDIRECT_URL2 = VIRTUAL_DOMAIN + '/users/join.html';

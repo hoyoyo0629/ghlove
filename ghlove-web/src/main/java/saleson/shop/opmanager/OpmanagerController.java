@@ -639,6 +639,11 @@ public class OpmanagerController {
 
 			} catch (OpRuntimeException e) {
 				log.error("■■■LOGIN■■■ loginUserEmail RuntimeException {}", e);
+			} catch (Exception e) {
+				// LOCAL DEV ONLY: the mass-mail dispatch pipeline (EMS host / multi-datasource
+				// email queue) isn't available locally. The auth code is already persisted by
+				// insertLoginEmailLog() above, so a downstream mail-send failure shouldn't block login.
+				log.warn("[LOCAL DEV] email dispatch unavailable, auth code already stored: {}", e.toString());
 			}
 		}
 
@@ -762,6 +767,10 @@ public class OpmanagerController {
 				emailService.sendEmail(sendParam);
 			} catch (OpRuntimeException e) {
 				log.error("■■■LOGIN■■■ loginUserEmail RuntimeException {}", e);
+			} catch (Exception e) {
+				// LOCAL DEV ONLY: mass-mail dispatch pipeline unavailable locally; the auth code
+				// is already persisted by insertLoginEmailLog() above.
+				log.warn("[LOCAL DEV] email dispatch unavailable, auth code already stored: {}", e.toString());
 			}
 
 			return JsonViewUtils.success("SUCC");		// "SUCCESS"

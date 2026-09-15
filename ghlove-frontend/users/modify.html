@@ -1014,6 +1014,12 @@
                         vm.nameChangeClick = "Y";
                     }
 
+                    // 재인증이므로 가입 때 쓴 CI 를 그대로 재사용해야 본인으로 인식된다.
+                    if ($s.config.isSkipExternalAuth) {
+                        $s.api.skipExternalAuth("휴대폰 인증");
+                        return;
+                    }
+
                     $s.api.mobileAuth(function (response) {
                         // console.log('response', response);
                         // console.log('response.reqInfo', response.reqInfo);

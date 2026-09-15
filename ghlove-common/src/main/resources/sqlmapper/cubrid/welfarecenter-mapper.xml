@@ -12,24 +12,24 @@
 		SELECT
 				A.USER_ID
 				,A.REQST_SN
-				,CRYPTO_DEC('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID
+				,A.LOGIN_ID AS LOGIN_ID
 				,A.LOCGOV_CODE
 				,A.REQST_SE_CODE
 				,A.PSITN_CODE
 				,A.PSITN_NM
 				,A.PSITN_DEPT_NM
-				,CRYPTO_DEC('normal', A.OFCPS_NM, '', 0) AS OFCPS_NM
-				,CRYPTO_DEC('normal', A.CTTPC, '', 0) AS CTTPC
+				,A.OFCPS_NM AS OFCPS_NM
+				,A.CTTPC AS CTTPC
 				,A.CONFM_STTUS_CODE
 				,A.REJECT_RESN
 				,A.FRST_REGISTER_ID
 				,DATE_FORMAT(A.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM
 				,A.LAST_UPDUSR_ID
 				,DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') AS LAST_UPDT_PNTTM
-				,CRYPTO_DEC('normal', A.USER_NAME, '', 0) AS USER_NAME
-				,CRYPTO_DEC('normal', A.EMAIL, '', 0) AS EMAIL
-				,CRYPTO_DEC('normal', A.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
-				,CRYPTO_DEC('normal', A.BIRTHDAY, '', 0) AS BIRTHDAY
+				,A.USER_NAME AS USER_NAME
+				,A.EMAIL AS EMAIL
+				,A.PHONE_NUMBER AS PHONE_NUMBER
+				,A.BIRTHDAY AS BIRTHDAY
 				,A.CONFM_STTUS_NM
 				,A.REQST_SE_NM
 				,A.LOCGOV_NM
@@ -138,13 +138,13 @@
 					<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
 						<choose>
 							<when test="srchKey == 'LOGIN_ID'">
-								AND R.LOGIN_ID = (SELECT CRYPTO_ENC('normal', #{srchValue}, ''))
+								AND R.LOGIN_ID = #{srchValue}
 							</when>
 							<when test="srchKey == 'USER_NAME'">
-								AND U.USER_NAME = (SELECT CRYPTO_ENC('normal', #{srchValue}, ''))
+								AND U.USER_NAME = #{srchValue}
 							</when>
 							<when test="srchKey == 'EMAIL'">
-								AND U.EMAIL = (SELECT CRYPTO_ENC('normal', #{srchValue}, ''))
+								AND U.EMAIL = #{srchValue}
 							</when>
 						</choose>
 					</if>
@@ -180,24 +180,24 @@
 				SELECT
 					A.USER_ID
 					,A.REQST_SN
-					,CRYPTO_DEC('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID
+					,A.LOGIN_ID AS LOGIN_ID
 					,A.LOCGOV_CODE
 					,A.REQST_SE_CODE
 					,A.PSITN_CODE
 					,A.PSITN_NM
 					,A.PSITN_DEPT_NM
-					,CRYPTO_DEC('normal', A.OFCPS_NM, '', 0) AS OFCPS_NM
-					,CRYPTO_DEC('normal', A.CTTPC, '', 0) AS CTTPC
+					,A.OFCPS_NM AS OFCPS_NM
+					,A.CTTPC AS CTTPC
 					,A.CONFM_STTUS_CODE
 					,A.REJECT_RESN
 					,A.FRST_REGISTER_ID
 					,DATE_FORMAT(A.FRST_REGIST_PNTTM,'%Y-%m-%d') AS FRST_REGIST_PNTTM
 					,A.LAST_UPDUSR_ID
 					,DATE_FORMAT(A.LAST_UPDT_PNTTM,'%Y-%m-%d') AS LAST_UPDT_PNTTM
-					,CRYPTO_DEC('normal', A.USER_NAME, '', 0) AS USER_NAME
-					,CRYPTO_DEC('normal', A.EMAIL, '', 0) AS EMAIL
-					,CRYPTO_DEC('normal', A.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
-					,CRYPTO_DEC('normal', A.BIRTHDAY, '', 0) AS BIRTHDAY
+					,A.USER_NAME AS USER_NAME
+					,A.EMAIL AS EMAIL
+					,A.PHONE_NUMBER AS PHONE_NUMBER
+					,A.BIRTHDAY AS BIRTHDAY
 					,A.CONFM_STTUS_NM
 					,A.REQST_SE_NM
 					,A.LOCGOV_NM
@@ -306,13 +306,13 @@
 						<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
 							<choose>
 								<when test="srchKey == 'LOGIN_ID'">
-									AND R.LOGIN_ID = (SELECT CRYPTO_ENC('normal', #{srchValue}, ''))
+									AND R.LOGIN_ID = #{srchValue}
 								</when>
 								<when test="srchKey == 'USER_NAME'">
-									AND U.USER_NAME = (SELECT CRYPTO_ENC('normal', #{srchValue}, ''))
+									AND U.USER_NAME = #{srchValue}
 								</when>
 								<when test="srchKey == 'EMAIL'">
-									AND U.EMAIL = (SELECT CRYPTO_ENC('normal', #{srchValue}, ''))
+									AND U.EMAIL = #{srchValue}
 								</when>
 							</choose>
 						</if>
@@ -346,24 +346,24 @@
 		SELECT
 			A.USER_ID
 			,A.REQST_SN
-			,CRYPTO_DEC('normal', LOGIN_ID, '', 0) AS LOGIN_ID
+			,LOGIN_ID AS LOGIN_ID
 			,A.LOCGOV_CODE
 			,A.REQST_SE_CODE
 			,A.PSITN_CODE
 			,A.PSITN_NM
 			,A.PSITN_DEPT_NM
-			,CRYPTO_DEC('normal', OFCPS_NM, '', 0) AS OFCPS_NM
-			,CRYPTO_DEC('normal', CTTPC, '', 0) AS CTTPC
+			,OFCPS_NM AS OFCPS_NM
+			,CTTPC AS CTTPC
 			,A.CONFM_STTUS_CODE
 			,A.REJECT_RESN
 			,A.FRST_REGISTER_ID
 			,A.FRST_REGIST_PNTTM
 			,A.LAST_UPDUSR_ID
 			,A.LAST_UPDT_PNTTM
-			,CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
-			,CRYPTO_DEC('normal', EMAIL, '', 0) AS EMAIL
-			,CRYPTO_DEC('normal', PHONE_NUMBER, '', 0) AS PHONE_NUMBER
-			,CRYPTO_DEC('normal', BIRTHDAY, '', 0) AS BIRTHDAY
+			,USER_NAME AS USER_NAME
+			,EMAIL AS EMAIL
+			,PHONE_NUMBER AS PHONE_NUMBER
+			,BIRTHDAY AS BIRTHDAY
 			,A.RECEIVE_EMAIL
 			,A.CONFM_STTUS_NM
 			,A.REQST_SE_NM
@@ -500,7 +500,7 @@
 				         AND OUR.AUTHORITY LIKE 'ROLE_ADMIN%'
 				       WHERE OUR.USER_ID = R.LAST_UPDUSR_ID
 				         AND ROWNUM = 1 ) AS UPD_ID_ROLE
-		           ,( CASE WHEN R.CONFM_STTUS_CODE != '200' THEN CRYPTO_DEC('normal', U.LOGIN_ID, '', 0) ELSE NULL END) AS LOGIN_ID
+		           ,( CASE WHEN R.CONFM_STTUS_CODE != '200' THEN U.LOGIN_ID ELSE NULL END) AS LOGIN_ID
 		           ,DATE_FORMAT(R.LAST_UPDT_PNTTM ,'%Y-%m-%d') AS LAST_UPDT_PNTTM
 		      FROM G_MNGR_REQST R
 			 INNER JOIN OP_USER U

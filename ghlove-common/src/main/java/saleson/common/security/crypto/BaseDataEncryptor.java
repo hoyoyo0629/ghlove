@@ -34,6 +34,10 @@ public class BaseDataEncryptor {
 			} catch (UnsupportedEncodingException e) {
 				log.error("BaseDataEncryptor error", e);
 				return data;
+			} catch (UnsatisfiedLinkError e) {
+				// LOCAL DEV ONLY: pdbJava.dll native library unavailable here; pass through unencrypted.
+				log.warn("[LOCAL DEV] pdbJava.dll not available, skipping encryption");
+				return data;
 			}
 		} else {
 			return data;
@@ -50,7 +54,7 @@ public class BaseDataEncryptor {
 //			log.warn("[DataDecryptor] decrypt error: ({})", data);
 //			return data;
 //		}
-		
+
 		try {
 //			if (data != null && !data.isEmpty()) {
 //				data = data.replaceAll("-", "");
@@ -58,6 +62,10 @@ public class BaseDataEncryptor {
 			return pCrypto.Decrypt("normal", data, "", 0);
 		} catch (UnsupportedEncodingException e) {
 			log.error("BaseDataEncryptor error", e);
+			return data;
+		} catch (UnsatisfiedLinkError e) {
+			// LOCAL DEV ONLY: pdbJava.dll native library unavailable here; pass through unencrypted.
+			log.warn("[LOCAL DEV] pdbJava.dll not available, skipping decryption");
 			return data;
 		}
 	}

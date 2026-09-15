@@ -117,12 +117,12 @@
 				, a.bbs_ttl
 				, a.bbs_cn
 				, a.process_state
-				, crypto_dec('normal', a.process_cn, '', '0') as process_cn
+				, a.process_cn as process_cn
 				, IFNULL(a.inq_cnt, 0) as inq_cnt
 				, a.frst_crt_id as reqManagerId
-				, crypto_dec('normal',a.reqManagerNm,'',0) AS reqManagerNm
+				, a.reqManagerNm AS reqManagerNm
 				, a.process_manager_id
-				, crypto_dec('normal',a.process_Manager_Nm,'',0) AS processManagerNm
+				, a.process_Manager_Nm AS processManagerNm
 				, a.urgent_yn
 				, a.frst_crt_id
 				, a.frst_crt_dt
@@ -246,13 +246,13 @@
 				, #{reqType}
 				, #{processType}
 				, #{processState}
-				, crypto_enc('normal',#{reqUserPhoneNumber}, '')
-				, crypto_enc('normal',#{reqUserInfo}, '')
+				, #{reqUserPhoneNumber}
+				, #{reqUserInfo}
 				, DATE_FORMAT(SYSDATE,'%Y%m%d')
 				, #{bbsTtl}
 				, #{bbsCn}
 				, #{processCn}
-				, crypto_enc('normal',#{processManagerNm}, '')
+				, #{processManagerNm}
 				, #{processReceiptDate}
 				, #{processTargetEndDate}
 				, #{processStartDate}
@@ -310,17 +310,17 @@
 			, A.sr_no
 			, date_format(str_to_date(req_crt_date, '%Y%m%d'), '%Y-%m-%d') as req_crt_date
 			, req_dt
-			, CRYPTO_DEC('normal',req_user_phone_number,'',0) AS req_user_phone_number
+			, req_user_phone_number AS req_user_phone_number
 			, req_channel
 			, req_type
 			, process_type
 			, A.BBS_TTL
 			, A.BBS_CN
-			, CRYPTO_DEC('normal',A.req_user_info,'',0) AS req_user_info
+			, A.req_user_info AS req_user_info
 			, A.urgent_yn
 			, A.req_source
 			, A.process_manager_id
-			, CRYPTO_DEC('normal',A.process_manager_nm,'',0) AS process_manager_nm
+			, A.process_manager_nm AS process_manager_nm
 			, A.process_cn
 			, A.process_receipt_date
 			, A.process_target_end_date
@@ -329,7 +329,7 @@
 			, A.process_state
 			, A.rm
 			, (SELECT ATCH_FILE_SZ  FROM G_SR_MAINTENANCE_FILE WHERE BBS_ID = A.BBS_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
-			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS req_manager_nm
+			, B.USER_NAME AS req_manager_nm
 			, C.LOCGOV_NM
 			, C.UPPER_LOCGOV_NM
 			, A.USE_YN
@@ -407,11 +407,11 @@
 			, REQ_TYPE = #{reqType}
 			, PROCESS_TYPE = #{processType}
 			, PROCESS_STATE = #{processState}
-			, REQ_USER_PHONE_NUMBER = crypto_enc('normal',#{reqUserPhoneNumber}, '')
-			, REQ_USER_INFO = crypto_enc('normal',#{reqUserInfo}, '')
+			, REQ_USER_PHONE_NUMBER = #{reqUserPhoneNumber}
+			, REQ_USER_INFO = #{reqUserInfo}
 			, BBS_TTL = #{bbsTtl}
 			, BBS_CN = #{bbsCn}
-			, PROCESS_MANAGER_NM = crypto_enc('normal',#{processManagerNm}, '')
+			, PROCESS_MANAGER_NM = #{processManagerNm}
 			, PROCESS_CN = #{processCn}
 			, PROCESS_RECEIPT_DATE = #{processReceiptDate}
 			, PROCESS_TARGET_END_DATE = #{processTargetEndDate}

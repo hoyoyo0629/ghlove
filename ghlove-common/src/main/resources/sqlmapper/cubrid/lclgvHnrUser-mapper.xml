@@ -324,7 +324,7 @@
 						AA.USER_ID,
 						AA.LCLGV_CD,
 						AA.VIEW_CNT,
-						crypto_dec('normal',B.USER_NAME ,'',0) AS USER_NAME,
+						B.USER_NAME AS USER_NAME,
 						C.UPPER_LOCGOV_NM ,
 						C.UPPER_LOCGOV_CODE,
 						C.LOCGOV_NM AS LCLGV_CD_NM
@@ -384,7 +384,7 @@
 								AA.USER_ID,
 								AA.LCLGV_CD,
 								AA.VIEW_CNT,
-								crypto_dec('normal',B.USER_NAME ,'',0) AS USER_NAME,
+								B.USER_NAME AS USER_NAME,
 								C.UPPER_LOCGOV_NM ,
 								C.UPPER_LOCGOV_CODE,
 								C.LOCGOV_NM AS LCLGV_CD_NM

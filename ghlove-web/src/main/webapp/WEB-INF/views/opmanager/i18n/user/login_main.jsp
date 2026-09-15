@@ -11,6 +11,12 @@
 
 	if (request.getProtocol().equals("HTTP/1.1"))
     	response.setHeader("Cache-Control", "no-cache");
+
+	// LOCAL DEV ONLY: no real mail gateway locally, so the login auth-code email never
+	// arrives. The server already fixes the code to "250324" for localhost logins
+	// (see OpmanagerController#loginUserEmail). Exposed to JS below so the login can
+	// auto-continue past the "check your email" step instead of leaving the operator stuck.
+	boolean isLocalDev = "localhost".equals(request.getServerName());
 %>
 <style type="text/css">
 	.login_set h4 {color: #fff;}
@@ -247,6 +253,9 @@
 	} catch(e) {
 		alert(e.message)
 	};
+
+	// LOCAL DEV ONLY: see isLocalDev above.
+	var IS_LOCAL_DEV = <%= isLocalDev %>;
 
 	/**
 	 *	함 수 명 : idLogin
@@ -733,6 +742,16 @@
 				}else if(response.data == 'FAIL') {
 
 				}else if(response.data.startsWith('SUCC')){
+					// LOCAL DEV ONLY: no mail gateway locally, so the auth-code email never
+					// arrives. The server already fixes the code to "250324" for localhost
+					// logins (see OpmanagerController#loginUserEmail), so skip the "check your
+					// email" step entirely and log straight in.
+					if (IS_LOCAL_DEV) {
+						$('#op_auth_num').val('250324');
+						authCheck();
+						return;
+					}
+
 					//idLoginResult(response.data);		// AS-IS 로그인 성공 후 main 페이지 이동
 					// 이메일로 발송된 인증번호를 입력하는 UI 보이기
 					$('#authNumDiv').css('display', 'flex');

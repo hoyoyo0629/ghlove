@@ -2707,8 +2707,8 @@
 	SELECT
 		T_A.*
 	<if test='conditionType == "EXCEL_DOWNLOAD" or conditionType == "EXCEL_ITEM_USER_CODE_FIX"'>
-		, CONCAT((SELECT CRYPTO_DEC('normal', SHIP_ADDRESS_ENC, '', 0)), ' ', (SELECT CRYPTO_DEC('normal', SHIP_ADDRESS_DETAIL_ENC, '', 0))) AS SHIPPING_INFO_EXCEL
-		, CONCAT((SELECT CRYPTO_DEC('normal', RETURN_ADDRESS_ENC, '', 0)), ' ', (SELECT CRYPTO_DEC('normal', RETURN_ADDRESS_DETAIL_ENC, '', 0))) AS SHIPPING_RETURN_INFO_EXCEL
+		, CONCAT((SELECT SHIP_ADDRESS_ENC), ' ', (SELECT SHIP_ADDRESS_DETAIL_ENC)) AS SHIPPING_INFO_EXCEL
+		, CONCAT((SELECT RETURN_ADDRESS_ENC), ' ', (SELECT RETURN_ADDRESS_DETAIL_ENC)) AS SHIPPING_RETURN_INFO_EXCEL
 	</if>
 	FROM (
 		SELECT
@@ -4256,8 +4256,8 @@
 			<include refid="CommonMapper.paginationHeader" />
 			SELECT
 				*,
-				CRYPTO_DEC('normal', USER_NAME_ENC, '', 0) AS USER_NAME,
-				CRYPTO_DEC('normal', LOGIN_ID_ENC, '', 0) as LOGIN_ID,
+				USER_NAME_ENC AS USER_NAME,
+				LOGIN_ID_ENC as LOGIN_ID,
 				ROWNUM
 				FROM (
 					SELECT
@@ -4348,7 +4348,7 @@
 						I.NAVER_SHOPPING_FLAG,
 						I.NAVER_PAY_FLAG,
 						I.ITEM_CLOSE_DT,
-						<!-- TO_CHAR(crypto_dec('normal', U.USER_NAME, '', 0)) AS USER_NAME, -->
+						<!-- TO_CHAR(U.USER_NAME) AS USER_NAME, -->
 						U.USER_NAME AS USER_NAME_ENC,
 						U.LOGIN_ID AS LOGIN_ID_ENC,
 						U.USER_ID,
@@ -4367,7 +4367,7 @@
 						) AS SH_LOCGOV_NAME,		<!-- 지자체명 추가 -->
 						CASE WHEN (SELECT COMPANY_NAME FROM OP_SELLER WHERE LOGIN_ID = IR.ANSWER_LOGIN_ID) IS NOT NULL THEN
 						          (SELECT COMPANY_NAME FROM OP_SELLER WHERE LOGIN_ID = IR.ANSWER_LOGIN_ID)
-						     <!-- ELSE (SELECT crypto_dec('normal', USER_NAME, '', 0) FROM OP_USER WHERE LOGIN_ID = crypto_enc('normal', IR.ANSWER_LOGIN_ID,'')) END AS ANSWER_ADMIN_NAME, -->
+						     <!-- ELSE (SELECT USER_NAME FROM OP_USER WHERE LOGIN_ID = IR.ANSWER_LOGIN_ID) END AS ANSWER_ADMIN_NAME, -->
 						     ELSE '관리자' END AS ANSWER_ADMIN_NAME,
 						 IR.ANSWER_DATE
 					FROM
@@ -4555,8 +4555,8 @@
 			<include refid="CommonMapper.paginationHeader" />
 			SELECT
 				*,
-				CRYPTO_DEC('normal', USER_NAME_ENC, '', 0) AS USER_NAME,
-				CRYPTO_DEC('normal', LOGIN_ID_ENC, '', 0) as LOGIN_ID,
+				USER_NAME_ENC AS USER_NAME,
+				LOGIN_ID_ENC as LOGIN_ID,
 				ROWNUM
 				FROM (
 					SELECT
@@ -4647,7 +4647,7 @@
 						I.NAVER_SHOPPING_FLAG,
 						I.NAVER_PAY_FLAG,
 						I.ITEM_CLOSE_DT,
-						<!-- TO_CHAR(crypto_dec('normal', U.USER_NAME, '', 0)) AS USER_NAME, -->
+						<!-- TO_CHAR(U.USER_NAME) AS USER_NAME, -->
 						U.USER_NAME AS USER_NAME_ENC,
 						U.LOGIN_ID AS LOGIN_ID_ENC,
 						U.USER_ID,
@@ -4666,7 +4666,7 @@
 						) AS SH_LOCGOV_NAME,		<!-- 지자체명 추가 -->
 						CASE WHEN (SELECT COMPANY_NAME FROM OP_SELLER WHERE LOGIN_ID = IR.ANSWER_LOGIN_ID) IS NOT NULL THEN
 						          (SELECT COMPANY_NAME FROM OP_SELLER WHERE LOGIN_ID = IR.ANSWER_LOGIN_ID)
-						     <!-- ELSE (SELECT crypto_dec('normal', USER_NAME, '', 0) FROM OP_USER WHERE LOGIN_ID = crypto_enc('normal', IR.ANSWER_LOGIN_ID,'')) END AS ANSWER_ADMIN_NAME, -->
+						     <!-- ELSE (SELECT USER_NAME FROM OP_USER WHERE LOGIN_ID = IR.ANSWER_LOGIN_ID) END AS ANSWER_ADMIN_NAME, -->
 						     ELSE '관리자' END AS ANSWER_ADMIN_NAME,
 						 IR.ANSWER_DATE
 					FROM
@@ -6734,13 +6734,13 @@
 
 	<insert id="insertItemSaleEdit" parameterType="saleson.shop.item.domain.ItemSaleEdit">
 		INSERT INTO OP_ITEM_SALE_EDIT ( ITEM_SALE_EDIT_ID, ITEM_ID, SELLER_ID, SELLER_NAME, ITEM_CODE, ITEM_NAME, SALE_PRICE, ITEM_PRICE, COST_PRICE, STATUS, MESSAGE, CREATED_DATE)
-		VALUES ( #{itemSaleEditId}, #{itemId}, #{sellerId}, crypto_enc('normal', #{sellerName}, ''), #{itemCode}, #{itemName}, #{salePrice}, #{itemPrice}, #{costPrice}, '0', #{message}, <include refid="CommonMapper.datetime"/>)
+		VALUES ( #{itemSaleEditId}, #{itemId}, #{sellerId}, #{sellerName}, #{itemCode}, #{itemName}, #{salePrice}, #{itemPrice}, #{costPrice}, '0', #{message}, <include refid="CommonMapper.datetime"/>)
 	</insert>
 
 	<select id="getItemSaleEdit" parameterType="saleson.shop.item.support.ItemSaleEditParam" resultMap="ItemSaleEditResult">
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.SELLER_NAME_ENC, '', 0) AS SELLER_NAME
+		, T_A.SELLER_NAME_ENC AS SELLER_NAME
 		FROM (
 			<include refid="CommonMapper.paginationHeader" />
 			SELECT
@@ -6799,7 +6799,7 @@
 	<select id="getItemSaleEditByParam" parameterType="saleson.shop.item.support.ItemSaleEditParam" resultMap="ItemSaleEditResult">
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.SELLER_NAME_ENC, '', 0) AS SELLER_NAME
+		, T_A.SELLER_NAME_ENC AS SELLER_NAME
 		FROM (
 			SELECT
 				ITEM_SALE_EDIT_ID,
@@ -7053,9 +7053,9 @@
 	<select id="getItemLogListById" parameterType="saleson.shop.item.support.ItemParam" resultMap="ItemLogResult">
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.SELLER_NAME_ENC, '', 0) AS SELLER_NAME
-		, CRYPTO_DEC('normal', T_A.MANAGER_LOGIN_ID_ENC, '', 0) AS MANAGER_LOGIN_ID
-		, CRYPTO_DEC('normal', T_A.USER_NAME_ENC, '', 0) AS USER_NAME
+		, T_A.SELLER_NAME_ENC AS SELLER_NAME
+		, T_A.MANAGER_LOGIN_ID_ENC AS MANAGER_LOGIN_ID
+		, T_A.USER_NAME_ENC AS USER_NAME
 		FROM (
 		<include refid="CommonMapper.paginationHeader" />
 			SELECT

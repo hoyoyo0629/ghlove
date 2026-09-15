@@ -56,6 +56,12 @@ module.exports = {
         },
         nextStep: function () {
 
+            // 회원가입은 매번 새 CI 여야 한다 (같은 CI 면 서버가 기가입자로 튕겨냄).
+            if ($s.config.isSkipExternalAuth) {
+                $s.api.skipExternalAuth("휴대폰 인증", { fresh: true });
+                return;
+            }
+
             $s.api.mobileAuth(function (response) {
                 $s.log(response);
 
@@ -109,6 +115,11 @@ module.exports = {
 
         },
         doCertInit: function () {
+            if ($s.config.isSkipExternalAuth) {
+                $s.api.skipExternalAuth("금융인증서", { fresh: true });
+                return;
+            }
+
             fCert.initSign('join');
         },
         mobileAuthResponse: function (response) {

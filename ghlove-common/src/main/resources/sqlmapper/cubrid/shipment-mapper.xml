@@ -26,10 +26,10 @@
 	<select id="getShipmentListBySellerId" parameterType="int" resultMap="ShipmentResult" >
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.NAME_ENC, '', 0) AS NAME
-		, CRYPTO_DEC('normal', T_A.TELEPHONE_NUMBER_ENC, '', 0) AS TELEPHONE_NUMBER
-		, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-		, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+		, T_A.NAME_ENC AS NAME
+		, T_A.TELEPHONE_NUMBER_ENC AS TELEPHONE_NUMBER
+		, T_A.ADDRESS_ENC AS ADDRESS
+		, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 	FROM (
 		SELECT 
 			SHIPMENT_ID
@@ -61,10 +61,10 @@
 	<select id="getShipmentById" parameterType="int" resultMap="ShipmentResult" >
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.NAME_ENC, '', 0) AS NAME
-		, CRYPTO_DEC('normal', T_A.TELEPHONE_NUMBER_ENC, '', 0) AS TELEPHONE_NUMBER
-		, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-		, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+		, T_A.NAME_ENC AS NAME
+		, T_A.TELEPHONE_NUMBER_ENC AS TELEPHONE_NUMBER
+		, T_A.ADDRESS_ENC AS ADDRESS
+		, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 	FROM (
 		SELECT 
 			SHIPMENT_ID
@@ -92,10 +92,10 @@
 	<select id="getShipmentByParam" parameterType="saleson.shop.shipment.support.ShipmentParam" resultMap="ShipmentResult" >
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.NAME_ENC, '', 0) AS NAME
-		, CRYPTO_DEC('normal', T_A.TELEPHONE_NUMBER_ENC, '', 0) AS TELEPHONE_NUMBER
-		, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-		, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+		, T_A.NAME_ENC AS NAME
+		, T_A.TELEPHONE_NUMBER_ENC AS TELEPHONE_NUMBER
+		, T_A.ADDRESS_ENC AS ADDRESS
+		, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 	FROM (
 		SELECT 
 			SHIPMENT_ID
@@ -135,7 +135,7 @@
 	<!-- 출고지/배송비 등록 -->
 	<insert id="insertShipment" parameterType="saleson.shop.shipment.domain.Shipment">
 		INSERT INTO OP_SHIPMENT (SHIPMENT_ID, SELLER_ID, ADDRESS_NAME, NAME, TELEPHONE_NUMBER, ZIPCODE, ADDRESS, ADDRESS_DETAIL, DEFAULT_ADDRESS_FLAG, SHIPPING, SHIPPING_FREE_AMOUNT, SHIPPING_EXTRA_CHARGE1, SHIPPING_EXTRA_CHARGE2, SHIPMENT_GROUP_CODE, CREATED_DATE, UPDATED_DATE)
-		VALUES (#{shipmentId}, #{sellerId}, #{addressName}, <!-- crypto_enc('normal', #{name}, '') --> #{name}, CRYPTO_ENC('normal', #{telephoneNumber}, ''), <!-- crypto_enc('normal', #{zipcode}, '') --> #{zipcode}, crypto_enc('normal', #{address}, ''), crypto_enc('normal', #{addressDetail}, ''), #{defaultAddressFlag}, #{shipping}, #{shippingFreeAmount}, #{shippingExtraCharge1}, #{shippingExtraCharge2}, #{shipmentGroupCode}, <include refid="CommonMapper.datetime"/>, <include refid="CommonMapper.datetime"/>)
+		VALUES (#{shipmentId}, #{sellerId}, #{addressName}, <!-- #{name} --> #{name}, #{telephoneNumber}, <!-- #{zipcode} --> #{zipcode}, #{address}, #{addressDetail}, #{defaultAddressFlag}, #{shipping}, #{shippingFreeAmount}, #{shippingExtraCharge1}, #{shippingExtraCharge2}, #{shipmentGroupCode}, <include refid="CommonMapper.datetime"/>, <include refid="CommonMapper.datetime"/>)
 	</insert>
 
 
@@ -143,12 +143,12 @@
 	<update id="updateShipment" parameterType="saleson.shop.shipment.domain.Shipment">
 		UPDATE OP_SHIPMENT SET
 			ADDRESS_NAME = #{addressName}, 
-			NAME = <!-- crypto_enc('normal', #{name}, '') --> #{name}, 
-			TELEPHONE_NUMBER = CRYPTO_ENC('normal', #{telephoneNumber}, ''), 
-			<!-- ZIPCODE = crypto_enc('normal', #{zipcode}, ''), -->
+			NAME = <!-- #{name} --> #{name}, 
+			TELEPHONE_NUMBER = #{telephoneNumber}, 
+			<!-- ZIPCODE = #{zipcode}, -->
 			ZIPCODE = #{zipcode}, 
-			ADDRESS = CRYPTO_ENC('normal', #{address}, ''), 
-			ADDRESS_DETAIL = CRYPTO_ENC('normal', #{addressDetail}, ''), 
+			ADDRESS = #{address}, 
+			ADDRESS_DETAIL = #{addressDetail}, 
 			DEFAULT_ADDRESS_FLAG = #{defaultAddressFlag}, 
 			SHIPPING = #{shipping}, 
 			SHIPPING_FREE_AMOUNT = #{shippingFreeAmount}, 
@@ -178,10 +178,10 @@
 	<select id="getDefaultShipment" parameterType="saleson.shop.shipment.domain.Shipment" resultMap="ShipmentResult" >
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.NAME_ENC, '', 0) AS NAME
-		, CRYPTO_DEC('normal', T_A.TELEPHONE_NUMBER_ENC, '', 0) AS TELEPHONE_NUMBER
-		, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-		, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+		, T_A.NAME_ENC AS NAME
+		, T_A.TELEPHONE_NUMBER_ENC AS TELEPHONE_NUMBER
+		, T_A.ADDRESS_ENC AS ADDRESS
+		, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 	FROM (
 		SELECT 
 			SHIPMENT_ID

@@ -48,4 +48,14 @@ public interface AuthService {
 	 * @return
 	 */
 	public String getEmailAuthNumber(Customer customer);
+
+
+	/**
+	 * LOCAL DEV ONLY: SMS 게이트웨이가 없는 로컬 환경에서, 발송 실패 시 대신 생성해 둔
+	 * 인증번호를 화면에 표시하기 위해 조회(1회성, 조회 후 삭제)한다. 운영 환경에서는
+	 * 실제 SMS 발송이 성공하므로 항상 null을 반환한다.
+	 * @param requestToken
+	 * @return
+	 */
+	public String getLocalDevAuthCode(String requestToken);
 }

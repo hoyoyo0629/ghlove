@@ -7,13 +7,13 @@
 		<if test="srchKey != null and srchKey != '' and srchValue != null and srchValue != ''">
 			<choose>
 				<when test="srchKey == 'LOGIN_ID'">
-					AND U.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					AND U.LOGIN_ID = #{srchValue}
 				</when>
 				<when test="srchKey == 'USER_NAME'">
-					AND U.USER_NAME = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					AND U.USER_NAME = #{srchValue}
 				</when>
 				<when test="srchKey == 'ADDRESS'">
-					AND SUBSTRING_INDEX(CONCAT(crypto_dec('normal', UD.ADDRESS, '', 0), ' ', crypto_dec('normal', UD.ADDRESS_DETAIL, '', 0)), ' ', 2) LIKE CONCAT('%', #{srchValue},'%')
+					AND SUBSTRING_INDEX(CONCAT(UD.ADDRESS, ' ', UD.ADDRESS_DETAIL), ' ', 2) LIKE CONCAT('%', #{srchValue},'%')
 				</when>
 			</choose>
 		</if>
@@ -57,18 +57,18 @@
 		/** generalcustomer-mapper.getGeneralCustomerListByParam (일반회원관리 목록 조회) */
 		SELECT
 				A.user_id,
-				crypto_dec('normal', A.login_id, '', 0) AS login_id,
-				crypto_dec('normal', A.user_name, '', 0) AS user_name,
-				crypto_dec('normal', A.email, '', 0) AS email,
+				A.login_id AS login_id,
+				A.user_name AS user_name,
+				A.email AS email,
 				A.sbscrb_se_code,
 				(SELECT label FROM OP_COMMON_CODE C WHERE C.code_type = 'SBSCRB_SE' AND	 C.use_yn = 'Y' AND	C.language = 'ko' AND	C.id = A.SBSCRB_SE_CODE) AS sbscrb_se_nm,
 				CASE WHEN IFNULL(A.created_date, '') != '' THEN DATE_FORMAT(A.created_date, '%Y-%m-%d') ELSE '' END AS created_date,
 				CASE WHEN IFNULL(A.login_date, '') != '' THEN DATE_FORMAT(A.login_date, '%Y-%m-%d %H:%i:%s') ELSE '' END AS login_date,
-				crypto_dec('normal', A.post, '', 0) AS post,
-				crypto_dec('normal', A.address, '', 0) AS address,
-				crypto_dec('normal', A.address_detail, '', 0) AS address_detail,
+				A.post AS post,
+				A.address AS address,
+				A.address_detail AS address_detail,
 				A.receive_email,
-				crypto_dec('normal', A.phone_number, '', 0) AS phone_number,
+				A.phone_number AS phone_number,
 				(SELECT SUM(cntr_amt) FROM G_CNTR WHERE user_id = A.user_id AND sttemnt_pay_de IS NOT NULL AND delete_at = 'N' AND cntr_sttus_code = '200') AS total_cntr_amt,
 				(SELECT SUM(cntr_blce_point) FROM G_CNTR WHERE user_id = A.user_id AND sttemnt_pay_de IS NOT NULL AND delete_at = 'N' AND cntr_sttus_code = '200') AS total_cntr_blce_point
 		FROM (
@@ -105,23 +105,23 @@
 		/** generalcustomer-mapper.getGeneralCustomerDetails (일반회원관리 상세 조회) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.login_id AS login_id,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.sbscrb_se_code,
 			A.user_key,
 			A.status_code,
 			A.sbscrb_se_nm,
 			A.created_date,
 			A.login_date,
-			crypto_dec('normal', A.post, '', 0) AS post,
-			crypto_dec('normal', A.address, '', 0) AS address,
-			crypto_dec('normal', A.address_detail, '', 0) AS address_detail,
+			A.post AS post,
+			A.address AS address,
+			A.address_detail AS address_detail,
 			A.receive_email,
 			A.receive_sms,
-			crypto_dec('normal', A.phone_number, '', 0) AS phone_number,
-			crypto_dec('normal', A.gender, '', 0) AS gender,
-			crypto_dec('normal', A.birthday, '', 0) AS birthday,
+			A.phone_number AS phone_number,
+			A.gender AS gender,
+			A.birthday AS birthday,
 			A.total_cntr_amt,
 			A.total_cntr_blce_point
 		FROM (
@@ -555,9 +555,9 @@
 		/** generalcustomer-mapper.getGeneralCustomerDetailsNotStatusCode (일반회원관리 상세 조회 - 상태코드 미적용) */
 		SELECT
 			A.user_id,
-			crypto_dec('normal', A.login_id, '', 0) AS login_id,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name,
-			crypto_dec('normal', A.email, '', 0) AS email,
+			A.login_id AS login_id,
+			A.user_name AS user_name,
+			A.email AS email,
 			A.sbscrb_se_code,
 			A.user_key,
 			A.status_code,
@@ -565,13 +565,13 @@
 			A.sbscrb_se_nm,
 			A.created_date,
 			A.login_date,
-			crypto_dec('normal', A.post, '', 0) AS post,
-			crypto_dec('normal', A.address, '', 0) AS address,
-			crypto_dec('normal', A.address_detail, '', 0) AS address_detail,
+			A.post AS post,
+			A.address AS address,
+			A.address_detail AS address_detail,
 			A.receive_email,
-			crypto_dec('normal', A.phone_number, '', 0) AS phone_number,
-			crypto_dec('normal', A.gender, '', 0) AS gender,
-			crypto_dec('normal', A.birthday, '', 0) AS birthday,
+			A.phone_number AS phone_number,
+			A.gender AS gender,
+			A.birthday AS birthday,
 			A.total_cntr_amt,
 			A.total_cntr_blce_point
 		FROM (
@@ -724,11 +724,11 @@
 	       ,A.user_id
 	       ,A.default_flag
 	       ,A.title
-	       ,crypto_dec('normal', A.user_name , '', 0) AS user_name
-	       ,crypto_dec('normal', A.mobile , '', 0) AS mobile
-	       ,crypto_dec('normal', A.phone , '', 0) AS phone
-	       ,crypto_dec('normal', A.address , '', 0) AS address
-	       ,crypto_dec('normal', A.address_detail , '', 0) AS address_detail
+	       ,A.user_name AS user_name
+	       ,A.mobile AS mobile
+	       ,A.phone AS phone
+	       ,A.address AS address
+	       ,A.address_detail AS address_detail
 		FROM
 		(
 			SELECT

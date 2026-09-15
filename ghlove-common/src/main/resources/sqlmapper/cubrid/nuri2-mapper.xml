@@ -47,7 +47,7 @@
 
 	<select id="selectPresentOrderList" resultType="map">
 		SELECT
-			crypto_dec('normal',OS.PHONE_NUMBER,'',0) AS PHONE_NUM,
+			OS.PHONE_NUMBER AS PHONE_NUM,
 			COUNT(*) AS TOTAL_CNT
 		FROM
 			OP_ORDER_ITEM OOI

@@ -1076,6 +1076,36 @@
               $s.alert("이름을 입력해주세요");
               return false;
             }
+
+            // 로컬 전용: 행정정보공동이용센터 주소조회가 막혀 있어 실제 주소 하나를 거주지로 통과시킨다.
+            // 거주지와 같은 시·도에는 기부할 수 없으므로 세종을 고르면 제주를 거주지로 쓴다.
+            // 이후 주소기반산업지원서비스(juso.go.kr) 조회가 되도록 반드시 실존 주소여야 한다.
+            if ($s.config.isSkipExternalAuth) {
+              var fakeResidence = String(vm.selectedRegionCd).substring(0, 2) == "36"
+                ? { locgovCode: "50000", juso: "제주특별자치도 제주시 문연로 6", bassAdres: "제주시 문연로 6" }
+                : { locgovCode: "36000", juso: "세종특별자치시 한누리대로 2130", bassAdres: "한누리대로 2130 (보람동)" };
+              if (vm.juminNo2 == "") {
+                vm.juminNo2 = "1000000";
+              }
+              var fakeJusoTxt = fakeResidence.juso.split(" ");
+              vm.foreignStatusCode = "0";
+              vm.rstJuso = { juso: fakeResidence.juso };
+              vm.userRegionCd = fakeResidence.locgovCode;
+              vm.bassAdres = fakeResidence.bassAdres;
+              vm.userRegion = fakeJusoTxt[0] + " " + fakeJusoTxt[1];
+              vm.checkJumin = vm.juminNo1 + vm.juminNo2;
+              vm.nextStep = true;
+              $("#preAdress").addClass("d-none");
+              $("#afterAdress").removeClass("d-none");
+              vm.$refs.birthdayInput.setAttribute("readonly", "readonly");
+              vm.closePopupA();
+              $s.alert(
+                "[로컬 인증 우회] 거주지 확인\n\n외부 조회 없이 아래 주소를 거주지로 처리합니다.\n" + fakeResidence.juso + "\n\n귀하는 " + vm.selectedRegion + "에 \n납부가 가능합니다.",
+                "cntrAmt"
+              );
+              return;
+            }
+
             if (vm.juminNo1 == "" || vm.juminNo2 == "") {
               $s.alert("주민번호를 입력해주세요", "juminInput");
               return false;

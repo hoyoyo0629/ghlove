@@ -56,7 +56,7 @@
 		) A
 		WHERE 1=1
 		<if test="srchKey == 'LOGIN_ID' and (srchValue != null and srchValue != '')">
-			AND A.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue},''))
+			AND A.LOGIN_ID = #{srchValue}
 		</if>
 		<if test="srchKey == 'DOWNLOAD_MENU' and (srchValue != null and srchValue != '')">
 			AND A.NAME LIKE CONCAT('%', #{srchValue} , '%')
@@ -80,7 +80,7 @@
 			A.ip,
 			A.login_type,
 			(CASE
-				WHEN A.login_type = 'MANAGER' THEN crypto_dec('normal', A.login_id, '', 0)
+				WHEN A.login_type = 'MANAGER' THEN A.login_id
 				WHEN A.login_type = 'SELLER' THEN A.login_id
 				ELSE ''
 			END) AS login_id,
@@ -125,7 +125,7 @@
 		) A
 		WHERE 1=1
 		<if test="srchKey == 'LOGIN_ID' and (srchValue != null and srchValue != '')">
-			AND A.login_id = (SELECT crypto_enc('normal', #{srchValue},''))
+			AND A.login_id = #{srchValue}
 		</if>
 		<if test="srchKey == 'DOWNLOAD_MENU' and (srchValue != null and srchValue != '')">
 			AND A.name LIKE CONCAT('%', #{srchValue} , '%')

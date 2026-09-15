@@ -74,7 +74,7 @@
 	                 ELSE TRUNC(AGE/10,0) * 10||'' END) AS CNTR_AGE
 	           ,COUNT(USER_ID) AS CNTR_CNT
 	           ,SUM(CNTR_AMT) AS CNTR_AMT
-	      FROM ( SELECT TRUNC(MONTHS_BETWEEN(NOW(), TO_DATE(CRYPTO_DEC('normal', OUD.BIRTHDAY , '', 0),'YYYYMMDD'))/12, 0) AS AGE
+	      FROM ( SELECT TRUNC(MONTHS_BETWEEN(NOW(), TO_DATE(OUD.BIRTHDAY,'YYYYMMDD'))/12, 0) AS AGE
 	                    ,GC.USER_ID
 	                    ,GC.CNTR_AMT
 	               FROM G_CNTR GC, OP_USER OU, OP_USER_DETAIL OUD
@@ -104,7 +104,7 @@
 	                 ELSE TRUNC(AGE/10,0) * 10||'' END) AS CNTR_AGE
 	           ,COUNT(USER_ID) AS CNTR_CNT
 	           ,SUM(CNTR_AMT) AS CNTR_AMT
-	      FROM ( SELECT TRUNC(MONTHS_BETWEEN(NOW(), TO_DATE(CRYPTO_DEC('normal', OUD.BIRTHDAY , '', 0),'YYYYMMDD'))/12, 0) AS AGE
+	      FROM ( SELECT TRUNC(MONTHS_BETWEEN(NOW(), TO_DATE(OUD.BIRTHDAY,'YYYYMMDD'))/12, 0) AS AGE
 	                    ,GC.USER_ID
 	                    ,GC.CNTR_AMT
 	               FROM G_CNTR GC, OP_USER OU, OP_USER_DETAIL OUD
@@ -478,8 +478,8 @@
 	<select id="getGivePersonalStatisticsDetail" parameterType="saleson.shop.give.statistics.domain.GiveStatisticsDetailSearch" resultType="saleson.shop.give.statistics.domain.GiveStatisticsPersonal" >
 		/* saleson.shop.give.statistics.GiveStatisticsMapper.getGivePersonalStatisticsDetail */
 		SELECT B.USER_ID
-			   ,CRYPTO_DEC('normal', OU.USER_NAME, '', 0) USER_NAME
-		       ,CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) LOGIN_ID
+			   ,OU.USER_NAME USER_NAME
+		       ,OU.LOGIN_ID LOGIN_ID
 		       ,B.GIVE_CNT
 		       ,B.GIVE_AMT
 		       ,B.GIVE_POINT

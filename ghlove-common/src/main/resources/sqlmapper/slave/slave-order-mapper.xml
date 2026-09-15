@@ -511,14 +511,14 @@
 		/* saleson.shop.slave.SlaveOrderMapper.getAllOrderListByParamForManager */
 		SELECT
 			OI.*
-			, IFNULL(CRYPTO_DEC('normal', USER_NAME_ENC, '', 0),'') AS USER_NAME
+			, IFNULL(USER_NAME_ENC,'') AS USER_NAME
 			<if test='conditionType == "OPMANAGER"'>
-	<!-- 		, IFNULL(CRYPTO_DEC('normal', BIRTHDAY_ENC, '', 0), '') AS BIRTHDAY -->
+	<!-- 		, IFNULL(BIRTHDAY_ENC, '') AS BIRTHDAY -->
 			</if>
 	 		<!-- <if test='downloadExcel'> -->
-			, IFNULL(CRYPTO_DEC('normal', MOBILE, '', 0), '') AS MOBILE_DEC
-			, IFNULL(CRYPTO_DEC('normal', RECEIVE_ADDRESS, '', 0), '') || ' ' || IFNULL(CRYPTO_DEC('normal', RECEIVE_ADDRESS_DETAIL, '', 0), '') AS RECEIVE_ADDRESS_DEC
-			, IFNULL(CRYPTO_DEC('normal', RECEIVE_NAME, '', 0), '') AS RECEIVE_NAME_DEC
+			, IFNULL(MOBILE, '') AS MOBILE_DEC
+			, IFNULL(RECEIVE_ADDRESS, '') || ' ' || IFNULL(RECEIVE_ADDRESS_DETAIL, '') AS RECEIVE_ADDRESS_DEC
+			, IFNULL(RECEIVE_NAME, '') AS RECEIVE_NAME_DEC
 			<!-- 카테고리 조회
 			, CONCAT(
 	   			OG.NAME
@@ -562,8 +562,8 @@
 						, OSI.MEMO
 						, (SELECT OP.APPROVAL_TYPE FROM OP_ORDER_PAYMENT OP WHERE OI.ORDER_CODE = OP.ORDER_CODE AND OI.ORDER_SEQUENCE = OP.ORDER_SEQUENCE) AS APPROVAL_TYPE
 						<!-- </if> -->
-						, CRYPTO_DEC('normal', S.TELEPHONE_NUMBER, '', 0) AS TELEPHONE_NUMBER
-						, CRYPTO_DEC('normal', S.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+						, S.TELEPHONE_NUMBER AS TELEPHONE_NUMBER
+						, S.PHONE_NUMBER AS PHONE_NUMBER
 						, CASE
 				        	WHEN OI.CAMPAIGN_CODE = 'MOBILE' THEN 'Y'
 				        	ELSE 'N'
@@ -1062,9 +1062,9 @@
 	<select id="getOfflineAllOrderListByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultMap="OrderListResult">
 	/* saleson.shop.slave.SlaveOrderMapper.getAllOrderListByParamForManager */
 	SELECT OI.*
-		, IFNULL(CRYPTO_DEC('normal', USER_NAME_ENC, '', 0),'') AS USER_NAME
+		, IFNULL(USER_NAME_ENC,'') AS USER_NAME
 		<if test='conditionType == "OPMANAGER"'>
-<!-- 		, IFNULL(CRYPTO_DEC('normal', BIRTHDAY_ENC, '', 0), '') AS BIRTHDAY -->
+<!-- 		, IFNULL(BIRTHDAY_ENC, '') AS BIRTHDAY -->
 		</if>
 		FROM (
 		<include refid="CommonMapper.paginationHeader" />

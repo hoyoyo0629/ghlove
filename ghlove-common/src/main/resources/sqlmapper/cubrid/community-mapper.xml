@@ -68,7 +68,7 @@
 			,A.hits 
 			,A.created_date
 			,A.updated_date
-			,crypto_dec('normal',A.user_name,'',0) AS USER_NAME
+			,A.user_name AS USER_NAME
 			,A.locgov_nm
 			,A.upper_locgov_nm
 		FROM
@@ -132,7 +132,7 @@
 		,A.hits 
 		,A.created_date
 		,A.updated_date
-		,crypto_dec('normal',A.user_name,'',0) AS USER_NAME
+		,A.user_name AS USER_NAME
 		,A.locgov_nm
 		,A.upper_locgov_nm
 	FROM

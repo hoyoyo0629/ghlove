@@ -177,13 +177,6 @@
     //window.onload = function() {
 
     //};
-    matchYnSelected.addEventListener("change", (event) => {
-
-
-    });
-
-    //  matchYnSelected.selected = true;
-
     $(function() {
         Common.DateButtonEvent.set('.day_btns > a[class^=btn_date]', '', 'input[name="searchStartDate"]' , 'input[name="searchEndDate"]');
         //데이터 출력량 적용

@@ -23,19 +23,19 @@
 					AND CONCAT(L.UPPER_LOCGOV_NM, ' ', L.LOCGOV_NM) LIKE CONCAT('%', #{srchValue},'%')
 				</when>
 				<when test="srchKey == 'LOGIN_ID'">
-					AND M.LOGIN_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					AND M.LOGIN_ID = #{srchValue}
 				</when>
 				<when test="srchKey == 'USER_NAME'">
-					AND M.USER_NAME = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					AND M.USER_NAME = #{srchValue}
 				</when>
 				<when test="srchKey == 'PHONE_NUMBER'">
-					AND M.PHONE_NUMBER = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					AND M.PHONE_NUMBER = #{srchValue}
 				</when>
 				<when test="srchKey == 'PSITN_NM'">
 					AND M.PSITN_NM LIKE CONCAT('%', #{srchValue},'%')
 				</when>
 				<when test="srchKey == 'EMP_ID'">
-					AND M.EMP_ID = (SELECT crypto_enc('normal', #{srchValue}, ''))
+					AND M.EMP_ID = #{srchValue}
 				</when>
 			</choose>
 		</if>
@@ -97,9 +97,9 @@
 				, B.UPPER_LOCGOV_CODE
 				, B.UPPER_LOCGOV_NM
 				, A.AUTHORITY
-				, crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID
-				, crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME
-				, crypto_dec('normal', A.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+				, A.LOGIN_ID AS LOGIN_ID
+				, A.USER_NAME AS USER_NAME
+				, A.PHONE_NUMBER AS PHONE_NUMBER
 				, DATE_FORMAT(A.CREATED_DATE,'%Y-%m-%d') AS CREATED_DATE
 				, A.STATUS_CODE
 				, DATE_FORMAT(A.DENY_DATE,'%Y-%m-%d') AS DENY_DATE
@@ -107,7 +107,7 @@
 				, A.PSITN_DEPT_NM
 				, A.BANK_CODE
 				, A.PSITN_NM
-				, crypto_dec('normal', A.EMP_ID, '', 0) AS EMP_ID
+				, A.EMP_ID AS EMP_ID
 				, A.BANK_NM
 		FROM (
 				<include refid="CommonMapper.paginationHeader" />
@@ -207,19 +207,19 @@
 				, L.UPPER_LOCGOV_CODE
 				, L.UPPER_LOCGOV_NM
 				, R.AUTHORITY
-				, crypto_dec('normal', M.LOGIN_ID, '', 0) AS LOGIN_ID
-				, crypto_dec('normal', M.USER_NAME, '', 0) AS USER_NAME
-				, crypto_dec('normal', M.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+				, M.LOGIN_ID AS LOGIN_ID
+				, M.USER_NAME AS USER_NAME
+				, M.PHONE_NUMBER AS PHONE_NUMBER
 				, DATE_FORMAT(M.CREATED_DATE,'%Y-%m-%d') AS CREATED_DATE
 				, M.STATUS_CODE
 				, DATE_FORMAT(M.DENY_DATE,'%Y-%m-%d') AS DENY_DATE
 				, M.USER_ID
 				, M.BANK_CODE
-				, crypto_dec('normal', M.EMP_ID, '', 0) AS EMP_ID
+				, M.EMP_ID AS EMP_ID
 				, M.PSITN_NM
 				, M.PSITN_DEPT_NM
-				, crypto_dec('normal', M.OFCPS_NM, '', 0) AS OFCPS_NM
-				, crypto_dec('normal', M.EMAIL, '', 0 ) AS EMAIL
+				, M.OFCPS_NM AS OFCPS_NM
+				, M.EMAIL AS EMAIL
 				, (
 					SELECT C.LABEL
 					FROM OP_COMMON_CODE C
@@ -260,8 +260,8 @@
 				L.LOCGOV_NM,
 				L.UPPER_LOCGOV_CODE,
 				L.LOCGOV_INTRCN_CN,
-				crypto_dec('normal', L.CHARGER_CTTPC, '', 0) AS CHARGER_CTTPC,
-				crypto_dec('normal', L.CHARGER_NM, '', 0) AS CHARGER_NM,
+				L.CHARGER_CTTPC AS CHARGER_CTTPC,
+				L.CHARGER_NM AS CHARGER_NM,
 				L.CHARGER_PSITN_DEPT,
 				L.LOCGOV_HMPG,
 				L.LOCGOV_POPLTN_CO,
@@ -311,7 +311,7 @@
 				OP_MANAGER
 		SET
 				PSITN_DEPT_NM = #{psitnDeptNm},
-				OFCPS_NM = crypto_enc('normal', #{ofcpsNm}, ''),
+				OFCPS_NM = #{ofcpsNm},
 				<if test="locgovCode != null and locgovCode != ''">
 				LOCGOV_CODE = #{locgovCode},
 				</if>
@@ -413,7 +413,7 @@
 	<update id="updateUserDetailOffPersonTel" parameterType="saleson.shop.designateddonation.domain.DsgnCntrManagerRequest">
 		/** personincharge-mapper.updateUserDetailOffPersonTel (오프라인 담당자 지점 연락처는 DsgnCntrManagerRequest.java의 phoneNumber에 지점 연락처 들어있음) */
 		UPDATE	OP_USER_DETAIL
-		SET		TEL_NUMBER = crypto_enc('normal',#{phoneNumber},'')
+		SET		TEL_NUMBER = #{phoneNumber}
 		WHERE	USER_ID = #{userId}
 	</update>
 	<update id="updateOffPersonInCharge" parameterType="saleson.shop.user.domain.PersonInCharge">
@@ -421,13 +421,13 @@
 		UPDATE
 				OP_MANAGER
 		SET
-				USER_NAME = crypto_enc('normal', #{userName}, ''),
-				PHONE_NUMBER = crypto_enc('normal', #{phoneNumber}, ''),
+				USER_NAME = #{userName},
+				PHONE_NUMBER = #{phoneNumber},
 				BANK_CODE = #{bankCode},
 				PSITN_NM = #{psitnNm},
-				EMP_ID = crypto_enc('normal', #{empId}, ''),
-				EMAIL = crypto_enc('normal', #{email}, ''),
-				OFCPS_NM = crypto_enc('normal', #{email}, ''),
+				EMP_ID = #{empId},
+				EMAIL = #{email},
+				OFCPS_NM = #{email},
 				INFO_UPDT_DE = ( SELECT
 										CASE WHEN IFNULL(INFO_UPDT_DE, '') != ''
 										THEN INFO_UPDT_DE
@@ -455,7 +455,7 @@
 
 	<select id="getUserOffTelNumber" parameterType="Long" resultType="String">
 		/** personincharge-mapper.getUserOffTelNumber (오프라인 담당자 :  지점연락처 op_user_detail/tel_number 가져오기) */
-		SELECT crypto_dec('normal', TEL_NUMBER, '', 0) AS TEL_NUMBER
+		SELECT TEL_NUMBER AS TEL_NUMBER
 		FROM OP_USER_DETAIL
 		WHERE USER_ID = #{userId}
 	</select>
@@ -491,7 +491,7 @@
 		UPDATE	OP_USER_DETAIL
 		SET		PHONE_NUMBER = (SELECT PHONE_NUMBER FROM OP_MANAGER WHERE USER_ID = #{userId})
 				<if test="telNumber != null and telNumber != ''">
-					,TEL_NUMBER = crypto_enc('normal', #{telNumber}, '')
+					,TEL_NUMBER = #{telNumber}
 				</if>
 		WHERE	USER_ID = #{userId}
 	</update>
@@ -552,7 +552,7 @@
 
 	<select id="getLoginIdByUserId" parameterType="Long" resultType="String">
 		/** psersonincharge-mapper.getLoginIdByUserId (로그인 아이디 조회) */
-		SELECT crypto_dec('normal', LOGIN_ID, '', 0) AS LOGIN_ID
+		SELECT LOGIN_ID AS LOGIN_ID
 		FROM OP_MANAGER
 		WHERE USER_ID = #{userId}
 	</select>
@@ -591,9 +591,9 @@
 				, A.UPPER_LOCGOV_CODE
 				, A.UPPER_LOCGOV_NM
 				, A.AUTHORITY
-				, crypto_dec('normal', A.LOGIN_ID, '', 0) AS LOGIN_ID
-				, crypto_dec('normal', A.USER_NAME, '', 0) AS USER_NAME
-				, crypto_dec('normal', A.PHONE_NUMBER, '', 0) AS PHONE_NUMBER
+				, A.LOGIN_ID AS LOGIN_ID
+				, A.USER_NAME AS USER_NAME
+				, A.PHONE_NUMBER AS PHONE_NUMBER
 				, DATE_FORMAT(A.CREATED_DATE,'%Y-%m-%d') AS CREATED_DATE
 				, A.STATUS_CODE
 				, DATE_FORMAT(A.DENY_DATE,'%Y-%m-%d') AS DENY_DATE
@@ -601,7 +601,7 @@
 				, A.PSITN_DEPT_NM
 				, A.BANK_CODE
 				, A.PSITN_NM
-				, crypto_dec('normal', A.EMP_ID, '', 0) AS EMP_ID
+				, A.EMP_ID AS EMP_ID
 				, A.BANK_NM
 		FROM (
 				<include refid="CommonMapper.paginationHeader" />

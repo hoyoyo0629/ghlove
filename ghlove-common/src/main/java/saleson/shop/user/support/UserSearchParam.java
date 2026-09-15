@@ -34,6 +34,7 @@ public class UserSearchParam extends SearchParam {
 	private String receiveEmail="";
 	private String receiveSms="";
 	private String receivePbanc="";
+	private String receiveKakao="";
 
 
 	private String receiveDm;
@@ -91,6 +92,12 @@ public class UserSearchParam extends SearchParam {
 	}
 	public void setReceivePbanc(String receivePbanc) {
 		this.receivePbanc = receivePbanc;
+	}
+	public String getReceiveKakao() {
+		return receiveKakao;
+	}
+	public void setReceiveKakao(String receiveKakao) {
+		this.receiveKakao = receiveKakao;
 	}
 	public String getReceiveDm() {
 		return receiveDm;

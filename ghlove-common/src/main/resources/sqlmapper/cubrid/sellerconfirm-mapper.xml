@@ -373,8 +373,8 @@
 	
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.MBER_CI_ENC, '', 0) AS MBER_CI
-		, CRYPTO_DEC('normal', T_A.PHONE_NUMBER_ENC, '', 0) AS PHONE_NUMBER
+		, T_A.MBER_CI_ENC AS MBER_CI
+		, T_A.PHONE_NUMBER_ENC AS PHONE_NUMBER
 		FROM (
 			SELECT 
 				S.COMPANY_NAME AS USER_NAME
@@ -396,7 +396,7 @@
 	<!-- <select id="getAllSellerConfirmOrderCountByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultType="Integer">
 	SELECT COUNT(1) FROM (
 	    SELECT oih.*,
-	           IFNULL(CRYPTO_DEC('normal', oih.original_user_name, '', 0), '') AS user_name
+	           IFNULL(oih.original_user_name, '') AS user_name
 	    FROM (
 	        SELECT o.login_id,
 	               o.buyer_name,
@@ -437,7 +437,7 @@
 	<!-- <select id="getAllSellerConfirmOrderListByParamForManager" parameterType="saleson.shop.order.support.OrderParam" resultMap="SellerConfirmOrderListResult">
 		<include refid="CommonMapper.paginationHeader" />
 	    SELECT oih.*,
-	           IFNULL(CRYPTO_DEC('normal', oih.original_user_name, '', 0), '') AS user_name
+	           IFNULL(oih.original_user_name, '') AS user_name
 	    FROM (
 	        SELECT o.login_id,
 	               o.buyer_name,

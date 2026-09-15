@@ -733,7 +733,7 @@ public class Seller implements Serializable {
 	}
 
 	public void parseTelephoneNumber() {
-		if(this.telephoneNumber.split("-").length == 2)
+		if(this.telephoneNumber != null && this.telephoneNumber.split("-").length == 2)
 			this.telephoneNumber = "미선택-" + this.telephoneNumber;
 	}
 

@@ -359,7 +359,7 @@
 					</when>
 
 					<when test="where == 'RECEIVE_NAME'">
-						AND OSI.RECEIVE_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query}, ''), '%')
+						AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query}, '%')
 					</when>
 
 					<when test="where == 'COMPANY_NAME'">
@@ -517,7 +517,7 @@
 					</when>
 
 					<when test="where == 'RECEIVE_NAME'">
-						AND OSI.RECEIVE_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query}, ''), '%')
+						AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query}, '%')
 					</when>
 
 					<when test="where == 'COMPANY_NAME'">
@@ -1358,7 +1358,7 @@
 					</when>
 
 					<when test="where == 'RECEIVE_NAME'">
-						AND OSI.RECEIVE_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query}, ''), '%')
+						AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query}, '%')
 					</when>
 
 
@@ -1514,7 +1514,7 @@
 					</when>
 
 					<when test="where == 'RECEIVE_NAME'">
-						AND OSI.RECEIVE_NAME LIKE CONCAT('%', CRYPTO_ENC('normal', #{query}, ''), '%')
+						AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query}, '%')
 					</when>
 
 
@@ -3926,9 +3926,9 @@
 		resultMap="OrderLogResult">
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.CREATED_BY_ENC, '', 0) AS CREATED_BY
-		, CRYPTO_DEC('normal', T_A.IP_ENC, '', 0) AS IP
-		, CRYPTO_DEC('normal', T_A.UPDATED_BY_ENC, '', 0) AS UPDATED_BY
+		, T_A.CREATED_BY_ENC AS CREATED_BY
+		, T_A.IP_ENC AS IP
+		, T_A.UPDATED_BY_ENC AS UPDATED_BY
 		FROM (
 			SELECT A.ID
 				, A.CREATED_AT

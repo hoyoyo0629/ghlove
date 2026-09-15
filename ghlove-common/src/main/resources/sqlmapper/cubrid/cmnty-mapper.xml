@@ -174,12 +174,12 @@
 								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
 							</when>
 							<when test="where == 'USERNAME'">
-								AND b.user_name = crypto_enc('normal',#{query},'')
+								AND b.user_name = #{query}
 							</when>
 							<otherwise>
 								AND (
 									bbs_ttl LIKE CONCAT('%', #{query}, '%')
-									OR b.user_name = crypto_enc('normal',#{query},'')
+									OR b.user_name = #{query}
 								)
 							</otherwise>
 						</choose>
@@ -202,7 +202,7 @@
 				, a.frst_crt_dt
 				, a.last_mdfcn_id
 				, a.last_mdfcn_dt
-				, crypto_dec('normal',a.user_name,'',0) AS user_name
+				, a.user_name AS user_name
 				, a.locgov_nm
 				, a.upper_locgov_nm
 				, a.authority
@@ -251,12 +251,12 @@
 								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
 							</when>
 							<when test="where == 'USERNAME'">
-								AND b.user_name = crypto_enc('normal',#{query},'')
+								AND b.user_name = #{query}
 							</when>
 							<otherwise>
 								AND (
 									bbs_ttl LIKE CONCAT('%', #{query}, '%')
-									OR b.user_name = crypto_enc('normal',#{query},'')
+									OR b.user_name = #{query}
 								)
 							</otherwise>
 						</choose>
@@ -281,7 +281,7 @@
 			, a.frst_crt_dt
 			, a.last_mdfcn_id
 			, a.last_mdfcn_dt
-			, crypto_dec('normal',b.user_name,'',0) AS user_name
+			, b.user_name AS user_name
 			, (select min(authority) from op_user_role where user_id = a.frst_crt_id) as authority
 			, CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
 			  ELSE '' END AS locgov_nm
@@ -305,7 +305,7 @@
 			, bbs_id
 			, cmnt_cn
 			, use_yn
-			, crypto_dec('normal',b.user_name,'',0) AS user_name
+			, b.user_name AS user_name
 			, CASE WHEN c.locgov_code IS NOT NULL THEN c.locgov_nm
 			  ELSE '' END AS locgov_nm
 			, CASE WHEN c.locgov_code IS NOT NULL THEN c.upper_locgov_nm
@@ -437,12 +437,12 @@
 								AND rpstr_ttl LIKE CONCAT('%', #{query}, '%')
 							</when>
 							<when test="where == 'USERNAME'">
-								AND b.user_name = crypto_enc('normal',#{query},'')
+								AND b.user_name = #{query}
 							</when>
 							<otherwise>
 								AND (
 									rpstr_ttl LIKE CONCAT('%', #{query}, '%')
-									OR b.user_name = crypto_enc('normal',#{query},'')
+									OR b.user_name = #{query}
 								)
 							</otherwise>
 						</choose>
@@ -466,7 +466,7 @@
 				, A.FRST_CRT_DT
 				, A.LAST_MDFCN_ID
 				, A.LAST_MDFCN_DT
-				, CRYPTO_DEC('normal',A.USER_NAME,'',0) AS USER_NAME
+				, A.USER_NAME AS USER_NAME
 				, A.LOCGOV_NM
 				, A.UPPER_LOCGOV_NM
 				, A.AUTHORITY
@@ -516,12 +516,12 @@
 								AND rpstr_ttl LIKE CONCAT('%', #{query}, '%')
 							</when>
 							<when test="where == 'USERNAME'">
-								AND b.user_name = crypto_enc('normal',#{query},'')
+								AND b.user_name = #{query}
 							</when>
 							<otherwise>
 								AND (
 									rpstr_ttl LIKE CONCAT('%', #{query}, '%')
-									OR b.user_name = crypto_enc('normal',#{query},'')
+									OR b.user_name = #{query}
 								)
 							</otherwise>
 						</choose>
@@ -616,7 +616,7 @@
 				, A.RPSTR_TTL
 				, A.RPSTR_CN
 				, (SELECT ATCH_FILE_SZ  FROM G_CMNTY_FILE WHERE RPSTR_ID = A.RPSTR_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
-				, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+				, B.USER_NAME AS USER_NAME
 				, C.LOCGOV_NM
 				, C.UPPER_LOCGOV_NM
 				, A.USE_YN
@@ -726,12 +726,12 @@
 								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
 							</when>
 							<when test="where == 'USERNAME'">
-								AND b.user_name = crypto_enc('normal',#{query},'')
+								AND b.user_name = #{query}
 							</when>
 							<otherwise>
 								AND (
 									bbs_ttl LIKE CONCAT('%', #{query}, '%')
-									OR b.user_name = crypto_enc('normal',#{query},'')
+									OR b.user_name = #{query}
 								)
 							</otherwise>
 						</choose>
@@ -753,7 +753,7 @@
 				, a.frst_crt_dt
 				, a.last_mdfcn_id
 				, a.last_mdfcn_dt
-				, crypto_dec('normal',a.user_name,'',0) AS user_name
+				, a.user_name AS user_name
 				, a.locgov_nm
 				, a.upper_locgov_nm
 				, a.authority
@@ -809,12 +809,12 @@
 								AND bbs_ttl LIKE CONCAT('%', #{query}, '%')
 							</when>
 							<when test="where == 'USERNAME'">
-								AND b.user_name = crypto_enc('normal',#{query},'')
+								AND b.user_name = #{query}
 							</when>
 							<otherwise>
 								AND (
 									bbs_ttl LIKE CONCAT('%', #{query}, '%')
-									OR b.user_name = crypto_enc('normal',#{query},'')
+									OR b.user_name = #{query}
 								)
 							</otherwise>
 						</choose>
@@ -896,7 +896,7 @@
 			, A.BBS_TTL
 			, A.BBS_CN
 			, (SELECT ATCH_FILE_SZ  FROM G_CMNTY_SR_BBS_FILE WHERE BBS_ID = A.BBS_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
-			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, B.USER_NAME AS USER_NAME
 			, C.LOCGOV_NM
 			, C.UPPER_LOCGOV_NM
 			, A.USE_YN
@@ -1032,7 +1032,7 @@
 			, A.BBS_ID
 			, A.CMNT_CN
 			, A.USE_YN
-			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, B.USER_NAME AS USER_NAME
 			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.LOCGOV_NM
 			  ELSE '' END AS LOCGOV_NM
 			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.UPPER_LOCGOV_NM
@@ -1306,7 +1306,7 @@
 				, a.frst_crt_dt
 				, a.last_mdfcn_id
 				, a.last_mdfcn_dt
-				, crypto_dec('normal',a.user_name,'',0) AS user_name
+				, a.user_name AS user_name
 				, a.locgov_nm
 				, a.upper_locgov_nm
 				, a.authority
@@ -1452,7 +1452,7 @@
 			, A.BBS_CN
 			, A.FAQ_TYPE
 			, (SELECT ATCH_FILE_SZ  FROM G_CMNTY_FAQ_BBS_FILE WHERE BBS_ID = A.BBS_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
-			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, B.USER_NAME AS USER_NAME
 			, C.LOCGOV_NM
 			, C.UPPER_LOCGOV_NM
 			, A.USE_YN
@@ -1590,7 +1590,7 @@
 			, A.BBS_ID
 			, A.CMNT_CN
 			, A.USE_YN
-			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, B.USER_NAME AS USER_NAME
 			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.LOCGOV_NM
 			  ELSE '' END AS LOCGOV_NM
 			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.UPPER_LOCGOV_NM
@@ -1884,7 +1884,7 @@
 				, a.frst_crt_dt
 				, a.last_mdfcn_id
 				, a.last_mdfcn_dt
-				, crypto_dec('normal',a.user_name,'',0) AS user_name
+				, a.user_name AS user_name
 				, a.locgov_nm
 				, a.upper_locgov_nm
 				, a.authority
@@ -2043,7 +2043,7 @@
 			, A.BBS_TTL
 			, A.BBS_CN
 			, (SELECT ATCH_FILE_SZ  FROM G_CMNTY_OFF_SR_BBS_FILE WHERE BBS_ID = A.BBS_ID AND USE_YN = 'Y') as ATCH_FILE_SZ
-			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, B.USER_NAME AS USER_NAME
 			, C.LOCGOV_NM
 			, C.UPPER_LOCGOV_NM
 			, A.USE_YN
@@ -2190,7 +2190,7 @@
 			, A.BBS_ID
 			, A.CMNT_CN
 			, A.USE_YN
-			, CRYPTO_DEC('normal',B.USER_NAME,'',0) AS USER_NAME
+			, B.USER_NAME AS USER_NAME
 			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.LOCGOV_NM
 			  ELSE '' END AS LOCGOV_NM
 			, CASE WHEN C.LOCGOV_CODE IS NOT NULL THEN C.UPPER_LOCGOV_NM

@@ -1100,6 +1100,9 @@
 		location.href = uri;
 	}
 
+	// 통계 데이터가 없으면 탭 핸들러 안의 forEach 가 비어 crtrYr 가 선언되지 않아 ReferenceError 가 나므로 기본값을 둔다.
+	var crtrYr = '${empty statisticsParam.shYear ? nowYear : statisticsParam.shYear}';
+
 	$("#btn_tab1").click(function() {
 		document.getElementById("tbMbrTnocsStats").style.display = "";
 		document.getElementById("tbDntnTnocsStats").style.display = "none";

@@ -27,6 +27,7 @@
 						<input type="hidden" name="requestToken" id="requestToken" />
 					</p>
 					<p class="tip">등록된 휴대폰 번호로 인증번호가 발송 됩니다.</p>
+					<p class="tip" id="localDevCodeTip" style="display:none;color:#d9534f;font-weight:bold;"></p>
 					<div class="footer">
 						<button type="submit" class="btn btn-orange btn-lg"><span>본인인증</span></button>
 						<a href="/op_security_logout?target=/opmanager" class="btn btn-dark-gray btn-lg"><span>로그아웃</span></a>
@@ -47,7 +48,14 @@
 
 		$.post('/auth/manager-sms-request', {}, function(response){
 			Common.responseHandler(response, function(response) {
-				$('#requestToken').val(response.data);
+				$('#requestToken').val(response.data.requestToken);
+
+				// LOCAL DEV ONLY: no SMS gateway locally, so the server sends the code back
+				// directly instead of texting it. Auto-fill it and show it on screen.
+				if (response.data.localDevCode) {
+					$('#smsAuth').removeAttr('disabled').removeAttr('readonly').val(response.data.localDevCode);
+					$('#localDevCodeTip').text('[로컬 개발용] 인증번호: ' + response.data.localDevCode).show();
+				}
 			});
 		});
 	}

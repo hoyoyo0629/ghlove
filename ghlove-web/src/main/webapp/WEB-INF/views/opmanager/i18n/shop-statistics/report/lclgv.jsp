@@ -1297,6 +1297,11 @@
 		Shop.downloadExcelOrder("/opmanager/shop-statistics/report/lclgv/excel-download", $('#statisticsParam').serialize(), false);
 	}
 
+	// 통계 데이터가 없으면 탭 핸들러 안의 forEach 가 비어 crtrYr/mctpv/lclgv 가 선언되지 않아 ReferenceError 가 나므로 기본값을 둔다.
+	var crtrYr = '${empty statisticsParam.shYear ? nowYear : statisticsParam.shYear}';
+	var mctpv = '${statisticsParam.shMctpv}';
+	var lclgv = '${statisticsParam.shLclgv}';
+
 	$("#btn_tab1").click(function() {
 		document.getElementById("tbLclgvAodStats").style.display = "";
 		document.getElementById("tbLclgvAodMaxStats").style.display = "none";

@@ -324,7 +324,18 @@ public class NgDonationRelayServiceImpl extends EgovAbstractServiceImpl implemen
         API_REQUEST.put("napUndYn", "");			//
         API_REQUEST.put("napbuYmd", "");			//
 
-    	String response = restFulToRelayServer(seoulBugaUrl, API_REQUEST, "");
+    	String response;
+    	if (com.onlinepowers.framework.common.ServiceType.LOCAL) {
+    		// LOCAL DEV ONLY: 서울 세외수입 부과등록 연계서버에 닿지 않으므로 가짜 전자납부번호로 성공 응답을 만든다.
+    		JSONObject fakeResponse = new JSONObject();
+    		fakeResponse.put("errorCode", "0");
+    		fakeResponse.put("errorMsg", "");
+    		fakeResponse.put("enapbuNo", "99" + java.time.LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")));
+    		response = fakeResponse.toJSONString();
+    		log.warn("[LOCAL DEV] sntrBugaInsert relay skipped, fake enapbuNo {}", fakeResponse.get("enapbuNo"));
+    	} else {
+    		response = restFulToRelayServer(seoulBugaUrl, API_REQUEST, "");
+    	}
 		Object objList = JSONValue.parse(response);
         JSONObject jsonObject = (JSONObject)objList;
 
@@ -377,7 +388,21 @@ public class NgDonationRelayServiceImpl extends EgovAbstractServiceImpl implemen
         ja.add(jo1);
 
         API_REQUEST.put("ARR_BU_INFO", ja);								// 전자납부번호 json array
-    	String response = restFulToRelayServer(seoulSunapUrl, API_REQUEST, "");
+    	String response;
+    	if (com.onlinepowers.framework.common.ServiceType.LOCAL) {
+    		// LOCAL DEV ONLY: 이택스 수납조회 연계서버에 닿지 않으므로 수납완료 응답을 만든다.
+    		JSONObject fakeSunap = new JSONObject();
+    		fakeSunap.put("SUNAP_YN", "Y");
+    		fakeSunap.put("SUNAP_DT", DateUtils.getToday("yyyyMMdd"));
+    		JSONArray fakeResult = new JSONArray();
+    		fakeResult.add(fakeSunap);
+    		JSONObject fakeResponse = new JSONObject();
+    		fakeResponse.put("RST_CD", "100");
+    		fakeResponse.put("ARR_RESULT", fakeResult);
+    		response = fakeResponse.toJSONString();
+    	} else {
+    		response = restFulToRelayServer(seoulSunapUrl, API_REQUEST, "");
+    	}
     	SERVICE_RELAY_RESULT.put(API_RESONSE, response);
 
 		return SERVICE_RELAY_RESULT;
@@ -1015,7 +1040,18 @@ public class NgDonationRelayServiceImpl extends EgovAbstractServiceImpl implemen
         	ObjectMapper objectMapper = new ObjectMapper();
         	HashMap<String, Object> requestMap = (HashMap<String, Object>) objectMapper.convertValue(nextBugaRequestDto, Map.class);
 
-        	String response = restFulToRelayServerHttps(nextBugaRequestUrl, requestMap, "");
+        	String response;
+        	if (com.onlinepowers.framework.common.ServiceType.LOCAL) {
+        		// LOCAL DEV ONLY: 부과등록 연계서버에 닿지 않으므로 가짜 전자납부번호로 성공 응답을 만든다. G_CNTR 등록은 실제대로 탄다.
+        		String fakeEpayNo = "99" + java.time.LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+        		JSONObject fakeResponse = new JSONObject();
+        		fakeResponse.put("linkRstCd", "000");
+        		fakeResponse.put("linkRstMsg", "LOCAL FAKE : " + fakeEpayNo);
+        		response = fakeResponse.toJSONString();
+        		log.warn("[LOCAL DEV] nextBugaRequest relay skipped, fake epayNo {}", fakeEpayNo);
+        	} else {
+        		response = restFulToRelayServerHttps(nextBugaRequestUrl, requestMap, "");
+        	}
         	Object objList = JSONValue.parse(response);
             JSONObject jsonObject = (JSONObject)objList;
 
@@ -1465,7 +1501,13 @@ public class NgDonationRelayServiceImpl extends EgovAbstractServiceImpl implemen
 			API_REQUEST.put("linkMngKey", nextBugaRequestDto.getLinkMngKey());
 
 			//세외수입 수납이력확인 연계요청
-			String response = restFulToRelayServerHttps(nextSunapInfoRequestUrl, API_REQUEST, "");
+			String response;
+			if (com.onlinepowers.framework.common.ServiceType.LOCAL) {
+				// LOCAL DEV ONLY: 세외수입 수납이력 연계서버에 닿지 않으므로, 로컬에서 우회한 결제는 납부된 것으로 응답한다.
+				response = "{\"status\":\"SUCCESS\"}";
+			} else {
+				response = restFulToRelayServerHttps(nextSunapInfoRequestUrl, API_REQUEST, "");
+			}
 			ObjectMapper objectMapper = new ObjectMapper();
 			SERVICE_RELAY_RESULT = objectMapper.readValue(response, new TypeReference<Map<String, Object>>() {});
 

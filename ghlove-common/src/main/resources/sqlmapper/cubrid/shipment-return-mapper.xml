@@ -20,10 +20,10 @@
 	<select id="getShipmentReturnListBySellerId" parameterType="int" resultMap="ShipmentReturnResult" >
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.NAME_ENC, '', 0) AS NAME
-		, CRYPTO_DEC('normal', T_A.TELEPHONE_NUMBER_ENC, '', 0) AS TELEPHONE_NUMBER
-		, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-		, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+		, T_A.NAME_ENC AS NAME
+		, T_A.TELEPHONE_NUMBER_ENC AS TELEPHONE_NUMBER
+		, T_A.ADDRESS_ENC AS ADDRESS
+		, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 	FROM (
 		SELECT 
 			SHIPMENT_RETURN_ID
@@ -49,10 +49,10 @@
 	<select id="getShipmentReturnById" parameterType="int" resultMap="ShipmentReturnResult" >
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.NAME_ENC, '', 0) AS NAME
-		, CRYPTO_DEC('normal', T_A.TELEPHONE_NUMBER_ENC, '', 0) AS TELEPHONE_NUMBER
-		, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-		, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+		, T_A.NAME_ENC AS NAME
+		, T_A.TELEPHONE_NUMBER_ENC AS TELEPHONE_NUMBER
+		, T_A.ADDRESS_ENC AS ADDRESS
+		, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 	FROM (
 		SELECT
 			SHIPMENT_RETURN_ID
@@ -74,10 +74,10 @@
 	<select id="getShipmentReturnByParam" parameterType="saleson.shop.shipmentreturn.support.ShipmentReturnParam" resultMap="ShipmentReturnResult" >
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.NAME_ENC, '', 0) AS NAME
-		, CRYPTO_DEC('normal', T_A.TELEPHONE_NUMBER_ENC, '', 0) AS TELEPHONE_NUMBER
-		, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-		, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+		, T_A.NAME_ENC AS NAME
+		, T_A.TELEPHONE_NUMBER_ENC AS TELEPHONE_NUMBER
+		, T_A.ADDRESS_ENC AS ADDRESS
+		, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 	FROM (
 		SELECT
 			SHIPMENT_RETURN_ID
@@ -140,7 +140,7 @@
 	<!-- 교환/반송지 등록 -->
 	<insert id="insertShipmentReturn" parameterType="saleson.shop.shipmentreturn.domain.ShipmentReturn">
 		INSERT INTO OP_SHIPMENT_RETURN (SHIPMENT_RETURN_ID, SELLER_ID, ADDRESS_NAME, NAME, TELEPHONE_NUMBER, ZIPCODE, ADDRESS, ADDRESS_DETAIL, DEFAULT_ADDRESS_FLAG, CREATED_DATE)
-		VALUES (#{shipmentReturnId}, #{sellerId}, #{addressName}, <!-- CRYPTO_ENC('normal', #{name}, '') -->#{name}, CRYPTO_ENC('normal', #{telephoneNumber}, ''), #{zipcode}, CRYPTO_ENC('normal', #{address}, ''), CRYPTO_ENC('normal', #{addressDetail}, ''), #{defaultAddressFlag}, <include refid="CommonMapper.datetime"/>)
+		VALUES (#{shipmentReturnId}, #{sellerId}, #{addressName}, <!-- #{name} -->#{name}, #{telephoneNumber}, #{zipcode}, #{address}, #{addressDetail}, #{defaultAddressFlag}, <include refid="CommonMapper.datetime"/>)
 	</insert>
 
 
@@ -148,11 +148,11 @@
 	<update id="updateShipmentReturn" parameterType="saleson.shop.shipmentreturn.domain.ShipmentReturn">
 		UPDATE OP_SHIPMENT_RETURN SET
 			ADDRESS_NAME = #{addressName}, 
-			NAME = <!-- CRYPTO_ENC('normal', #{name}, '') -->#{name}, 
-			TELEPHONE_NUMBER = CRYPTO_ENC('normal', #{telephoneNumber}, ''), 
+			NAME = <!-- #{name} -->#{name}, 
+			TELEPHONE_NUMBER = #{telephoneNumber}, 
 			ZIPCODE = #{zipcode}, 
-			ADDRESS = CRYPTO_ENC('normal', #{address}, ''), 
-			ADDRESS_DETAIL = CRYPTO_ENC('normal', #{addressDetail}, ''), 
+			ADDRESS = #{address}, 
+			ADDRESS_DETAIL = #{addressDetail}, 
 			DEFAULT_ADDRESS_FLAG = #{defaultAddressFlag}
 		WHERE SHIPMENT_RETURN_ID = #{shipmentReturnId}
 	</update>
@@ -176,10 +176,10 @@
 	<select id="getDefaultShipmentReturn" parameterType="saleson.shop.shipmentreturn.domain.ShipmentReturn" resultMap="ShipmentReturnResult" >
 	SELECT
 		T_A.*
-		, CRYPTO_DEC('normal', T_A.NAME_ENC, '', 0) AS NAME
-		, CRYPTO_DEC('normal', T_A.TELEPHONE_NUMBER_ENC, '', 0) AS TELEPHONE_NUMBER
-		, CRYPTO_DEC('normal', T_A.ADDRESS_ENC, '', 0) AS ADDRESS
-		, CRYPTO_DEC('normal', T_A.ADDRESS_DETAIL_ENC, '', 0) AS ADDRESS_DETAIL
+		, T_A.NAME_ENC AS NAME
+		, T_A.TELEPHONE_NUMBER_ENC AS TELEPHONE_NUMBER
+		, T_A.ADDRESS_ENC AS ADDRESS
+		, T_A.ADDRESS_DETAIL_ENC AS ADDRESS_DETAIL
 	FROM (
 		SELECT
 			SHIPMENT_RETURN_ID

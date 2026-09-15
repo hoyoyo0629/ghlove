@@ -64,7 +64,7 @@
 			T.LOCGOV_CODE AS LOCGOV_CODE,
 			T.LOCGOV_NM AS LOCGOV_NM,
 			T.STTEMNT_PAY_DE, <!-- 수납일 -->
-			CRYPTO_DEC('normal', T.USER_NAME, '', 0) as USER_NAME, <!-- 이름 -->
+			T.USER_NAME as USER_NAME, <!-- 이름 -->
 			T.CNTR_AMT, <!-- 기부금액 -->
 			T.ELCTRN_PAY_NO, <!-- 전자납부번호 -->
 			T.RCEPT_BANK_CODE, <!-- 접수은행코드 -->
@@ -171,18 +171,18 @@
 		    ,	CNTR_POINT - CNTR_USE_POINT AS CNTR_BLCE_POINT
 		    , 	CNTR_STTUS_CODE
 		    , 	REQ_ID
-		    , 	(SELECT CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) FROM OP_USER OU WHERE OU.USER_ID = A.USER_ID) 								AS LOGIN_ID
-			, 	(SELECT CRYPTO_DEC('normal', OU.USER_NAME, '', 0) FROM OP_USER OU WHERE OU.USER_ID = A.USER_ID) 							AS USER_NAME
-			, 	(SELECT CRYPTO_DEC('normal', OUD.BIRTHDAY, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 				AS BIRTHDAY
-			, 	(SELECT CRYPTO_DEC('normal', OUD.PHONE_NUMBER, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID)  	AS PHONE_NUMBER
-			, 	(SELECT CRYPTO_DEC('normal', POST, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 							AS POST
-			, 	(SELECT CRYPTO_DEC('normal', ADDRESS, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 					AS ADDRESS
-			, 	(SELECT CRYPTO_DEC('normal', ADDRESS_DETAIL, '', 0) FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 			AS ADDRESS_DETAIL
+		    , 	(SELECT OU.LOGIN_ID FROM OP_USER OU WHERE OU.USER_ID = A.USER_ID) 								AS LOGIN_ID
+			, 	(SELECT OU.USER_NAME FROM OP_USER OU WHERE OU.USER_ID = A.USER_ID) 							AS USER_NAME
+			, 	(SELECT OUD.BIRTHDAY FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 				AS BIRTHDAY
+			, 	(SELECT OUD.PHONE_NUMBER FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID)  	AS PHONE_NUMBER
+			, 	(SELECT POST FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 							AS POST
+			, 	(SELECT ADDRESS FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 					AS ADDRESS
+			, 	(SELECT ADDRESS_DETAIL FROM OP_USER_DETAIL OUD WHERE OUD.USER_ID = A.USER_ID) 			AS ADDRESS_DETAIL
 			,	PRJ_SUBJECT
 			,	<![CDATA[(SELECT GROUP_CONCAT(SA.ITEM_NAME || SA.OPTIONS SEPARATOR '<br/>') FROM OP_ORDER_ITEM SA WHERE CNTR_SN = SA.FILLER9 AND (SA.ITEM_NAME || SA.OPTIONS) IS NOT NULL AND (SA.ITEM_NAME || SA.OPTIONS) <> '') AS OPTIONS ]]>
-			, 	(select CRYPTO_DEC('normal', os.receive_zipcode, '', 0) from op_order_shipping_info os where os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 			    AS rcvPost
-			, 	(SELECT CRYPTO_DEC('normal', os.receive_address, '', 0) FROM op_order_shipping_info os WHERE os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 					AS rcvAddress
-			, 	(SELECT CRYPTO_DEC('normal', os.receive_address_detail, '', 0) FROM op_order_shipping_info os WHERE os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 			AS rcvAddressDetail
+			, 	(select os.receive_zipcode from op_order_shipping_info os where os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 			    AS rcvPost
+			, 	(SELECT os.receive_address FROM op_order_shipping_info os WHERE os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 					AS rcvAddress
+			, 	(SELECT os.receive_address_detail FROM op_order_shipping_info os WHERE os.order_code = (select distinct oi.order_code from op_order_item oi where oi.filler9 = A.cntr_sn)) 			AS rcvAddressDetail
 		FROM
 		(
 			SELECT
@@ -219,11 +219,11 @@
 			CNTR_SN
 			, GC.FRST_REGIST_PNTTM -- 신청일
 			, '' -- 처리기간
-			, crypto_dec('normal', OU.USER_NAME, '', 0) as USER_NAME
-			, crypto_dec('normal', OUD.BIRTHDAY, '', 0) as BIRTHDAY
-			, crypto_dec('normal', ADDRESS, '', 0) as ADDRESS
-			, crypto_dec('normal', ADDRESS_DETAIL, '', 0) as ADDRESS_DETAIL
-			, crypto_dec('normal', OUD.PHONE_NUMBER, '', 0) as OUD.PHONE_NUMBER
+			, OU.USER_NAME as USER_NAME
+			, OUD.BIRTHDAY as BIRTHDAY
+			, ADDRESS as ADDRESS
+			, ADDRESS_DETAIL as ADDRESS_DETAIL
+			, OUD.PHONE_NUMBER as OUD.PHONE_NUMBER
 		    , GC.CNTR_AMT	-- 기부금액
 			, GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
 		    , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR') AS UPPER_LOCGOV_NM

@@ -69,7 +69,7 @@
 			T.LOCGOV_CODE AS LOCGOV_CODE,
 			T.LOCGOV_NM AS LOCGOV_NM,
 			T.STTEMNT_PAY_DE, -- 수납일
-			CRYPTO_DEC('normal', T.USER_NAME, '', 0) as USER_NAME, -- 이름
+			T.USER_NAME as USER_NAME, -- 이름
 			T.CNTR_AMT, -- 기부금액
 			T.ELCTRN_PAY_NO, -- 전자납부번호
 			T.RCEPT_BANK_CODE, -- 접수은행코드
@@ -162,14 +162,14 @@
 		SELECT
 			CNTR_SN
 			, GC.FRST_REGIST_PNTTM -- 신청일
-			, CRYPTO_DEC('normal', OU.LOGIN_ID, '', 0) as LOGIN_ID
-			, CRYPTO_DEC('normal', OU.USER_NAME, '', 0) as USER_NAME
-			, CRYPTO_DEC('normal', OUD.BIRTHDAY, '', 0) as BIRTHDAY
-			, CRYPTO_DEC('normal', OUD.PHONE_NUMBER, '', 0) as PHONE_NUMBER
+			, OU.LOGIN_ID as LOGIN_ID
+			, OU.USER_NAME as USER_NAME
+			, OUD.BIRTHDAY as BIRTHDAY
+			, OUD.PHONE_NUMBER as PHONE_NUMBER
 			, GC.INFO_AGRE_AT	-- 행정정보 공동이용 동의
-			, CRYPTO_DEC('normal', POST, '', 0) as POST
-			, CRYPTO_DEC('normal', ADDRESS, '', 0) as ADDRESS
-			, CRYPTO_DEC('normal', ADDRESS_DETAIL, '', 0) as ADDRESS_DETAIL
+			, POST as POST
+			, ADDRESS as ADDRESS
+			, ADDRESS_DETAIL as ADDRESS_DETAIL
 			, GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
 		    , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR') AS UPPER_LOCGOV_NM
 		    , GL.LOCGOV_CODE AS LOCGOV_CODE
@@ -202,11 +202,11 @@
 			CNTR_SN
 			, GC.FRST_REGIST_PNTTM -- 신청일
 			, '' -- 처리기간
-			, crypto_dec('normal', OU.USER_NAME, '', 0) as USER_NAME
-			, crypto_dec('normal', OUD.BIRTHDAY, '', 0) as BIRTHDAY
-			, crypto_dec('normal', ADDRESS, '', 0) as ADDRESS
-			, crypto_dec('normal', ADDRESS_DETAIL, '', 0) as ADDRESS_DETAIL
-			, crypto_dec('normal', OUD.PHONE_NUMBER, '', 0) as OUD.PHONE_NUMBER
+			, OU.USER_NAME as USER_NAME
+			, OUD.BIRTHDAY as BIRTHDAY
+			, ADDRESS as ADDRESS
+			, ADDRESS_DETAIL as ADDRESS_DETAIL
+			, OUD.PHONE_NUMBER as OUD.PHONE_NUMBER
 		    , GC.CNTR_AMT	-- 기부금액
 			, GL.UPPER_LOCGOV_CODE AS UPPER_LOCGOV_CODE
 		    , (SELECT LABEL FROM OP_COMMON_CODE OCC WHERE ID = GL.UPPER_LOCGOV_CODE AND CODE_TYPE = 'WDR') AS UPPER_LOCGOV_NM
@@ -495,7 +495,7 @@
 		UPDATE
 			OP_USER_DETAIL
 		SET
-			PHONE_NUMBER = crypto_enc('normal',#{phoneNumber},'')
+			PHONE_NUMBER = #{phoneNumber}
 		WHERE
 			USER_ID = #{userId}
 	</update>

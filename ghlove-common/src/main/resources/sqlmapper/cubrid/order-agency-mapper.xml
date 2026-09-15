@@ -22,7 +22,7 @@
 			#{userSessionId}
 			, #{validAccessCd}
 			, #{managerId}
-			, CRYPTO_ENC('normal', #{cntrbtrMobile}, '')
+			, #{cntrbtrMobile}
 			, #{privateKey}
 		)
 
@@ -46,7 +46,7 @@
 			, VALID_ACCESS_CD
 			, PRIVATE_KEY
 			, MANAGER_ID
-			, CRYPTO_DEC('normal', CNTRBTR_MOBILE, '', 0) AS CNTRBTR_MOBILE
+			, CNTRBTR_MOBILE AS CNTRBTR_MOBILE
 			, CNTRBTR_ID
 			, FRST_REG_DT
 		FROM G_AGENCY_LOGIN_CONFIRM_INFO
@@ -72,7 +72,7 @@
 		SELECT
 			LOCGOV_NM
 			, PBADMS_WLFR_CNTR_NM
-			, CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+			, USER_NAME AS USER_NAME
 			, PBADMS_WLFR_CNTR_ID
 		FROM (
 			SELECT
@@ -107,10 +107,10 @@
 			LOCGOV_NM
 			, DATE_FORMAT(STR_TO_DATE(PAY_DATE, '%Y%m%d%H%i%S'), '%Y-%m-%d %H:%i:%S') AS PAY_DATE
 			, ORDER_CODE
-			, CRYPTO_DEC('normal', BUYER_NAME, '', 0) AS BUYER_NAME
-			, CRYPTO_DEC('normal', RECEIVE_NAME, '', 0) AS RECEIVE_NAME
+			, BUYER_NAME AS BUYER_NAME
+			, RECEIVE_NAME AS RECEIVE_NAME
 			, ITEM_NAME
-			, CRYPTO_DEC('normal', MANAGER_NM, '', 0) AS MANAGER_NM
+			, MANAGER_NM AS MANAGER_NM
 			, MANAGER_ID
 			, PBADMS_WLFR_CNTR_NM
 		FROM (
@@ -169,16 +169,16 @@
 						AND OAOL.ORDER_CODE LIKE '%' || #{query} || '%'
 					</when>
 					<when test='where == "USER_NAME"'>
-						AND O.BUYER_NAME = (CRYPTO_ENC('normal', #{query}, ''))
+						AND O.BUYER_NAME = (#{query})
 					</when>
 					<when test='where == "RECEIVE_NAME"'>
-						AND OSI.RECEIVE_NAME = (CRYPTO_ENC('normal', #{query}, ''))
+						AND OSI.RECEIVE_NAME = (#{query})
 					</when>
 					<when test='where == "ITEM_NAME"'>
 						AND OI.ITEM_NAME LIKE '%' || #{query} || '%'
 					</when>
 					<when test='where == "MANAGER_NAME"'>
-						AND OAOL.MANAGER_NM = (CRYPTO_ENC('normal', #{query}, ''))
+						AND OAOL.MANAGER_NM = (#{query})
 					</when>
 				</choose>
 			</if>
@@ -230,16 +230,16 @@
 						AND OAOL.ORDER_CODE LIKE '%' || #{query} || '%'
 					</when>
 					<when test='where == "USER_NAME"'>
-						AND O.BUYER_NAME = (CRYPTO_ENC('normal', #{query}, ''))
+						AND O.BUYER_NAME = (#{query})
 					</when>
 					<when test='where == "RECEIVE_NAME"'>
-						AND OSI.RECEIVE_NAME = (CRYPTO_ENC('normal', #{query}, ''))
+						AND OSI.RECEIVE_NAME = (#{query})
 					</when>
 					<when test='where == "ITEM_NAME"'>
 						AND OI.ITEM_NAME LIKE '%' || #{query} || '%'
 					</when>
 					<when test='where == "MANAGER_NAME"'>
-						AND OAOL.MANAGER_NM = (CRYPTO_ENC('normal', #{query}, ''))
+						AND OAOL.MANAGER_NM = (#{query})
 					</when>
 				</choose>
 			</if>

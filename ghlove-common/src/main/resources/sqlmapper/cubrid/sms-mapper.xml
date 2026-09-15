@@ -84,7 +84,7 @@
 		       ,#{insttCrtDocId} AS instt_crt_doc_id
 		       ,A.MBER_CI AS prvc_idntfc_info
 		       ,#{prvcIdntfcSeCd} AS prvc_idntfc_se_cd
-		       ,CONCAT(A.user_name,'|',A.TAX_YEAR,'|',FORMAT(A.cntr_amt, 0),'|',FORMAT(A.tax_amt, 0),'|', REPLACE (CRYPTO_DEC('normal',A.phone_number, '', 0),'-','')) AS sndng_cntnts
+		       ,CONCAT(A.user_name,'|',A.TAX_YEAR,'|',FORMAT(A.cntr_amt, 0),'|',FORMAT(A.tax_amt, 0),'|', REPLACE (A.phone_number,'-','')) AS sndng_cntnts
 		       ,#{img1UrlInfo} AS img1_url_info
 		       ,#{img2UrlInfo} AS img2_url_info
 		       ,#{img3UrlInfo} AS img3_url_info
@@ -97,7 +97,7 @@
 		       ,#{esbWorkGbn} AS esb_work_gbn
 		       ,#{esbErrMsg} AS esb_err_msg
 		  FROM ( SELECT B.mber_ci
-		  				,CRYPTO_DEC('normal', B.user_name, '', 0) AS user_name
+		  				,B.user_name AS user_name
 		  				,#{taxYear} AS tax_year
 		  				,cntr_amt
 		  				,(CASE WHEN cntr_amt <![CDATA[>]]> 100000 
@@ -152,7 +152,7 @@
 		       ,#{insttCrtDocId} AS instt_crt_doc_id
 		       ,AA.prvc_idntfc_info
 		       ,#{prvcIdntfcSeCd} AS prvc_idntfc_se_cd
-		       ,CONCAT(CRYPTO_DEC('normal', AA.user_name, '', 0),'|',#{sndngCntnts},'|', REPLACE(CRYPTO_DEC('normal',AA.phone_number, '', 0),'-','')) AS sndng_cntnts
+		       ,CONCAT(AA.user_name,'|',#{sndngCntnts},'|', REPLACE(AA.phone_number,'-','')) AS sndng_cntnts
 		       ,#{img1UrlInfo} AS img1_url_info
 		       ,#{img2UrlInfo} AS img2_url_info
 		       ,#{img3UrlInfo} AS img3_url_info

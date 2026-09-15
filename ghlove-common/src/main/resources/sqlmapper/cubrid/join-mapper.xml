@@ -107,10 +107,10 @@
 			A.MBER_CI = #{mberCi},
 			A.MBER_DI = #{mberDi},
 			<if test="mberDn !=null and mberDn !=''">
-				A.MBER_DN = crypto_enc('normal',#{mberDn},''),
+				A.MBER_DN = #{mberDn},
 			</if>
 			<if test="mberFinDn !=null and mberFinDn !=''">
-				A.MBER_FIN_DN = crypto_enc('normal',#{mberFinDn},''),
+				A.MBER_FIN_DN = #{mberFinDn},
 			</if>
 			<if test="userKey !=null and userKey !=''">
 				A.USER_KEY = #{userKey},

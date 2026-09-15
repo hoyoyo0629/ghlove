@@ -1,0 +1,11 @@
+// ghlove-api/build.gradle sets `bootRun { enabled = false }` because the module is normally
+// packaged as a WAR and deployed to an app server. For local development we still want to be
+// able to run it directly via `gradlew :ghlove-api:bootRun`, so this init script re-enables the
+// task without touching the tracked build.gradle file. Used by scripts/start-all.bat.
+allprojects {
+    afterEvaluate {
+        if (project.path == ':ghlove-api') {
+            tasks.named('bootRun') { enabled = true }
+        }
+    }
+}

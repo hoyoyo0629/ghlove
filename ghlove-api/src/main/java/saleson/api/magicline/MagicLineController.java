@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -34,6 +35,7 @@ import saleson.api.common.enumerated.ApiError;
 import saleson.api.magicline.domain.MagiclineInfo;
 import saleson.common.configuration.SalesonProperty;
 
+@Profile("!local")
 @RestController("ApiMagiclineController")
 @RequestMapping("/api/magicline")
 public class MagicLineController {

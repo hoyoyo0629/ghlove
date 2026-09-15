@@ -82,7 +82,7 @@
 			A.frst_regist_pnttm,
 			A.last_updusr_id,
 			A.last_updt_pnttm,
-			crypto_dec('normal', A.user_name, '', 0) AS user_name
+			A.user_name AS user_name
 		FROM 
 			(
 				SELECT 

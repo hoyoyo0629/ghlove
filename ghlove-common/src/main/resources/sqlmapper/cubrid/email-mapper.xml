@@ -55,7 +55,7 @@
 		   ,A.STATUS_NAME
 		   ,A.FRST_REGISTER_ID
 		   ,A.FRST_REGIST_PNTTM
-		   ,crypto_dec('normal', USER_NAME,'',0) AS USER_NAME
+		   ,USER_NAME AS USER_NAME
 		FROM
 		(
 			SELECT EMAIL_ID
@@ -128,8 +128,8 @@
 		/* emailMapper.sendUserList */
 	SELECT
 		A.EMAIL_ID
-		,crypto_dec('normal',USER_NAME,'',0) AS USER_NAME
-		,crypto_dec('normal',EMAIL,'',0) AS EMAIL
+		,USER_NAME AS USER_NAME
+		,EMAIL AS EMAIL
 
 	FROM
 		(
@@ -205,8 +205,8 @@
 	<select id="getUserList" parameterType="string" resultType="saleson.shop.email.domain.EmailSend">
 		SELECT
 			A.USER_ID
-			,crypto_dec('normal',user_name,'',0) AS USER_NAME
-			,crypto_dec('normal',email,'',0) AS EMAIL
+			,user_name AS USER_NAME
+			,email AS EMAIL
 		FROM
 			(
 				SELECT USER_ID
@@ -225,8 +225,8 @@
 	<select id="sendSellerUserList" resultType="saleson.shop.email.domain.EmailSend">
 		SELECT
 				A.EMAIL_ID
-			   ,crypto_dec('normal',USER_NAME ,'',0) AS USER_NAME
-		       ,crypto_dec('normal',EMAIL,'',0) AS EMAIL
+			   ,USER_NAME AS USER_NAME
+		       ,EMAIL AS EMAIL
 		FROM
 		(
 		SELECT #{emailId} AS EMAIL_ID

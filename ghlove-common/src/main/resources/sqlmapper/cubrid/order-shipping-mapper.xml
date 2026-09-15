@@ -640,7 +640,7 @@
 		/* saleson.shop.order.shipping.OrderShippingMapper.getNewOrderListByParam */
 
 		SELECT T_A.*
-			, (SELECT CRYPTO_DEC('normal', T_A.ENC_USER_NAME, '', 0)) AS USER_NAME
+			, (SELECT T_A.ENC_USER_NAME) AS USER_NAME
 		FROM (
 		<include refid="CommonMapper.paginationHeader" />
 
@@ -883,7 +883,7 @@
 						<when test="where == 'USER_NAME'">
 							<!-- AND O.BUYER_NAME LIKE CONCAT('%', #{query}, '%') -->
 							AND U.USER_NAME  LIKE CONCAT('%', #{query}, '%')
-							<!-- AND CRYPTO_DEC('normal', u.user_name, '', 0) LIKE Concat('%', #{query}, '%') -->
+							<!-- AND u.user_name LIKE Concat('%', #{query}, '%') -->
 						</when>
 						<when test="where == 'RECEIVE_NAME'">
 							AND OSI.RECEIVE_NAME LIKE CONCAT('%', #{query}, '%')
@@ -1215,7 +1215,7 @@
 		/* saleson.shop.order.shipping.OrderShippingMapper.getNewOrderMobileListByParam */
 
 		SELECT T_A.*
-			, (SELECT CRYPTO_DEC('normal', T_A.ENC_USER_NAME, '', 0)) AS USER_NAME
+			, (SELECT T_A.ENC_USER_NAME) AS USER_NAME
 		FROM (
 		<include refid="CommonMapper.paginationHeader" />
 
@@ -1229,7 +1229,7 @@
 					O.LOGIN_ID,
 					O.BUYER_NAME,
 					(
-						CASE WHEN O.USER_ID > 0 THEN <!-- CRYPTO_DEC('normal', U.USER_NAME, '', 0) --> U.USER_NAME
+						CASE WHEN O.USER_ID > 0 THEN <!-- U.USER_NAME --> U.USER_NAME
 						ELSE
 							''
 						END
@@ -1978,7 +1978,7 @@
 		/* saleson.shop.order.shipping.OrderShippingMapper.getShippingReadyListByParam */
 		SELECT
 			T_B.*
-			, (SELECT CRYPTO_DEC('normal', T_B.USER_NAME_ENC, '', 0)) AS USER_NAME
+			, (SELECT T_B.USER_NAME_ENC) AS USER_NAME
 			FROM (
 		<include refid="CommonMapper.paginationHeader" />
 			SELECT
@@ -2013,7 +2013,7 @@
 				O.BUYER_NAME,
 				<!-- (
 					CASE WHEN O.USER_ID > 0 THEN
-						(SELECT crypto_dec('normal', USER_NAME, '', 0) FROM OP_USER WHERE USER_ID = O.USER_ID)
+						(SELECT USER_NAME FROM OP_USER WHERE USER_ID = O.USER_ID)
 					ELSE
 						''
 					END
@@ -2782,7 +2782,7 @@
 
 		SELECT
 			T_B.*
-			, (SELECT CRYPTO_DEC('normal', T_B.USER_NAME_ENC, '', 0)) AS USER_NAME
+			, (SELECT T_B.USER_NAME_ENC) AS USER_NAME
 		FROM (
 			<include refid="CommonMapper.paginationHeader" />
 			SELECT
@@ -3422,7 +3422,7 @@
 		/* saleson.shop.order.shipping.OrderShippingMapper.getShippingFinishListByParam */
 		SELECT
 			T_B.*
-			, IFNULL(CRYPTO_DEC('normal', T_B.USER_NAME_ENC, '', 0), '') AS USER_NAME
+			, IFNULL(T_B.USER_NAME_ENC, '') AS USER_NAME
 		FROM (
 			SELECT
 				T_A.*
@@ -4067,7 +4067,7 @@
 		/* saleson.shop.order.shipping.OrderShippingMapper.getConfirmCountByParam */
 		SELECT
 			T_B.*
-			, (SELECT CRYPTO_DEC('normal', T_B.USER_NAME_ENC, '', 0)) AS USER_NAME
+			, (SELECT T_B.USER_NAME_ENC) AS USER_NAME
     		, CONCAT(
 				OG.NAME
 				, ' > '
@@ -4109,7 +4109,7 @@
 					O.BUYER_NAME,
 					<!-- (
 						CASE WHEN O.USER_ID > 0 THEN
-							(SELECT CRYPTO_DEC('normal', USER_NAME, '', 0) FROM OP_USER WHERE USER_ID = O.USER_ID)
+							(SELECT USER_NAME FROM OP_USER WHERE USER_ID = O.USER_ID)
 						ELSE
 							''
 						END
@@ -4637,7 +4637,7 @@
 			OI.SHIPPING_READY_DATE = <include refid="CommonMapper.datetime" />,
 			OI.SALES_DATE = (CASE WHEN OI.REVENUE_SALES_STATUS = '20' THEN <include refid="CommonMapper.datetime" /> ELSE OI.SALES_DATE END),
 			<!-- OI.UPDATED_ADMIN_USER_NAME = #{adminUserName}, -->
-			OI.UPDATED_ADMIN_USER_NAME = CRYPTO_ENC('normal', #{adminUserName}, ''),
+			OI.UPDATED_ADMIN_USER_NAME = #{adminUserName},
 			OI.ORDER_STATUS = '20'
 		<where>
 			<!--
@@ -4671,7 +4671,7 @@
 			OI.SHIPPING_DATE = <include refid="CommonMapper.datetime" />,
 			OI.SALES_DATE = (CASE WHEN OI.REVENUE_SALES_STATUS = '20' THEN <include refid="CommonMapper.datetime" /> ELSE OI.SALES_DATE END),
 			<!-- OI.UPDATED_ADMIN_USER_NAME = #{adminUserName}, -->
-			OI.UPDATED_ADMIN_USER_NAME = CRYPTO_ENC('normal', #{adminUserName}, ''),
+			OI.UPDATED_ADMIN_USER_NAME = #{adminUserName},
 			OI.ORDER_STATUS = '35'
 		<where>
 			<!--
@@ -4704,7 +4704,7 @@
 			OI.SHIPPING_READY_DATE = '00000000000000',
 			OI.SALES_DATE = (CASE WHEN OI.REVENUE_SALES_STATUS = '20' THEN '' ELSE OI.SALES_DATE END),
 			<!-- OI.UPDATED_ADMIN_USER_NAME = #{adminUserName}, -->
-			OI.UPDATED_ADMIN_USER_NAME = CRYPTO_ENC('normal', #{adminUserName}, ''),
+			OI.UPDATED_ADMIN_USER_NAME = #{adminUserName},
 			OI.ORDER_STATUS = '10'
 		<where>
 			<!--
@@ -4736,7 +4736,7 @@
 		SET
 			OI.DELIVERY_COMPANY_URL = #{deliveryCompanyUrl}
 			<!-- OI.UPDATED_ADMIN_USER_NAME = #{adminUserName} -->
-			, OI.UPDATED_ADMIN_USER_NAME = CRYPTO_ENC('normal', #{adminUserName}, '')
+			, OI.UPDATED_ADMIN_USER_NAME = #{adminUserName}
 			<choose>
 				<when test='mode == "MOBILE"
 							or mode == "EXCHANGE_MOBILE"
@@ -4823,7 +4823,7 @@
 			OI.SHIPPING_FINISH_DATE = <include refid="CommonMapper.datetime" />,
 			OI.MOBILE_NUMBER = #{mobileNumber},
 			<!-- OI.UPDATED_ADMIN_USER_NAME = #{adminUserName}, -->
-			OI.UPDATED_ADMIN_USER_NAME = CRYPTO_ENC('normal', #{adminUserName}, ''),
+			OI.UPDATED_ADMIN_USER_NAME = #{adminUserName},
 			OI.ORDER_STATUS = '35'
 		WHERE OI.ORDER_CODE = #{orderCode}
 		  AND OI.ORDER_SEQUENCE = #{orderSequence}
@@ -5021,7 +5021,7 @@
 		SET
 			OI.MOBILE_NUMBER = #{mobileNumber},
 			<!-- OI.UPDATED_ADMIN_USER_NAME = #{adminUserName}, -->
-			OI.UPDATED_ADMIN_USER_NAME = CRYPTO_ENC('normal', #{adminUserName}, '')
+			OI.UPDATED_ADMIN_USER_NAME = #{adminUserName}
 		WHERE OI.ORDER_CODE = #{orderCode}
 		  AND OI.ORDER_SEQUENCE = #{orderSequence}
 		  AND OI.ITEM_SEQUENCE = #{itemSequence}

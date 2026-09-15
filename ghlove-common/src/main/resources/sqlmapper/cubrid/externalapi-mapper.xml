@@ -42,8 +42,8 @@
 			 , A.FOREIGN_STATUS_CODE
 			 , A.CNTR_POINT
 			 , A.RTNPSNT_REQST_CODE
-			 , CRYPTO_DEC('normal', B.USER_NAME,'dba',0) AS USER_NAME
-			 , CRYPTO_DEC('normal', C.BIRTHDAY,'dba',0) AS BIRTHDAY
+			 , B.USER_NAME AS USER_NAME
+			 , C.BIRTHDAY AS BIRTHDAY
 		FROM G_CNTR A
 			 LEFT OUTER JOIN OP_USER B
 			 	ON A.USER_ID = B.USER_ID
@@ -78,11 +78,11 @@
     /* saleson.shop.externalapi.ExternalApiMapper.getSmsSendGiveUserInfo */
 	SELECT A.USER_ID
            , MBER_CI
-           , CRYPTO_DEC('normal', USER_NAME, '', 0) AS USER_NAME
+           , USER_NAME AS USER_NAME
            , CONCAT(LOC.UPPER_LOCGOV_NM, ' ', LOC.LOCGOV_NM) AS LOCGOV_NM
            , B.CNTR_AMT
            , C.RECEIVE_SMS
-           , REPLACE (CRYPTO_DEC('normal',C.PHONE_NUMBER, '', 0),'-','') AS PHONE_NUMBER
+           , REPLACE (C.PHONE_NUMBER,'-','') AS PHONE_NUMBER
       FROM G_CNTR B
      INNER JOIN OP_USER A
         ON A.USER_ID = B.USER_ID

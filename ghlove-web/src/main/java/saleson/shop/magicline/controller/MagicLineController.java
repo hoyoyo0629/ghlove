@@ -9,6 +9,7 @@ import com.onlinepowers.framework.util.ViewUtils;
 import com.onlinepowers.framework.web.bind.annotation.RequestProperty;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import saleson.shop.access.support.AccessParam;
 
 //import saleson.shop.isms.IsmsService;
+@Profile("!local")
 @Slf4j
 @Controller
 @RequestMapping("/opmanager/magicline/")

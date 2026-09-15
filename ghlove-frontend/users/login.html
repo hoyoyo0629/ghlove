@@ -1271,6 +1271,12 @@
               location.href = "/users/sign-certificate1.html";
             },
             financLogin: function () {
+              // 우회 시에는 가입 때 쓴 CI 로 인증되므로 그 계정으로 로그인된다.
+              if ($s.config.isSkipExternalAuth) {
+                $s.api.skipExternalAuth("금융인증서 로그인");
+                return;
+              }
+
               fCert.initSign("login");
             },
             submitKakao: function () {

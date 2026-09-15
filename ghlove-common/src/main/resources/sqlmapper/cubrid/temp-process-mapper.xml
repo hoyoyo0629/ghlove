@@ -1016,7 +1016,7 @@
 
 			<choose>
 				<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-					AND S.REPRESENTATIVE_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+					AND S.REPRESENTATIVE_NAME = #{query}
 				</when>
 				<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 					AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -1092,7 +1092,7 @@
 
 			<choose>
 				<when test='where == "REPRESENTATIVE_NAME" and query != null and query != ""'>
-					AND S.REPRESENTATIVE_NAME = CRYPTO_ENC('normal', #{query}, '')
+					AND S.REPRESENTATIVE_NAME = #{query}
 				</when>
 				<when test='where == "COMPANY_NAME" and query != null and query != ""'>
 					AND S.COMPANY_NAME LIKE CONCAT('%', #{query}, '%')
@@ -1169,7 +1169,7 @@
 				, R.REMITTANCE_ID
 				, R.CONFIRM_DATE AS REMITTANCE_DATE
 				, OI.USER_ID
-				, TO_CHAR(CRYPTO_DEC('normal', U.USER_NAME, '', 0)) AS BUYER_NAME
+				, TO_CHAR(U.USER_NAME) AS BUYER_NAME
 				, OI.PAY_DATE
 				, OI.CONFIRM_DATE
 				, OI.SELLER_ID
@@ -1184,7 +1184,7 @@
 								AND RD.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
 							</when>
 							<when test="where == 'USER_NAME'">
-								AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								AND U.USER_NAME = #{query}
 							</when>
 							<when test="where == 'ITEM_CODE'">
 								AND RD.ITEM_USER_CODE LIKE CONCAT('%', #{query} , '%')
@@ -1247,7 +1247,7 @@
 								AND RD.ORDER_CODE LIKE CONCAT('%', #{query} , '%')
 							</when>
 							<when test="where == 'USER_NAME'">
-								AND U.USER_NAME = (SELECT crypto_enc('normal', #{query}, ''))
+								AND U.USER_NAME = #{query}
 							</when>
 							<when test="where == 'ITEM_CODE'">
 								AND RD.ITEM_USER_CODE LIKE CONCAT('%', #{query} , '%')

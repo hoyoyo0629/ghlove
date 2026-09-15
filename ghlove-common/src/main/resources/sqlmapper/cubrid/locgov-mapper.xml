@@ -29,12 +29,10 @@
 						LIKE CONCAT('%', #{srchValue},'%')
 					</when>
 					<when test="srchKey == 'CHARGER_NM'">
-						AND L.CHARGER_NM = (SELECT crypto_enc('normal',
-						#{srchValue}, ''))
+						AND L.CHARGER_NM = #{srchValue}
 					</when>
 					<when test="srchKey == 'CHARGER_CTTPC'">
-						AND L.CHARGER_CTTPC = (SELECT crypto_enc('normal',
-						#{srchValue}, ''))
+						AND L.CHARGER_CTTPC = #{srchValue}
 					</when>
 				</choose>
 			</if>
@@ -91,8 +89,8 @@
 			A.locgov_nm,
 			A.upper_locgov_code,
 			A.locgov_intrcn_cn,
-			crypto_dec('normal', A.charger_cttpc, '', 0) AS charger_cttpc,
-			crypto_dec('normal', A.charger_nm, '', 0) AS charger_nm,
+			A.charger_cttpc AS charger_cttpc,
+			A.charger_nm AS charger_nm,
 			A.charger_psitn_dept,
 			A.locgov_hmpg,
 			A.locgov_popltn_co,
@@ -176,8 +174,8 @@
 			A.last_updusr_id,
 			DATE_FORMAT(IFNULL(A.last_updt_pnttm, A.frst_regist_pnttm),'%Y-%m-%d') AS last_updt_pnttm,
 			CASE WHEN IFNULL(M.user_name, '') != ''
-			THEN crypto_dec('normal', M.user_name, '', 0)
-			ELSE IFNULL(crypto_dec('normal', U.user_name, '', 0), '')
+			THEN M.user_name
+			ELSE IFNULL(U.user_name, '')
 			END AS last_updusr_name
 		FROM (
 		<include refid="CommonMapper.paginationHeader" />
@@ -240,8 +238,8 @@
 			A.locgov_nm,
 			A.upper_locgov_code,
 			A.locgov_intrcn_cn,
-			crypto_dec('normal',A.charger_cttpc,'',0) as charger_cttpc,
-			crypto_dec('normal',A.charger_nm,'',0) as charger_nm,
+			A.charger_cttpc as charger_cttpc,
+			A.charger_nm as charger_nm,
 			A.charger_email,
 			A.charger_psitn_dept,
 			A.locgov_hmpg,
@@ -286,8 +284,8 @@
 					L.charger_nm,
 					CASE
 						WHEN L.charger_email IS NULL OR L.charger_email = ''
-						THEN (SELECT crypto_dec('normal', email, '', 0) FROM op_manager WHERE locgov_code = L.locgov_code and user_name = L.charger_nm LIMIT 1)
-						ELSE crypto_dec('normal', L.charger_email, '', 0)
+						THEN (SELECT email FROM op_manager WHERE locgov_code = L.locgov_code and user_name = L.charger_nm LIMIT 1)
+						ELSE L.charger_email
 					END AS charger_email,
 					L.charger_psitn_dept,
 					L.locgov_hmpg,
@@ -390,9 +388,9 @@
 		LIMIT 1),
 		#{upperLocgovCode},
 		#{locgovIntrcnCn},
-		crypto_enc('normal', #{chargerCttpc}, ''),
-		crypto_enc('normal', #{chargerNm}, ''),
-		crypto_enc('normal', #{chargerEmail}, ''),
+		#{chargerCttpc},
+		#{chargerNm},
+		#{chargerEmail},
 		#{chargerPsitnDept},
 		#{locgovHmpg},
 		#{locgovPopltnCo},
@@ -526,9 +524,9 @@
 		/** locgov-mapper.updateLocgov (지자체 수정) */
 		UPDATE	G_LOCGOV
 		SET		LOCGOV_INTRCN_CN = #{locgovIntrcnCn},
-				CHARGER_CTTPC = crypto_enc('normal', #{chargerCttpc}, ''),
-				CHARGER_NM = crypto_enc('normal', #{chargerNm}, ''),
-				CHARGER_EMAIL = crypto_enc('normal', #{chargerEmail}, ''),
+				CHARGER_CTTPC = #{chargerCttpc},
+				CHARGER_NM = #{chargerNm},
+				CHARGER_EMAIL = #{chargerEmail},
 				CHARGER_PSITN_DEPT = #{chargerPsitnDept},
 				LOCGOV_HMPG = #{locgovHmpg},
 				LOCGOV_POPLTN_CO = #{locgovPopltnCo},
@@ -729,8 +727,8 @@
 				C.process_dept_code,
 				C.last_updusr_id,
 				C.last_updt_pnttm,
-				crypto_dec('normal', C.user_name, '', 0) AS user_name,
-				crypto_dec('normal', C.login_id, '', 0) AS login_id
+				C.user_name AS user_name,
+				C.login_id AS login_id
 			FROM
 			(
 				SELECT
@@ -749,8 +747,8 @@
 						A.process_dept_code,
 						A.last_updusr_id,
 						DATE_FORMAT(A.last_updt_pnttm,'%Y-%m-%d') AS last_updt_pnttm,
-						crypto_dec('normal', user_name, '', 0) AS user_name,
-						crypto_dec('normal', login_id, '', 0) AS login_id
+						user_name AS user_name,
+						login_id AS login_id
 					FROM g_locgov_dept_hist A
 					LEFT OUTER JOIN op_user B ON A.last_updusr_id = B.user_id
 					WHERE 1 = 1
@@ -819,7 +817,7 @@
 				,E.mber_ci
 				,E.upper_locgov_nm
 				,E.locgov_nm
-				,crypto_dec('normal', E.user_name, '', 0) AS user_name
+				,E.user_name AS user_name
 				,E.receive_sms
 			FROM
 			(

@@ -54,6 +54,10 @@ public class AuthServiceImpl extends EgovAbstractServiceImpl implements AuthServ
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	// LOCAL DEV ONLY: requestToken -> generated SMS code, so it can be shown on screen
+	// when there's no real SMS gateway to deliver it. Never populated when sendMessage succeeds.
+	private final java.util.Map<String, String> localDevAuthCodes = new java.util.concurrent.ConcurrentHashMap<>();
+
 	@Override
 	// @Transactional(readOnly=false, propagation = Propagation.REQUIRES_NEW)
 	public String sendSmsAuthNumber(String loginId, String phoneNumber) {
@@ -66,10 +70,29 @@ public class AuthServiceImpl extends EgovAbstractServiceImpl implements AuthServ
 
 		OpMessage message = new SmsMessage(phoneNumber, smsMessage, "");
 
-		// SMS 발송.
-		smsService.sendMessage(message);
+		boolean smsGatewayFailed = false;
 
-		return tokenService.allocateToken(param).getRequestToken();
+		// SMS 발송.
+		try {
+			smsService.sendMessage(message);
+		} catch (Exception e) {
+			// LOCAL DEV ONLY: no SMS gateway available here; log the code instead of sending it.
+			smsGatewayFailed = true;
+			log.warn("[LOCAL DEV] SMS gateway unavailable, auth code for {}: {}", phoneNumber, smsAuthNumber);
+		}
+
+		String requestToken = tokenService.allocateToken(param).getRequestToken();
+
+		if (smsGatewayFailed) {
+			localDevAuthCodes.put(requestToken, smsAuthNumber);
+		}
+
+		return requestToken;
+	}
+
+	@Override
+	public String getLocalDevAuthCode(String requestToken) {
+		return localDevAuthCodes.remove(requestToken);
 	}
 
 	@Override

@@ -44,6 +44,16 @@ subprojects {
     version = '3.15.0'
     sourceCompatibility = '11'
 
+    // JDK17 runs this JDK11-era Spring/CGLIB stack; without these opens, CGLIB proxy
+    // generation (SecurityConfig roleHierarchy etc.) fails with IllegalAccessException.
+    tasks.withType(JavaExec) {
+        jvmArgs += [
+            '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+            '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+            '--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED'
+        ]
+    }
+
     repositories {
         mavenCentral()
         maven { url "https://repo.spring.io/milestone" }

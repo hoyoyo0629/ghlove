@@ -3210,7 +3210,7 @@
 	                        I.ITEM_ID AS GROUP_OBJECT,                                               -- 답례품구매현황 답례품별
 	                    </when>
 	                    <when test='extra == "USER"'>
-	                        CONCAT(crypto_dec('normal', U.USER_NAME,'',0), '(', crypto_dec('normal', U.LOGIN_ID,'',0), ')') AS GROUP_OBJECT,            -- 답례품구매현황 답례품별 상세(회원별)
+	                        CONCAT(U.USER_NAME, '(', U.LOGIN_ID, ')') AS GROUP_OBJECT,            -- 답례품구매현황 답례품별 상세(회원별)
 	                    </when>
 	                </choose>
 	                S.COMPANY_NAME,
@@ -3288,7 +3288,7 @@
 	                        I.ITEM_ID AS GROUP_OBJECT,                                               -- 답례품구매현황 답례품별
 	                    </when>
 	                    <when test='extra == "USER"'>
-	                        CONCAT(crypto_dec('normal', U.USER_NAME,'',0), '(', crypto_dec('normal', U.LOGIN_ID,'',0), ')') AS GROUP_OBJECT,            -- 답례품구매현황 답례품별 상세(회원별)
+	                        CONCAT(U.USER_NAME, '(', U.LOGIN_ID, ')') AS GROUP_OBJECT,            -- 답례품구매현황 답례품별 상세(회원별)
 	                    </when>
 	                </choose>
 	                S.COMPANY_NAME,

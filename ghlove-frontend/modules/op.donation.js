@@ -170,6 +170,14 @@ var donation = {
     },
 
     etaxPopOpen: function (mngNo, enapbuNo, taxAmt) {
+      // 로컬 전용: 서울 이택스 결제창은 실제 부과번호가 있어야 열리므로 창 없이 결제 완료로 넘긴다.
+      if ($s.config.isSkipExternalAuth) {
+        alert("[로컬 결제 우회] 서울 이택스 결제\n\n결제창 없이 수납완료로 처리합니다.\n전자납부번호: " + enapbuNo + "\n금액: " + taxAmt + "원");
+        // 원래 흐름처럼 잠시 기다린다. 바로 넘기면 비동기 결제로그 시작이 끝나기 전에 종료가 호출돼 "payLogId empty" 알림이 뜬다.
+        return new Promise(function (resolve) {
+          setTimeout(resolve, 1500);
+        });
+      }
       donation.modal.show();
       var eTaxPopup = window.open("about:blank", "eTaxPopup", "width=750, height=700, titlebar=0, toolbar=0, left=300, top=200", "_blank");
       return new Promise(function (resolve, reject) {
@@ -544,6 +552,14 @@ var donation = {
         taxAmt: data.taxAmt,
         presentType: data.presentType,
       };
+
+      // 로컬 전용: 지로 결제는 실제 부과번호가 있어야 진행되는데 로컬 부과등록은 가짜 번호라, 결제창 없이 수납완료로 처리한다.
+      if ($s.config.isSkipExternalAuth) {
+        $("#do_whitebg").hide();
+        alert("[로컬 결제 우회] 지로 결제\n\n결제창 없이 수납완료로 처리합니다.\n전자납부번호: " + params.enapbuNo + "\n금액: " + params.taxAmt + "원");
+        donation.contry.sunapSuccess(params);
+        return;
+      }
 
       giroPopup = window.open("", "popOpen", "width=550, height=800, titlebar=0, toolbar=0, left=300, top=200");
 
